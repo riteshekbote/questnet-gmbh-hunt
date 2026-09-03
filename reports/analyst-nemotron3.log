@@ -894,3 +894,145 @@ dev.applicationdesigner.de/playground.php -> 403
 dev.applicationdesigner.de/docs.php -> 403
 dev.applicationdesigner.de/login.php -> 403
 [0m
+===== ANALYST nemotron3 2026-09-03 20:03:02 UTC =====
+[0m
+> build · nemotron-3-ultra-free
+[0m
+[0m$ [0mls -la /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/
+total 100
+drwxr-xr-x 12 runner runner 4096 Sep  3 19:56 .
+drwxr-xr-x  3 runner runner 4096 Sep  3 19:56 ..
+drwxr-xr-x  7 runner runner 4096 Sep  3 19:56 .git
+drwxr-xr-x  3 runner runner 4096 Sep  3 19:56 .github
+-rw-r--r--  1 runner runner 1609 Sep  3 19:56 README.md
+-rw-r--r--  1 runner runner   43 Sep  3 19:56 analyst-out.txt
+-rw-r--r--  1 runner runner 5490 Sep  3 19:56 analyst-prompt.txt
+-rw-r--r--  1 runner runner 1770 Sep  3 19:56 ctx.txt
+drwxr-xr-x  2 runner runner 4096 Sep  3 19:56 inventory
+drwxr-xr-x  2 runner runner 4096 Sep  3 19:56 knowledge
+drwxr-xr-x  2 runner runner 4096 Sep  3 19:56 leads
+-rw-r--r--  1 runner runner  174 Sep  3 19:56 probe-results.md
+drwxr-xr-x  2 runner runner 4096 Sep  3 19:56 recon-notes
+drwxr-xr-x  2 runner runner 4096 Sep  3 19:56 reports
+drwxr-xr-x  2 runner runner 4096 Sep  3 19:56 reposcan-raw
+-rw-r--r--  1 runner runner 3133 Sep  3 19:56 scope.yml
+drwxr-xr-x  2 runner runner 4096 Sep  3 19:56 scripts
+-rw-r--r--  1 runner runner   37 Sep  3 19:56 state_bigpickle.json
+-rw-r--r--  1 runner runner   37 Sep  3 19:56 state_laguna.json
+-rw-r--r--  1 runner runner   37 Sep  3 19:56 state_ling3.json
+-rw-r--r--  1 runner runner   37 Sep  3 19:56 state_longcat.json
+-rw-r--r--  1 runner runner   33 Sep  3 19:56 state_mimo.json
+-rw-r--r--  1 runner runner   37 Sep  3 19:56 state_nemotron3.json
+drwxr-xr-x  2 runner runner 4096 Sep  3 19:56 triage
+[0m
+[0m→ [0mRead scope.yml
+[0m→ [0mRead inventory/questnet-gmbh.md
+[0m✱ [0mGlob "knowledge/*"[90m 1 match[0m
+[0m→ [0mRead knowledge/index.md
+[0m✱ [0mGlob "leads/*"[90m 7 matches[0m
+[0m✱ [0mGlob "recon-notes/*"[90m 1 match[0m
+[0m→ [0mRead leads/reposcan-questnet-gmbh.md
+[0m→ [0mRead leads/lead-nemotron3.md
+[0m→ [0mRead recon-notes/DEDICATED-DEEP.md
+[0m→ [0mRead probe-results.md
+[0m→ [0mRead leads/lead-bigpickle.md
+[0m→ [0mRead leads/lead-ling3.md
+[0m→ [0mRead leads/lead-mimo.md
+[0m→ [0mRead leads/lead-laguna.md
+Now I have full context. Let me execute the 7-step analysis.
+
+---
+
+### STEP 1 — DELTA
+
+**NO_DELTA** — Inventory unchanged (22 wildcard-dominated hosts, 0 live HTTP confirmed). Knowledge base empty. No prior probe results. Previous model runs produced no actionable leads.
+
+---
+
+### STEP 2 — PRIORITIZE
+
+Since all subdomains resolve to shared/CDN IPs (wildcard), the real attack surface is **path-based** behind the CDN. Prioritize endpoints likely to expose API/admin/auth logic:
+
+| Asset | Attack Surface | Business Value | Tech Exposure | Gate Ease | Cloud Surface | Freshness | **Priority** |
+|-------|---------------|----------------|---------------|-----------|---------------|-----------|-------------|
+| `api.live-manager.de` (implied) | 9 | 10 | 9 (API) | 8 (public API) | 8 | 5 | **8.65** |
+| `auth.live-manager.de` | 8 | 10 | 8 (OAuth/JWT) | 7 (auth endpoints) | 7 | 5 | **7.95** |
+| `admin.live-manager.de` | 7 | 9 | 7 (admin panel) | 5 (likely auth-gated) | 6 | 5 | **6.85** |
+| `app.live-manager.de` | 7 | 8 | 6 (SPA) | 6 | 6 | 5 | **6.55** |
+| `dashboard.live-manager.de` | 6 | 8 | 6 | 5 | 6 | 5 | **6.10** |
+| `billing.live-manager.de` | 6 | 9 | 5 | 4 | 5 | 5 | **5.85** |
+| `dev.live-manager.de` / `staging.live-manager.de` | 8 | 6 | 8 (debug) | 6 | 7 | 5 | **6.95** |
+| `applicationdesigner.de` / `www.applicationdesigner.de` | 6 | 7 | 5 | 6 | 5 | 5 | **5.75** |
+
+[PRIO] api.live-manager.de,8.65,attack_surface=9,business_value=10,tech_exposure=9,gate_ease=8,cloud_surface=8,freshness=5
+[PRIO] auth.live-manager.de,7.95,attack_surface=8,business_value=10,tech_exposure=8,gate_ease=7,cloud_surface=7,freshness=5
+[PRIO] dev.live-manager.de,6.95,attack_surface=8,business_value=6,tech_exposure=8,gate_ease=6,cloud_surface=7,freshness=5
+[PRIO] admin.live-manager.de,6.85,attack_surface=7,business_value=9,tech_exposure=7,gate_ease=5,cloud_surface=6,freshness=5
+[PRIO] app.live-manager.de,6.55,attack_surface=7,business_value=8,tech_exposure=6,gate_ease=6,cloud_surface=6,freshness=5
+[PRIO] dashboard.live-manager.de,6.10,attack_surface=6,business_value=8,tech_exposure=6,gate_ease=5,cloud_surface=6,freshness=5
+[PRIO] billing.live-manager.de,5.85,attack_surface=6,business_value=9,tech_exposure=5,gate_ease=4,cloud_surface=5,freshness=5
+[PRIO] applicationdesigner.de,5.75,attack_surface=6,business_value=7,tech_exposure=5,gate_ease=6,cloud_surface=5,freshness=5
+
+---
+
+### STEP 3 — HYPOTHESES
+
+[HYP] API versioning + debug endpoints on api.live-manager.de
+class: MISCONFIG
+asset: api.live-manager.de
+confidence: 70
+reasoning: Wildcard DNS suggests API behind CDN; versioned paths (/api/v1, /api/v2, /api/beta, /api/internal) and debug flags (?debug, ?test, ?dev) commonly exposed on API gateways. No auth on /health, /metrics, /actuator, /swagger, /openapi.json often leaks schema.
+evidence_needed: 200 OK on /api/v1, /api/v2, /api/internal, /swagger.json, /openapi.json, /actuator/health with sensitive data
+verify_steps: GET https://api.live-manager.de/api/v1; GET https://api.live-manager.de/api/v2; GET https://api.live-manager.de/api/internal; GET https://api.live-manager.de/swagger.json; GET https://api.live-manager.de/openapi.json; GET https://api.live-manager.de/actuator/health; GET https://api.live-manager.de/health; GET https://api.live-manager.de/metrics
+impact: Full API schema enumeration → IDOR/BOLA candidates, mass assignment fields, hidden endpoints. Severity: HIGH if PII/money endpoints exposed.
+testability: PASSIVE
+
+[HYP] OAuth/OIDC misconfiguration on auth.live-manager.de
+class: AUTH
+asset: auth.live-manager.de
+confidence: 65
+reasoning: Auth subdomain likely hosts OAuth/OIDC flows. Common flaws: redirect_uri validation bypass (open redirect → code theft), state parameter missing/weak, PKCE downgrade, implicit flow enabled, token endpoint leaking refresh tokens, /userinfo over-disclosure.
+evidence_needed: 302 redirect to arbitrary redirect_uri; missing state enforcement; token response with refresh_token on public client; /userinfo returning email/roles without scope check
+verify_steps: GET https://auth.live-manager.de/.well-known/openid-configuration; GET https://auth.live-manager.de/authorize?client_id=test&redirect_uri=https://evil.com&response_type=code; GET https://auth.live-manager.de/authorize?client_id=test&redirect_uri=https://evil.com&response_type=code&state=fixed; POST https://auth.live-manager.de/token with grant_type=authorization_code&code=...&redirect_uri=https://evil.com
+impact: ATO via code theft (redirect_uri bypass) or token leakage. Severity: CRITICAL.
+testability: PASSIVE
+
+[HYP] Debug/test endpoints on dev.live-manager.de / staging.live-manager.de
+class: MISCONFIG
+asset: dev.live-manager.de
+confidence: 60
+reasoning: Dev/staging environments often have relaxed auth, debug endpoints, test users, Swagger UI enabled, GraphQL introspection, fake billing flows. Wildcard DNS means they share CDN but may have different path routing.
+evidence_needed: 200 on /swagger-ui, /graphql (introspection), /actuator/env, /h2-console, test credentials working, billing sandbox with real logic
+verify_steps: GET https://dev.live-manager.de/swagger-ui.html; GET https://dev.live-manager.de/graphql with introspection query; GET https://dev.live-manager.de/actuator/env; GET https://dev.live-manager.de/h2-console; GET https://staging.live-manager.de/swagger-ui.html; GET https://staging.live-manager.de/graphql
+impact: Full API access, PII exposure, business logic bypass (fake payments). Severity: HIGH.
+testability: PASSIVE
+
+---
+
+### STEP 4 — SELF-CRITIQUE
+
+[PARKED] API versioning + debug endpoints on api.live-manager.de: Host `api.live-manager.de` not in inventory — may not exist as separate subdomain; API paths likely under `app.live-manager.de/api/*` or `live-manager.de/api/*`. Verify host existence first.
+
+[PARKED] OAuth/OIDC misconfiguration on auth.live-manager.de: Host `auth.live-manager.de` is in inventory but passive recon shows 0 live HTTP — may be wildcard-only. Need to confirm it serves distinct content vs wildcard.
+
+[PARKED] Debug/test endpoints on dev.live-manager.de / staging.live-manager.de: Both in inventory but 0 live HTTP confirmed. Wildcard filtering suggests they resolve to same CDN IP — may not have distinct content.
+
+[FINAL] No surviving hypotheses with confidence ≥40 AND verifiable host. All three require live host confirmation first.
+
+---
+
+### STEP 5 — NEXT ACTION
+
+[NEXT] PROBE: GET https://auth.live-manager.de/.well-known/openid-configuration (HEAD first, then GET if 2xx) — confirms auth subdomain serves OIDC discovery and is not wildcard-mirror.
+
+---
+
+### STEP 6 — LEARNING
+
+[LEARN] REJECTED wildcard-subdomain-enum @ *.live-manager.de: DEDICATED-DEEP.md confirms 8632 resolving hostnames all share CDN/wildcard IPs — no dedicated subdomain surface exists. Attack surface is path-based behind CDN.
+
+---
+
+### STEP 7 — RISK
+
+[RISK] questnet-gmbh: 35 — Wildcard-dominated DNS surface with 0 confirmed live HTTP endpoints. Real risk depends entirely on path-based API/auth endpoints behind CDN. No evidence of exposed vulnerabilities yet; passive-only phase yields low confidence. Risk increases significantly if any auth/api endpoint responds with debug/OIDC/swagger data.

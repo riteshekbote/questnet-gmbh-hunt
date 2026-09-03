@@ -1,1 +1,44 @@
 ## 2026-09-03 17:33:05 UTC [target] (model nemotron3)
+## 2026-09-03 20:02:52 UTC [target] (model nemotron3)
+[PRIO] api.live-manager.de,8.65,attack_surface=9,business_value=10,tech_exposure=9,gate_ease=8,cloud_surface=8,freshness=5
+[PRIO] auth.live-manager.de,7.95,attack_surface=8,business_value=10,tech_exposure=8,gate_ease=7,cloud_surface=7,freshness=5
+[PRIO] dev.live-manager.de,6.95,attack_surface=8,business_value=6,tech_exposure=8,gate_ease=6,cloud_surface=7,freshness=5
+[PRIO] admin.live-manager.de,6.85,attack_surface=7,business_value=9,tech_exposure=7,gate_ease=5,cloud_surface=6,freshness=5
+[PRIO] app.live-manager.de,6.55,attack_surface=7,business_value=8,tech_exposure=6,gate_ease=6,cloud_surface=6,freshness=5
+[PRIO] dashboard.live-manager.de,6.10,attack_surface=6,business_value=8,tech_exposure=6,gate_ease=5,cloud_surface=6,freshness=5
+[PRIO] billing.live-manager.de,5.85,attack_surface=6,business_value=9,tech_exposure=5,gate_ease=4,cloud_surface=5,freshness=5
+[PRIO] applicationdesigner.de,5.75,attack_surface=6,business_value=7,tech_exposure=5,gate_ease=6,cloud_surface=5,freshness=5
+[HYP] API versioning + debug endpoints on api.live-manager.de
+class: MISCONFIG
+asset: api.live-manager.de
+confidence: 70
+reasoning: Wildcard DNS suggests API behind CDN; versioned paths (/api/v1, /api/v2, /api/beta, /api/internal) and debug flags (?debug, ?test, ?dev) commonly exposed on API gateways. No auth on /health, /metrics, /actuator, /swagger, /openapi.json often leaks schema.
+evidence_needed: 200 OK on /api/v1, /api/v2, /api/internal, /swagger.json, /openapi.json, /actuator/health with sensitive data
+verify_steps: GET https://api.live-manager.de/api/v1; GET https://api.live-manager.de/api/v2; GET https://api.live-manager.de/api/internal; GET https://api.live-manager.de/swagger.json; GET https://api.live-manager.de/openapi.json; GET https://api.live-manager.de/actuator/health; GET https://api.live-manager.de/health; GET https://api.live-manager.de/metrics
+impact: Full API schema enumeration → IDOR/BOLA candidates, mass assignment fields, hidden endpoints. Severity: HIGH if PII/money endpoints exposed.
+testability: PASSIVE
+[HYP] OAuth/OIDC misconfiguration on auth.live-manager.de
+class: AUTH
+asset: auth.live-manager.de
+confidence: 65
+reasoning: Auth subdomain likely hosts OAuth/OIDC flows. Common flaws: redirect_uri validation bypass (open redirect → code theft), state parameter missing/weak, PKCE downgrade, implicit flow enabled, token endpoint leaking refresh tokens, /userinfo over-disclosure.
+evidence_needed: 302 redirect to arbitrary redirect_uri; missing state enforcement; token response with refresh_token on public client; /userinfo returning email/roles without scope check
+verify_steps: GET https://auth.live-manager.de/.well-known/openid-configuration; GET https://auth.live-manager.de/authorize?client_id=test&redirect_uri=https://evil.com&response_type=code; GET https://auth.live-manager.de/authorize?client_id=test&redirect_uri=https://evil.com&response_type=code&state=fixed; POST https://auth.live-manager.de/token with grant_type=authorization_code&code=...&redirect_uri=https://evil.com
+impact: ATO via code theft (redirect_uri bypass) or token leakage. Severity: CRITICAL.
+testability: PASSIVE
+[HYP] Debug/test endpoints on dev.live-manager.de / staging.live-manager.de
+class: MISCONFIG
+asset: dev.live-manager.de
+confidence: 60
+reasoning: Dev/staging environments often have relaxed auth, debug endpoints, test users, Swagger UI enabled, GraphQL introspection, fake billing flows. Wildcard DNS means they share CDN but may have different path routing.
+evidence_needed: 200 on /swagger-ui, /graphql (introspection), /actuator/env, /h2-console, test credentials working, billing sandbox with real logic
+verify_steps: GET https://dev.live-manager.de/swagger-ui.html; GET https://dev.live-manager.de/graphql with introspection query; GET https://dev.live-manager.de/actuator/env; GET https://dev.live-manager.de/h2-console; GET https://staging.live-manager.de/swagger-ui.html; GET https://staging.live-manager.de/graphql
+impact: Full API access, PII exposure, business logic bypass (fake payments). Severity: HIGH.
+testability: PASSIVE
+[PARKED] API versioning + debug endpoints on api.live-manager.de: Host `api.live-manager.de` not in inventory — may not exist as separate subdomain; API paths likely under `app.live-manager.de/api/*` or `live-manager.de/api/*`. Verify host existence first.
+[PARKED] OAuth/OIDC misconfiguration on auth.live-manager.de: Host `auth.live-manager.de` is in inventory but passive recon shows 0 live HTTP — may be wildcard-only. Need to confirm it serves distinct content vs wildcard.
+[PARKED] Debug/test endpoints on dev.live-manager.de / staging.live-manager.de: Both in inventory but 0 live HTTP confirmed. Wildcard filtering suggests they resolve to same CDN IP — may not have distinct content.
+[FINAL] No surviving hypotheses with confidence ≥40 AND verifiable host. All three require live host confirmation first.
+[NEXT] PROBE: GET https://auth.live-manager.de/.well-known/openid-configuration (HEAD first, then GET if 2xx) — confirms auth subdomain serves OIDC discovery and is not wildcard-mirror.
+[LEARN] REJECTED wildcard-subdomain-enum @ *.live-manager.de: DEDICATED-DEEP.md confirms 8632 resolving hostnames all share CDN/wildcard IPs — no dedicated subdomain surface exists. Attack surface is path-based behind CDN.
+[RISK] questnet-gmbh: 35 — Wildcard-dominated DNS surface with 0 confirmed live HTTP endpoints. Real risk depends entirely on path-based API/auth endpoints behind CDN. No evidence of exposed vulnerabilities yet; passive-only phase yields low confidence. Risk increases significantly if any auth/api endpoint responds with debug/OIDC/swagger data.
