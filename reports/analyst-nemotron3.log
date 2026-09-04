@@ -2097,3 +2097,158 @@ testability: PASSIVE
 
 [RISK] questnet-gmbh: 55 — One confirmed in-scope live WebSocket proxy (cbs-proxy.api.live-manager.de) with anonymous handshake reaching customer business systems (high-value BOLA candidate); second confirmed finding (ExtJS help app on www.applicationdesigner.de) enumerates internal endpoints. Confirmed live surface far smaller than 22-host inventory suggested (only www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de, cbs-proxy.api.live-manager.de responding), limiting breadth but concentrating value on CBS proxy and customer portal auth flows. auth.live-manager.de remains unconfirmed (likely wildcard mirror).
 All 8 steps complete. Output contains only the required structured blocks.
+===== ANALYST nemotron3 2026-09-04 22:19:45 UTC =====
+[0m
+> build · nemotron-3-ultra-free
+[0m
+[0m$ [0mls -la /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/
+total 148
+drwxr-xr-x 12 runner runner  4096 Sep  4 22:15 .
+drwxr-xr-x  3 runner runner  4096 Sep  4 22:15 ..
+drwxr-xr-x  7 runner runner  4096 Sep  4 22:15 .git
+drwxr-xr-x  3 runner runner  4096 Sep  4 22:15 .github
+-rw-r--r--  1 runner runner  1609 Sep  4 22:15 README.md
+-rw-r--r--  1 runner runner    43 Sep  4 22:15 analyst-out.txt
+-rw-r--r--  1 runner runner 29493 Sep  4 22:15 analyst-prompt.txt
+-rw-r--r--  1 runner runner 25773 Sep  4 22:15 ctx.txt
+drwxr-xr-x  2 runner runner  4096 Sep  4 22:15 inventory
+drwxr-xr-x  2 runner runner  4096 Sep  4 22:15 knowledge
+drwxr-xr-x  2 runner runner  4096 Sep  4 22:15 leads
+-rw-r--r--  1 runner runner   406 Sep  4 22:15 probe-results.md
+drwxr-xr-x  2 runner runner  4096 Sep  4 22:15 recon-notes
+drwxr-xr-x  2 runner runner  4096 Sep  4 22:15 reports
+drwxr-xr-x  2 runner runner  4096 Sep  4 22:15 reposcan-raw
+-rw-r--r--  1 runner runner  3133 Sep  4 22:15 scope.yml
+drwxr-xr-x  2 runner runner  4096 Sep  4 22:15 scripts
+-rw-r--r--  1 runner runner    33 Sep  4 22:15 state_bigpickle.json
+-rw-r--r--  1 runner runner    33 Sep  4 22:15 state_laguna.json
+-rw-r--r--  1 runner runner    33 Sep  4 22:15 state_ling3.json
+-rw-r--r--  1 runner runner    33 Sep  4 22:15 state_longcat.json
+-rw-r--r--  1 runner runner    33 Sep  4 22:15 state_mimo.json
+-rw-r--r--  1 runner runner    33 Sep  4 22:15 state_nemotron3.json
+drwxr-xr-x  2 runner runner  4096 Sep  4 22:15 triage
+[0m
+[0m→ [0mRead scope.yml
+[0m→ [0mRead inventory/questnet-gmbh.md
+[0m→ [0mRead state_nemotron3.json
+[0m
+[0m$ [0mls -la /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/knowledge/
+total 16
+drwxr-xr-x  2 runner runner 4096 Sep  4 22:15 .
+drwxr-xr-x 12 runner runner 4096 Sep  4 22:15 ..
+-rw-r--r--  1 runner runner 4331 Sep  4 22:15 index.md
+[0m
+[0m$ [0mls -la /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/leads/
+total 132
+drwxr-xr-x  2 runner runner  4096 Sep  4 22:15 .
+drwxr-xr-x 12 runner runner  4096 Sep  4 22:15 ..
+-rw-r--r--  1 runner runner 37048 Sep  4 22:15 lead-bigpickle.md
+-rw-r--r--  1 runner runner   459 Sep  4 22:15 lead-laguna.md
+-rw-r--r--  1 runner runner   450 Sep  4 22:15 lead-ling3.md
+-rw-r--r--  1 runner runner   468 Sep  4 22:15 lead-longcat.md
+-rw-r--r--  1 runner runner    18 Sep  4 22:15 lead-mimo.md
+-rw-r--r--  1 runner runner 65214 Sep  4 22:15 lead-nemotron3.md
+-rw-r--r--  1 runner runner  3664 Sep  4 22:15 reposcan-questnet-gmbh.md
+[0m
+[0m→ [0mRead knowledge/index.md
+[0m→ [0mRead leads/lead-nemotron3.md
+[0m→ [0mRead leads/lead-bigpickle.md
+[0m→ [0mRead probe-results.md
+[0m
+[0m$ [0mls -la /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/recon-notes/
+total 12
+drwxr-xr-x  2 runner runner 4096 Sep  4 22:15 .
+drwxr-xr-x 12 runner runner 4096 Sep  4 22:15 ..
+-rw-r--r--  1 runner runner  856 Sep  4 22:15 DEDICATED-DEEP.md
+[0m
+[0m$ [0mls -la /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/triage/
+total 68
+drwxr-xr-x  2 runner runner 4096 Sep  4 22:15 .
+drwxr-xr-x 12 runner runner 4096 Sep  4 22:15 ..
+-rw-r--r--  1 runner runner    0 Sep  4 22:15 .gitkeep
+-rw-r--r--  1 runner runner  228 Sep  4 22:15 run-2026-09-02-21-42.md
+-rw-r--r--  1 runner runner  150 Sep  4 22:15 run-2026-09-02-23-54.md
+-rw-r--r--  1 runner runner  754 Sep  4 22:15 run-2026-09-03-03-39.md
+-rw-r--r--  1 runner runner  315 Sep  4 22:15 run-2026-09-03-08-18.md
+-rw-r--r--  1 runner runner  143 Sep  4 22:15 run-2026-09-03-12-53.md
+-rw-r--r--  1 runner runner  229 Sep  4 22:15 run-2026-09-03-16-58.md
+-rw-r--r--  1 runner runner  163 Sep  4 22:15 run-2026-09-03-19-43.md
+-rw-r--r--  1 runner runner  269 Sep  4 22:15 run-2026-09-03-22-24.md
+-rw-r--r--  1 runner runner  214 Sep  4 22:15 run-2026-09-04-00-23.md
+-rw-r--r--  1 runner runner  186 Sep  4 22:15 run-2026-09-04-05-05.md
+-rw-r--r--  1 runner runner  226 Sep  4 22:15 run-2026-09-04-09-45.md
+-rw-r--r--  1 runner runner  174 Sep  4 22:15 run-2026-09-04-14-05.md
+-rw-r--r--  1 runner runner  144 Sep  4 22:15 run-2026-09-04-17-42.md
+-rw-r--r--  1 runner runner  190 Sep  4 22:15 run-2026-09-04-19-53.md
+-rw-r--r--  1 runner runner  189 Sep  4 22:15 run-2026-09-04-22-13.md
+[0m
+[0m→ [0mRead recon-notes/DEDICATED-DEEP.md
+[0m→ [0mRead triage/run-2026-09-04-22-13.md
+Now I have a complete picture. Let me produce the 8-step analysis.
+
+---
+
+**STEP 1 — DELTA**
+- [NO_DELTA] No new hosts discovered since 2026-09-04 14:17 UTC; surface frozen at 4 live in-scope hosts (cbs-proxy.api.live-manager.de, www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de)
+- [NO_DELTA] auth.live-manager.de remains unconfirmed (0 live HTTP) — consistent with wildcard mirror assessment from DEDICATED-DEEP.md
+- [NO_DELTA] api.live-manager.de confirmed non-resolving (dropped from all models)
+- [NO_DELTA] Knowledge base unchanged: ACCEPTED IDOR @ cbs-proxy (cross-tenant BOLA), ACCEPTED MISCONFIG @ www.applicationdesigner.de (ExtJS help app), ACCEPTED IDOR chain @ auth.php + cbs-proxy (confidence 85 from bigpickle), REJECTED classes stable
+
+**STEP 2 — PRIORITIZE**
+[PRIO] cbs-proxy.api.live-manager.de,8.90,attack_surface=9,business_value=10,tech_exposure=9,gate_ease=10,cloud_surface=8,freshness=5
+[PRIO] www.live-manager.de,7.30,attack_surface=7,business_value=10,tech_exposure=7,gate_ease=6,cloud_surface=6,freshness=5
+[PRIO] www.applicationdesigner.de,6.85,attack_surface=8,business_value=7,tech_exposure=8,gate_ease=6,cloud_surface=5,freshness=5
+[PRIO] auth.live-manager.de,5.95,attack_surface=6,business_value=10,tech_exposure=6,gate_ease=5,cloud_surface=6,freshness=5
+[PRIO] dev.applicationdesigner.de,5.35,attack_surface=6,business_value=6,tech_exposure=6,gate_ease=4,cloud_surface=5,freshness=5
+
+**STEP 3 — HYPOTHESES**
+[HYP] Unauthenticated CBS WebSocket proxy allows arbitrary customer_id cross-tenant subscription
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={customer_id}&service={service_number}
+confidence: 72
+reasoning: help.js builds WS URL with client-supplied cid/service; anonymous WS upgrade (2026-09-04 live probe) returned HTTP/1.1 101 Switching Protocols with zero credentials, emitting CONNECT frames to CBS100/190/200 then READY; no token/Authorization observed in handshake; cid/service scoping enforcement unverified
+evidence_needed: proxy enforces authenticated session token tied to claimed cid and denies foreign cid; without it, cross-tenant live call/debug stream subscription possible
+verify_steps: WS upgrade to wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=1&service=100 with Upgrade: websocket, Connection: Upgrade, Sec-WebSocket-Version: 13, Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==; observe CONNECT/READY; repeat with foreign cid (e.g., 999999) and note if READY/data still returned; do NOT subscribe to live customer data
+impact: cross-tenant exposure of customer business-system call streams / live debugging (PII/voice data) — HIGH if unauthenticated actor can enumerate cid
+testability: PASSIVE (handshake reachable anonymously; auth-scoping confirmation requires valid session = AUTH_HELPED/HUMAN)
+
+[HYP] Cross-tenant live-debug stream subscription via public-credential auth.php mint + cbs-proxy WS
+class: IDOR
+asset: chain GET https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token={publicstatic}&customer_id={cid}&srn={service} -> wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={cid}&service={service}
+confidence: 85
+reasoning: help.js publicly ships static credential (sha256 8d2faac1...) that auth.php accepts in lieu of a session ("Not logged in" only when token omitted); auth.php returns success:true and a 64-hex auth+ttl for both owned demo cid 131727 and foreign cid 2 — no ownership/session binding observed. Prior accepted evidence: anonymous WS upgrade to cbs-proxy returns 101 and the LiveDebugger client then sends packet live_debug{customer_id,CLI,srn,token,ttl,hash} to attach to a tenant call-flow session. A real attacker needs only the public JS credential, then any cid.
+evidence_needed: confirm the cbs-proxy/live_debug backend binds minted token to a real operator session owner of the cid (a valid customer session denying a foreign cid that was nonetheless minted) — without a binding check, minting-is-authorization and cross-tenant call-flow/voice debug attach is possible
+verify_steps: (AUTH_HELPED/HUMAN, do not perform anonymously) with a valid operator session, mint token for OWN cid, then present it to cbs-proxy for a FOREIGN cid and confirm server denial; behavioral comparison only. No live debug data subscribed.
+impact: cross-tenant attach to customer business-system live call/debug streams (PII/voice) — HIGH/CRITICAL if no binding check
+testability: AUTH_HELPED (minting anonymous-PASSIVE confirmed; stream-attach confirmation needs session+human)
+
+[HYP] Post-login open redirect via rs parameter enables OAuth code theft
+class: AUTH
+asset: https://www.live-manager.de/Login.aspx (rs base64 return-url flow)
+confidence: 45
+reasoning: all unauth subpaths 302 to /?rs=<base64-of-requested-path>; decoded target carried to return-URL param; GET does not reflect value (anonymous open redirect rejected); post-login redirect target validation unverified — if decoded rs honored verbatim for external/schema-less URL, enables code/credential theft
+evidence_needed: after valid session, GET /?rs=<base64 of attacker-controlled external URL>, complete login, inspect resulting Location header or JS navigation for reflection
+verify_steps: (AUTH_HELPED) obtain valid customer session; GET https://www.live-manager.de/?rs=aHR0cHM6Ly9ldmlsLmNvbQ== (base64 of https://evil.com); follow login flow; capture final redirect Location/JS destination
+impact: open redirect enabling OAuth authorization code theft → ATO — CRITICAL if external redirect honored
+testability: AUTH_HELPED
+
+**STEP 4 — SELF-CRITIQUE**
+[PARKED] Post-login open redirect via rs parameter enables OAuth code theft: confidence 45 but AUTH_HELPED testability blocks passive verification; requires valid customer session which we cannot obtain — parked until auth-assisted context available
+[FINAL] 1. Cross-tenant live-debug stream subscription via public-credential auth.php mint + cbs-proxy WS (85)
+[FINAL] 2. Unauthenticated CBS WebSocket proxy allows arbitrary customer_id cross-tenant subscription (72)
+
+**STEP 5 — NEXT ACTION**
+[NEXT] PROBE: GET https://www.applicationdesigner.de/help.json — extract full endpoint/proxy model from ExtJS manifest to discover additional internal hosts behind cbs-proxy chain (read-only, passive, ~1 req). This feeds the cbs-proxy IDOR chain by enumerating what services/identifiers are available for cid/service parameters.
+
+**STEP 6 — LEARNING**
+[LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WebSocket upgrade reaches backend CBS servers with client-supplied cid/service and no observed token — candidates for cross-tenant BOLA
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de: ExtJS help app (help.js, help.json, resources.help/*) publicly exposes internal CBS proxy endpoints and backend hostnames
+[LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/livedebugger/auth.php: anonymous minting of per-tenant live-debug auth token for arbitrary customer_id using a static credential embedded in public help.js — observed success:true for foreign cid=2, "Not logged in" only when token omitted
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: public ExtJS bundle ships static backend credential + full LiveDebugger/CallBuilder/AIDesigner endpoint map including /api/callbuilder/ proxy prefix and AIDesigner backend router
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/common/getCustomers.php: token-scoped — returns only demo customer 131727; no global tenant directory
+[LEARN] REJECTED AUTH @ www.live-manager.de rs param: GET /?rs= not reflected/server-side redirected to external domain, so no anonymous open redirect
+[LEARN] REJECTED wildcard-subdomain-enum @ *.live-manager.de: DEDICATED-DEEP.md confirms 8632 resolving hostnames all share CDN/wildcard IPs — no dedicated subdomain surface exists; attack surface is path-based behind CDN
+[LEARN] REJECTED api.live-manager.de debug endpoints: host does not resolve; no surface to probe — removed from active hypotheses
+
+**STEP 7 — RISK**
+[RISK] questnet-gmbh: 68 — Full primitive chain now confirmed read-only: public static credential in help.js -> per-tenant debug auth token minted for ANY customer_id via auth.php -> anonymous 101 WS to in-scope cbs-proxy backend. Cross-tenant live call-flow/voice debug attach is plausible and only blocked by an unverified WS-side binding. Real program surface stays at 4 hosts; CDN-wildcard breadth 0 caps scope expansion. PoC required before valid bug gate; no live customer data touched.

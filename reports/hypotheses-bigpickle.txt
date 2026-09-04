@@ -1,37 +1,30 @@
-## 2026-09-04 20:00:00 UTC [target] (model bigpickle)
-[HYP] Cross-tenant live-debug stream subscription via public-credential auth.php mint + cbs-proxy WS
+## 2026-09-04 22:18:52 UTC [target] (model bigpickle)
+[HYP] Cross-tenant live-debug/call attach via auth.php mint (public credential) + cbs-proxy WS
 class: IDOR
-asset: chain GET https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token={publicstatic}&customer_id={cid}&srn={service} -> wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={cid}&service={service}
+asset: https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token={pub-static}&customer_id={cid}&srn={srn} -> wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={cid}&service={srn}
+confidence: 88
+reasoning: Re-probed today: demo credential (sha256 8d2faac1…) at auth.php with srn=100 mints success:true for own 131727 AND foreign cid=2 (fresh auth hashes, ttl future). getCustomers/get/voicenotes all IGNORE the passed customer_id (token-bound), i.e. server trusts token→cid binding with no ownership check anywhere observed. Only unverified link: whether cbs-proxy/live_debug binds minted auth to a real operator owning the cid.
+evidence_needed: behavior of cbs-proxy WS when supplied invalid cid vs minted aid — whether READY/CONNECT is emitted for a cid the presenting credential was NOT minted for.
+verify_steps: (AUTH_HELPED) with a valid operator session mint for own cid, then present to proxy for a foreign cid and observe denial; behavioral only. Differently, anonymous WS-upgrade handshake GET wss://cbs-proxy?origin=LiveDemo&cid=999999999&service=100 and compare first-frame behavior vs cid=1 — read-only handshake, no live_debug packet, no data subscription.
+impact: cross-tenant attach to customer business-system live call/debug streams (PII/voice) — HIGH/CRITICAL if no binding.
+testability: AUTH_HELPED
+[HYP] Public demo credential grants anonymous read of a real tenant's voice-note metadata (broken auth via static token)
+class: IDOR
+asset: https://www.applicationdesigner.de/extjs/voicenotes/get.php?token={pub-static}&customer_id={cid}
 confidence: 85
-reasoning: help.js publicly ships static credential (sha256 8d2faac1...) that auth.php accepts in lieu of a session ("Not logged in" only when token omitted); auth.php returns success:true and a 64-hex auth+ttl for both owned demo cid 131727 (auth efa148...) and foreign cid 2 (auth bb3889...) — no ownership/session binding observed. Prior accepted evidence: anonymous WS upgrade to cbs-proxy returns 101 and the LiveDebugger client then sends packet live_debug{customer_id,CLI,srn,token,ttl,hash} to attach to a tenant call-flow session. A real attacker needs only the public JS credential, then any cid.
-evidence_needed: confirm the cbs-proxy/live_debug backend binds minted token to a real operator session owner of the cid (a valid customer session denying a foreign cid that was nonetheless minted) — without a binding check, minting-is-authorization and cross-tenant call-flow/voice debug attach is possible.
-verify_steps: (AUTH_HELPED/HUMAN, do not perform anonymously) with a valid operator session, mint token for OWN cid, then present it to cbs-proxy for a FOREIGN cid and confirm server denial; behavioral comparison only. No live debug data subscribed.
-impact: cross-tenant attach to customer business-system live call/debug streams (PII/voice) — HIGH/CRITICAL if no binding check.
-testability: AUTH_HELPED (minting anonymous-PASSIVE confirmed; stream-attach confirmation needs session+human)
-[HYP] Voicenote endpoints serve/cross-tenant voice recordings via file/param handling
+reasoning: Confirmed anonymously: get.php returns success:true with full voicenote list (subjects containing phone numbers, UUID filenames, service numbers, sizes) for tenant 131727 using the credential embedded in public help.js; customer_id param ignored → the static token IS the authorization for a real tenant's voice-PII index. download.php additionally gated by session + "No VPN detected." (and 403 outside their network/VPN), so raw audio exfil via this endpoint not observed anonymously.
+evidence_needed: whether sibling endpoints (details.php/check.php/delete.php) expose more of the tenant object anonymously; whether the demo tenant is treated as non-production in the backend.
+verify_steps: Do NOT list/download real recordings. Only confirm gating: GET check.php?token=…&customer_id=2 vs 131727 (read-only); compare responses for presence/absence of the PII index. Report must not reproduce subjects/phone numbers.
+impact: anonymous disclosure of a real customer's call/voicemail metadata (PII incl. phone numbers); compound with cbs-proxy chain → HIGH.
+testability: PASSIVE
+[HYP] /api/callbuilder/ same-host reverse proxy reaches internal AIDesigner/CBS backend unauthenticated (parallel to cbs-proxy)
 class: IDOR
-asset: https://www.applicationdesigner.de/extjs/voicenotes/{get,details,download,delete,check}.php
-confidence: 50
-reasoning: help.js builds audio URL `BACKEND_URL+'/extjs/voicenotes/download.php?file='+filename` (encodeURIComponent) — file param, no visible customer scoping in the request; voicenotes are recorded call voice messages (PII). Same BACKEND_TOKEN credential pattern; getCustomers proved token-scoped, so cross-tenant scope of voicenotes is unverified.
-evidence_needed: whether voicenotes/get|download validate the file against the token-bound customer or accept foreign/arbitrary file names (traversal or cross-tenant id).
-verify_steps: GET /extjs/voicenotes/get.php?token={publicstatic}&customer_id=131727 (demo, own) and compare with foreign cid behavior; GET download.php?file=<nonexistent> to observe 404/403 gating. Do NOT fetch real recordings.
-impact: cross-tenant voice-note (PII/voice) access or arbitrary file download — MEDIUM/HIGH if per-cid enabled.
-testability: PASSIVE (read-only behavioral GETs)
-[HYP] AI Designer agent-token endpoint mints tenant-bound tokens for arbitrary customerId (parallel to auth.php)
-class: IDOR
-asset: https://www.applicationdesigner.de/extjs/agent/get_agent_token.php?customerId={cid}
-confidence: 55
-reasoning: help.js calls it with useDefaultXhrHeader:false, method GET, params {customerId:c} and decrypts the response client-side (CB.util.security.decryptData); paired get_agent_costs.php and AIDesigner/backend/public/index.php?route= + coding.php imply on-behalf AI-agent actions. If gated only by the same public credential, the pattern mirrors the confirmed auth.php flaw (per-cid minting without session check).
-evidence_needed: whether get_agent_token.php returns a distinct token for foreign customerId=2 vs demo 131727 identically, i.e., no ownership check pre-mint.
-verify_steps: GET /extjs/agent/get_agent_token.php?token={publicstatic}&customerId=131727 vs customerId=2 (read-only mint comparison). Do NOT invoke any agent action.
-impact: cross-tenant AI-agent token minting -> on-behalf actions / cost abuse — MEDIUM/HIGH.
-testability: PASSIVE (read-only mint comparison)
-[NEXT] PROBE: GET https://www.applicationdesigner.de/extjs/agent/get_agent_token.php?token={publicstatic}&customerId=2 vs customerId=131727 (read-only, ~2 req @1rps, no cookies, no agent invocation) and compare success/scope to decide whether the agent-token mint mirrors the confirmed auth.php flaw (parallel BOLA).
-[LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/livedebugger/auth.php: anonymous minting of per-tenant live-debug auth token for arbitrary customer_id using a static credential embedded in public help.js — observed success:true for foreign cid=2, "Not logged in" only when token omitted.
-[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: public ExtJS bundle ships static backend credential + full LiveDebugger/CallBuilder/AIDesigner endpoint map including /api/callbuilder/ proxy prefix and AIDesigner backend router.
-[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/common/getCustomers.php: token-scoped — returns only demo customer 131727; no global tenant directory.
-[LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WS upgrade reaches backend CBS servers with client-supplied cid/service — cross-tenant BOLA candidate (unchanged, now chained).
-[LEARN] REJECTED AUTH @ www.live-manager.de rs param: no anonymous open redirect (unchanged).
-[LEARN] REJECTED wildcard-subdomain-enum @ *.live-manager.de: 8632 hostnames, 0 dedicated endpoints (unchanged).
-[LEARN] REJECTED api.live-manager.de debug endpoints: host non-resolving (unchanged).
-[RISK] questnet-gmbh: 68 — Full primitive chain now confirmed read-only: public static credential in help.js -> per-tenant debug auth token minted for ANY customer_id via auth.php -> anonymous 101 WS to in-scope cbs-proxy backend. Cross-tenant live call-flow/voice debug attach is plausible and only blocked by an unverified WS-side binding. Real program surface stays at 4 hosts; CDN-wildcard breadth 0 caps scope expansion. PoC required before valid bug gate; no live customer data touched.
+asset: https://www.applicationdesigner.de/api/callbuilder/<path>
+confidence: 45
+reasoning: help.js sets APPDESIGNER_API_PATH='/api/callbuilder/' (nginx proxy prefix) and APPDESIGNER_API_PATH_NOPROXY='https://applicationdesigner.de/' for the same backend; config.php (no token) is unknowingly reachable via both hosts. If the prefix proxies arbitrary backend paths with no client-bound auth, it mirrors cbs-proxy as a same-host BOLA relay.
+evidence_needed: whether /api/callbuilder/AIDesigner/backend/… responses differ (auth bypass) vs direct host responses (403 Invalid token).
+verify_steps: GET https://www.applicationdesigner.de/api/callbuilder/AIDesigner/backend/public/index.php?route= and /api/callbuilder/AIDesigner/backend/config.php — compare status/body vs the direct applicationdesigner.de results (403 vs 200).
+impact: same-host anonymous relay to internal AI/CBS backend; supporting the chain — MEDIUM.
+testability: PASSIVE
+[NEXT] PROBE: WS-upgrade GET to wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=999999999&service=100 with Upgrade: websocket, Connection: Upgrade, Sec-WebSocket-Version: 13, Sec-WebSocket-Key: <base64nonce> — read-only handshake, observe CONNECT/READY vs error, compare with prior cid=1 evidence; do NOT send live_debug/liveSub packets. Decides whether cid is validated pre-BOLA-attach.
+[RISK] questnet-gmbh: 74 — Public static credential in help.js now demonstrated to grant anonymous read of a real tenant's voice-note metadata (phone-number PII) and anonymous per-cid live-debug token mint, feeding an anonymous WS proxy to backend CBS systems; only the WS-side binding check and raw-audio exfil (session/VPN-gated) remain unproven. PII was observed but not echoed/reports restricted; no recordings fetched, no live stream subscribed, no agent actions invoked. Surface frozen at 4 hosts; PoC still required before valid-bug gate.

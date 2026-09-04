@@ -28,7 +28,7 @@ verify_steps: Confirm `account.blob.core.windows.net` is not a live questnet sto
 class: SECRET
 asset: freeswitch/src/mod/applications/mod_http_cache/conf/autoload_configs/http_cache.conf.xml:22
 confidence: 5
-reasoning: `AKIAIOSFODNN7EXAMPLE` and `wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY` are the well-known AWS documentation example keys. These are NOT real credentials - they are the canonical example from AWS docs.
+reasoning: `AKIAIOSFOD_REDACTED` and `wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY` are the well-known AWS documentation example keys. These are NOT real credentials - they are the canonical example from AWS docs.
 impact: None (example/test credentials)
 verify_steps: N/A - known false positive.
 [HYP] Hardcoded FreeSWITCH ESL default password "ClueCon"
