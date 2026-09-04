@@ -73,3 +73,5 @@ www.live-manager.de
 - CHANGED www.live-manager.de confirmed live (IIS 8.5 / ASP.NET 4.0, Login.aspx customer portal + base64 rs return-url).
 - CHANGED dev.applicationdesigner.de live but 403 internal-only page; dev.live-manager.de / staging.live-manager.de / test.live-manager.de / portal.live-manager.de / account.live-manager.de do not serve HTTP.
 - NEW auth.live-manager.de: inventory host with 0 live HTTP — likely wildcard mirror; needs live confirmation.
+
+## 2026-09-04 09:50:34 UTC
