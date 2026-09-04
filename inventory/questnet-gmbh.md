@@ -77,3 +77,9 @@ www.live-manager.de
 ## 2026-09-04 09:50:34 UTC
 
 ## 2026-09-04 14:17:33 UTC
+
+## 2026-09-04 17:50:53 UTC
+- NEW No new hosts discovered since 2026-09-04 14:17 UTC; surface frozen at 4 live in-scope hosts (cbs-proxy.api.live-manager.de, www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de)
+- CHANGED auth.live-manager.de remains unconfirmed (0 live HTTP) — consistent with wildcard mirror assessment from DEDICATED-DEEP.md.
+- CHANGED api.live-manager.de confirmed non-resolving (dropped from all models).
+- CHANGED Probe results remain empty — no new passive/active data since last[0m

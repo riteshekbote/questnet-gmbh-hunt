@@ -1,7 +1,8 @@
-## 2026-09-04 14:17:23 UTC [target] (model nemotron3)
-[PRIO] cbs-proxy.api.live-manager.de,8.40,attack_surface=9,business_value=10,tech_exposure=9,gate_ease=10,cloud_surface=8,freshness=5
-[PRIO] www.live-manager.de,7.10,attack_surface=7,business_value=10,tech_exposure=7,gate_ease=6,cloud_surface=6,freshness=5
-[PRIO] www.applicationdesigner.de,6.55,attack_surface=8,business_value=7,tech_exposure=8,gate_ease=6,cloud_surface=5,freshness=5
+## 2026-09-04 17:50:41 UTC [target] (model nemotron3)
+[NEW] No new hosts discovered since 2026-09-04 14:17 UTC; surface frozen at 4 live in-scope hosts (cbs-proxy.api.live-manager.de, www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de).
+[CHANGED] auth.live-manager.de remains unconfirmed (0 live HTTP) — consistent with wildcard mirror assessment from DEDICATED-DEEP.md.
+[CHANGED] api.live-manager.de confirmed non-resolving (dropped from all models).
+[CHANGED] Probe results remain empty — no new passive/active data since last[0m
 [PRIO] auth.live-manager.de,5.95,attack_surface=6,business_value=10,tech_exposure=6,gate_ease=5,cloud_surface=6,freshness=5
 [PRIO] dev.applicationdesigner.de,5.35,attack_surface=6,business_value=6,tech_exposure=6,gate_ease=4,cloud_surface=5,freshness=5
 [HYP] Unauthenticated CBS WebSocket proxy allows arbitrary customer_id cross-tenant subscription
@@ -12,7 +13,7 @@ reasoning: help.js builds WS URL with client-supplied cid/service; anonymous WS 
 evidence_needed: proxy enforces authenticated session token tied to claimed cid and denies foreign cid; without it, cross-tenant live call/debug stream subscription possible
 verify_steps: WS upgrade to wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=1&service=100 with Upgrade: websocket, Connection: Upgrade, Sec-WebSocket-Version: 13, Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==; observe CONNECT/READY; repeat with foreign cid (e.g., 999999) and note if READY/data still returned; do NOT subscribe to live customer data
 impact: cross-tenant exposure of customer business-system call streams / live debugging (PII/voice data) — HIGH if unauthenticated actor can enumerate cid
-testability: PASSIVE
+testability: PASSIVE (handshake reachable anonymously; auth-scoping confirmation requires valid session = AUTH_HELPED/HUMAN)
 [HYP] ExtJS help app on www.applicationdesigner.de enumerates internal CBS endpoints/hosts
 class: MISCONFIG
 asset: https://www.applicationdesigner.de/docs.php (help.js, help.json, resources.help/*)
@@ -21,7 +22,7 @@ reasoning: ExtJS help app (Sencha Cmd, app uuid 3342eca3-...) ships help.js cont
 evidence_needed: additional unauth endpoints/hosts listed in served ExtJS app; whether any expose data or allow on-behalf-of calls
 verify_steps: GET https://www.applicationdesigner.de/help.json; GET https://www.applicationdesigner.de/resources.help/*; GET app JS bundles; extract proxy/endpoint URLs (read-only); cross-reference found hostnames against scope
 impact: surface/asset discovery and potential unauthorized internal call relay — MEDIUM
-testability: PASSIVE
+testability: PASSIVE (read-only asset enumeration)
 [HYP] Post-login open redirect via rs parameter enables OAuth code theft
 class: AUTH
 asset: https://www.live-manager.de/Login.aspx (rs base64 return-url flow)
@@ -39,4 +40,5 @@ testability: AUTH_HELPED
 [LEARN] REJECTED AUTH @ www.live-manager.de rs param: GET /?rs= not reflected/server-side redirected to external domain, so no anonymous open redirect.
 [LEARN] REJECTED wildcard-subdomain-enum @ *.live-manager.de: DEDICATED-DEEP.md confirms 8632 resolving hostnames all share CDN/wildcard IPs — no dedicated subdomain surface exists. Attack surface is path-based behind CDN.
 [LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de: ExtJS help app (help.js, help.json, resources.help/*) publicly exposes internal CBS proxy endpoints and backend hostnames.
+[LEARN] REJECTED api.live-manager.de debug endpoints: host does not resolve; no surface to probe → removed from active hypotheses.
 [RISK] questnet-gmbh: 55 — One confirmed in-scope live WebSocket proxy (cbs-proxy.api.live-manager.de) with anonymous handshake reaching customer business systems (high-value BOLA candidate); second confirmed finding (ExtJS help app on www.applicationdesigner.de) enumerates internal endpoints. Confirmed live surface far smaller than 22-host inventory suggested (only www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de, cbs-proxy.api.live-manager.de responding), limiting breadth but concentrating value on CBS proxy and customer portal auth flows. auth.live-manager.de remains unconfirmed (likely wildcard mirror).

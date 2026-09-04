@@ -201,3 +201,35 @@ testability: PASSIVE (read-only asset enumeration)
 [LEARN] REJECTED wildcard-subdomain-enum @ *.live-manager.de: DEDICATED-DEEP.md confirms 8632 resolving hostnames all share CDN/wildcard IPs — no dedicated subdomain surface exists. Attack surface is path-based behind CDN.
 [LEARN] REJECTED api.live-manager.de debug endpoints: host does not resolve; no surface to probe → removed from active hypotheses.
 [RISK] questnet-gmbh: 55 — One confirmed in-scope live WebSocket proxy with anonymous handshake to customer business systems (high-value BOLA candidate); secondary finding confirms internal surface enumeration via public ExtJS app. Breadth limited by CDN wildcard surface (8632 hostnames → 0 dedicated subdomain). Two confirmed in-scope live hosts total. api.live-manager.de non-resolving reduces API-surface scope to cbs-proxy alone.
+## 2026-09-04 17:41:10 UTC [target] (model bigpickle)
+[PRIO] cbs-proxy.api.live-manager.de,7.40,a=7,b=8,t=5,g=9,c=8,f=8
+[PRIO] www.applicationdesigner.de,6.10,a=5,b=6,t=6,g=8,c=5,f=3
+[PRIO] www.live-manager.de,4.70,a=4,b=6,t=3,g=3,c=6,f=3
+[HYP] Unauthenticated CBS WebSocket proxy allows arbitrary customer_id cross-tenant subscription
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de?origin=LiveDemo&cid={customer_id}&service={service_number}
+confidence: 72
+reasoning: Live probe 2026-09-04 returned HTTP/1.1 101 Switching Protocols for anonymous WS-upgrade carrying cid=1&service=100 with no Authentication/token header; TLS valid; Ratchet/0.4.4 backend. No proxy-level auth observed pre-upgrade. Whether the proxy binds the claimed cid to a server-side session is unverified.
+evidence_needed: confirm the proxy enforces an authenticated session token bound to the claimed cid and denies foreign/unowned cid; without that, cross-tenant live call/debug stream subscription is possible.
+verify_steps: WS upgrade GET to wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=1&service=100 with Upgrade: websocket, Connection: Upgrade, Sec-WebSocket-Version: 13, Sec-WebSocket-Key. Observe server response frames (CONNECT/READY or error). Compare with a clearly invalid cid to note whether READY is still returned. Do NOT subscribe to live customer call data.
+impact: cross-tenant exposure of customer business-system call streams / live debug (PII/voice) — HIGH if cid enumerable unauthenticated.
+testability: AUTH_HELPED (handshake is anonymously reachable; cross-tenant scoping confirmation requires valid customer session + human)
+[HYP] ExtJS help app exposes full internal proxy/endpoint model
+class: MISCONFIG
+asset: https://www.applicationdesigner.de/docs.php (help.js, help.json, resources.help/*)
+confidence: 50
+reasoning: ExtJS help app (uuid 3342eca3-...) ships a Proxy/Endpoint model that disclosed wss://cbs-proxy.api.live-manager.de; the served manifest/resources may list additional internal proxy/endpoint hostnames.
+evidence_needed: whether help.json / resources.help / app JS list further anonymous endpoints/hosts and whether any allow on-behalf-of calls.
+verify_steps: GET /help.json, /help.js, and /resources.help/* bundles; extract proxy/endpoint URLs (read-only); cross-reference every found host against scope before further probing.
+impact: internal surface discovery and potential onward internal-call relay — MEDIUM, supporting role to the confirmed cbs-proxy.
+testability: PASSIVE (read-only asset enumeration)
+[PARKED] ExtJS endpoint enumeration (50): valid but lower impact; kept as supporting for cbs-proxy chain.
+[FINAL] cbs-proxy IDOR (72) — strongest: confirmed anonymous WS handshake to in-scope host reaching backend CBS servers; highest value class.
+[NEXT] PROBE: GET https://www.applicationdesigner.de/help.json — extract full endpoint/proxy model from ExtJS manifest to discover additional internal hosts behind cbs-proxy chain (read-only, passive). This feeds the cbs-proxy IDOR chain by enumerating what services/identifiers are available.
+[NEXT] PROBE: WS-upgrade GET to wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=1&service=test with Upgrade: websocket, Connection: Upgrade, Sec-WebSocket-Version: 13, Sec-WebSocket-Key (base64 nonce) headers — no auth, no token — to confirm READY frame set and whether cid/service are validated pre-connect. ~1 req, read-only handshake, no data subscription. Compare response with a clearly invalid cid (e.g., cid=999999999) to note behavioral difference.
+[LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WebSocket upgrade reaches backend CBS servers with client-supplied cid/service and no observed token — candidates for cross-tenant BOLA.
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de: ExtJS help app (help.js, help.json, resources.help/*) publicly exposes internal CBS proxy endpoints and backend hostnames.
+[LEARN] REJECTED AUTH @ www.live-manager.de rs param: GET /?rs= not reflected/server-side redirected to external domain, so no anonymous open redirect.
+[LEARN] REJECTED wildcard-subdomain-enum @ *.live-manager.de: DEDICATED-DEEP.md confirms 8632 resolving hostnames all share CDN/wildcard IPs — no dedicated subdomain surface exists. Attack surface is path-based behind CDN.
+[LEARN] REJECTED api.live-manager.de debug endpoints: host does not resolve; no surface to probe → removed from active hypotheses.
+[RISK] questnet-gmbh: 55 — One confirmed in-scope live WebSocket proxy with anonymous handshake to customer business systems (high-value BOLA candidate); secondary finding confirms internal surface enumeration via public ExtJS app. Breadth limited by CDN wildcard surface (8632 hostnames → 0 dedicated subdomain). Two confirmed in-scope live hosts total. api.live-manager.de non-resolving reduces API-surface scope to cbs-proxy alone.
