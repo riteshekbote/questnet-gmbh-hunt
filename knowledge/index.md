@@ -12,3 +12,4 @@
 - 2026-09-04 ACCEPTED MISCONFIG @ www.applicationdesigner.de: ExtJS help app (help.js, help.json, resources.help/*) publicly exposes internal CBS proxy endpoints and backend hostnames.
 - 2026-09-04 REJECTED wildcard-subdomain-enum @ *.live-manager.de: DEDICATED-DEEP.md confirms 8632 resolving hostnames all share CDN/wildcard IPs — no dedicated subdomain surface exists. Attack surface is path-based behind CDN.
 - 2026-09-04 ACCEPTED MISCONFIG @ www.applicationdesigner.de: ExtJS help app (help.js, help.json, resources.help/*) publicly exposes internal CBS proxy endpoints and backend hostnames.
+- 2026-09-04 REJECTED api.live-manager.de debug endpoints: host does not resolve; no surface to probe → removed from active hypotheses.
