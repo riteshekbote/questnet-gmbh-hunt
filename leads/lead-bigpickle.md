@@ -120,3 +120,23 @@ testability: PASSIVE (read-only asset enumeration)
 [LEARN] REJECTED AUTH @ www.live-manager.de rs param: GET /?rs= not reflected/server-side redirected to external domain, so no anonymous open redirect.
 [LEARN] REJECTED wildcard-subdomain-enum @ *.live-manager.de: DEDICATED-DEEP.md confirms 8632 resolving hostnames all share CDN/wildcard IPs — no dedicated subdomain surface exists.
 [RISK] questnet-gmbh: 55 — One confirmed in-scope live WebSocket proxy with anonymous handshake to customer business systems (high-value BOLA candidate); 6 confirms the surface is far smaller than the 22-host inventory suggested, limiting breadth.
+## 2026-09-04 05:08:59 UTC [target] (model bigpickle)
+[HYP] Unauthenticated CBS WebSocket proxy allows arbitrary customer_id cross-tenant subscription
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de?origin=LiveDemo&cid={customer_id}&service={service_number}
+confidence: 72
+reasoning: Live probe 2026-09-04 returned HTTP/1.1 101 Switching Protocols for an anonymous WS-upgrade carrying client-supplied cid=1&service=100 with no Authentication/token header; TLS valid. No proxy-level auth observed pre-upgrade. Whether the proxy binds the claimed cid to a server-side session is unverified.
+evidence_needed: confirm the proxy enforces an authenticated session token bound to the claimed cid and denies foreign/unowned cid; without that, cross-tenant live call/debug stream subscription is possible.
+verify_steps: Interactively complete a WS handshake with a cid the actor owns (valid session, AUTH_HELPED/HUMAN) and confirm READY only for that cid; a foreign cid should be denied. Do NOT subscribe to other customers' live call/data (out of program scope).
+impact: cross-tenant exposure of customer business-system call streams / live debug (PII/voice) — HIGH if cid enumerable unauthenticated.
+testability: AUTH_HELPED (handshake is anonymously reachable; cross-tenant scoping confirmation requires valid customer session + human)
+[HYP] AppDesigner ExtJS help app exposes full internal proxy/endpoint model (supporting cbs-proxy chain)
+class: MISCONFIG
+asset: https://www.applicationdesigner.de/docs.php (help.js, help.json, resources.help/*)
+confidence: 50
+reasoning: ExtJS help app (uuid 3342eca3-...) ships a Proxy/Endpoint model that disclosed wss://cbs-proxy.api.live-manager.de; the served manifest/resources may list additional internal proxy/endpoint hostnames behind CDN that resolve to in-scope /22 — pure passive asset enumeration that feeds the cbs-proxy chain.
+evidence_needed: whether help.json / resources.help / app JS list further anonymous endpoints/hosts and whether any allow on-behalf-of calls.
+verify_steps: GET /help.json, /help.js, and /resources.help/* bundles; extract proxy/endpoint URLs (read-only); cross-reference every found host against scope before further probing.
+impact: internal surface discovery and potential onward internal-call relay — MEDIUM, supporting role to the confirmed cbs-proxy.
+testability: PASSIVE (read-only asset enumeration)
+[HYP] (dropped) api.live-manager.de debug endpoints — host does not resolve; no surface to probe → removed.

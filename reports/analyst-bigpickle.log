@@ -5570,3 +5570,162 @@ testability: PASSIVE (read-only asset enumeration)
 ## STEP 7 — RISK
 
 [RISK] questnet-gmbh: 55 — One confirmed in-scope live WebSocket proxy with anonymous handshake to customer business systems (high-value BOLA candidate); 6 confirms the surface is far smaller than the 22-host inventory suggested, limiting breadth.
+===== ANALYST bigpickle 2026-09-04 05:17:20 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m• [0mCheck current workspace state[90m Explore Agent[0m
+[0m✓ [0mCheck current workspace state[90m Explore Agent[0m
+[0m→ [0mRead scope.yml
+[0m→ [0mRead reports/hypotheses.md
+[0m→ [0mRead leads/lead-bigpickle.md
+[0m→ [0mRead reports/valid-bugs.md
+[0m→ [0mRead probe-results.md
+[0m→ [0mRead knowledge/index.md
+[0m→ [0mRead recon-notes/DEDICATED-DEEP.md
+[0m→ [0mRead leads/lead-nemotron3.md
+[0m→ [0mRead leads/lead-longcat.md
+I have the full context now. Let me review the other agent leads to look for any new/different observations, then run my analysis cycle. Let me check leads from other models for delta.
+[0m→ [0mRead leads/lead-laguna.md
+[0m→ [0mRead leads/lead-ling3.md
+[0m→ [0mRead leads/reposcan-questnet-gmbh.md
+Let me check the remaining leads and triage files for any new deltas from other models.
+I have complete context. The other models (bigpickle's previous runs, nemotron3) converge on the same top hypotheses. Let me now check the most recent triage run and my last state to identify the delta going forward. My last run was 2026-09-04 00:32:59. The knowledge base shows the newest iteration at 00:40:48. This is a repeated/continuous loop.
+
+Since I'm in POC phase targeting "api", and my top PRIO asset is cbs-proxy which is the WS proxy, but the previous runs have tried the WS-upgrade probe repeatedly without adding new evidence. Let me think about what genuinely NEW progress I can make.
+
+The knowledge base is now stable/loop. My role as bigpickle analyst: the cbs-proxy IDOR (70) is the leading hypothesis but the [NEXT] PROBE of a WS-upgrade handshake has been repeated across many runs without new evidence landing. This suggests the probe either isn't being executed or isn't yielding new discriminative data. Since I can't subscribe to live customer data (out of scope), the cross-tenant confirmation requires a valid session (AUTH_HELPED/HUMAN).
+
+Let me consider what I can actually do that's NEW and passive. The AppDesigner ExtJS help app endpoint enumeration (help.json, resources.help) was parked at 42 but never actually probed. That's a genuine passive (GET) verification gap I can close. Also api.live-manager.de debug endpoint probing is passive GET and proposed but let me check if it's in the target "api" phase.
+
+STATE says phase: POC, target: api. So the focus target is api. The api.live-manager.de debug endpoint hypothesis (MISCONFIG, 50) is the natural fit for target=api. Let me run those read-only GET probes. Since passive_first is false but rules say max 1 rps and read-only GET/HEAD/OPTIONS, I can do a small handful of probes.
+
+Let me probe api.live-manager.de debug/versioned endpoints passively. But wait — DEDICATED-DEEP.md confirmed the api host may be CDN/wildcard dominated. Let me do a low-rate read-only probe.
+
+Let me run a few HEAD/GET probes on api.live-manager.de — read-only, <=1 rps.
+[0m
+[0m$ [0mfor p in / /debug /api/v1 /api/v2 /api/internal /swagger.json /openapi.json /health /actuator/health /metrics; do code=$(curl -sk -o /dev/null -w "%{http_code}" --max-time 10 -A "Mozilla/5.0" "https://api.live-manager.de$p"); echo "$code  $p"; sleep 1; done
+000  /
+000  /debug
+000  /api/v1
+000  /api/v2
+000  /api/internal
+000  /swagger.json
+000  /openapi.json
+000  /health
+000  /actuator/health
+000  /metrics
+[0m
+All 000 (no connection/TLS failure). Let me check what api.live-manager.de resolves to and whether it's reachable at all.
+[0m$ [0mgetent hosts api.live-manager.de; echo "---"; getent hosts cbs-proxy.api.live-manager.de; echo "---"; curl -sv --max-time 10 "https://api.live-manager.de/" -o /dev/null 2>&1 | grep -E "Connected|SSL|HTTP|error|refused|timed|Could not|TLS|certificate" | head -20
+---
+185.158.98.53   cbs-proxy.api.live-manager.de
+---
+* Could not resolve host: api.live-manager.de
+[0m
+Important finding: `api.live-manager.de` does NOT resolve at all (DNS NXDOMAIN/no such host). The `cbs-proxy.api.live-manager.de` host resolves to 185.158.98.53 (in-scope /22). This is a significant delta — the "api debug endpoints" hypothesis and nemotron's "api.live-manager.de" PRIO target are based on a host that does not actually resolve/exist as a separate subdomain. This matches the DEDICATED-DEEP wildcard finding.
+
+So the api target effectively refers to the cbs-proxy.api host. Let me verify the cbs-proxy host behavior passively — this is the real api surface. Let me do a cautious read-only WS-upgrade handshake probe to confirm cid/service validation (the [NEXT] action), which is passive handshake-only (no data subscription).
+
+Actually, the previous runs already established the anonymous WS handshake reaches backend CBS servers. The remaining unknown is whether cid is scoped. To test cross-tenant would require probing with a foreign cid which borders on enumerating/accessing other customers' data (out of scope per "Exposure of customer...data during testing"). Per rules, I should NOT subscribe to live customer call data. A handshake comparing cid=1 vs cid=999999 just to see if READY is returned could be considered testing scoping, but could also imply attempting to access another tenant's stream. Given the program's explicit "no exposure of customer data during testing" note, I should not proceed with cross-tenant cid probing.
+
+Let me at least confirm the ip and that the WS host is reachable (read-only, handshake only, no data). Let me do a single WS upgrade handshake to cbs-proxy and just observe the HTTP 101/upgrade status without sending live-data frames.
+[0m$ [0mcurl -sv --max-time 12 -A "Mozilla/5.0" \
+ -H "Upgrade: websocket" -H "Connection: Upgrade" \
+ -H "Sec-WebSocket-Version: 13" -H "Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==" \
+ "https://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=1&service=100" -o /dev/null 2>&1 | grep -E "Connected|SSL|HTTP/|Upgrade|websocket|error|refused|timed|Could not|verify|certificate|Subject:|issuer" | head -25
+* Connected to cbs-proxy.api.live-manager.de (185.158.98.53) port 443
+*  CAfile: /etc/ssl/certs/ca-certificates.crt
+* TLSv1.3 (IN), TLS handshake, CERT verify (15):
+* SSL connection using TLSv1.3 / TLS_AES_256_GCM_SHA384 / X25519 / id-ecPublicKey
+* Server certificate:
+*  issuer: C=US; O=Let's Encrypt; CN=YE1
+*  SSL certificate verify ok.
+* using HTTP/1.x
+> GET /?origin=LiveDemo&cid=1&service=100 HTTP/1.1
+> Upgrade: websocket
+> Connection: Upgrade
+* old SSL session ID is stale, removing
+< HTTP/1.1 101 Switching Protocols
+< Upgrade: websocket
+* Operation timed out after 12000 milliseconds with 404 bytes received
+[0m
+Confirmed: `cbs-proxy.api.live-manager.de` responds with **HTTP/1.1 101 Switching Protocols** (WebSocket upgrade accepted) with `Upgrade: websocket`, using client-supplied `cid=1&service=100` and **no auth token**. This is a real, in-scope (185.158.98.53 / /22) anonymous WebSocket-upgrading service. TLS valid via Let's Encrypt.
+
+This confirms the leading IDOR hypothesis's reachability once more (already ACCEPTED in knowledge base). The `api.live-manager.de` host itself does NOT resolve — so the "api debug endpoints" hypothesis is based on a non-existent host, effectively downgraded; the real api surface is cbs-proxy.
+
+I now have enough to run my analysis cycle with genuine new delta. Let me write the structured output.
+
+Let me also quickly check whether the AppDesigner help endpoint enumeration (still unparked, passive GET) adds value — it's low impact, supporting only. I'll keep it parked. I have my deltas.
+
+Now produce the structured analyst output blocks.
+
+STEP 1 — DELTA:
+- [NEW] `api.live-manager.de` does NOT resolve (NXDOMAIN) — the prioritized "api debug endpoints" / nemotron's API surface is based on a non-existent host; the real api surface is the cbs-proxy.api.live-manager.de host.
+- [CHANGED] Confirmed cbs-proxy.api.live-manager.de (185.158.98.53, in-scope /22) accepts anonymous WebSocket upgrade → 101 Switching Protocols with client-supplied cid=1&service=100 and no auth token.
+
+STEP 2 — PRIORITIZE: cbs-proxy remains highest. api.live-manager.de drops since non-resolving.
+
+STEP 3 — HYPOTHESES: top 3.
+
+STEP 4 — SELF-CRITIQUE: drop api.live-manager.de debug (host nonexistent). Keep cbs-proxy IDOR.
+
+STEP 5 — NEXT: The WS-upgrade probe is already confirmed (101). Cross-tenant cid confirmation requires valid session / risks touching other customers' data (out of scope). Next action: I'll emit a HUMAN/AUTH action, or further passive enumeration of the AppDesigner ExtJS help app to map the full internal proxy/endpoint model (supporting the cbs-proxy chain). Given target=api and the strongest confirmed surface is cbs-proxy, the discriminating unknown is scoping which needs a valid session → [NEXT] AUTH_HELPED/HUMAN. But I should pick one. The most useful passive next step is to enumerate the ExtJS help app's full proxy/endpoint model to discover whether there are additional anonymous endpoints (supporting chain), and document that cross-tenant confirmation needs credentials.
+
+STEP 6/7 standard.
+
+Let me finalize.
+[0m$ [0mgetent hosts api.live-manager.de; echo "rc=$?"
+rc=2
+[0m
+Confirmed: `api.live-manager.de` returns DNS lookup failure (rc=2, no resolution). Final analysis:
+
+STEP 1 — DELTA
+- [NEW] `api.live-manager.de` does NOT resolve (DNS NXDOMAIN, getent rc=2). The "api debug endpoints" hypothesis and nemotron PRIO target were based on a non-existent host; the real `api` surface is the cbs-proxy host.
+- [CHANGED] Re-probed cbs-proxy.api.live-manager.de (185.158.98.53, in-scope /22): anonymous WebSocket-upgrade GET with `cid=1&service=100` and no token returns **HTTP/1.1 101 Switching Protocols / Upgrade: websocket** — live, valid TLS (Let's Encrypt). Re-confirms leading IDOR reachability.
+
+STEP 2 — PRIORITIZE
+- [PRIO] cbs-proxy.api.live-manager.de,7.90,a=8,b=9,t=6,g=10,c=4,f=8
+- [PRIO] www.live-manager.de,6.10,a=6,b=9,t=5,g=6,c=5,f=6
+- [PRIO] www.applicationdesigner.de,6.00,a=7,b=6,t=8,g=6,c=5,f=5
+- (api.live-manager.de dropped: non-resolving)
+
+STEP 3 — HYPOTHESES
+[HYP] Unauthenticated CBS WebSocket proxy allows arbitrary customer_id cross-tenant subscription
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de?origin=LiveDemo&cid={customer_id}&service={service_number}
+confidence: 72
+reasoning: Live probe 2026-09-04 returned HTTP/1.1 101 Switching Protocols for an anonymous WS-upgrade carrying client-supplied cid=1&service=100 with no Authentication/token header; TLS valid. No proxy-level auth observed pre-upgrade. Whether the proxy binds the claimed cid to a server-side session is unverified.
+evidence_needed: confirm the proxy enforces an authenticated session token bound to the claimed cid and denies foreign/unowned cid; without that, cross-tenant live call/debug stream subscription is possible.
+verify_steps: Interactively complete a WS handshake with a cid the actor owns (valid session, AUTH_HELPED/HUMAN) and confirm READY only for that cid; a foreign cid should be denied. Do NOT subscribe to other customers' live call/data (out of program scope).
+impact: cross-tenant exposure of customer business-system call streams / live debug (PII/voice) — HIGH if cid enumerable unauthenticated.
+testability: AUTH_HELPED (handshake is anonymously reachable; cross-tenant scoping confirmation requires valid customer session + human)
+
+[HYP] AppDesigner ExtJS help app exposes full internal proxy/endpoint model (supporting cbs-proxy chain)
+class: MISCONFIG
+asset: https://www.applicationdesigner.de/docs.php (help.js, help.json, resources.help/*)
+confidence: 50
+reasoning: ExtJS help app (uuid 3342eca3-...) ships a Proxy/Endpoint model that disclosed wss://cbs-proxy.api.live-manager.de; the served manifest/resources may list additional internal proxy/endpoint hostnames behind CDN that resolve to in-scope /22 — pure passive asset enumeration that feeds the cbs-proxy chain.
+evidence_needed: whether help.json / resources.help / app JS list further anonymous endpoints/hosts and whether any allow on-behalf-of calls.
+verify_steps: GET /help.json, /help.js, and /resources.help/* bundles; extract proxy/endpoint URLs (read-only); cross-reference every found host against scope before further probing.
+impact: internal surface discovery and potential onward internal-call relay — MEDIUM, supporting role to the confirmed cbs-proxy.
+testability: PASSIVE (read-only asset enumeration)
+
+[HYP] (dropped) api.live-manager.de debug endpoints — host does not resolve; no surface to probe → removed.
+
+STEP 4 — SELF-CRITIQUE
+- [PARKED] api.live-manager.de debug endpoints: host does not resolve (DNS NXDOMAIN); previously-prioritized hypothesis has no reachable surface — parked/invalidated by delta.
+- [FINAL] cbs-proxy IDOR (72): re-confirmed anonymous 101 WS-upgrade to in-scope host, client-supplied cid, no token; highest-value class, only unknown is session-to-cid binding.
+- [FINAL] AppDesigner ExtJS endpoint enumeration (50): passive, supporting the cbs-proxy chain; lower standalone impact.
+
+STEP 5 — NEXT ACTION
+- [NEXT] HUMAN/AUTH: cbs-proxy cross-tenant confirmation requires a valid customer session (previously repeated probes only re-confirm the unauth 101 handshake, which is already ACCEPTED). Remaining unknown (cid↔session binding) cannot be resolved passively and must not be tested against other customers' data (program out-of-scope). Emit HUMAN to obtain a sanctioned test cid/session, OR AUTH_ENUM passive GET on https://www.applicationdesigner.de/help.json + help.js to map further internal endpoints before closing.
+
+STEP 6 — LEARNING
+- [LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: re-confirmed anonymous WS-upgrade (101 Switching Protocols, cid=1&service=100, no token) to in-scope 185.158.98.53; cross-tenant scoping unverifiable passively.
+- [LEARN] REJECTED OTHER/MISCONFIG @ api.live-manager.de: host does not resolve (DNS NXDOMAIN); the api-debug-endpoint hypothesis had no reachable surface and is invalidated.
+
+STEP 7 — RISK
+- [RISK] questnet-gmbh: 58 — One confirmed in-scope live WebSocket proxy accepting anonymous WS upgrades with client-supplied cid and no observed token (high-value cross-tenant BOLA candidate at /22 IP). Surface breadth remains narrow (wildcard-CDN-DNS, api.live-manager.de non-resolving); value concentrated on the CBS proxy and customer-portal auth flows; cross-tenant confirmation blocked by program's customer-data-exposure restriction.
+
+I have completed the full 8-step analysis and validated the key delta with a live read-only probe.
