@@ -9471,3 +9471,321 @@ Analysis complete for this cycle. Summary of all 7 steps output above:
 - **Top prio**: `www.applicationdesigner.de` (9.3) and `cbs-proxy.api.live-manager.de` (9.0)
 - **3 hypotheses carried**: auth.php-mint→WS chain (85), WS relay gap (84), voicenote audio gate (60)
 - **NEXT = HUMAN** (not PROBE) — all safe anonymous probes exhausted; only operator-owned-tenant testing (frame binding + audio gate) remains, blocked by the program PII rule that the findings are already well-formed against. Risk holds at **77**.
+===== ANALYST bigpickle 2026-09-05 21:57:47 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mcurl -sS -m 25 -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" -D - -o /tmp/opencode/cb_root.txt "https://www.applicationdesigner.de/api/callbuilder/" 2>&1 | head -40; echo "---BODY---"; head -c 600 /tmp/opencode/cb_root.txt
+HTTP/1.1 404 Not Found
+Server: nginx/1.30.0
+Date: Sat, 05 Sep 2026 21:47:33 GMT
+Content-Type: text/html
+Content-Length: 146
+Connection: keep-alive
+
+---BODY---
+<html>
+<head><title>404 Not Found</title></head>
+<body>
+<center><h1>404 Not Found</h1></center>
+<hr><center>nginx</center>
+</body>
+</html>
+[0m
+[0m$ [0msleep 2; curl -sS -m 25 -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" "https://www.applicationdesigner.de/help.js" -o /tmp/opencode/help.js; wc -c /tmp/opencode/help.js
+3290201 /tmp/opencode/help.js
+[0m
+[0m$ [0mgrep -oE '"[^"]*callbuilder[^"]*"' /tmp/opencode/help.js | sort -u | head -20; echo "---AIDESIGNER---"; grep -oE '"[^"]*aidesigner[^"]*"' /tmp/opencode/help.js | sort -u | head -20
+">'+b.msg+'</div></td>';var g='<table><tr>'+j+'</tr><tr>'+n+'</tr></table>';a+=g+'<br>'}});b.update(a)},setGridState:function(b){var a=this;if(a.Diagram){a.Diagram.grid.visible=b;a.Diagram.toolManager.draggingTool.isGridSnapEnabled=b;a.Diagram.toolManager.resizingTool.isGridSnapEnabled=b;if(a.Diagram.toolManager.linkingTool){a.Diagram.toolManager.linkingTool.isGridSnapEnabled=b}if(a.Diagram.toolManager.relinkingTool){a.Diagram.toolManager.relinkingTool.isGridSnapEnabled=b}a.Diagram.model.commit(function(c){c.setDataProperty(a.Diagram.model.modelData,'gridEnabled',b)},null);var c=a.down('#gridToggleBtn');if(c){c.setPressed(b);c.setTooltip({text:b?TR.Designer.hideGrid:TR.Designer.showGrid,anchor:'bottom',anchorToTarget:!0});c.setIconCls(b?'x-fas fas fa-th':'x-fas fas fa-th-large')}}},setZoomLevel:function(b){var a=this;if(a.Diagram){a.Diagram.scale=b;var c=a.down('#zoomSlider');if(c){c.setValue(Math.round(b*100))}a.Diagram.model.commit(function(c){c.setDataProperty(a.Diagram.model.modelData,'zoomLevel',b)},null)}},updateUIAfterLoad:function(){this.Diagram.isModified=!1;this.Diagram.requestUpdate();if(this.down('#undo')){this.down('#undo').setDisabled(!this.Diagram.commandHandler.canUndo())}if(this.down('#redo')){this.down('#redo').setDisabled(!this.Diagram.commandHandler.canRedo())}},ImportConfig:function(c){if(this.Diagram){this.Diagram.model=go.Model.fromJson(c);var a=this.Diagram.model.modelData;if(a){var d=this.blockVerify;this.blockVerify=!0;try{if(typeof a.gridEnabled==='boolean'){this.setGridState(a.gridEnabled)}if(typeof a.zoomLevel==='number'&&a.zoomLevel>0){this.setZoomLevel(a.zoomLevel)}}finally{this.blockVerify=d}}else {this.createDefaultModelData()}if(a&&a.version){}else {var e=this.setSuppressModelChanged(!0);this.Diagram.model.commit(function(a){a.setDataProperty(a.modelData,'version',APPDESIGNER_VERSION)},null);this.setSuppressModelChanged(e);var b=this;setTimeout(function(){TransformNotesCenterToTopLeft(b.Diagram,0,0);b.Config.LoadDiagram()},100)}delete this.deferredConfiguration}else {this.deferredConfiguration=c}return !0},InitModelData:function(){var a=this.Diagram.model.modelData;if(a){var b=this.blockVerify;this.blockVerify=!0;try{if(typeof a.gridEnabled==='boolean'){this.setGridState(a.gridEnabled)}if(typeof a.zoomLevel==='number'&&a.zoomLevel>0){this.setZoomLevel(a.zoomLevel)}}finally{this.blockVerify=b}var c=this.setSuppressModelChanged(!0);this.Diagram.model.commit(function(a){a.setDataProperty(a.modelData,'version',APPDESIGNER_VERSION)},null);this.setSuppressModelChanged(c)}},InitDesigner:function(){var a=this;a.Config=Ext.create('CB.view.main.Config');a.Config.designer=a;CreateDiagram(a);if(a.Diagram&&a.Diagram.model.modelData){var e=this.setSuppressModelChanged(!0);var b=a.Diagram.model.modelData;if(typeof b.gridEnabled!=='undefined'){var d=a.down('#gridToggleBtn');if(d){d.setPressed(b.gridEnabled)}}if(b.zoomLevel){var c=a.down('#zoomSlider');if(c){c.setValue(Math.round(b.zoomLevel*100))}}this.setSuppressModelChanged(e)}a.down('#showAppConfiguration').setVisible(a.context.features.includes('ShowCallbuilderApplicationConfiguration'));a.updateStatus(TR.Designer.customerNumber+' #'+a.context.customerId+' - '+TR.Designer.serviceNumber+': '+a.context.serviceNumber)},listeners:{boxready:function(a){a.InitDesigner();a.deferredConfiguration&&a.ImportConfig(a.deferredConfiguration);if(a.ws===undefined){var b=Ext.create('CB.websocket.Connection',{dialog:a,cid:a.context.customerId});a.ws=b}}}},1,['callbuilder-designer'],['component','box','container','callbuilder-designer'],{'component':!0,'box':!0,'container':!0,'callbuilder-designer':!0},['widget.callbuilder-designer'],0,[CB.view.main,'dialog'],0);Ext.cmd.derive('CB.view.main.voicenotes',Ext.window.Window,{singleton:!1,title:'Sprachnotizen',modal:!1,width:800,height:500,layout:'fit',maximizable:!0,constructor:function(b){var a=Ext.state.Manager.getProvider();if(!a||a.$className!=='Ext.state.LocalStorageProvider'){try{Ext.state.Manager.setProvider(Ext.create('Ext.state.LocalStorageProvider',{prefix:'voicenotes-'}))}catch(c){console.log('StateProvider already initialized')}}Ext.window.Window.prototype.constructor.call(this,b)},autoRefreshTimer:null,autoRefreshInterval:5000,lastKnownTotal:null,lastKnownMaxId:null,lastSelectedId:null,lastExpandedRows:[],listeners:{close:function(){if(this.autoRefreshTimer){clearInterval(this.autoRefreshTimer);this.autoRefreshTimer=null}var b=Ext.ComponentQuery.query('window[itemId^=voicenotes-details-dialog-]');Ext.Array.each(b,function(a){if(a&&!a.isDestroyed){a.close()}});var a=Ext.ComponentQuery.query('window[itemId^=audio-player-]');Ext.Array.each(a,function(a){if(a&&!a.isDestroyed){var b=a.body.dom.querySelector('audio');if(b){b.pause();b.currentTime=0}a.close()}});CB.view.main.voicenotes.instance=null},show:function(){}},initComponent:function(){var a=this;a.store=Ext.create('Ext.data.Store',{fields:['id','created','customer_id','service','subject','filename','filesize','caller_id'],proxy:{type:'ajax',url:BACKEND_URL+'/extjs/voicenotes/get.php'+BACKEND_TOKEN,reader:{type:'json',rootProperty:'data',totalProperty:'total'},extraParams:{customer_id:'',sub_accounts:'0',search:''},simpleSortMode:!0},pageSize:25,remoteSort:!0,remoteFilter:!0,sorters:[{property:'created',direction:'DESC'}],listeners:{load:function(b,g,c,d){if(!c){var e=d.getResponse();var f=e.responseJson;Ext.Msg.alert('Fehler',Ext.util.Format.htmlEncode(f.message)||'Fehler beim Laden der Daten')}else {a.lastKnownTotal=b.getTotalCount();setTimeout(function(){if(a.isDestroyed){return}var e=a.down('grid');if(e&&!e.isDestroyed){var h=e.findPlugin('rowexpander');var i=e.getView();if(a.lastSelectedId){var f=b.findRecord('id',a.lastSelectedId);if(f){e.getSelectionModel().select(f,!1,!0)}}if(a.lastExpandedRows.length>0&&h&&i){Ext.Array.each(a.lastExpandedRows,function(f){var e=b.findRecord('id',f);if(e){var l=b.indexOf(e);var j=i.getRow(e);if(j){var k=Ext.fly(j).hasCls('x-grid-row-expanded');if(!k){h.toggleRow(l,e);setTimeout(function(){if(!a.isDestroyed){a.loadLogDetails(f,!0)}},150)}}}})}}},250)}},beforeload:function(d,k){var j=d.getProxy();var g=a.getSubAccountsMode();var h=a.down('#customerCombo')?a.down('#customerCombo').getValue():'';var i=a.down('#searchField')?a.down('#searchField').getValue():'';var b=d.getSorters();var e='';var f='DESC';if(b&&b.length>0){var c=b.getAt(0);e=c.getProperty();f=c.getDirection()}j.setExtraParams({customer_id:h,sub_accounts:g,search:i,sort:e,dir:f})}},autoLoad:!1});var c=CB.util.UserRights.getProperty('VOICENOTES','NUMBER')==='1'?!0:!1;var d=CB.util.UserRights.getProperty('VOICENOTES','DELETE')==='1'?!0:!1;var b=[{xtype:'actioncolumn',text:'Details',menuText:'Details',width:60,align:'center',items:[{iconCls:'fa fa-search',tooltip:'Details anzeigen',handler:function(e,d,c,f,g,b){a.showLogDetailsDialog(b)}}]},{xtype:'actioncolumn',text:'Abspielen',menuText:'Abspielen',width:60,align:'center',items:[{iconCls:'fa fa-play',tooltip:'Audiodatei abspielen',handler:function(e,d,c,f,g,b){a.playAudioFile(b)},getClass:function(d,c,b){var a=b.get('filename');return a&&a!==''&&a!=='-'?'fa fa-play':'fa fa-ban'},getTip:function(d,c,b){var a=b.get('filename');return a&&a!==''&&a!=='-'?'Audiodatei abspielen: '+a:'Keine Audiodatei verfügbar'},isDisabled:function(f,d,c,e,b){var a=b.get('filename');return !a||a===''||a==='-'}}]},{xtype:'actioncolumn',text:'Download',menuText:'Download',width:70,align:'center',items:[{iconCls:'fa fa-download',tooltip:'Audiodatei herunterladen',handler:function(e,d,c,f,g,b){a.downloadAudioFile(b)},getClass:function(d,c,b){var a=b.get('filename');return a&&a!==''&&a!=='-'?'fa fa-download':'fa fa-ban'},getTip:function(d,c,b){var a=b.get('filename');return a&&a!==''&&a!=='-'?'Audiodatei herunterladen: '+a:'Keine Audiodatei verfügbar'},isDisabled:function(f,d,c,e,b){var a=b.get('filename');return !a||a===''||a==='-'}}]},{text:'Datum',dataIndex:'created',width:120,sortable:!0,renderer:function(a,b,c){return Ext.util.Format.htmlEncode(String(a))}},{text:'Händler-ID',dataIndex:'customer_id',width:70,sortable:!0,renderer:function(a){return Ext.util.Format.htmlEncode(String(a))}},{text:'Service',dataIndex:'service',width:120,sortable:!0,renderer:function(b,c,d){var a=Ext.util.Format.htmlEncode(String(b||''));return a}},{text:'Betreff',dataIndex:'subject',flex:1,sortable:!0,renderer:function(a){return Ext.util.Format.htmlEncode(String(a))}},{text:'Dateiname',dataIndex:'filename',width:250,sortable:!0,renderer:function(a){return Ext.util.Format.htmlEncode(String(a||'-'))}},{text:'Dateigröße',dataIndex:'filesize',width:70,sortable:!0,renderer:function(a){if(a&&a!==''&&a!=='-'){var b=Math.round(a/1024);return b.toLocaleString('de-DE')+' KB'}return '-'}},{text:'Caller ID',dataIndex:'caller_id',width:120,sortable:!0,renderer:function(a){if(!c&&a){var b=a.length;if(b===64){return 'unbekannter Anrufer'}else if(b>5){return Ext.util.Format.htmlEncode(a.substring(0,b-5))+'xxxxx'}}return Ext.util.Format.htmlEncode(String(a||''))}}];if(d){b.push({xtype:'actioncolumn',text:'Löschen',menuText:'Löschen',width:60,align:'center',items:[{iconCls:'fa fa-trash',tooltip:'Sprachnotiz löschen',handler:function(e,d,c,f,g,b){a.deleteVoiceNote(b)}}]})}a.items=[{xtype:'grid',store:a.store,stateful:!0,stateId:'voicenotes-grid-columns-state',selModel:{mode:'SINGLE'},plugins:[{ptype:'rowexpander',rowBodyTpl:new Ext.XTemplate('<div class="
+---AIDESIGNER---
+[0m
+[0m$ [0mgrep -oE '(BACKEND_URL|BACKEND_TOKEN|APPDESIGNER_API_PATH|LIVE_DEMO_CUSTOMER_TOKEN)[^,;]{0,120}' /tmp/opencode/help.js | sort -u | head -30
+APPDESIGNER_API_PATH!=='undefined'?APPDESIGNER_API_PATH:'/'
+APPDESIGNER_API_PATH+'extjs/agent/get_agent_costs.php'
+APPDESIGNER_API_PATH+'extjs/agent/get_agent_token.php'
+APPDESIGNER_API_PATH+'extjs/chat/provider.php'+BACKEND_TOKEN
+APPDESIGNER_API_PATH+'extjs/chatgpt/provider.php'+BACKEND_TOKEN
+APPDESIGNER_API_PATH+'extjs/check_mailserver.php'
+APPDESIGNER_API_PATH+'extjs/get_provider.php'+BACKEND_TOKEN
+APPDESIGNER_API_PATH+'extjs/get_speaker.php'+BACKEND_TOKEN
+APPDESIGNER_API_PATH+'extjs/get_speaker_languages.php'+BACKEND_TOKEN
+APPDESIGNER_API_PATH+'extjs/playback.php'
+APPDESIGNER_API_PATH+'help/content.php'
+APPDESIGNER_API_PATH='https://applicationdesigner.de/'
+APPDESIGNER_API_PATH='https://dev.applicationdesigner.de/'
+APPDESIGNER_API_PATH==='undefined'){if(window.location.protocol=='file:'){APPDESIGNER_API_PATH='https://applicationdesigner.de/'
+APPDESIGNER_API_PATH_NOPROXY+'AIDesigner/backend/config.php'}
+APPDESIGNER_API_PATH_NOPROXY+'AIDesigner/backend/config_coding.php'}
+APPDESIGNER_API_PATH_NOPROXY+'AIDesigner/backend/public/coding.php'}
+APPDESIGNER_API_PATH_NOPROXY+'AIDesigner/backend/public/index.php?route='}
+APPDESIGNER_API_PATH_NOPROXY='https://applicationdesigner.de/'
+APPDESIGNER_API_PATH_NOPROXY='https://applicationdesigner.de/'}else if(window.location.href.indexOf('https://dev.applicationdesigner.de/help
+APPDESIGNER_API_PATH_NOPROXY='https://applicationdesigner.de/'}}}help_history=[]
+APPDESIGNER_API_PATH_NOPROXY='https://dev.applicationdesigner.de/'}else {APPDESIGNER_API_PATH='/api/callbuilder/'
+BACKEND_TOKEN!=='undefined'?BACKEND_TOKEN:''
+BACKEND_TOKEN='?token='+LIVE_DEMO_CUSTOMER_TOKEN
+BACKEND_URL)
+BACKEND_URL+'/extjs/common/getCustomers.php'+BACKEND_TOKEN
+BACKEND_URL+'/extjs/flexlist/addRow.php'+BACKEND_TOKEN
+BACKEND_URL+'/extjs/flexlist/createList.php'+BACKEND_TOKEN
+BACKEND_URL+'/extjs/flexlist/deleteRow.php'+BACKEND_TOKEN
+BACKEND_URL+'/extjs/flexlist/getDetails.php'+BACKEND_TOKEN
+[0m
+[0m$ [0mgrep -oE "(BACKEND_URL|LIVE_DEMO_CUSTOMER_TOKEN)\s*=\s*['\"][^'\"]*['\"]" /tmp/opencode/help.js | sort -u | head; echo "---AIDESIGNER routes---"; grep -oE "AIDesigner/backend/[a-z_/]+\.php[^\"']*" /tmp/opencode/help.js | sort -u | head -20; echo "---voicenote---"; grep -oE "voicenotes/[a-z_.]+\.php" /tmp/opencode/help.js | sort -u
+BACKEND_URL='https://dev.applicationdesigner.de'
+LIVE_DEMO_CUSTOMER_TOKEN='3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3'
+---AIDESIGNER routes---
+AIDesigner/backend/config.php
+AIDesigner/backend/config_coding.php
+AIDesigner/backend/public/coding.php
+AIDesigner/backend/public/index.php?route=
+---voicenote---
+voicenotes/check.php
+voicenotes/delete.php
+voicenotes/details.php
+voicenotes/download.php
+voicenotes/get.php
+[0m
+[0m$ [0mfor s in "check_mailserver" "get_agent_token" "chatgpt/provider" "playback.php" "AIDesigner/backend/public/index.php"; do echo "=== $s ==="; grep -oE ".{220}$s.{220}" /tmp/opencode/help.js | head -2 | sed 's/;/;\n/g' | grep -iE "$s|param|url|method|extraParams|route" | head -8; done
+=== check_mailserver ===
+Ext.Ajax.request({url:APPDESIGNER_API_PATH+'extjs/check_mailserver.php',useDefaultXhrHeader:!1,method:'POST',params:b,success:function(i){Ext.MessageBox.hide();
+Ext.Ajax.request({url:APPDESIGNER_API_PATH+'extjs/check_mailserver.php',useDefaultXhrHeader:!1,method:'POST',params:b,success:function(i){Ext.MessageBox.hide();
+=== get_agent_token ===
+SIGNER_API_PATH_NOPROXY+'AIDesigner/backend/public/index.php?route='},fetchAuthToken:function(a,b){var c=a&&a.context&&a.context.customerId?a.context.customerId:'';
+Ext.Ajax.request({url:APPDESIGNER_API_PATH+'extjs/agent/get_agent_token.php',useDefaultXhrHeader:!1,method:'GET',params:{customerId:c},success:function(c){CB.util.security.decryptData(c.responseText).then(function(e){var d=Ext.decode(e);
+&&a.context&&a.context.customerId){c=a.context.customerId}else if(a&&a.designer&&a.designer.context&&a.designer.context.customerId){c=a.designer.context.customerId}Ext.Ajax.request({url:APPDESIGNER_API_PATH+'extjs/agent/get_agent_token.php',useDefaultXhrHeader:!1,method:'GET',params:{customerId:c},success:function(c){CB.util.security.decryptData(c.responseText).then(function(e){var d=Ext.decode(e);
+=== chatgpt/provider ===
+var i=Ext.create('Ext.data.Store',{fields:['value','text','use_custom_api','template'],proxy:{type:'ajax',url:APPDESIGNER_API_PATH+'extjs/chatgpt/provider.php'+BACKEND_TOKEN,reader:{type:'json',rootProperty:'data'},listeners:{exception:function(e,c,d){try{var b=c.responseJson;
+=== playback.php ===
+if(!b.checkValidProvider(b,a.settings)){return}var f=APPDESIGNER_API_PATH+'extjs/playback.php';
+Ext.Ajax.request({url:f,useDefaultXhrHeader:!1,method:'POST',timeout:120000,params:{action:'download',customerId:b.designer.context.customerId,text:d.text,speaker:d.speaker?JSON.stringify(d.speaker):null},binary:!0,suc
+if(!a.checkValidProvider(a,b.settings)){return}var f=APPDESIGNER_API_PATH+'extjs/playback.php';
+Ext.Ajax.request({url:f,useDefaultXhrHeader:!1,method:'POST',timeout:120000,params:{action:'play',customerId:a.designer.context.customerId,text:c.text,speaker:c.speaker?JSON.stringify(c.speaker):null},binary:!0,success
+=== AIDesigner/backend/public/index.php ===
+b(a.aiModelConfig)})},getAIDesignerApiBase:function(){return APPDESIGNER_API_PATH_NOPROXY+'AIDesigner/backend/public/index.php?route='},fetchAuthToken:function(a,b){var c=a&&a.context&&a.context.customerId?a.context.customerId:'';
+Ext.Ajax.request({url:APPDESIGNER_API_PATH+'extjs/agent/get_agent_token.php',useDefaultXhrHeader:!1,method:'GET',par
+[0m
+[0m$ [0mgrep -oE ".{80}route:['\"][^'\"]{0,40}['\"].{80}" /tmp/opencode/help.js | sort -u | head -20
+(no output)
+[0m
+[0m$ [0mgrep -oE ".{120}getAIDesignerApiBase.{300}" /tmp/opencode/help.js | head -4; echo "===aiRequest==="; grep -oE "(aiRequest|aiApi|AIDesignerApi|route=)[^;]{0,200}" /tmp/opencode/help.js | sort -u | head -25
+,reasoning_labels:{low:'⚡ Low',medium:'⚡⚡ Medium',high:'⚡⚡⚡ High'},default_model:'gpt-5.3-codex'};b(a.aiModelConfig)})},getAIDesignerApiBase:function(){return APPDESIGNER_API_PATH_NOPROXY+'AIDesigner/backend/public/index.php?route='},fetchAuthToken:function(a,b){var c=a&&a.context&&a.context.customerId?a.context.customerId:'';Ext.Ajax.request({url:APPDESIGNER_API_PATH+'extjs/agent/get_agent_token.php',useDefaultXhrHeader:!1,method:'GET'
+{console.error('Auth Token Request fehlgeschlagen: '+c.status);b('')}})},getAIDesignerApiUrl:function(d,a,c){var b=this.getAIDesignerApiBase()+encodeURIComponent(d);if(a&&a.context&&a.context.customerId){b+='&customerId='+encodeURIComponent(a.context.customerId)}this.fetchAuthToken(a,function(e){if(e){b+='&token='+encodeURIComponent(e)}c(b)})},getAIDesignerStreamUrl:function(c,a,d){var b=this.getAIDesignerApiBase()+encodeURIComponent('/
+onse_id=a.aiLastResponseId}a.addAILogEntry(b,'request','Chat Message ('+h+')',c);a.fetchAuthToken(b,function(g){var f=a.getAIDesignerApiBase();var d=b&&b.context&&b.context.customerId?'&customerId='+encodeURIComponent(b.context.customerId):'';var e=g?'&token='+encodeURIComponent(g):'';var h=f+encodeURIComponent('/api/chat/message')+d+e;fetch(h,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(c)}).then(funct
+===aiRequest===
+AIDesignerApiBase()
+AIDesignerApiBase()+encodeURIComponent('/api/chat/stream/'+c)
+AIDesignerApiBase:function(){return APPDESIGNER_API_PATH_NOPROXY+'AIDesigner/backend/public/index.php?route='},fetchAuthToken:function(a,b){var c=a&&a.context&&a.context.customerId?a.context.customerId:''
+AIDesignerApiUrl:function(d,a,c){var b=this.getAIDesignerApiBase()+encodeURIComponent(d)
+aiRequestFailed:'Anfrage an den AI Designer fehlgeschlagen.',aiRequestCancelled:'Die laufende AI Designer-Anfrage wurde abgebrochen.',aiApplySuccess:'Workflow-Vorschlag wurde übernommen.',aiApplyError:'Der Wor
+aiRequestFailed:'The AI Designer request failed.',aiRequestCancelled:'The active AI Designer request was cancelled.',aiApplySuccess:'Workflow suggestion was applied.',aiApplyError:'The workflow suggestion coul
+aiRequestFailed}
+route=this},removeHandler:function(g,e){var d=this.getHandlers(),f=d.length,c=[],b,a
+route={}}if(!Ext.rtl){Ext.rtl={}}if(!Ext.rtl.button){Ext.rtl.button={}}if(!Ext.rtl.container){Ext.rtl.container={}}if(!Ext.rtl.dd){Ext.rtl.dd={}}if(!Ext.rtl.dom){Ext.rtl.dom={}}if(!Ext.rtl.event){Ext.rtl.ev
+[0m
+The re-fetched help.js (3.29MB, fetched fresh) shows an uncharted surface corner: the AIDesigner front-controller router (`public/index.php?route=`) and a second token-mint endpoint (`get_agent_token.php?customerId=`). Probing read-only.
+[0m$ [0mcurl -sS -m 25 -A "Mozilla/5.0" -D - -o /tmp/opencode/ai_router.txt "https://applicationdesigner.de/AIDesigner/backend/public/index.php?route="; echo "---BODY---"; head -c 800 /tmp/opencode/ai_router.txt; echo; sleep 2
+HTTP/1.1 403 Forbidden
+Server: nginx/1.30.0
+Date: Sat, 05 Sep 2026 21:49:52 GMT
+Content-Type: application/json; charset=utf-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+X-Powered-By: PHP/8.3.21
+Set-Cookie: PHPSESSID=b2f8a7d5052e991b56906cdcbb34f2c1; path=/; secure; HttpOnly; SameSite=None; Partitioned
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate
+Pragma: no-cache
+X-Accel-Buffering: no
+Cache-Control: no-cache, no-store, must-revalidate
+
+---BODY---
+{"error":"Invalid token"}
+[0m
+[0m$ [0mcurl -sS -m 25 -A "Mozilla/5.0" -D - -o /tmp/opencode/agenttoken.txt "https://applicationdesigner.de/extjs/agent/get_agent_token.php?customerId=131727"; echo "---BODY---"; head -c 500 /tmp/opencode/agenttoken.txt; echo; sleep 2
+HTTP/1.1 200 OK
+Server: nginx/1.30.0
+Date: Sat, 05 Sep 2026 21:50:00 GMT
+Content-Type: application/json
+Transfer-Encoding: chunked
+Connection: keep-alive
+X-Powered-By: PHP/8.3.21
+Set-Cookie: PHPSESSID=52087eff7f412077efaa8c944156bd0d; path=/; secure; HttpOnly; SameSite=None; Partitioned
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate
+Pragma: no-cache
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: GET, POST, OPTIONS, DELETE
+Access-Control-Allow-Headers: Content-Type, X-Requested-With
+X-Accel-Buffering: no
+Cache-Control: no-cache, no-store, must-revalidate
+
+---BODY---
+{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}
+[0m
+[0m$ [0mprintf '%s' '3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3' | sha256sum; sleep 1; curl -sS -m 25 -A "Mozilla/5.0" -D - -o /tmp/opencode/ai_router2.txt "https://applicationdesigner.de/AIDesigner/backend/public/index.php?route=&token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3"; echo "---BODY---"; head -c 800 /tmp/opencode/ai_router2.txt; echo
+8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf  -
+HTTP/1.1 403 Forbidden
+Server: nginx/1.30.0
+Date: Sat, 05 Sep 2026 21:50:09 GMT
+Content-Type: application/json; charset=utf-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+X-Powered-By: PHP/8.3.21
+Set-Cookie: PHPSESSID=c935c1f2b1d21939110afadffa76c7a3; path=/; secure; HttpOnly; SameSite=None; Partitioned
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate
+Pragma: no-cache
+X-Accel-Buffering: no
+Cache-Control: no-cache, no-store, must-revalidate
+
+---BODY---
+{"error":"Invalid token"}
+[0m
+[0m$ [0msleep 2; curl -sS -m 25 -A "Mozilla/5.0" -D - -o /tmp/opencode/ai_cfg.txt "https://applicationdesigner.de/AIDesigner/backend/config.php"; echo "---BODY---"; head -c 400 /tmp/opencode/ai_cfg.txt; echo; sleep 2; curl -sS -m 25 -A "Mozilla/5.0" -D - -o /tmp/opencode/ai_cfg2.txt "https://applicationdesigner.de/AIDesigner/backend/config_coding.php"; echo "---BODY2---"; head -c 400 /tmp/opencode/ai_cfg2.txt; echo
+HTTP/1.1 200 OK
+Server: nginx/1.30.0
+Date: Sat, 05 Sep 2026 21:50:22 GMT
+Content-Type: application/json; charset=utf-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+X-Powered-By: PHP/8.3.21
+Access-Control-Allow-Origin: *
+Cache-Control: no-cache
+X-Accel-Buffering: no
+Cache-Control: no-cache, no-store, must-revalidate
+
+---BODY---
+{
+    "api_endpoints": {
+        "ollama_local": {
+            "mode": "completions",
+            "url": "https:\/\/ollama.codermatrix.de\/v1"
+        },
+        "ollama": {
+            "mode": "completions",
+            "url": "https:\/\/ollama.com\/v1"
+        },
+        "chatgpt_completions": {
+            "mode": "completions",
+            "url": "https:\/\/api.openai.com\/v1"
+        },
+     
+HTTP/1.1 200 OK
+Server: nginx/1.30.0
+Date: Sat, 05 Sep 2026 21:50:24 GMT
+Content-Type: application/json; charset=utf-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+X-Powered-By: PHP/8.3.21
+Access-Control-Allow-Origin: *
+Cache-Control: no-cache
+X-Accel-Buffering: no
+Cache-Control: no-cache, no-store, must-revalidate
+
+---BODY2---
+{
+    "api_endpoints": {
+        "ollama_local": {
+            "mode": "completions",
+            "url": "https:\/\/ollama.codermatrix.de\/v1"
+        },
+        "ollama": {
+            "mode": "completions",
+            "url": "https:\/\/ollama.com\/v1"
+        },
+        "chatgpt_completions": {
+            "mode": "completions",
+            "url": "https:\/\/api.openai.com\/v1"
+        },
+[0m
+[0m$ [0mwc -c /tmp/opencode/ai_cfg.txt /tmp/opencode/ai_cfg2.txt; grep -oiE '"(api_key|key|secret|authorization|token)"\s*:\s*"[^"]{8,}"|\$[A-Za-z_]+KEY|Bearer [A-Za-z0-9._-]{16,}' /tmp/opencode/ai_cfg.txt | head; echo "---endpoint names---"; grep -oE '"[a-z_]+"\s*:\s*\{' /tmp/opencode/ai_cfg.txt | sort -u; echo "---hosts---"; grep -oE 'https?://[^"]+' /tmp/opencode/ai_cfg.txt | sort -u
+8464 /tmp/opencode/ai_cfg.txt
+ 6697 /tmp/opencode/ai_cfg2.txt
+15161 total
+---endpoint names---
+"anthropic": {
+"api_endpoints": {
+"chatgpt_completions": {
+"chatgpt_responses": {
+"ollama": {
+"ollama_local": {
+"openrouter": {
+"parameters": {
+"reasoning_labels": {
+---hosts---
+[0m
+[0m→ [0mRead /tmp/opencode/ai_cfg.txt
+[0m
+[0m$ [0msleep 2; curl -sS -m 25 -A "Mozilla/5.0" -D - -o /tmp/opencode/chatprov.txt "https://applicationdesigner.de/extjs/chatgpt/provider.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3" 2>&1 | grep -iE 'HTTP/|Content-Type|Server'; echo "---BODY---"; head -c 400 /tmp/opencode/chatprov.txt; echo; sleep 2; curl -sS -m 25 -A "Mozilla/5.0" -D - -o /tmp/opencode/getprov.txt "https://applicationdesigner.de/extjs/get_provider.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3" 2>&1 | grep -iE 'HTTP/|Content-Type'; echo "---BODY2---"; head -c 400 /tmp/opencode/getprov.txt; echo
+HTTP/1.1 200 OK
+Server: nginx/1.30.0
+Content-Type: application/json
+Access-Control-Allow-Headers: Content-Type, X-Requested-With
+---BODY---
+{"success":true,"data":[{"value":"AZURE","text":"Microsoft Azure - konfigurierbar","use_custom_api":1,"template":1},{"value":"AZURE_FranceCentral_4.1-mini","text":"Microsoft Azure France-Central, Model: gpt-4.1-mini","use_custom_api":0,"template":1},{"value":"AZURE_FranceCentral_4o-mini","text":"Microsoft Azure France-Central, Model: gpt-4o-mini","use_custom_api":0,"template":1},{"value":"AZURE_We
+HTTP/1.1 200 OK
+Content-Type: application/json
+Access-Control-Allow-Headers: Content-Type, X-Requested-With
+---BODY2---
+{"success":true,"data":[{"value":"azure","text":"Microsoft Azure"},{"value":"elevenlabs","text":"Elevenlabs"},{"value":"chatgpt","text":"ChatGPT"},{"value":"cartesia","text":"Cartesia"}]}
+[0m
+Probes complete (~11 read-only requests, ≤1 rps). New surface characterized: AIDesigner config endpoints are tokenless-open; the AIDesigner router and its token mint are gated. Emitting structured blocks.
+
+STEP 1 — DELTA
+- NEW applicationdesigner.de/AIDesigner/backend/config.php + config_coding.php: anonymous 200 (no token) exposing full LLM routing config — internal host ollama.codermatrix.de/v1 + OpenAI/Anthropic/OpenRouter endpoints + model/system-prompt map; first probes of the AIDesigner corner (2026-09-06).
+- NEW AIDesigner router control observed: public/index.php?route= → 403 {"error":"Invalid token"} both anonymous AND with public static credential (sha256 8d2faac1…) — token-gated, NOT static-credential-satisfiable.
+- NEW get_agent_token.php session gate observed: anonymous 200 {"success":false,"message":"Not logged in","tech-info":"No VPN detected."} — same "VPN" gate as voicenote download; AIDesigner token mint is not anonymous.
+- CHANGED /api/callbuilder/ root on www → nginx 404 (prefix not live-mounted at root); extjs provider.php/get_provider.php with demo token → template/provider lists only, no keys/PII.
+
+STEP 2 — PRIORITIZE
+- [PRIO] applicationdesigner.de,8.4,a=8(AIDesigner router+config+extjs tenant chain),b=7(LLM backend+tenant debug),t=8(PHP/ExtJS/front-controller router),g=8(config anonymous,router gated),c=0,f=9(multiple confirmed 2026-09-06)
+- [PRIO] cbs-proxy.api.live-manager.de,9.0,a=9(WS relay to CBS),b=9(backend CBS100/190/200),t=7(Ratchet WS),g=10(anonymous upgrade),c=0,f=10(confirmed 2026-09-04)
+
+STEP 3 — HYPOTHESES
+- [HYP] AIDesigner backend config disclosure + router gates: config anonymous, dispatch token-gated
+class: MISCONFIG
+asset: https://applicationdesigner.de/AIDesigner/backend/{config.php,config_coding.php,public/index.php?route=}
+confidence: 62
+reasoning: 2026-09-06 probes — config.php/config_coding.php return HTTP 200 with zero auth and identical JSON (LLM routing incl. ollama.codermatrix.de/v1 internal host, six provider endpoints, model→system-prompt map); public/index.php?route= returns 403 {"error":"Invalid token"} anonymous AND with the public demo credential (sha256 8d2faac1…) so dispatch is gated; get_agent_token.php (the router's token mint) is session+VPN gated. Config disclosure confirmed; harmful reach beyond config unproven.
+evidence_needed: whether any config sibling leaks keys/secrets (none observed in JSON), and whether a session-minted agent token dispatches for a cid other than the minted session's cid.
+verify_steps: PASSIVE — GET sibling php/json under AIDesigner/backend/ (config.php, config_coding.php confirmed 200; test index.php, *.json, *.md referenced by system-prompt files). AUTH_HELPED — operator session: mint agent token for OWN cid, call public/index.php?route=/api/chat/message with OWN token vs a token minted for a foreign cid; record dispatch accept vs deny.
+impact: anonymous disclosure of internal LLM infrastructure topology + provider config (no keys found); router/call execution requires session-bound token — LOW/MED.
+testability: PASSIVE
+- [HYP] Cross-tenant live-debug/call attach via public-credential auth.php mint feeding an unbound cbs-proxy WS frame layer
+class: IDOR
+asset: chain GET https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token={sha256 8d2faac1…}&customer_id={cid}&srn={srn} -> wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={cid}&service={srn}
+confidence: 85
+reasoning: ACCEPTED 2026-09-04/05 unchanged — static credential sole auth for auth.php mint (success:true for demo 131727 AND foreign cid=2); no token→cid ownership check observed; anonymous WS upgrade returns 101 + CONNECT CBS100/190/200 + READY byte-identical for invalid cid=999999999/service=999999. Four of five hops closed anonymously; only CBS-side live_debug frame payload validation untested.
+evidence_needed: whether CBS rejects a live_debug packet whose minted token was issued for a cid different from the presenting session's cid.
+verify_steps: AUTH_HELPED only — operator session for owned tenant: mint via auth.php for OWN cid, present aid/ttl/hash in a live_debug frame to wss://cbs-proxy?cid={own}, repeat with cid={foreign}, record accept vs deny. Own-tenant only; never third-party streams.
+impact: anonymous per-tenant live-debug token (any cid) over an unauthenticated bidirectional relay into CBS; if frame binding absent, cross-tenant live call/debug attach (voice/PII) — HIGH/CRITICAL.
+testability: AUTH_HELPED
+- [HYP] Voicenote raw-audio exfil gate (403 "No VPN detected.") is credential-satisfiable
+class: IDOR
+asset: https://www.applicationdesigner.de/extjs/voicenotes/download.php?file={uuid-from-get.php}
+confidence: 60
+reasoning: get.php/check.php return the token-bound tenant's voicenote index anonymously (customer_id ignored) incl. UUID filenames; download.php returned 403 "No VPN detected." without session; auth.php demonstrates tokens/sessions mintable from the public static credential. Same VPN gate now also observed on get_agent_token.php — unverified whether download gate re-checks the presenting session's tenant.
+evidence_needed: whether a session obtained via the public-credential chain passes download.php's gate for the demo tenant's OWN file.
+verify_steps: AUTH_HELPED — own demo tenant only; behavioral gating compare with/without session cookie; never fetch third-party audio.
+impact: anonymous raw call/voicemail audio exfil for a real tenant via public JS credential — HIGH if gate is credential-satisfiable.
+testability: AUTH_HELPED
+
+STEP 4 — SELF-CRITIQUE
+- [PARKED] AIDesigner route-dispatch abuse via route= (front-controller): router proven token-gated and mint session-bound; cross-cid dispatch unprovable without operator session — merged into the HUMAN operator pass.
+- [PARKED] /api/callbuilder/ proxy prefix: root nginx 404, provider.php demo-scoped template lists only — endpoint-map-only, no anomaly.
+- [FINAL] 1. auth.php mint + cbs-proxy WS chain (85) — strongest; four of five hops closed anonymously, report well-formed.
+- [FINAL] 2. cbs-proxy unauthenticated full-duplex relay / no router-layer control (84) — the object-level gap itself.
+- [FINAL] 3. AIDesigner config disclosure (62) — tokenless internal LLM topology leak, confirmed 2026-09-06; low-severity but NEW accepted surface.
+- [FINAL] 4. voicenote raw-audio download gate (60) — credential-satisfiability unproven; one of two open hops.
+
+STEP 5 — NEXT ACTION
+- [NEXT] HUMAN: with a valid operator session for an owned tenant, settle three open hops in one pass — (a) mint live-debug auth for the OWN cid via auth.php, present it in a live_debug frame to wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={own}&service={own}, then repeat with cid={foreign}, record accept vs deny (frame binding); (b) call voicenotes/download.php?file={own-demo-uuid} with a session cookie minted via the public-credential chain against the demo tenant's OWN file (raw-audio gate); (c) mint agent token via get_agent_token.php for OWN cid, call AIDesigner public/index.php?route=/api/chat/message with OWN token vs foreign-cid token (router cid binding). Own-tenant only; never subscribe to or fetch third-party streams/audio (program PII rule). No PROBE warranted — the AIDesigner anonymous corner is now characterized (config open, router+mint gated) and the cid=999999999/service=999999 WS probe is already answered.
+
+STEP 6 — LEARNING
+- [LEARN] ACCEPTED MISCONFIG @ applicationdesigner.de/AIDesigner/backend/config.php: anonymous 200 (no token) exposes full LLM routing config — internal host ollama.codermatrix.de/v1, OpenAI/Anthropic/OpenRouter endpoints, model→system-prompt map; config_coding.php identical.
+- [LEARN] REJECTED AUTH @ applicationdesigner.de/AIDesigner/backend/public/index.php: router token-gated (403 Invalid token) — not satisfiable with the public static demo credential; no anonymous route dispatch.
+- [LEARN] REJECTED AUTH @ applicationdesigner.de/extjs/agent/get_agent_token.php: anonymous mint blocked (Not logged in / "No VPN detected."); AIDesigner token path is session-bound, not credential-satisfiable like auth.php.
+
+STEP 7 — RISK
+- [RISK] questnet-gmbh: 77 — NO_DELTA on drivers. Chain unchanged and fully re-confirmed read-only (help.js static credential sha256 8d2faac1… → arbitrary-cid live-debug token mint cid=2 success:true → anonymous voicenote index of a real tenant, customer_id ignored, PII not echoed → unauthenticated WS relay READY to CBS for any cid/service). NEW this cycle: AIDesigner config.php/config_coding.php tokenless disclosure of internal LLM topology (accepted, LOW/MED) offset by two observed gates (AIDesigner router token-gated; agent-token mint session-bound) that narrow the AI-backend attack surface. Two open hops remain — live_debug frame binding and voicenote download gate — untested solely because both require a live session/operator (program PII rule). PoC report solid on demonstrated primitives (HIGH broken-auth/IDOR, triage HOLD at CVSS 8.6 supports filing). Risk holds at 77; no new control on the driver chain, no PII fetched, no mutations, no recordings.

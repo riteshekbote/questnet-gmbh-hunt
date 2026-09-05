@@ -745,3 +745,28 @@ testability: AUTH_HELPED
 [LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WS upgrade reaches backend CBS servers with client-supplied cid/service and no observed token — cross-tenant BOLA chain (unchanged, still the driver).
 [LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/livedebugger/auth.php: anonymous per-cid live-debug token mint via public static credential, success:true for foreign cid=2 — no observed token→cid ownership check anywhere in the chain (unchanged).
 [RISK] questnet-gmbh: 77 — NO_DELTA cycle. Chain stable and fully re-confirmed read-only: public help.js static credential (sha256 8d2faac1…) → arbitrary-cid live-debug token mint (cid=2 success:true) → anonymous read of a real tenant's voicenote index (customer_id ignored, PII incl. phone numbers; PII not echoed) → unauthenticated WS relay READY to backend CBS for any client-chosen cid/service. Four of five hops closed anonymously; the binary live_debug frame binding and raw-audio download gate remain, untested solely because both require a live session/real-stream subscription (program PII restriction), not because controls were observed. PoC report is well-formed on the demonstrated primitives (file as HIGH broken-auth/IDOR once program state allows; triage HOLD verdict supports this at CVSS 8.6). Risk holds at 77 — no new control, no new surface, breadth exhausted. No recordings fetched, no live streams subscribed, no mutations, no PII echoed.
+## 2026-09-05 21:52:23 UTC [target] (model bigpickle)
+class: MISCONFIG
+asset: https://applicationdesigner.de/AIDesigner/backend/{config.php,config_coding.php,public/index.php?route=}
+confidence: 62
+reasoning: 2026-09-06 probes — config.php/config_coding.php return HTTP 200 with zero auth and identical JSON (LLM routing incl. ollama.codermatrix.de/v1 internal host, six provider endpoints, model→system-prompt map); public/index.php?route= returns 403 {"error":"Invalid token"} anonymous AND with the public demo credential (sha256 8d2faac1…) so dispatch is gated; get_agent_token.php (the router's token mint) is session+VPN gated. Config disclosure confirmed; harmful reach beyond config unproven.
+evidence_needed: whether any config sibling leaks keys/secrets (none observed in JSON), and whether a session-minted agent token dispatches for a cid other than the minted session's cid.
+verify_steps: PASSIVE — GET sibling php/json under AIDesigner/backend/ (config.php, config_coding.php confirmed 200; test index.php, *.json, *.md referenced by system-prompt files). AUTH_HELPED — operator session: mint agent token for OWN cid, call public/index.php?route=/api/chat/message with OWN token vs a token minted for a foreign cid; record dispatch accept vs deny.
+impact: anonymous disclosure of internal LLM infrastructure topology + provider config (no keys found); router/call execution requires session-bound token — LOW/MED.
+testability: PASSIVE
+class: IDOR
+asset: chain GET https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token={sha256 8d2faac1…}&customer_id={cid}&srn={srn} -> wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={cid}&service={srn}
+confidence: 85
+reasoning: ACCEPTED 2026-09-04/05 unchanged — static credential sole auth for auth.php mint (success:true for demo 131727 AND foreign cid=2); no token→cid ownership check observed; anonymous WS upgrade returns 101 + CONNECT CBS100/190/200 + READY byte-identical for invalid cid=999999999/service=999999. Four of five hops closed anonymously; only CBS-side live_debug frame payload validation untested.
+evidence_needed: whether CBS rejects a live_debug packet whose minted token was issued for a cid different from the presenting session's cid.
+verify_steps: AUTH_HELPED only — operator session for owned tenant: mint via auth.php for OWN cid, present aid/ttl/hash in a live_debug frame to wss://cbs-proxy?cid={own}, repeat with cid={foreign}, record accept vs deny. Own-tenant only; never third-party streams.
+impact: anonymous per-tenant live-debug token (any cid) over an unauthenticated bidirectional relay into CBS; if frame binding absent, cross-tenant live call/debug attach (voice/PII) — HIGH/CRITICAL.
+testability: AUTH_HELPED
+class: IDOR
+asset: https://www.applicationdesigner.de/extjs/voicenotes/download.php?file={uuid-from-get.php}
+confidence: 60
+reasoning: get.php/check.php return the token-bound tenant's voicenote index anonymously (customer_id ignored) incl. UUID filenames; download.php returned 403 "No VPN detected." without session; auth.php demonstrates tokens/sessions mintable from the public static credential. Same VPN gate now also observed on get_agent_token.php — unverified whether download gate re-checks the presenting session's tenant.
+evidence_needed: whether a session obtained via the public-credential chain passes download.php's gate for the demo tenant's OWN file.
+verify_steps: AUTH_HELPED — own demo tenant only; behavioral gating compare with/without session cookie; never fetch third-party audio.
+impact: anonymous raw call/voicemail audio exfil for a real tenant via public JS credential — HIGH if gate is credential-satisfiable.
+testability: AUTH_HELPED

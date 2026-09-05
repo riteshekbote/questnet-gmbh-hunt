@@ -130,3 +130,10 @@ www.live-manager.de
 - CHANGED api.live-manager.de confirmed non-resolving (dropped from all models)
 
 ## 2026-09-05 19:35:24 UTC
+
+## 2026-09-05 21:57:47 UTC
+- CHANGED Live probe 2026-09-05 21:50 UTC: WS-upgrade GET wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=999999999&service=100 → HTTP/1.1 101 + CONNECT CBS100/190/200 + PROXY READY frames (byte-identi
+- CHANGED Live probe 2026-09-05 21:51 UTC: WS-upgrade GET wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=1&service=100 → HTTP/1.1 101 + identical frame set — cid parameter not validated at proxy layer
+- CHANGED Live probe 2026-09-05 21:52 UTC: GET https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token=LIVE_DEMO_CUSTOMER_TOKEN&customer_id=999999999&srn=100 → success:true, 64-hex auth+ttl — arbit
+- CHANGED Live probe 2026-09-05 21:53 UTC: GET https://www.applicationdesigner.de/extjs/livedebugger/auth.php (no token) → success:false, "Not logged in" — token is sole auth gate
+- CHANGED Live probe 2026-09-05 21:54 UTC: WS-upgrade with minted token (origin=LiveDebugger&cid=2&service=100&token=...) → HTTP/1.1 101 + identical CONNECT/READY — token accepted but no observable scoping enfo
