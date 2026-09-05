@@ -114,3 +114,10 @@ www.live-manager.de
 - CHANGED www.applicationdesigner.de/extjs/livedebugger/auth.php: anonymous minting of per-tenant live-debug auth tokens for arbitrary customer_id (cid=2 success:true) using static credential confirmed
 - NEW Cross-tenant chain primitive confirmed read-only: help.js credential → auth.php mint for ANY cid → anonymous WS 101 to cbs-proxy backend
 - CHANGED Risk score increased to 68 (full primitive chain confirmed read-only; no live customer data touched)
+
+## 2026-09-05 15:31:48 UTC
+- CHANGED Surface frozen at 4 live in-scope hosts since 2026-09-04: cbs-proxy.api.live-manager.de, www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de
+- CHANGED auth.live-manager.de remains unconfirmed (0 live HTTP, wildcard mirror)
+- CHANGED api.live-manager.de confirmed non-resolving (dropped from all models)
+- CHANGED Cross-tenant primitive chain confirmed read-only: help.js static credential (sha256 8d2faac1...) → auth.php mints per-cid token for ANY customer_id → anonymous WS 101 to cbs-proxy with client-supplied
+- CHANGED Bigpickle probe 2026-09-05 04:44: anonymous WS upgrade with cid=999999999/service=999999 returns HTTP/1.1 101 + identical CONNECT CBS100/190/200 + PROXY READY frames — zero credentials, byte-identical
