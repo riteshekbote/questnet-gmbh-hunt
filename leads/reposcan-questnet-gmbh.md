@@ -97,3 +97,5 @@ reasoning: The vanilla profile (included by the active freeswitch.xml) contains:
 impact: medium
 verify_steps: 1) Check if AMQP (5672), Redis (6379), XML-RPC (8021 HTTP) ports are exposed 2) Attempt default credential authentication against any running services
 TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-05 22:40:59 UTC
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
