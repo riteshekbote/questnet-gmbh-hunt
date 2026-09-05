@@ -533,3 +533,52 @@ testability: AUTH_HELPED
 [LEARN] REJECTED wildcard-subdomain-enum @ *.live-manager.de: DEDICATED-DEEP.md confirms 8632 resolving hostnames all share CDN/wildcard IPs — no dedicated subdomain surface exists; attack surface is path-based behind CDN
 [LEARN] REJECTED api.live-manager.de debug endpoints: host does not resolve; no surface to probe — removed from active hypotheses
 [RISK] questnet-gmbh: 68 — Full primitive chain now confirmed read-only: public static credential in help.js -> per-tenant debug auth token minted for ANY customer_id via auth.php -> anonymous 101 WS to in-scope cbs-proxy backend. Cross-tenant live call-flow/voice debug attach is plausible and only blocked by an unverified WS-side binding. Real program surface stays at 4 hosts; CDN-wildcard breadth 0 caps scope expansion. PoC required before valid bug gate; no live customer data touched.
+## 2026-09-05 04:43:21 UTC [target] (model nemotron3)
+[NEW] www.applicationdesigner.de/help.json: ExtJS manifest confirms help.js as sole JS entry; resources.help/ directory listing blocked (403) — endpoint map only in help.js
+[CHANGED] help.js static credential `LIVE_DEMO_CUSTOMER_TOKEN` (sha256: 8d2faac1...) and `APPDESIGNER_API_PATH=/api/callbuilder/` proxy prefix confirmed in live source; backend router endpoints for LiveDebugger/CallBuilder/AIDesigner mapped
+[CHANGED] cbs-proxy.api.live-manager.de WebSocket handshake (HTTP 101) with zero credentials confirmed 2026-09-04; CONNECT frames to CBS100/190/200 then READY — cid/service scoping enforcement still unverified
+[PRIO] cbs-proxy.api.live-manager.de,8.90,attack_surface=9,business_value=10,tech_exposure=9,gate_ease=10,cloud_surface=8,freshness=5
+[PRIO] www.applicationdesigner.de,7.15,attack_surface=8,business_value=7,tech_exposure=8,gate_ease=7,cloud_surface=5,freshness=5
+[PRIO] www.live-manager.de,7.30,attack_surface=7,business_value=10,tech_exposure=7,gate_ease=6,cloud_surface=6,freshness=5
+[PRIO] auth.live-manager.de,5.95,attack_surface=6,business_value=10,tech_exposure=6,gate_ease=5,cloud_surface=6,freshness=5
+[PRIO] dev.applicationdesigner.de,5.35,attack_surface=6,business_value=6,tech_exposure=6,gate_ease=4,cloud_surface=5,freshness=5
+[HYP] Cross-tenant live-debug stream subscription via public-credential auth.php mint + cbs-proxy WS
+class: IDOR
+asset: chain GET https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token={LIVE_DEMO_CUSTOMER_TOKEN}&customer_id={cid}&srn={service} -> wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={cid}&service={service}
+confidence: 85
+reasoning: help.js publicly ships static credential (sha256 8d2faac1...) that auth.php accepts in lieu of session ("Not logged in" only when token omitted); auth.php returns success:true and 64-hex auth+ttl for both demo cid 131727 and foreign cid 2 — no ownership/session binding observed. Anonymous WS upgrade to cbs-proxy returns 101 and LiveDebugger client sends packet live_debug{customer_id,CLI,srn,token,ttl,hash} to attach to tenant call-flow session. Attacker needs only public JS credential, then any cid.
+evidence_needed: confirm cbs-proxy/live_debug backend binds minted token to real operator session owner of cid (valid customer session denying foreign cid that was nonetheless minted) — without binding check, minting-is-authorization and cross-tenant call-flow/voice debug attach possible
+verify_steps: (AUTH_HELPED/HUMAN) with valid operator session, mint token for OWN cid, present it to cbs-proxy for FOREIGN cid and confirm server denial; behavioral comparison only. No live debug data subscribed.
+impact: cross-tenant attach to customer business-system live call/debug streams (PII/voice) — HIGH/CRITICAL if no binding check
+testability: AUTH_HELPED (minting anonymous-PASSIVE confirmed; stream-attach confirmation needs session+human)
+[HYP] Unauthenticated CBS WebSocket proxy allows arbitrary customer_id cross-tenant subscription
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={customer_id}&service={service_number}
+confidence: 72
+reasoning: help.js builds WS URL with client-supplied cid/service; anonymous WS upgrade (2026-09-04 live probe) returned HTTP/1.1 101 Switching Protocols with zero credentials, emitting CONNECT frames to CBS100/190/200 then READY; no token/Authorization observed in handshake; cid/service scoping enforcement unverified
+evidence_needed: proxy enforces authenticated session token tied to claimed cid and denies foreign cid; without it, cross-tenant live call/debug stream subscription possible
+verify_steps: WS upgrade to wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=1&service=100 with Upgrade: websocket, Connection: Upgrade, Sec-WebSocket-Version: 13, Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==; observe CONNECT/READY; repeat with foreign cid (e.g., 999999) and note if READY/data still returned; do NOT subscribe to live customer data
+impact: cross-tenant exposure of customer business-system call streams / live debugging (PII/voice data) — HIGH if unauthenticated actor can enumerate cid
+testability: PASSIVE (handshake reachable anonymously; auth-scoping confirmation requires valid session = AUTH_HELPED/HUMAN)
+[HYP] Post-login open redirect via rs parameter enables OAuth code theft
+class: AUTH
+asset: https://www.live-manager.de/Login.aspx (rs base64 return-url flow)
+confidence: 45
+reasoning: all unauth subpaths 302 to /?rs=<base64-of-requested-path>; decoded target carried to return-URL param; GET does not reflect value (anonymous open redirect rejected); post-login redirect target validation unverified — if decoded rs honored verbatim for external/schema-less URL, enables code/credential theft
+evidence_needed: after valid session, GET /?rs=<base64 of attacker-controlled external URL>, complete login, inspect resulting Location header or JS navigation for reflection
+verify_steps: (AUTH_HELPED) obtain valid customer session; GET https://www.live-manager.de/?rs=aHR0cHM6Ly9ldmlsLmNvbQ== (base64 of https://evil.com); follow login flow; capture final redirect Location/JS destination
+impact: open redirect enabling OAuth authorization code theft → ATO — CRITICAL if external redirect honored
+testability: AUTH_HELPED
+[PARKED] Post-login open redirect via rs parameter enables OAuth code theft: confidence 45 but AUTH_HELPED testability blocks passive verification; requires valid customer session which we cannot obtain — parked until auth-assisted context available
+[FINAL] 1. Cross-tenant live-debug stream subscription via public-credential auth.php mint + cbs-proxy WS (85)
+[FINAL] 2. Unauthenticated CBS WebSocket proxy allows arbitrary customer_id cross-tenant subscription (72)
+[NEXT] PROBE: WS-upgrade GET to wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=999999999&service=100 with Upgrade: websocket, Connection: Upgrade, Sec-WebSocket-Version: 13, Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ== — observe handshake (101 vs 4xx) and first frames (CONNECT/READY vs error) to confirm cid scoping enforcement (passive, read-only, ~1 req)
+[LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WebSocket upgrade reaches backend CBS servers with client-supplied cid/service and no observed token — candidates for cross-tenant BOLA
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de: ExtJS help app (help.js, help.json, resources.help/*) publicly exposes internal CBS proxy endpoints and backend hostnames
+[LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/livedebugger/auth.php: anonymous minting of per-tenant live-debug auth token for arbitrary customer_id using a static credential embedded in public help.js — observed success:true for foreign cid=2, "Not logged in" only when token omitted
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: public ExtJS bundle ships static backend credential + full LiveDebugger/CallBuilder/AIDesigner endpoint map including /api/callbuilder/ proxy prefix and AIDesigner backend router
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/common/getCustomers.php: token-scoped — returns only demo customer 131727; no global tenant directory
+[LEARN] REJECTED AUTH @ www.live-manager.de rs param: GET /?rs= not reflected/server-side redirected to external domain, so no anonymous open redirect
+[LEARN] REJECTED wildcard-subdomain-enum @ *.live-manager.de: DEDICATED-DEEP.md confirms 8632 resolving hostnames all share CDN/wildcard IPs — no dedicated subdomain surface exists; attack surface is path-based behind CDN
+[LEARN] REJECTED api.live-manager.de debug endpoints: host does not resolve; no surface to probe — removed from active hypotheses
+[RISK] questnet-gmbh: 68 — Full primitive chain now confirmed read-only: public static credential in help.js (sha256 8d2faac1...) -> per-tenant debug auth token minted for ANY customer_id via auth.php -> anonymous 101 WS to in-scope cbs-proxy backend. Cross-tenant live call-flow/voice debug attach is plausible and only blocked by an unverified WS-side binding. Real program surface stays at 4 hosts; CDN-wildcard breadth 0 caps scope expansion. PoC required before valid bug gate; no live customer data touched.

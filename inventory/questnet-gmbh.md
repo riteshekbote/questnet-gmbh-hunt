@@ -94,3 +94,8 @@ www.live-manager.de
 - CHANGED cbs-proxy.api.live-manager.de IDOR confidence raised to 72 (live probe 2026-09-04: HTTP/1.1 101, CONNECT frames to CBS100/190/200, READY, zero credentials)
 - CHANGED www.applicationdesigner.de MISCONFIG confidence raised to 55 (help.js ships full LiveDebugger/CallBuilder/AIDesigner endpoint map + /api/callbuilder/ proxy prefix + AIDesigner backend router)
 - CHANGED Risk score increased to 68 (full primitive chain confirmed read-only)
+
+## 2026-09-05 04:44:49 UTC
+- NEW www.applicationdesigner.de/help.json: ExtJS manifest confirms help.js as sole JS entry; resources.help/ directory listing blocked (403) — endpoint map only in help.js
+- CHANGED help.js static credential `LIVE_DEMO_CUSTOMER_TOKEN` (sha256: 8d2faac1...) and `APPDESIGNER_API_PATH=/api/callbuilder/` proxy prefix confirmed in live source; backend router endpoints for LiveDebugger
+- CHANGED cbs-proxy.api.live-manager.de WebSocket handshake (HTTP 101) with zero credentials confirmed 2026-09-04; CONNECT frames to CBS100/190/200 then READY — cid/service scoping enforcement still unverified
