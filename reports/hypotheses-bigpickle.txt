@@ -1,4 +1,4 @@
-## 2026-09-05 04:44:39 UTC [target] (model bigpickle)
+## 2026-09-05 08:40:01 UTC [target] (model bigpickle)
 [HYP] cbs-proxy WS router is an unauthenticated full-duplex relay to the CBS backend for any client-chosen cid/service; no object-level control exists at the router layer
 class: IDOR
 asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service={service}
@@ -19,3 +19,71 @@ impact: anonymous raw call/voicemail audio exfil for a real tenant via public JS
 testability: AUTH_HELPED
 [NEXT] HUMAN: with a valid operator session for an owned tenant (obtain via normal login), mint live-debug auth for the OWN cid and present it in a live_debug frame to wss://cbs-proxy?cid={own}, then repeat with cid={foreign} — record accept vs deny to settle the sole remaining binding check; never run anonymously and never subscribe to third-party streams (program PII rule). This is the only open hop; all pre-attach control is now demonstrated absent.
 [RISK] questnet-gmbh: 76 — Router-layer authorization now demonstrated entirely absent (any cid/service yields CONNECT+READY, no credential), closing four of five chain hops anonymously: public help.js credential → arbitrary-cid token mint → anonymous read of real-tenant voicenote index → unauthenticated relay READY to backend CBS. The final hop (live_debug frame binding) is deliberately untested per program PII constraints, not because controls were observed. A PoC report is well-formed on the demonstrated primitives alone; file as HIGH broken-auth/IDOR when the program state allows, without echoing PII or touching live streams. Surface frozen at 4 hosts; breadth exhausted.
+[HYP] Azure Blob Storage Secret Key in FreeSWITCH mod_http_cache config
+class: SECRET
+asset: freeswitch/src/mod/applications/mod_http_cache/conf/autoload_configs/http_cache.conf.xml:37-38
+confidence: 10
+reasoning: The Azure storage access key `kOOY4Y/sqZU9bsLjmN+9McVwTry+UIn1Owt4Zs/2S2FQT0eAWLKskZ0V6/gGFqCAKVvwXoGjqUn7PNbVjhZiNA==` is present in the FreeSWITCH upstream config file. However: (1) the domain is `account.blob.core.windows.net` (placeholder), (2) the author of the commit is Andrey Volk (upstream SignalWire/FreeSWITCH maintainer), and (3) this file exists identically in upstream FreeSWITCH. This is upstream example config, NOT a questnet-added secret.
+impact: Informational (no real in-scope risk)
+verify_steps: Confirm `account.blob.core.windows.net` is not a live questnet storage account via passive DNS or Azure portal.
+[HYP] AWS Example Access Key in FreeSWITCH mod_http_cache config
+class: SECRET
+asset: freeswitch/src/mod/applications/mod_http_cache/conf/autoload_configs/http_cache.conf.xml:22
+confidence: 5
+reasoning: `AKIAIOSFOD_REDACTED` and `wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY` are the well-known AWS documentation example keys. These are NOT real credentials - they are the canonical example from AWS docs.
+impact: None (example/test credentials)
+verify_steps: N/A - known false positive.
+[HYP] Hardcoded FreeSWITCH ESL default password "ClueCon"
+class: MISCONFIG
+asset: freeswitch/scripts/perl/fs.pl:5, NEventSocket/NEventSocket/InboundSocket.cs:42, free-socks/examples/connection-load.rs:21
+confidence: 20
+reasoning: The string "ClueCon" appears as a default password parameter in ESL client libraries. This is the well-known FreeSWITCH default password. In free-socks it is a CLI default (`--password` arg), not a hardcoded secret. In NEventSocket it is a C# default parameter value. In freeswitch scripts it's a test script. None of these are live production credentials.
+impact: Informational (default credentials in library defaults, not production)
+verify_steps: Confirm that production deployments of these libraries do not rely on the default "ClueCon" password.
+[HYP] RSA Private Keys in sofia-sip test PEM files
+class: SECRET
+asset: freeswitch/libs/sofia-sip/libsofia-sip-ua/*/agent.pem, key.pem
+confidence: 5
+reasoning: These .pem files contain RSA private keys but are upstream test/example certificates bundled with the sofia-sip library. They are publicly known test certs from the upstream project, not questnet production keys.
+impact: None (upstream test certificates)
+verify_steps: N/A
+[HYP] cbs-proxy WS router is an unauthenticated full-duplex relay to CBS backend; only the binary live_debug frame binding remains unverified
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service={service}
+confidence: 84
+reasoning: Anonymous WS upgrades with cid=999999999 and service=999999 (both invalid) return HTTP/1.1 101 plus byte-identical frame set CONNECT CBS100/CBS190/CBS200 then PROXY READY — same as cid=1, zero credentials/headers. Public static credential (sha256 8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf) mints live-debug auth for arbitrary customer_id (cid=2 success:true); no watched endpoint enforces token→cid ownership. Attacker controls every element (cid, service, minted token) the relay could bind on; the only remaining control is CBS-side validation of the live_debug frame payload.
+evidence_needed: whether CBS rejects a live_debug packet whose minted token was issued for a cid different from the presenting session's cid.
+verify_steps: AUTH_HELPED only — operator session: mint via auth.php for OWN cid, present in live_debug frame for FOREIGN cid, record deny vs connect; own tenant only, never subscribe to real third-party streams.
+impact: anonymous bidirectional pipe to internal CBS business systems (CBS100/190/200) by any tenant id; if frame binding absent, cross-tenant live call/debug attach (voice/PII) — HIGH/CRITICAL.
+testability: AUTH_HELPED
+[HYP] Voicenote raw-audio exfil gate (403 "No VPN detected.") is credential-satisfiable via the public-credential chain
+class: IDOR
+asset: https://www.applicationdesigner.de/extjs/voicenotes/download.php?file={uuid-from-get.php}
+confidence: 60
+reasoning: get.php/check.php return the token-bound tenant's voicenote index anonymously (customer_id ignored) including UUID filenames; download.php returned 403 "No VPN detected." without a session; auth.php demonstrates tokens/sessions mintable from the public static credential. Unverified whether the download gate checks the presenting session's tenant vs the demo tenant.
+evidence_needed: whether a session obtained via the public-credential chain passes download.php's gate for the demo tenant's own files.
+verify_steps: AUTH_HELPED — own demo tenant only; behavioral gating compare with/without session cookies; never fetch third-party audio.
+impact: anonymous raw call/voicemail audio exfil for a real tenant via public JS credential — HIGH if gate credential-satisfiable.
+testability: AUTH_HELPED
+[NEXT] HUMAN: with a valid operator session for an owned tenant, run the two remaining gated checks in one pass — (a) mint live-debug auth for the OWN cid, present it in a live_debug frame to wss://cbs-proxy?cid={own} then with cid={foreign}, record accept vs deny to settle frame binding; (b) call voicenotes/download.php with a session cookie minted via the public-credential chain against the demo tenant's OWN file to test the raw-audio gate. Own-tenant only; never subscribe to or fetch third-party streams/audio (program PII rule). This is the only open hop; all pre-attach router control is demonstrated absent and every anonymous probe is exhausted.
+[RISK] questnet-gmbh: 77 — The demonstrated read-only primitive chain is fully confirmed and stable: public help.js static credential → arbitrary-cid live-debug token mint (cid=2 success:true) → anonymous read of a real tenant's voicenote index (customer_id ignored, PII incl. phone numbers) → unauthenticated relay READY to backend CBS for any client-chosen cid/service. Four of five hops closed anonymously; only the binary live_debug frame binding and raw-audio download gate remain — untested solely because both require a live session / real-stream subscription (program PII restriction), not because controls were observed. Risk ticks up marginally as the WCAG-equivalent "no control at every observed layer" pattern persists and the PoC report is well-formed on the demonstrated primitives. No PII echoed, no recordings fetched, no live streams subscribed, no mutations. Surface frozen at 4 hosts; breadth exhausted.
+[HYP] cbs-proxy WS router is an unauthenticated full-duplex relay to CBS backend; only the binary live_debug frame binding remains unverified
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service={service}
+confidence: 84
+reasoning: Anonymous WS upgrades with cid=999999999 and service=999999 (both invalid) return HTTP/1.1 101 plus byte-identical CONNECT CBS100/CBS190/CBS200 then PROXY READY — same as cid=1, zero credentials. Public static credential (sha256 8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf) mints live-debug auth for arbitrary customer_id (cid=2 success:true); no watched endpoint enforces token→cid ownership; attacker controls every element (cid, service, minted token) the router could bind on.
+evidence_needed: whether CBS rejects a live_debug packet whose minted token was issued for a different cid than the presenting session's cid.
+verify_steps: AUTH_HELPED only — operator session: mint for OWN cid, present in live_debug frame for FOREIGN cid, record deny vs connect; own tenant only, never subscribe to real streams.
+impact: anonymous bidirectional pipe to internal CBS systems (CBS100/190/200) by any tenant id; if frame binding absent, cross-tenant live call/debug attach (voice/PII) — HIGH/CRITICAL.
+testability: AUTH_HELPED
+[HYP] Voicenote raw-audio exfil gate (403 "No VPN detected.") is credential-satisfiable via the public-credential chain
+class: IDOR
+asset: https://www.applicationdesigner.de/extjs/voicenotes/download.php?file={uuid-from-get.php}
+confidence: 60
+reasoning: get.php/check.php return the token-bound tenant's voicenote index anonymously (customer_id ignored) incl. UUID filenames; download.php returned 403 "No VPN detected." without a session; auth.php demonstrates sessions/tokens mintable from the public static credential. Unverified whether download's gate checks the presenting session's tenant vs the demo tenant.
+evidence_needed: whether a session obtained via the public-credential chain passes download.php for the demo tenant's own files.
+verify_steps: AUTH_HELPED — own demo tenant only; behavioral gating compare with/without session cookies; never fetch third-party audio.
+impact: anonymous raw call/voicemail audio exfil for a real tenant via public JS credential — HIGH if gate credential-satisfiable.
+testability: AUTH_HELPED
+[NEXT] HUMAN: obtain a valid operator session for an owned tenant, then settle both open hops in one pass — (a) mint live-debug auth for the OWN cid, present it in a live_debug frame to wss://cbs-proxy?cid={own} then with cid={foreign}, record accept vs deny for frame binding; (b) call voicenotes/download.php with a session cookie minted via the public-credential chain against the demo tenant's OWN file to test the raw-audio gate. Own-tenant only; never subscribe to or fetch third-party streams/audio (program PII rule). This is the only open hop; all pre-attach router control is demonstrated absent and every anonymous probe is exhausted.
+[RISK] questnet-gmbh: 77 — Demonstrated read-only primitive chain fully confirmed and stable: public help.js static credential → arbitrary-cid live-debug token mint (cid=2 success:true) → anonymous read of a real tenant's voicenote index (customer_id ignored, PII incl. phone numbers) → unauthenticated relay READY to backend CBS for any client-chosen cid/service. Four of five hops closed anonymously; the binary live_debug frame binding and raw-audio download gate remain untested solely because both require a live session / real-stream subscription (program PII restriction), not because controls were observed. PoC report is well-formed on the demonstrated primitives (file as HIGH broken-auth/IDOR). No PII echoed, no recordings fetched, no live streams subscribed, no mutations. Surface frozen at 4 hosts; breadth exhausted.
