@@ -300,3 +300,33 @@ impact: same-host anonymous relay to internal AI/CBS backend; supporting the cha
 testability: PASSIVE
 [NEXT] PROBE: WS-upgrade GET to wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=999999999&service=100 with Upgrade: websocket, Connection: Upgrade, Sec-WebSocket-Version: 13, Sec-WebSocket-Key: <base64nonce> — read-only handshake, observe CONNECT/READY vs error, compare with prior cid=1 evidence; do NOT send live_debug/liveSub packets. Decides whether cid is validated pre-BOLA-attach.
 [RISK] questnet-gmbh: 74 — Public static credential in help.js now demonstrated to grant anonymous read of a real tenant's voice-note metadata (phone-number PII) and anonymous per-cid live-debug token mint, feeding an anonymous WS proxy to backend CBS systems; only the WS-side binding check and raw-audio exfil (session/VPN-gated) remain unproven. PII was observed but not echoed/reports restricted; no recordings fetched, no live stream subscribed, no agent actions invoked. Surface frozen at 4 hosts; PoC still required before valid-bug gate.
+## 2026-09-05 00:15:29 UTC [target] (model bigpickle)
+[HYP] WS-side binding check absent: anonymous cbs-proxy upgrade accepts any client-supplied cid/service (no token binding on binary frames)
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=<ClientType>&cid={cid}&service={service}
+confidence: 72
+reasoning: Re-confirmed today the anonymous chain up to the WS hop: public static credential (sha256 8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf) in help.js is the sole auth for auth.php mint (foreign cid=2 minted success:true), getCustomers (returns only 131727), voicenotes/check,get (customer_id ignored, identical totals for cid=2 vs 131727). No endpoint observed enforces token→cid ownership. The upgrade handshake already reaches backend CBS servers anonymously (ACCEPTED), so the only unverified object-level control is inside the WS session layer (binary-frame binding of minted aid to the presenting cid).
+evidence_needed: whether a cbs-proxy WS session opened for cid X delivers data frames (READY/CONNECT/stream) when the presented credential was minted for cid Y, or refuses the subscribe.
+verify_steps: AUTH_HELPED — with a valid operator session, mint for OWN cid, then open wss://cbs-proxy?cid={over} and observe first-frame deny vs data; behavioral comparison only. Never subscribe to real live streams anonymously.
+impact: cross-tenant attach to customer live call/debug streams (voice/PII) — HIGH/CRITICAL if frames are not bound.
+testability: AUTH_HELPED
+[HYP] Static demo credential exposes foreign-tenant voice-note index because customer_id is decoration
+class: IDOR
+asset: https://www.applicationdesigner.de/extjs/voicenotes/check.php|get.php|details.php?token={pub-static}&customer_id={cid}
+confidence: 85
+reasoning: Confirmed today anonymously: check.php returns success:true total=1 max_id=10942 identically for cid=2 (foreign) and cid=131727 (demo own) with the public static credential — customer_id plainly ignored; matches get.php behavior (ACCEPTED for 131727). The token is the entire authorization; any customer_id renders the same tenant object. details.php/delete.php gating unexamined.
+evidence_needed: whether details.php exposes per-file metadata for the same token-bound tenant regardless of customer_id, and whether delete.php requires session (mutating, skipped).
+verify_steps: PASSIVE confirmation only — GET check.php?customer_id=2 vs 131727 (done, identical). Do NOT list/download recordings; do NOT touch delete.php.
+impact: anonymous cross-tenant voice-note metadata index (PII incl. phone numbers) of a real tenant via public JS credential; raw audio still VPN/session-gated — HIGH compound, MEDIUM standalone.
+testability: PASSIVE
+[HYP] Demo credential chain enables silent cross-customer debug-token reuse against the cbs backend router
+class: IDOR
+asset: https://www.applicationdesigner.de/extjs/livedebugger/{auth,get,subscribe}.php?token={pub-static}
+confidence: 80
+reasoning: auth.php mints per-tenant debug auth for arbitrary customer_id with success:true using the static credential (ACCEPTED); siblings under livedebugger/ (get/subscribe endpoints implied by LiveDebugger client in help.js) consume the minted sid/aid. If none of them re-validate an operator session, the mint alone grants the debug context of a foreign tenant, which is the exact entry the cbs-proxy chain needs.
+evidence_needed: whether livedebugger sessions minted for a foreign cid can be presented to cbs-proxy with service AND get frame-level acceptance.
+verify_steps: AUTH_HELPED — behavioral: mint for own cid via session, mint for foreign cid via static credential, compare success; never subscribe to live streams.
+impact: cross-tenant debug session establishment feeding the WS attach — HIGH (chained).
+testability: AUTH_HELPED
+[NEXT] RAG: query corpus for any earlier valid-operator cbs-proxy handshake transcript (origin/cid/service frame exchange) before spending the remaining AUTH_HELPED coin — to confirm whether the proxy echoes a per-connection app-level READY/ERROR that would prove/dismiss binding without new operator time.
+[RISK] questnet-gmbh: 74 — No new exploitable surface found this session; three pending hypotheses closed (agent-token mint gated, callbuilder relay absent, help.json inert), while the two ACCEPTED primitives (static-credential anonymous per-cid token mint; anonymous WS upgrade reaching backend CBS with client-supplied cid/service) remain the live chain. Cross-tenant voice-note index (PII) is confirmed token-bound with customer_id decoration ignored; raw audio exfil and frame-level WS binding are the two remaining unproven hops before a valid high/ critical bug can be filed. The next move is corpus RAG for WS frame evidence, since all remaining verification steps are AUTH_HELPED and should not be run anonymously. PII was observed but not echoed; no recordings fetched, no live streams subscribed, no mutations performed.

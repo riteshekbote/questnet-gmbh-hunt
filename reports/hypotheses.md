@@ -129,3 +129,17 @@
 - LEARN: REJECTED AUTH @ www.live-manager.de rs param: GET /?rs= not reflected/server-side redirected to external domain, so no anonymous open redirect
 - LEARN: REJECTED wildcard-subdomain-enum @ *.live-manager.de: DEDICATED-DEEP.md confirms 8632 resolving hostnames all share CDN/wildcard IPs — no dedicated subdomain su
 - LEARN: REJECTED api.live-manager.de debug endpoints: host does not resolve; no surface to probe — removed from active hypotheses
+
+## RANKED HYPOTHESES 2026-09-05 00:18:43 UTC
+- [85] chain: Cross-tenant live-debug stream subscription via public-credential auth.php mint + cbs-proxy WS (from art/lead_nemotron3.txt)
+- [72] wss://cbs-proxy.api.live-manager.de/?origin=<ClientType>&cid={cid}&service={service}: WS-side binding check absent: anonymous cbs-proxy upgrade accepts any client-supplied cid/service (no token binding on binary frames) (from art/lead_bigpickle.txt)
+- NEXT(hypotheses-bigpickle.txt): RAG: query corpus for any earlier valid-operator cbs-proxy handshake transcript (origin/cid/service frame exchange) before spending the remaining AUTH_HELPED co
+- NEXT(hypotheses-nemotron3.txt): PROBE: GET https://www.applicationdesigner.de/help.json — extract full endpoint/proxy model from ExtJS manifest to discover additional internal hosts behind cbs
+- LEARN: ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WebSocket upgrade reaches backend CBS servers with client-supplied cid/service and no observed token — 
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de: ExtJS help app (help.js, help.json, resources.help/*) publicly exposes internal CBS proxy endpoints and backend
+- LEARN: ACCEPTED IDOR @ www.applicationdesigner.de/extjs/livedebugger/auth.php: anonymous minting of per-tenant live-debug auth token for arbitrary customer_id using a 
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: public ExtJS bundle ships static backend credential + full LiveDebugger/CallBuilder/AIDesigner endpoint
+- LEARN: REJECTED IDOR @ www.applicationdesigner.de/extjs/common/getCustomers.php: token-scoped — returns only demo customer 131727; no global tenant directory
+- LEARN: REJECTED AUTH @ www.live-manager.de rs param: GET /?rs= not reflected/server-side redirected to external domain, so no anonymous open redirect
+- LEARN: REJECTED wildcard-subdomain-enum @ *.live-manager.de: DEDICATED-DEEP.md confirms 8632 resolving hostnames all share CDN/wildcard IPs — no dedicated subdomain su
+- LEARN: REJECTED api.live-manager.de debug endpoints: host does not resolve; no surface to probe — removed from active hypotheses

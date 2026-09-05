@@ -1,9 +1,23 @@
-## 2026-09-04 22:19:35 UTC [target] (model nemotron3)
+## 2026-09-05 00:18:31 UTC [target] (model nemotron3)
+[NEW] www.applicationdesigner.de/extjs/livedebugger/auth.php: confirmed anonymous minting of per-tenant live-debug auth tokens for arbitrary customer_id (cid=2 success:true) using static credential (sha256 8d2faac1...) embedded in public help.js
+[NEW] Cross-tenant chain primitive confirmed: public static credential in help.js → auth.php token mint for ANY cid → anonymous WS 101 to cbs-proxy.api.live-manager.de
+[CHANGED] cbs-proxy.api.live-manager.de IDOR confidence raised to 72 (live probe 2026-09-04: HTTP/1.1 101, CONNECT frames to CBS100/190/200, READY, zero credentials)
+[CHANGED] www.applicationdesigner.de MISCONFIG confidence raised to 55 (help.js ships full LiveDebugger/CallBuilder/AIDesigner endpoint map + /api/callbuilder/ proxy prefix + AIDesigner backend router)
+[CHANGED] Risk score increased to 68 (full primitive chain confirmed read-only)
 [PRIO] cbs-proxy.api.live-manager.de,8.90,attack_surface=9,business_value=10,tech_exposure=9,gate_ease=10,cloud_surface=8,freshness=5
-[PRIO] www.live-manager.de,7.30,attack_surface=7,business_value=10,tech_exposure=7,gate_ease=6,cloud_surface=6,freshness=5
 [PRIO] www.applicationdesigner.de,6.85,attack_surface=8,business_value=7,tech_exposure=8,gate_ease=6,cloud_surface=5,freshness=5
+[PRIO] www.live-manager.de,7.30,attack_surface=7,business_value=10,tech_exposure=7,gate_ease=6,cloud_surface=6,freshness=5
 [PRIO] auth.live-manager.de,5.95,attack_surface=6,business_value=10,tech_exposure=6,gate_ease=5,cloud_surface=6,freshness=5
 [PRIO] dev.applicationdesigner.de,5.35,attack_surface=6,business_value=6,tech_exposure=6,gate_ease=4,cloud_surface=5,freshness=5
+[HYP] Cross-tenant live-debug stream subscription via public-credential auth.php mint + cbs-proxy WS
+class: IDOR
+asset: chain GET https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token={public_static}&customer_id={cid}&srn={service} -> wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={cid}&service={service}
+confidence: 85
+reasoning: help.js publicly ships static credential (sha256 8d2faac1...) that auth.php accepts in lieu of a session ("Not logged in" only when token omitted); auth.php returns success:true and a 64-hex auth+ttl for both owned demo cid 131727 and foreign cid 2 — no ownership/session binding observed. Anonymous WS upgrade to cbs-proxy returns 101 and the LiveDebugger client then sends packet live_debug{customer_id,CLI,srn,token,ttl,hash} to attach to a tenant call-flow session. A real attacker needs only the public JS credential, then any cid.
+evidence_needed: confirm the cbs-proxy/live_debug backend binds minted token to a real operator session owner of the cid (a valid customer session denying a foreign cid that was nonetheless minted) — without a binding check, minting-is-authorization and cross-tenant call-flow/voice debug attach is possible
+verify_steps: (AUTH_HELPED/HUMAN, do not perform anonymously) with a valid operator session, mint token for OWN cid, then present it to cbs-proxy for a FOREIGN cid and confirm server denial; behavioral comparison only. No live debug data subscribed.
+impact: cross-tenant attach to customer business-system live call/debug streams (PII/voice) — HIGH/CRITICAL if no binding check
+testability: AUTH_HELPED (minting anonymous-PASSIVE confirmed; stream-attach confirmation needs session+human)
 [HYP] Unauthenticated CBS WebSocket proxy allows arbitrary customer_id cross-tenant subscription
 class: IDOR
 asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={customer_id}&service={service_number}
@@ -13,15 +27,6 @@ evidence_needed: proxy enforces authenticated session token tied to claimed cid 
 verify_steps: WS upgrade to wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=1&service=100 with Upgrade: websocket, Connection: Upgrade, Sec-WebSocket-Version: 13, Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==; observe CONNECT/READY; repeat with foreign cid (e.g., 999999) and note if READY/data still returned; do NOT subscribe to live customer data
 impact: cross-tenant exposure of customer business-system call streams / live debugging (PII/voice data) — HIGH if unauthenticated actor can enumerate cid
 testability: PASSIVE (handshake reachable anonymously; auth-scoping confirmation requires valid session = AUTH_HELPED/HUMAN)
-[HYP] Cross-tenant live-debug stream subscription via public-credential auth.php mint + cbs-proxy WS
-class: IDOR
-asset: chain GET https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token={publicstatic}&customer_id={cid}&srn={service} -> wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={cid}&service={service}
-confidence: 85
-reasoning: help.js publicly ships static credential (sha256 8d2faac1...) that auth.php accepts in lieu of a session ("Not logged in" only when token omitted); auth.php returns success:true and a 64-hex auth+ttl for both owned demo cid 131727 and foreign cid 2 — no ownership/session binding observed. Prior accepted evidence: anonymous WS upgrade to cbs-proxy returns 101 and the LiveDebugger client then sends packet live_debug{customer_id,CLI,srn,token,ttl,hash} to attach to a tenant call-flow session. A real attacker needs only the public JS credential, then any cid.
-evidence_needed: confirm the cbs-proxy/live_debug backend binds minted token to a real operator session owner of the cid (a valid customer session denying a foreign cid that was nonetheless minted) — without a binding check, minting-is-authorization and cross-tenant call-flow/voice debug attach is possible
-verify_steps: (AUTH_HELPED/HUMAN, do not perform anonymously) with a valid operator session, mint token for OWN cid, then present it to cbs-proxy for a FOREIGN cid and confirm server denial; behavioral comparison only. No live debug data subscribed.
-impact: cross-tenant attach to customer business-system live call/debug streams (PII/voice) — HIGH/CRITICAL if no binding check
-testability: AUTH_HELPED (minting anonymous-PASSIVE confirmed; stream-attach confirmation needs session+human)
 [HYP] Post-login open redirect via rs parameter enables OAuth code theft
 class: AUTH
 asset: https://www.live-manager.de/Login.aspx (rs base64 return-url flow)

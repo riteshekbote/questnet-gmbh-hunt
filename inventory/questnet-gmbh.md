@@ -87,3 +87,10 @@ www.live-manager.de
 ## 2026-09-04 20:10:34 UTC
 
 ## 2026-09-04 22:19:45 UTC
+
+## 2026-09-05 00:18:43 UTC
+- NEW www.applicationdesigner.de/extjs/livedebugger/auth.php: confirmed anonymous minting of per-tenant live-debug auth tokens for arbitrary customer_id (cid=2 success:true) using static credential (sha256 
+- NEW Cross-tenant chain primitive confirmed: public static credential in help.js → auth.php token mint for ANY cid → anonymous WS 101 to cbs-proxy.api.live-manager.de
+- CHANGED cbs-proxy.api.live-manager.de IDOR confidence raised to 72 (live probe 2026-09-04: HTTP/1.1 101, CONNECT frames to CBS100/190/200, READY, zero credentials)
+- CHANGED www.applicationdesigner.de MISCONFIG confidence raised to 55 (help.js ships full LiveDebugger/CallBuilder/AIDesigner endpoint map + /api/callbuilder/ proxy prefix + AIDesigner backend router)
+- CHANGED Risk score increased to 68 (full primitive chain confirmed read-only)
