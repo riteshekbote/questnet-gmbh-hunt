@@ -2813,3 +2813,144 @@ testability: PASSIVE
 
 **STEP 7 — RISK**  
 [RISK] questnet-gmbh: 68 — Full primitive chain now confirmed read-only: public static credential in help.js (sha256 8d2faac1...) → per-tenant debug auth token minted for ANY customer_id via auth.php → anonymous 101 WS to in-scope cbs-proxy backend. Cross-tenant live call-flow/voice debug attach is plausible and only blocked by an unverified WS-side binding. Real program surface stays at 4 hosts; CDN-wildcard breadth 0 caps scope expansion. PoC required before valid bug gate; no live customer data touched.
+===== ANALYST nemotron3 2026-09-05 17:50:12 UTC =====
+[0m
+> build · nemotron-3-ultra-free
+[0m
+[0m$ [0mls -la /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/
+total 164
+drwxr-xr-x 12 runner runner  4096 Sep  5 17:40 .
+drwxr-xr-x  3 runner runner  4096 Sep  5 17:39 ..
+drwxr-xr-x  7 runner runner  4096 Sep  5 17:40 .git
+drwxr-xr-x  3 runner runner  4096 Sep  5 17:39 .github
+-rw-r--r--  1 runner runner  1609 Sep  5 17:39 README.md
+-rw-r--r--  1 runner runner    43 Sep  5 17:40 analyst-out.txt
+-rw-r--r--  1 runner runner 37180 Sep  5 17:40 analyst-prompt.txt
+-rw-r--r--  1 runner runner 33460 Sep  5 17:40 ctx.txt
+drwxr-xr-x  2 runner runner  4096 Sep  5 17:39 inventory
+drwxr-xr-x  2 runner runner  4096 Sep  5 17:39 knowledge
+drwxr-xr-x  2 runner runner  4096 Sep  5 17:39 leads
+-rw-r--r--  1 runner runner   580 Sep  5 17:39 probe-results.md
+drwxr-xr-x  2 runner runner  4096 Sep  5 17:39 recon-notes
+drwxr-xr-x  2 runner runner  4096 Sep  5 17:39 reports
+drwxr-xr-x  2 runner runner  4096 Sep  5 17:39 reposcan-raw
+-rw-r--r--  1 runner runner  3133 Sep  5 17:39 scope.yml
+drwxr-xr-x  2 runner runner  4096 Sep  5 17:39 scripts
+-rw-r--r--  1 runner runner    33 Sep  5 17:39 state_bigpickle.json
+-rw-r--r--  1 runner runner    33 Sep  5 17:39 state_laguna.json
+-rw-r--r--  1 runner runner    33 Sep  5 17:39 state_ling3.json
+-rw-r--r--  1 runner runner    33 Sep  5 17:39 state_longcat.json
+-rw-r--r--  1 runner runner    33 Sep  5 17:39 state_mimo.json
+-rw-r--r--  1 runner runner    33 Sep  5 17:39 state_nemotron3.json
+drwxr-xr-x  2 runner runner  4096 Sep  5 17:39 triage
+[0m
+[0m→ [0mRead state_nemotron3.json
+[0m→ [0mRead scope.yml
+[0m→ [0mRead inventory/questnet-gmbh.md
+[0m→ [0mRead probe-results.md
+[0m
+[0m$ [0mls -la /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/leads/
+total 248
+drwxr-xr-x  2 runner runner   4096 Sep  5 17:39 .
+drwxr-xr-x 12 runner runner   4096 Sep  5 17:40 ..
+-rw-r--r--  1 runner runner  98622 Sep  5 17:39 lead-bigpickle.md
+-rw-r--r--  1 runner runner    765 Sep  5 17:39 lead-laguna.md
+-rw-r--r--  1 runner runner    750 Sep  5 17:39 lead-ling3.md
+-rw-r--r--  1 runner runner    780 Sep  5 17:39 lead-longcat.md
+-rw-r--r--  1 runner runner     18 Sep  5 17:39 lead-mimo.md
+-rw-r--r--  1 runner runner 115722 Sep  5 17:39 lead-nemotron3.md
+-rw-r--r--  1 runner runner   4335 Sep  5 17:39 reposcan-questnet-gmbh.md
+[0m
+[0m→ [0mRead leads/lead-nemotron3.md
+[0m→ [0mRead leads/lead-nemotron3.md[90m [offset=348][0m
+Now I have full context. Let me execute the 8-step analysis and output structured blocks.
+
+---
+
+### STEP 1 — DELTA
+
+[NEW] Bigpickle probe 2026-09-05 04:44: anonymous WS upgrade with `cid=999999999&service=999999` returns HTTP/1.1 101 + identical CONNECT CBS100/190/200 + PROXY READY frames — zero credentials, byte-identical to `cid=1`  
+[CHANGED] Cross-tenant primitive chain confirmed read-only: help.js static credential (sha256 8d2faac1...) → auth.php mints per-cid token for ANY customer_id → anonymous WS 101 to cbs-proxy with client-supplied cid/service  
+[CHANGED] Surface frozen at 4 live in-scope hosts since 2026-09-04: cbs-proxy.api.live-manager.de, www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de  
+[CHANGED] auth.live-manager.de remains unconfirmed (0 live HTTP, wildcard mirror)  
+[CHANGED] api.live-manager.de confirmed non-resolving (dropped from all models)
+
+---
+
+### STEP 2 — PRIORITIZE
+
+[PRIO] cbs-proxy.api.live-manager.de,8.90,attack_surface=9,business_value=10,tech_exposure=9,gate_ease=10,cloud_surface=8,freshness=5  
+[PRIO] www.applicationdesigner.de,7.15,attack_surface=8,business_value=7,tech_exposure=8,gate_ease=7,cloud_surface=5,freshness=5  
+[PRIO] www.live-manager.de,7.30,attack_surface=7,business_value=10,tech_exposure=7,gate_ease=6,cloud_surface=6,freshness=5  
+[PRIO] dev.applicationdesigner.de,5.35,attack_surface=6,business_value=6,tech_exposure=6,gate_ease=4,cloud_surface=5,freshness=5  
+[PRIO] auth.live-manager.de,5.95,attack_surface=6,business_value=10,tech_exposure=6,gate_ease=5,cloud_surface=6,freshness=5
+
+---
+
+### STEP 3 — HYPOTHESES
+
+[HYP] Cross-tenant live-debug/call attach via public-credential auth.php mint feeding an unbound cbs-proxy WS frame layer  
+class: IDOR  
+asset: chain GET https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token={LIVE_DEMO_CUSTOMER_TOKEN}&customer_id={cid}&srn={service} → wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={cid}&service={service}  
+confidence: 85  
+reasoning: help.js publicly ships static credential (sha256 8d2faac1...) that auth.php accepts in lieu of session ("Not logged in" only when token omitted); auth.php returns success:true and 64-hex auth+ttl for both demo cid 131727 and foreign cid 2 — no ownership/session binding observed. Anonymous WS upgrade to cbs-proxy returns 101 and LiveDebugger client sends packet live_debug{customer_id,CLI,srn,token,ttl,hash} to attach to tenant call-flow session. Attacker needs only public JS credential, then any cid.  
+evidence_needed: confirm cbs-proxy/live_debug backend binds minted token to real operator session owner of cid (valid customer session denying foreign cid that was nonetheless minted) — without binding check, minting-is-authorization and cross-tenant call-flow/voice debug attach possible  
+verify_steps: (AUTH_HELPED/HUMAN) with valid operator session, mint token for OWN cid, present it to cbs-proxy for FOREIGN cid and confirm server denial; behavioral comparison only. No live debug data subscribed.  
+impact: cross-tenant attach to customer business-system live call/debug streams (PII/voice) — HIGH/CRITICAL if no binding check  
+testability: AUTH_HELPED (minting anonymous-PASSIVE confirmed; stream-attach confirmation needs session+human)
+
+[HYP] Unauthenticated CBS WebSocket proxy allows arbitrary customer_id cross-tenant subscription  
+class: IDOR  
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={customer_id}&service={service_number}  
+confidence: 84  
+reasoning: Live probes (2026-09-04, 2026-09-05) confirm anonymous WS upgrade with client-supplied cid/service returns HTTP/1.1 101, CONNECT frames to CBS100/190/200, then PROXY READY — zero credentials/headers beyond upgrade. Test with cid=999999999/service=999999 yielded byte-identical frame set to cid=1. No proxy-level auth or cid validation observed pre-upgrade.  
+evidence_needed: proxy enforces authenticated session token tied to claimed cid and denies foreign cid; without it, cross-tenant live call/debug stream subscription possible  
+verify_steps: WS upgrade GET to wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=1&service=100 with Upgrade: websocket, Connection: Upgrade, Sec-WebSocket-Version: 13, Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==; observe CONNECT/READY; repeat with foreign cid (e.g., 999999) and note if READY/data still returned; do NOT subscribe to live customer data  
+impact: cross-tenant exposure of customer business-system call streams / live debugging (PII/voice data) — HIGH if unauthenticated actor can enumerate cid  
+testability: PASSIVE (handshake reachable anonymously; auth-scoping confirmation requires valid session = AUTH_HELPED/HUMAN)
+
+[HYP] Static demo credential exposes foreign-tenant voice-note metadata (PII) via customer_id decoration  
+class: IDOR  
+asset: https://www.applicationdesigner.de/extjs/voicenotes/check.php|get.php?token={LIVE_DEMO_CUSTOMER_TOKEN}&customer_id={cid}  
+confidence: 85  
+reasoning: Confirmed anonymously: check.php returns success:true total=1 max_id=10942 identically for cid=2 (foreign) and cid=131727 (demo own) with public static credential — customer_id plainly ignored; matches get.php behavior (ACCEPTED for 131727). The token is the entire authorization; any customer_id renders the same tenant object.  
+evidence_needed: whether details.php exposes per-file metadata for the same token-bound tenant regardless of customer_id, and whether delete.php requires session (mutating, skipped)  
+verify_steps: PASSIVE confirmation only — GET check.php?customer_id=2 vs 131727 (done, identical). Do NOT list/download recordings; do NOT touch delete.php.  
+impact: anonymous cross-tenant voice-note metadata index (PII incl. phone numbers) of a real tenant via public JS credential; raw audio still VPN/session-gated — HIGH compound, MEDIUM standalone  
+testability: PASSIVE
+
+---
+
+### STEP 4 — SELF-CRITIQUE
+
+[PARKED] Post-login open redirect via rs parameter enables OAuth code theft: confidence 45 but AUTH_HELPED testability blocks passive verification; requires valid customer session which we cannot obtain — parked until auth-assisted context available  
+[PARKED] Voicenote raw-audio exfil gate (session + "No VPN detected."): confidence 60 but AUTH_HELPED only; cannot verify anonymously per program PII rule  
+[PARKED] AI Designer agent-token endpoint mints tenant-bound tokens for arbitrary customerId: confidence 55 but parallel to confirmed auth.php flaw; lower priority  
+[FINAL] 1. Cross-tenant live-debug/call attach via public-credential auth.php mint feeding an unbound cbs-proxy WS frame layer (85)  
+[FINAL] 2. Static demo credential exposes foreign-tenant voice-note metadata (PII) via customer_id decoration (85)  
+[FINAL] 3. Unauthenticated CBS WebSocket proxy allows arbitrary customer_id cross-tenant subscription (84)
+
+---
+
+### STEP 5 — NEXT ACTION
+
+[NEXT] PROBE: WS-upgrade GET to wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=999999999&service=100 with Upgrade: websocket, Connection: Upgrade, Sec-WebSocket-Version: 13, Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ== — observe handshake (101 vs 4xx) and first frames (CONNECT/READY vs error) to confirm cid scoping enforcement (passive, read-only, ~1 req)
+
+---
+
+### STEP 6 — LEARNING
+
+[LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WebSocket upgrade reaches backend CBS servers with client-supplied cid/service and no observed token — candidates for cross-tenant BOLA  
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de: ExtJS help app (help.js, help.json, resources.help/*) publicly exposes internal CBS proxy endpoints and backend hostnames  
+[LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/livedebugger/auth.php: anonymous minting of per-tenant live-debug auth token for arbitrary customer_id using a static credential embedded in public help.js — observed success:true for foreign cid=2, "Not logged in" only when token omitted  
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: public ExtJS bundle ships static backend credential + full LiveDebugger/CallBuilder/AIDesigner endpoint map including /api/callbuilder/ proxy prefix and AIDesigner backend router  
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/common/getCustomers.php: token-scoped — returns only demo customer 131727; no global tenant directory  
+[LEARN] REJECTED AUTH @ www.live-manager.de rs param: GET /?rs= not reflected/server-side redirected to external domain, so no anonymous open redirect  
+[LEARN] REJECTED wildcard-subdomain-enum @ *.live-manager.de: DEDICATED-DEEP.md confirms 8632 resolving hostnames all share CDN/wildcard IPs — no dedicated subdomain surface exists; attack surface is path-based behind CDN  
+[LEARN] REJECTED api.live-manager.de debug endpoints: host does not resolve; no surface to probe — removed from active hypotheses
+
+---
+
+### STEP 7 — RISK
+
+[RISK] questnet-gmbh: 68 — Full primitive chain now confirmed read-only: public static credential in help.js (sha256 8d2faac1...) → per-tenant debug auth token minted for ANY customer_id via auth.php → anonymous 101 WS to in-scope cbs-proxy backend. Cross-tenant live call-flow/voice debug attach is plausible and only blocked by an unverified WS-side binding. Real program surface stays at 4 hosts; CDN-wildcard breadth 0 caps scope expansion. PoC required before valid bug gate; no live customer data touched.

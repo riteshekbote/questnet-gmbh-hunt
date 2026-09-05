@@ -9051,3 +9051,317 @@ STEP 7 — RISK
 ```
 [RISK] questnet-gmbh: 77 — NO_DELTA cycle. Chain stable and fully re-confirmed read-only: public help.js static credential (sha256 8d2faac1…) → arbitrary-cid live-debug token mint (cid=2 success:true) → anonymous read of a real tenant's voicenote index (customer_id ignored, PII incl. phone numbers; PII not echoed) → unauthenticated WS relay READY to backend CBS for any client-chosen cid/service. Four of five hops closed anonymously; the binary live_debug frame binding and raw-audio download gate remain, untested solely because both require a live session/real-stream subscription (program PII restriction), not because controls were observed. PoC report is well-formed on the demonstrated primitives (file as HIGH broken-auth/IDOR once program state allows; triage HOLD verdict supports this at CVSS 8.6). Risk holds at 77 — no new control, no new surface, breadth exhausted. No recordings fetched, no live streams subscribed, no mutations, no PII echoed.
 ```
+===== ANALYST bigpickle 2026-09-05 17:50:12 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/ 2>/dev/null; echo "---"; ls /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/art/ 2>/dev/null | tail -20
+README.md
+analyst-out.txt
+analyst-prompt.txt
+ctx.txt
+inventory
+knowledge
+leads
+probe-results.md
+recon-notes
+reports
+reposcan-raw
+scope.yml
+scripts
+state_bigpickle.json
+state_laguna.json
+state_ling3.json
+state_longcat.json
+state_mimo.json
+state_nemotron3.json
+triage
+---
+[0m
+Let me review the current state to determine if there's any delta.
+[0m$ [0mcd /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/; cat state_bigpickle.json 2>/dev/null | head -50; echo "===ART==="; ls -la art/ 2>/dev/null; echo "===LEADS==="; tail -5 leads/* 2>/dev/null
+{"phase": "POC", "target": "api"}===ART===
+===LEADS===
+[0m
+The state is unchanged. Let me check the recent probe results and whether anything new has been observed since the last cycle.
+[0m$ [0mcd /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/; ls -la probe-results.md reports/ triage/ 2>/dev/null; echo "===RECENT FILES==="; find . -name "*.md" -newermt "2026-09-05 15:31" 2>/dev/null; find . -name "*.json" -newermt "2026-09-05 15:31" 2>/dev/null
+-rw-r--r-- 1 runner runner  580 Sep  5 17:37 probe-results.md
+
+reports/:
+total 904
+drwxr-xr-x  2 runner runner   4096 Sep  5 17:37 .
+drwxr-xr-x 12 runner runner   4096 Sep  5 17:38 ..
+-rw-r--r--  1 runner runner 540377 Sep  5 17:37 analyst-bigpickle.log
+-rw-r--r--  1 runner runner   3255 Sep  5 17:37 analyst-laguna.log
+-rw-r--r--  1 runner runner   3240 Sep  5 17:37 analyst-ling3.log
+-rw-r--r--  1 runner runner   3270 Sep  5 17:37 analyst-longcat.log
+-rw-r--r--  1 runner runner 291864 Sep  5 17:37 analyst-nemotron3.log
+-rw-r--r--  1 runner runner   7412 Sep  5 17:37 hypotheses-bigpickle.txt
+-rw-r--r--  1 runner runner     51 Sep  5 17:37 hypotheses-laguna.txt
+-rw-r--r--  1 runner runner     50 Sep  5 17:37 hypotheses-ling3.txt
+-rw-r--r--  1 runner runner     52 Sep  5 17:37 hypotheses-longcat.txt
+-rw-r--r--  1 runner runner   9040 Sep  5 17:37 hypotheses-nemotron3.txt
+-rw-r--r--  1 runner runner  30455 Sep  5 17:37 hypotheses.md
+-rw-r--r--  1 runner runner    260 Sep  5 17:37 valid-bugs.md
+
+triage/:
+total 92
+drwxr-xr-x  2 runner runner 4096 Sep  5 17:37 .
+drwxr-xr-x 12 runner runner 4096 Sep  5 17:38 ..
+-rw-r--r--  1 runner runner    0 Sep  5 17:37 .gitkeep
+-rw-r--r--  1 runner runner  228 Sep  5 17:37 run-2026-09-02-21-42.md
+-rw-r--r--  1 runner runner  150 Sep  5 17:37 run-2026-09-02-23-54.md
+-rw-r--r--  1 runner runner  754 Sep  5 17:37 run-2026-09-03-03-39.md
+-rw-r--r--  1 runner runner  315 Sep  5 17:37 run-2026-09-03-08-18.md
+-rw-r--r--  1 runner runner  143 Sep  5 17:37 run-2026-09-03-12-53.md
+-rw-r--r--  1 runner runner  229 Sep  5 17:37 run-2026-09-03-16-58.md
+-rw-r--r--  1 runner runner  163 Sep  5 17:37 run-2026-09-03-19-43.md
+-rw-r--r--  1 runner runner  269 Sep  5 17:37 run-2026-09-03-22-24.md
+-rw-r--r--  1 runner runner  214 Sep  5 17:37 run-2026-09-04-00-23.md
+-rw-r--r--  1 runner runner  186 Sep  5 17:37 run-2026-09-04-05-05.md
+-rw-r--r--  1 runner runner  226 Sep  5 17:37 run-2026-09-04-09-45.md
+-rw-r--r--  1 runner runner  174 Sep  5 17:37 run-2026-09-04-14-05.md
+-rw-r--r--  1 runner runner  144 Sep  5 17:37 run-2026-09-04-17-42.md
+-rw-r--r--  1 runner runner  190 Sep  5 17:37 run-2026-09-04-19-53.md
+-rw-r--r--  1 runner runner  189 Sep  5 17:37 run-2026-09-04-22-13.md
+-rw-r--r--  1 runner runner  163 Sep  5 17:37 run-2026-09-05-00-11.md
+-rw-r--r--  1 runner runner  229 Sep  5 17:37 run-2026-09-05-04-41.md
+-rw-r--r--  1 runner runner 3734 Sep  5 17:37 run-2026-09-05-08-38.md
+-rw-r--r--  1 runner runner  182 Sep  5 17:37 run-2026-09-05-12-04.md
+-rw-r--r--  1 runner runner  350 Sep  5 17:37 run-2026-09-05-15-21.md
+-rw-r--r--  1 runner runner  236 Sep  5 17:37 run-2026-09-05-17-37.md
+===RECENT FILES===
+./triage/run-2026-09-04-14-05.md
+./triage/run-2026-09-03-08-18.md
+./triage/run-2026-09-05-15-21.md
+./triage/run-2026-09-04-19-53.md
+./triage/run-2026-09-03-22-24.md
+./triage/run-2026-09-05-00-11.md
+./triage/run-2026-09-04-05-05.md
+./triage/run-2026-09-05-17-37.md
+./triage/run-2026-09-05-12-04.md
+./triage/run-2026-09-02-23-54.md
+./triage/run-2026-09-05-04-41.md
+./triage/run-2026-09-04-00-23.md
+./triage/run-2026-09-05-08-38.md
+./triage/run-2026-09-04-17-42.md
+./triage/run-2026-09-03-12-53.md
+./triage/run-2026-09-04-22-13.md
+./triage/run-2026-09-03-03-39.md
+./triage/run-2026-09-02-21-42.md
+./triage/run-2026-09-04-09-45.md
+./triage/run-2026-09-03-19-43.md
+./triage/run-2026-09-03-16-58.md
+./recon-notes/DEDICATED-DEEP.md
+./inventory/questnet-gmbh.md
+./knowledge/index.md
+./probe-results.md
+./reports/hypotheses.md
+./reports/valid-bugs.md
+./leads/lead-nemotron3.md
+./leads/lead-bigpickle.md
+./leads/lead-laguna.md
+./leads/lead-ling3.md
+./leads/lead-mimo.md
+./leads/lead-longcat.md
+./leads/reposcan-questnet-gmbh.md
+./README.md
+./state_nemotron3.json
+./state_ling3.json
+./state_longcat.json
+./state_bigpickle.json
+./state_laguna.json
+./state_mimo.json
+[0m
+[0m$ [0mcd /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/; echo "===run-2026-09-05-17-37==="; cat triage/run-2026-09-05-17-37.md; echo "===probe-results==="; cat probe-results.md; echo "===run-15-21==="; cat triage/run-2026-09-05-15-21.md
+===run-2026-09-05-17-37===
+
+===== TRIAGE 2026-09-05 17:37:18 UTC =====
+[0m
+> build · mimo-v2.5-free
+[0m
+No leads were provided in your message. The "LEADS:" section is empty.
+
+Please paste the probe results you want me to evaluate against the 7-Question Gate.
+===probe-results===
+
+## 2026-09-02 21:47:55 UTC
+
+
+## 2026-09-02 23:58:48 UTC
+
+
+## 2026-09-03 04:08:01 UTC
+
+
+## 2026-09-03 09:02:43 UTC
+
+
+## 2026-09-03 13:26:41 UTC
+
+
+## 2026-09-03 17:33:15 UTC
+
+
+## 2026-09-03 20:03:02 UTC
+
+
+## 2026-09-03 22:32:24 UTC
+
+
+## 2026-09-04 00:40:48 UTC
+
+
+## 2026-09-04 05:17:20 UTC
+
+
+## 2026-09-04 09:50:35 UTC
+
+
+## 2026-09-04 14:17:33 UTC
+
+
+## 2026-09-04 17:50:53 UTC
+
+
+## 2026-09-04 20:10:34 UTC
+
+
+## 2026-09-04 22:19:45 UTC
+
+
+## 2026-09-05 00:18:43 UTC
+
+
+## 2026-09-05 04:44:49 UTC
+
+
+## 2026-09-05 08:42:00 UTC
+
+
+## 2026-09-05 12:09:45 UTC
+
+
+## 2026-09-05 15:31:48 UTC
+
+===run-15-21===
+
+===== TRIAGE 2026-09-05 15:21:01 UTC =====
+[0m
+> build · mimo-v2.5-free
+[0m
+The "LEADS:" section appears to be empty. Please provide the actual leads you'd like me to validate against the 7-Question Gate, including:
+
+- URL/asset scanned
+- Probe findings/results
+- Any relevant technical details
+
+I'm ready to triage once you share the lead data.
+[0m
+The last triage run is `run-2026-09-05-17-37.md`. My last leads cycle was at 15:31 UTC. Let me check the most recent triage run and probe results to see if there's any delta since 15:31.
+[0m$ [0mcd /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/; cat leads/lead-bigpickle.md 2>/dev/null | tail -40
+## 2026-09-05 15:22:29 UTC [target] (model bigpickle)
+[PRIO] cbs-proxy.api.live-manager.de,7.15,a=7,b=8,t=5,g=9,c=8,f=5 — the only host where a control is unproven (WS frame binding); gate fully anonymous.
+[PRIO] www.applicationdesigner.de,5.65,a=5,b=6,t=6,g=8,c=5,f=3 — supplies the public static credential + voicenote download gate (2nd open hop).
+[PRIO] www.live-manager.de,4.30,a=4,b=6,t=3,g=3,c=6,f=3 — customer portal; every avenue AUTH_HELPED, anonymous variant rejected.
+[HYP] Cross-tenant live-debug/call attach via public-credential auth.php mint feeding an unbound cbs-proxy WS frame layer
+class: IDOR
+asset: chain GET https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token={sha256 8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf}&customer_id={cid}&srn={srn} -> wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={cid}&service={srn}
+confidence: 85
+reasoning: ACCEPTED 2026-09-04/05 unchanged — static credential in public help.js is sole auth for auth.php mint (success:true for demo 131727 AND foreign cid=2); no endpoint observed enforcing token→cid ownership; anonymous WS upgrade returns 101 + CONNECT CBS100/CBS190/CBS200 + READY byte-identical for invalid cid=999999999/service=999999. Four of five hops closed anonymously; only CBS-side live_debug frame payload validation untested.
+evidence_needed: whether CBS rejects a live_debug packet whose minted token was issued for a cid different from the presenting session's cid — not observable without a live-session subscription (PII rule).
+verify_steps: AUTH_HELPED only — operator session for an owned tenant: mint via auth.php for OWN cid, present minted aid/ttl/hash in a live_debug frame to wss://cbs-proxy?cid={own}, then repeat with cid={foreign}, record accept vs deny. Own-tenant only; never subscribe to third-party streams.
+impact: anonymous per-tenant live-debug token (any cid) over an unauthenticated bidirectional relay into internal CBS business systems; if frame binding absent, cross-tenant live call/debug attach (voice/PII) — HIGH/CRITICAL.
+testability: AUTH_HELPED
+[HYP] cbs-proxy WS router is an unauthenticated full-duplex relay to the CBS backend for any client-chosen cid/service; no object-level control at the router layer
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service={service}
+confidence: 84
+reasoning: Live probes 2026-09-04/05 (unchanged): anonymous upgrades with cid=999999999 and service=999999 (both invalid) return HTTP/1.1 101 + byte-identical CONNECT/READY frame set as cid=1, zero credentials/headers. Attacker controls every element (cid, service, minted token) the relay could bind on; the only remaining control is CBS-side frame payload validation.
+evidence_needed: same as prior — whether CBS rejects a live_debug packet whose minted token was issued for a cid different from the presenting session's cid.
+verify_steps: AUTH_HELPED only; behavioral own-tenant comparison (own vs foreign cid with OWN minted token), never anonymous payloads, never real-stream subscription.
+impact: anonymous bidirectional pipe to internal CBS systems (CBS100/190/200) by any tenant id; if frame binding absent, cross-tenant live call/debug attach (voice/PII) — HIGH/CRITICAL.
+testability: AUTH_HELPED
+[HYP] Voicenote raw-audio exfil gate (403 "No VPN detected.") is credential-satisfiable via the public-credential chain
+class: IDOR
+asset: https://www.applicationdesigner.de/extjs/voicenotes/download.php?file={uuid-from-get.php}
+confidence: 60
+reasoning: get.php/check.php return the token-bound tenant's voicenote index anonymously (customer_id ignored) incl. UUID filenames; download.php returned 403 "No VPN detected." without a session; auth.php demonstrates tokens/sessions mintable from the public static credential. Unverified: whether the download gate checks the presenting session's tenant vs the demo tenant.
+evidence_needed: whether a session obtained via the public-credential chain passes download.php's gate for the demo tenant's OWN file.
+verify_steps: AUTH_HELPED — own demo tenant only; behavioral gating compare with/without session cookies; never fetch third-party audio.
+impact: anonymous raw call/voicemail audio exfil for a real tenant via public JS credential — HIGH if gate is credential-satisfiable.
+testability: AUTH_HELPED
+[PARKED] Post-login rs open-redirect @ www.live-manager.de (45): AUTH_HELPED, no operator context available; anonymous variant already REJECTED — no new info this cycle.
+[PARKED] voicenotes/details.php sibling enumeration: reads more of the same PII index already confirmed; ceiling = PII-exposure rule violation, no new security signal.
+[FINAL] 1. auth.php mint + cbs-proxy WS chain (85) — strongest; four of five hops closed anonymously, report well-formed on demonstrated primitives.
+[FINAL] 2. cbs-proxy unauthenticated full-duplex relay / no router-layer control (84) — the object-level control gap itself.
+[FINAL] 3. voicenote raw-audio download gate (60) — credential-satisfiability unproven; one of the two open hops.
+[NEXT] HUMAN: with a valid operator session for an owned tenant, settle both open hops in one pass — (a) mint live-debug auth for the OWN cid via auth.php, present it in a live_debug frame to wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={own}&service={own}, then repeat with cid={foreign}, record accept vs deny to settle frame binding; (b) call voicenotes/download.php?file={own-demo-uuid} with a session cookie minted via the public-credential chain against the demo tenant's OWN file to test the raw-audio gate. Own-tenant only; never subscribe to or fetch third-party streams/audio (program PII rule). This is the only open hop; all pre-attach router control is demonstrated absent and every safe anonymous probe is exhausted. No PROBE warranted — the earlier cid=999999999/service=999999 probe is already answered (101 + identical CONNECT/READY).
+[LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WS upgrade reaches backend CBS servers with client-supplied cid/service and no observed token — cross-tenant BOLA chain (unchanged, still the driver).
+[LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/livedebugger/auth.php: anonymous per-cid live-debug token mint via public static credential, success:true for foreign cid=2 — no observed token→cid ownership check anywhere in the chain (unchanged).
+[RISK] questnet-gmbh: 77 — NO_DELTA cycle. Chain stable and fully re-confirmed read-only: public help.js static credential (sha256 8d2faac1…) → arbitrary-cid live-debug token mint (cid=2 success:true) → anonymous read of a real tenant's voicenote index (customer_id ignored, PII incl. phone numbers; PII not echoed) → unauthenticated WS relay READY to backend CBS for any client-chosen cid/service. Four of five hops closed anonymously; the binary live_debug frame binding and raw-audio download gate remain, untested solely because both require a live session/real-stream subscription (program PII restriction), not because controls were observed. PoC report is well-formed on the demonstrated primitives (file as HIGH broken-auth/IDOR once program state allows; triage HOLD verdict supports this at CVSS 8.6). Risk holds at 77 — no new control, no new surface, breadth exhausted. No recordings fetched, no live streams subscribed, no mutations, no PII echoed.
+[0m
+No new data since my 15:31 cycle. No new probe results, no new triage with leads, no new discoveries. This is a NO_DELTA cycle.
+
+State is stable, all open hypotheses remain AUTH_HELPED/HUMAN only. Let me check the leads file to ground my output consistency.
+No delta since 15:31. No new probe results, no new triage output with leads, no new inventory changes. The surface, hypotheses, and risk are all stable. Let me confirm no new evidence emerged.
+
+This is a NO_DELTA cycle. All open hops (frame binding, download gate) remain AUTH_HELPED/HUMAN only. My next action remains HUMAN with an operator session — no new PROBE is warranted since the anonymous probe space is exhausted and all pre-attach router control is demonstrated absent.
+
+Outputting my structured blocks.
+
+STEP 1 — DELTA
+- NO_DELTA: No new probe results (probe-results.md empty through 15:31), no new triage leads (run-17:37 received none), surface frozen at 4 live hosts, all hypotheses and risk unchanged since 15:31 UTC.
+
+STEP 2 — PRIORITIZE
+- [PRIO] cbs-proxy.api.live-manager.de,7.15,a=7,b=8,t=5,g=9,c=8,f=5 — only host where a control is unproven (WS frame binding); gate fully anonymous.
+- [PRIO] www.applicationdesigner.de,5.65,a=5,b=6,t=6,g=8,c=5,f=3 — public static credential + voicenote download gate (2nd open hop).
+- [PRIO] www.live-manager.de,4.30,a=4,b=6,t=3,g=3,c=6,f=3 — customer portal; every avenue AUTH_HELPED, anonymous variant rejected.
+
+STEP 3 — HYPOTHESES
+[HYP] Cross-tenant live-debug/call attach via public-credential auth.php mint feeding an unbound cbs-proxy WS frame layer
+class: IDOR
+asset: chain GET https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token={sha256 8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf}&customer_id={cid}&srn={srn} -> wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={cid}&service={srn}
+confidence: 85
+reasoning: ACCEPTED 2026-09-04/05 unchanged — static credential in public help.js is sole auth for auth.php mint (success:true for demo 131727 AND foreign cid=2); no endpoint observed enforcing token→cid ownership; anonymous WS upgrade returns 101 + CONNECT CBS100/CBS190/CBS200 + READY byte-identical for invalid cid=999999999/service=999999. Four of five hops closed anonymously; only CBS-side live_debug frame payload validation untested.
+evidence_needed: whether CBS rejects a live_debug packet whose minted token was issued for a cid different from the presenting session's cid — not observable without a live-session subscription (PII rule).
+verify_steps: AUTH_HELPED only — operator session for an owned tenant: mint via auth.php for OWN cid, present minted aid/ttl/hash in a live_debug frame to wss://cbs-proxy?cid={own}, then repeat with cid={foreign}, record accept vs deny. Own-tenant only; never subscribe to third-party streams.
+impact: anonymous per-tenant live-debug token (any cid) over an unauthenticated bidirectional relay into internal CBS business systems; if frame binding absent, cross-tenant live call/debug attach (voice/PII) — HIGH/CRITICAL.
+testability: AUTH_HELPED
+
+[HYP] cbs-proxy WS router is an unauthenticated full-duplex relay to the CBS backend for any client-chosen cid/service; no object-level control at the router layer
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service={service}
+confidence: 84
+reasoning: Live probes 2026-09-04/05 (unchanged): anonymous upgrades with cid=999999999 and service=999999 (both invalid) return HTTP/1.1 101 + byte-identical CONNECT/READY frame set as cid=1, zero credentials/headers. Attacker controls every element (cid, service, minted token) the relay could bind on; the only remaining control is CBS-side frame payload validation.
+evidence_needed: same as prior — whether CBS rejects a live_debug packet whose minted token was issued for a cid different from the presenting session's cid.
+verify_steps: AUTH_HELPED only; behavioral own-tenant comparison (own vs foreign cid with OWN minted token), never anonymous payloads, never real-stream subscription.
+impact: anonymous bidirectional pipe to internal CBS systems (CBS100/190/200) by any tenant id; if frame binding absent, cross-tenant live call/debug attach (voice/PII) — HIGH/CRITICAL.
+testability: AUTH_HELPED
+
+[HYP] Voicenote raw-audio exfil gate (403 "No VPN detected.") is credential-satisfiable via the public-credential chain
+class: IDOR
+asset: https://www.applicationdesigner.de/extjs/voicenotes/download.php?file={uuid-from-get.php}
+confidence: 60
+reasoning: get.php/check.php return the token-bound tenant's voicenote index anonymously (customer_id ignored) incl. UUID filenames; download.php returned 403 "No VPN detected." without a session; auth.php demonstrates tokens/sessions mintable from the public static credential. Unverified: whether the download gate checks the presenting session's tenant vs the demo tenant.
+evidence_needed: whether a session obtained via the public-credential chain passes download.php's gate for the demo tenant's OWN file.
+verify_steps: AUTH_HELPED — own demo tenant only; behavioral gating compare with/without session cookies; never fetch third-party audio.
+impact: anonymous raw call/voicemail audio exfil for a real tenant via public JS credential — HIGH if gate is credential-satisfiable.
+testability: AUTH_HELPED
+
+STEP 4 — SELF-CRITIQUE
+- [PARKED] Post-login rs open-redirect @ www.live-manager.de (45): AUTH_HELPED, no operator context available; anonymous variant already REJECTED — no new info this cycle.
+- [PARKED] voicenotes/details.php sibling enumeration: reads more of the same PII index already confirmed; ceiling = PII-exposure rule violation, no new security signal.
+- [FINAL] 1. auth.php mint + cbs-proxy WS chain (85) — strongest; four of five hops closed anonymously, report well-formed on demonstrated primitives.
+- [FINAL] 2. cbs-proxy unauthenticated full-duplex relay / no router-layer control (84) — the object-level control gap itself.
+- [FINAL] 3. voicenote raw-audio download gate (60) — credential-satisfiability unproven; one of the two open hops.
+
+STEP 5 — NEXT ACTION
+[NEXT] HUMAN: with a valid operator session for an owned tenant, settle both open hops in one pass — (a) mint live-debug auth for the OWN cid via auth.php, present it in a live_debug frame to wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={own}&service={own}, then repeat with cid={foreign}, record accept vs deny to settle frame binding; (b) call voicenotes/download.php?file={own-demo-uuid} with a session cookie minted via the public-credential chain against the demo tenant's OWN file to test the raw-audio gate. Own-tenant only; never subscribe to or fetch third-party streams/audio (program PII rule). This is the only open hop; all pre-attach router control is demonstrated absent and every safe anonymous probe is exhausted. No PROBE warranted — the earlier cid=999999999/service=999999 probe is already answered (101 + identical CONNECT/READY).
+
+STEP 6 — LEARNING
+- [LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WS upgrade reaches backend CBS servers with client-supplied cid/service and no observed token — cross-tenant BOLA chain (unchanged, still the driver).
+- [LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/livedebugger/auth.php: anonymous per-cid live-debug token mint via public static credential, success:true for foreign cid=2 — no observed token→cid ownership check anywhere in the chain (unchanged).
+
+STEP 7 — RISK
+[RISK] questnet-gmbh: 77 — NO_DELTA cycle. Chain stable and fully re-confirmed read-only: public help.js static credential (sha256 8d2faac1…) → arbitrary-cid live-debug token mint (cid=2 success:true) → anonymous read of a real tenant's voicenote index (customer_id ignored, PII incl. phone numbers; PII not echoed) → unauthenticated WS relay READY to backend CBS for any client-chosen cid/service. Four of five hops closed anonymously; the binary live_debug frame binding and raw-audio download gate remain, untested solely because both require a live session/real-stream subscription (program PII restriction), not because controls were observed. PoC report is well-formed on the demonstrated primitives (file as HIGH broken-auth/IDOR once program state allows; triage HOLD verdict supports this at CVSS 8.6). Risk holds at 77 — no new control, no new surface, breadth exhausted. No recordings fetched, no live streams subscribed, no mutations, no PII echoed.

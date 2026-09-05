@@ -121,3 +121,10 @@ www.live-manager.de
 - CHANGED api.live-manager.de confirmed non-resolving (dropped from all models)
 - CHANGED Cross-tenant primitive chain confirmed read-only: help.js static credential (sha256 8d2faac1...) → auth.php mints per-cid token for ANY customer_id → anonymous WS 101 to cbs-proxy with client-supplied
 - CHANGED Bigpickle probe 2026-09-05 04:44: anonymous WS upgrade with cid=999999999/service=999999 returns HTTP/1.1 101 + identical CONNECT CBS100/190/200 + PROXY READY frames — zero credentials, byte-identical
+
+## 2026-09-05 17:50:12 UTC
+- NEW Bigpickle probe 2026-09-05 04:44: anonymous WS upgrade with `cid=999999999&service=999999` returns HTTP/1.1 101 + identical CONNECT CBS100/190/200 + PROXY READY frames — zero credentials, byte-identic
+- CHANGED Cross-tenant primitive chain confirmed read-only: help.js static credential (sha256 8d2faac1...) → auth.php mints per-cid token for ANY customer_id → anonymous WS 101 to cbs-proxy with client-supplied
+- CHANGED Surface frozen at 4 live in-scope hosts since 2026-09-04: cbs-proxy.api.live-manager.de, www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de
+- CHANGED auth.live-manager.de remains unconfirmed (0 live HTTP, wildcard mirror)
+- CHANGED api.live-manager.de confirmed non-resolving (dropped from all models)
