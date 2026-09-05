@@ -104,3 +104,13 @@ www.live-manager.de
 - NEW www.applicationdesigner.de/help.json: ExtJS manifest confirms help.js as sole JS entry; resources.help/ directory listing blocked (403) — endpoint map only in help.js (from inventory 2026-09-05 04:44:
 - CHANGED help.js static credential `LIVE_DEMO_CUSTOMER_TOKEN` (sha256: 8d2faac1...) and `APPDESIGNER_API_PATH=/api/callbuilder/` proxy prefix confirmed in live source; backend router endpoints for LiveDebugger
 - CHANGED cbs-proxy.api.live-manager.de WebSocket handshake (HTTP 101) with zero credentials confirmed 2026-09-04; CONNECT frames to CBS100/190/200 then READY — cid/service scoping enforcement still unverified 
+
+## 2026-09-05 12:09:45 UTC
+- NEW www.applicationdesigner.de/help.json: ExtJS manifest confirms help.js as sole JS entry; resources.help/ directory listing blocked (403) — endpoint map only in help.js (from inventory 2026-09-05 04:44:
+- CHANGED help.js static credential `LIVE_DEMO_CUSTOMER_TOKEN` (sha256: 8d2faac1...) and `APPDESIGNER_API_PATH=/api/callbuilder/` proxy prefix confirmed in live source; backend router endpoints for LiveDebugger
+- CHANGED cbs-proxy.api.live-manager.de WebSocket handshake (HTTP 101) with zero credentials confirmed 2026-09-04; CONNECT frames to CBS100/190/200 then READY — cid/service scoping enforcement still unverified 
+- CHANGED cbs-proxy.api.live-manager.de: WS handshake (HTTP 101) with zero credentials confirmed 2026-09-04; CONNECT frames to CBS100/190/200 then READY — cid/service scoping enforcement still unverified
+- CHANGED www.applicationdesigner.de/help.js: static credential `LIVE_DEMO_CUSTOMER_TOKEN` (sha256: 8d2faac1...) and `APPDESIGNER_API_PATH=/api/callbuilder/` proxy prefix confirmed in live source; backend route
+- CHANGED www.applicationdesigner.de/extjs/livedebugger/auth.php: anonymous minting of per-tenant live-debug auth tokens for arbitrary customer_id (cid=2 success:true) using static credential confirmed
+- NEW Cross-tenant chain primitive confirmed read-only: help.js credential → auth.php mint for ANY cid → anonymous WS 101 to cbs-proxy backend
+- CHANGED Risk score increased to 68 (full primitive chain confirmed read-only; no live customer data touched)

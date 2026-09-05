@@ -30,3 +30,5 @@
 - 2026-09-05 REJECTED AUTH @ www.live-manager.de rs param: GET /?rs= not reflected/server-side redirected to external domain, so no anonymous open redirect
 - 2026-09-05 REJECTED wildcard-subdomain-enum @ *.live-manager.de: DEDICATED-DEEP.md confirms 8632 resolving hostnames all share CDN/wildcard IPs — no dedicated subdomain surface exists; attack surface is path-based behind CDN
 - 2026-09-05 REJECTED api.live-manager.de debug endpoints: host does not resolve; no surface to probe — removed from active hypotheses
+- 2026-09-05 ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WS upgrade reaches backend CBS servers with client-supplied cid/service and no observed token — cross-tenant BOLA chain (unchanged, still the driver).
+- 2026-09-05 ACCEPTED IDOR @ www.applicationdesigner.de/extjs/livedebugger/auth.php: anonymous per-cid live-debug token mint via public static credential, success:true for foreign cid=2 — no observed token→cid ownership check anywhere in the chain (unchanged).
