@@ -269,3 +269,12 @@
 - LEARN: REJECTED AUTH @ www.live-manager.de rs param: GET /?rs= not reflected/server-side redirected to external domain, so no anonymous open redirect
 - LEARN: REJECTED wildcard-subdomain-enum @ *.live-manager.de: DEDICATED-DEEP.md confirms 8632 resolving hostnames all share CDN/wildcard IPs — no dedicated subdomain su
 - LEARN: REJECTED api.live-manager.de debug endpoints: host does not resolve; no surface to probe — removed from active hypotheses
+
+## RANKED HYPOTHESES 2026-09-06 08:43:18 UTC
+- [85] chain: Cross-tenant live-debug chain via public-credential auth.php mint feeding unbound cbs-proxy WS relay (from art/lead_bigpickle.txt)
+- NEXT(hypotheses-bigpickle.txt): HUMAN: with a valid operator session for an owned tenant, settle the two remaining open hops in one pass — (a) mint live-debug auth for the OWN cid via auth.php
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config.php: anonymous HTTP 200 zero-auth JSON exposes internal LLM routing (ollama.codermatri
+- LEARN: ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/index.php?route=: 403 {"error":"Invalid token"} with AND without the public demo credent
+- LEARN: REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: passive sibling probe closed 2026-09-06 — system-prompt-ask.md/apply.md/.md/-coding.md all 
+- LEARN: ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WS upgrade reaches backend CBS servers with client-supplied cid/service and no observed token (unchange
+- LEARN: ACCEPTED IDOR @ www.applicationdesigner.de/extjs/livedebugger/auth.php: anonymous per-cid live-debug token mint via public static credential, success:true for f

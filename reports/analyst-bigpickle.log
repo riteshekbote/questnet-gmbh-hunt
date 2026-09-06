@@ -9851,3 +9851,408 @@ STEP 6 — LEARNING
 STEP 7 — RISK
 [RISK] questnet-gmbh: 77 — NO_DELTA. Chain stable and re-confirmed read-only: public help.js credential (sha256 8d2faac1…) → arbitrary-cid live-debug mint (cid=2 success:true) → anonymous voicenote index read → unauthenticated WS relay READY for any cid/service. One open hop (live_debug frame binding) and the raw-audio download gate remain untested solely because they require a live session (PII rule), not because controls were observed; the one fresh surface this cycle (AIDesigner config) is LOW/MED with no keys and a holding token gate. No recordings fetched, no live streams subscribed, no mutations, no PII echoed.
 ```
+===== ANALYST bigpickle 2026-09-06 08:43:18 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m✱ [0mGlob "**/*.txt"[90m in . · 9 matches[0m
+[0m✱ [0mGlob "**/*.md"[90m in . · 40 matches[0m
+[0m→ [0mRead analyst-prompt.txt
+[0m→ [0mRead triage/run-2026-09-06-06-10.md
+[0m→ [0mRead reports/hypotheses-bigpickle.txt
+[0m→ [0mRead reports/valid-bugs.md
+[0m→ [0mRead probe-results.md
+[0m
+[0m$ [0mgit log --oneline -15 && echo "---STATUS---" && git status --short
+a95c6b3 triage 2026-09-06-06-10
+---STATUS---
+?? analyst-out.txt
+?? analyst-prompt.txt
+?? ctx.txt
+[0m
+[0m✱ [0mGrep "system_prompt|system-prompt|\.md|\.json|ollama|config_"[90m in leads · 41 matches[0m
+[0m→ [0mRead leads/lead-bigpickle.md[90m [offset=740, limit=75][0m
+[0m
+[0m$ [0mwhich curl && curl -s -o /dev/null -w "%{http_code}" --max-time 10 https://www.applicationdesigner.de/help.json -k 2>&1 || echo "NO_NET"
+/usr/bin/curl
+200
+[0m
+Network is live. Running the queued NEXT probe from last cycle — passive 1-rps GET series under `AIDesigner/backend/` hunting for secret-bearing siblings.
+[0m$ [0mfor p in "AIDesigner/backend/config.php" "AIDesigner/backend/config_coding.php" "AIDesigner/backend/index.php" "AIDesigner/backend/config.json" "AIDesigner/backend/config.example.php" "AIDesigner/backend/test.php"; do
+code=$(curl -s -o /tmp/opencode/airesp.txt -w "%{http_code}" --max-time 12 "https://www.applicationdesigner.de/$p" -k -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64)')
+srv=$(head -c 200 /tmp/opencode/airesp.txt | tr '\n' ' ')
+echo "== $p -> HTTP $code :: $srv"
+sleep 1
+done
+== AIDesigner/backend/config.php -> HTTP 200 :: {     "api_endpoints": {         "ollama_local": {             "mode": "completions",             "url": "https:\/\/ollama.codermatrix.de\/v1"         },         "ollama": {             "mode": "compl
+== AIDesigner/backend/config_coding.php -> HTTP 200 :: {     "api_endpoints": {         "ollama_local": {             "mode": "completions",             "url": "https:\/\/ollama.codermatrix.de\/v1"         },         "ollama": {             "mode": "compl
+== AIDesigner/backend/index.php -> HTTP 404 :: File not found. 
+== AIDesigner/backend/config.json -> HTTP 404 :: <html>
+ <head><title>404 Not Found</title></head>
+ <body>
+ <center><h1>404 Not Found</h1></center>
+ <hr><center>nginx</center>
+ </body>
+ </html>
+ 
+== AIDesigner/backend/config.example.php -> HTTP 404 :: File not found. 
+== AIDesigner/backend/test.php -> HTTP 404 :: File not found.
+[0m
+[0m$ [0mcurl -s --max-time 12 "https://www.applicationdesigner.de/AIDesigner/backend/config.php" -k -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64)' > /tmp/opencode/config_full.json; wc -c /tmp/opencode/config_full.json; cat /tmp/opencode/config_full.json
+8464 /tmp/opencode/config_full.json
+{
+    "api_endpoints": {
+        "ollama_local": {
+            "mode": "completions",
+            "url": "https:\/\/ollama.codermatrix.de\/v1"
+        },
+        "ollama": {
+            "mode": "completions",
+            "url": "https:\/\/ollama.com\/v1"
+        },
+        "chatgpt_completions": {
+            "mode": "completions",
+            "url": "https:\/\/api.openai.com\/v1"
+        },
+        "chatgpt_responses": {
+            "mode": "responses",
+            "url": "https:\/\/api.openai.com\/v1"
+        },
+        "anthropic": {
+            "mode": "anthropic",
+            "url": "https:\/\/api.anthropic.com\/v1"
+        },
+        "openrouter": {
+            "mode": "completions",
+            "url": "https:\/\/openrouter.ai\/api\/v1"
+        }
+    },
+    "models": [
+        {
+            "value": "~deepseek\/deepseek-v4-flash-latest",
+            "label": "DeepSeek v4 Flash",
+            "reasoning": [
+                "-",
+                "low",
+                "medium",
+                "high",
+                "xhigh"
+            ],
+            "default_reasoning": "high",
+            "endpoint": "openrouter",
+            "parameters": {
+                "max_tokens": 264929
+            },
+            "instructions_ask": "system-prompt-ask.md",
+            "instructions_apply": "system-prompt-apply.md"
+        },
+        {
+            "value": "z-ai\/glm-5.2",
+            "label": "Z-AI GLM 5.2",
+            "reasoning": [
+                "minimal",
+                "low",
+                "medium",
+                "high"
+            ],
+            "default_reasoning": "high",
+            "endpoint": "openrouter",
+            "parameters": {
+                "max_tokens": 250000
+            },
+            "instructions_ask": "system-prompt-ask.md",
+            "instructions_apply": "system-prompt-apply.md"
+        },
+        {
+            "value": "moonshotai\/kimi-k3",
+            "label": "Kimi K3",
+            "reasoning": [
+                "-",
+                "low",
+                "medium",
+                "high",
+                "xhigh"
+            ],
+            "default_reasoning": "high",
+            "endpoint": "openrouter",
+            "parameters": {
+                "max_tokens": 264929
+            },
+            "instructions_ask": "system-prompt-ask.md",
+            "instructions_apply": "system-prompt-apply.md"
+        },
+        {
+            "value": "moonshotai\/kimi-k2.7-code",
+            "label": "Kimi K2.7",
+            "reasoning": [
+                "-",
+                "low",
+                "medium",
+                "high",
+                "xhigh"
+            ],
+            "default_reasoning": "high",
+            "endpoint": "openrouter",
+            "parameters": {
+                "max_tokens": 128000
+            },
+            "instructions_ask": "system-prompt-ask.md",
+            "instructions_apply": "system-prompt-apply.md"
+        },
+        {
+            "value": "google\/gemini-3.6-flash",
+            "label": "Google Gemini 3.6 Flash",
+            "reasoning": [
+                "minimal",
+                "low",
+                "medium",
+                "high"
+            ],
+            "default_reasoning": "high",
+            "endpoint": "openrouter",
+            "parameters": {
+                "max_tokens": 250000
+            },
+            "instructions_ask": "system-prompt-ask.md",
+            "instructions_apply": "system-prompt-apply.md"
+        },
+        {
+            "value": "~google\/gemini-pro-latest",
+            "label": "Google Gemini Pro",
+            "reasoning": [
+                "low",
+                "medium",
+                "high"
+            ],
+            "default_reasoning": "high",
+            "endpoint": "openrouter",
+            "parameters": {
+                "max_tokens": 65536
+            },
+            "instructions_ask": "system-prompt-ask.md",
+            "instructions_apply": "system-prompt-apply.md"
+        },
+        {
+            "value": "xiaomi\/mimo-v2-flash",
+            "label": "Xiaomi Mimo V2 Flash",
+            "reasoning": [
+                "-",
+                "low",
+                "medium",
+                "high",
+                "xhigh"
+            ],
+            "default_reasoning": "high",
+            "endpoint": "openrouter",
+            "parameters": {
+                "max_tokens": 65536
+            },
+            "instructions_ask": "system-prompt-ask.md",
+            "instructions_apply": "system-prompt-apply.md"
+        },
+        {
+            "value": "xiaomi\/mimo-v2.5-pro",
+            "label": "Xiaomi Mimo V2.5 Pro",
+            "reasoning": [
+                "-",
+                "low",
+                "medium",
+                "high",
+                "xhigh"
+            ],
+            "default_reasoning": "medium",
+            "endpoint": "openrouter",
+            "parameters": {
+                "max_tokens": 128000
+            },
+            "instructions_ask": "system-prompt-ask.md",
+            "instructions_apply": "system-prompt-apply.md"
+        },
+        {
+            "value": "gpt-5.3-codex",
+            "label": "GPT-5.3-Codex",
+            "reasoning": [
+                "-",
+                "low",
+                "medium",
+                "high",
+                "xhigh"
+            ],
+            "default_reasoning": "medium",
+            "endpoint": "chatgpt_responses",
+            "parameters": {
+                "max_output_tokens": 128000
+            },
+            "instructions_ask": "system-prompt-ask.md",
+            "instructions_apply": "system-prompt-apply.md"
+        },
+        {
+            "value": "gpt-5.4-mini",
+            "label": "GPT 5.4 Mini",
+            "reasoning": [
+                "-",
+                "low",
+                "medium",
+                "high",
+                "xhigh"
+            ],
+            "default_reasoning": "medium",
+            "endpoint": "chatgpt_responses",
+            "parameters": {
+                "max_output_tokens": 128000
+            },
+            "instructions_ask": "system-prompt.md",
+            "instructions_apply": "system-prompt-apply.md"
+        },
+        {
+            "value": "gpt-5.4-nano",
+            "label": "GPT 5.4 Nano",
+            "reasoning": [
+                "-",
+                "low",
+                "medium",
+                "high",
+                "xhigh"
+            ],
+            "default_reasoning": "high",
+            "endpoint": "chatgpt_responses",
+            "parameters": {
+                "max_output_tokens": 128000
+            },
+            "instructions_ask": "system-prompt.md",
+            "instructions_apply": "system-prompt-apply.md"
+        },
+        {
+            "value": "anthropic\/claude-fable-5",
+            "label": "Anthropic Claude Fable 5",
+            "reasoning": [],
+            "endpoint": "openrouter",
+            "parameters": {
+                "max_output_tokens": 128000
+            },
+            "instructions_ask": "system-prompt-ask.md",
+            "instructions_apply": "system-prompt-apply.md"
+        },
+        {
+            "value": "anthropic\/claude-opus-4.8",
+            "label": "Anthropic Claude Opus 4.8",
+            "reasoning": [],
+            "endpoint": "openrouter",
+            "parameters": {
+                "max_output_tokens": 128000
+            },
+            "instructions_ask": "system-prompt-ask.md",
+            "instructions_apply": "system-prompt-apply.md"
+        },
+        {
+            "value": "anthropic\/claude-sonnet-4.6",
+            "label": "Anthropic Claude Sonnet 4.6",
+            "reasoning": [],
+            "endpoint": "openrouter",
+            "parameters": {
+                "max_output_tokens": 128000
+            },
+            "instructions_ask": "system-prompt-ask.md",
+            "instructions_apply": "system-prompt-apply.md"
+        },
+        {
+            "value": "anthropic\/claude-haiku-4.5",
+            "label": "Anthropic Claude 4.5 Haiku",
+            "reasoning": [],
+            "endpoint": "openrouter",
+            "parameters": {
+                "max_output_tokens": 65536
+            },
+            "instructions_ask": "system-prompt-ask.md",
+            "instructions_apply": "system-prompt-apply.md"
+        }
+    ],
+    "reasoning_labels": {
+        "-": "–",
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High",
+        "xhigh": "xHigh"
+    },
+    "default_model": "~deepseek\/deepseek-v4-flash-latest"
+}
+[0m
+[0m$ [0mcurl -s --max-time 12 "https://www.applicationdesigner.de/AIDesigner/backend/config_coding.php" -k -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64)' > /tmp/opencode/config_full.json; grep -o '"[a-zA-Z0-9._-]*\.md"' /tmp/opencode/config_full.json | sort -u
+"system-prompt-apply.md"
+"system-prompt-ask.md"
+[0m
+[0m$ [0mfor p in "AIDesigner/backend/system-prompt-ask.md" "AIDesigner/backend/system-prompt-apply.md" "AIDesigner/backend/system-prompt.md" "AIDesigner/backend/system-prompt-coding.md" "AIDesigner/backend/agents/agent.json" "AIDesigner/backend/prompts/system-prompt-ask.md"; do
+code=$(curl -s -o /tmp/opencode/presp.txt -w "%{http_code}" --max-time 12 "https://www.applicationdesigner.de/$p" -k -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64)')
+bytes=$(wc -c < /tmp/opencode/presp.txt)
+echo "== $p -> HTTP $code (${bytes}b)"
+sleep 1
+done
+== AIDesigner/backend/system-prompt-ask.md -> HTTP 403 (153b)
+== AIDesigner/backend/system-prompt-apply.md -> HTTP 403 (153b)
+== AIDesigner/backend/system-prompt.md -> HTTP 403 (153b)
+== AIDesigner/backend/system-prompt-coding.md -> HTTP 403 (153b)
+== AIDesigner/backend/agents/agent.json -> HTTP 404 (146b)
+== AIDesigner/backend/prompts/system-prompt-ask.md -> HTTP 403 (153b)
+[0m
+Probe complete — AIDesigner/backend passive thread is now closed: `config.php`/`config_coding.php` HTTP 200 (confirmed zero-auth, references `system-prompt-{ask,apply,}.md`), prompt files all HTTP 403, `index.php`/`config.json`/`config.example.php`/`test.php`/`agents/agent.json` 404. No secrets, no anon-accessible prompt content. Full config body holds only public provider URLs + model→prompt map, zero keys.
+
+## 2026-09-06 09:10:00 UTC | ANALYST questnet-gmbh (model bigpickle)
+
+STEP 1 — DELTA
+[CHANGED] www.applicationdesigner.de/AIDesigner/backend/: passive sibling probe executed 2026-09-06 — config.php/config_coding.php re-confirmed HTTP 200 zero-auth (public provider URLs, model→prompt map, zero keys); system-prompt-ask.md / system-prompt-apply.md / system-prompt.md / system-prompt-coding.md all HTTP 403; index.php / config.json / config.example.php / test.php / agents/agent.json / prompts/ all 404. No secret-bearing sibling exists anonymously.
+[CHANGED] AIDesigner MISCONFIG downgraded from open hypothesis to closed LOW: prompt files gated, dispatch 403-gated with AND without public demo credential (sha256 8d2faac1…), mint (get_agent_token.php) session+VPN gated — passive thread exhausted.
+NO_DELTA: inventory frozen at 4 live in-scope hosts; cbs-proxy chain unchanged (two byte-identical probe cycles); no new subdomain/surface.
+
+STEP 2 — PRIORITIZE
+[PRIO] cbs-proxy.api.live-manager.de,7.4,attack_surface=9/business_value=10/tech=3/gate=10/cloud=5/fresh=2
+[PRIO] www.applicationdesigner.de,6.5,attack_surface=8/business_value=8/tech=4/gate=8/cloud=5/fresh=1 (AIDesigner thread closed; freshness 3→1)
+[PRIO] www.live-manager.de,4.6,attack_surface=5/business_value=7/tech=4/gate=3/cloud=4/fresh=1
+
+STEP 3 — HYPOTHESES
+[HYP] Cross-tenant live-debug chain via public-credential auth.php mint feeding unbound cbs-proxy WS relay
+class: IDOR
+asset: chain GET https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token={sha256 8d2faac1…}&customer_id={cid}&srn={srn} -> wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={cid}&service={srn}
+confidence: 85
+reasoning: static credential in public help.js (sha256 8d2faac1…) sole auth for auth.php mint — success:true for demo 131727 AND foreign cid=2, "Not logged in" only when token omitted (2026-09-05 21:52-21:53); no token→cid ownership check observed; anonymous WS upgrade returns 101 + CONNECT CBS100/190/200 + READY byte-identical for invalid cid=999999999/service=999999 and cid=1 (2026-09-05 21:50-21:54, two cycles). Four of five hops closed anonymously; only CBS-side live_debug frame binding untested.
+evidence_needed: whether CBS rejects a live_debug frame whose minted token was issued for a cid different from the presenting session's cid.
+verify_steps: AUTH_HELPED — operator session for owned tenant: mint via auth.php for OWN cid, present aid/ttl/hash in a live_debug frame to wss://cbs-proxy?cid={own}, repeat with cid={foreign}, record accept vs deny. Own-tenant only; never third-party streams.
+impact: anonymous per-tenant live-debug token (any cid) over unauthenticated bidirectional relay into CBS; if frame binding absent, cross-tenant live call/debug attach (voice/PII) — HIGH/CRITICAL (CVSS 8.6).
+testability: AUTH_HELPED
+[HYP] cbs-proxy WS router is an unauthenticated full-duplex relay with no object-level control
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service={service}
+confidence: 84
+reasoning: live probes 2026-09-05 21:50-21:54 — anonymous upgrades with invalid cid=999999999/service=999999 and cid=1 return byte-identical HTTP 101 + CONNECT/READY frame set, zero credentials; attacker controls every binding element (cid, service, minted token); only CBS-side frame payload validation remains.
+evidence_needed: same as prior — whether CBS rejects a live_debug packet whose minted token was issued for a cid different from the presenting session's cid.
+verify_steps: AUTH_HELPED only — behavioral own-tenant comparison (own vs foreign cid with OWN minted token); never anonymous payloads, never real-stream subscription.
+impact: anonymous bidirectional pipe into internal CBS systems (CBS100/190/200) by any tenant id; if frame binding absent, cross-tenant live call/debug attach (voice/PII) — HIGH/CRITICAL.
+testability: AUTH_HELPED
+[HYP] voicenotes/download.php raw-audio gate is credential-satisfiable via the public-credential session chain
+class: IDOR
+asset: https://www.applicationdesigner.de/extjs/voicenotes/download.php?file={uuid-from-get.php}
+confidence: 60
+reasoning: get.php/check.php return the token-bound tenant's voicenote index anonymously (customer_id ignored) incl. UUID filenames; download.php returned 403 "No VPN detected." without session (2026-09-05); auth.php demonstrates tokens/sessions mintable from the public static credential; same VPN gate observed on get_agent_token.php — unverified whether download gate re-checks the presenting session's tenant.
+evidence_needed: whether a session obtained via the public-credential chain passes download.php's gate for the demo tenant's OWN file.
+verify_steps: AUTH_HELPED — own demo tenant only; mint session cookie via public credential, compare download.php?file={own-demo-uuid} with/without cookie; never fetch third-party audio.
+impact: anonymous raw call/voicemail audio exfil for a real tenant via public JS credential — HIGH if gate is credential-satisfiable.
+testability: AUTH_HELPED
+
+STEP 4 — SELF-CRITIQUE
+[PARKED] AIDesigner backend config disclosure + possible non-bound route dispatch (55→closed): PASSIVE exhausted today — prompt files 403, config siblings 404, no keys; dispatch 403-gated w/o credential, mint VPN-gated. Config disclosure stands as standalone LOW (ACCEPTED MISCONFIG, defended); only leftover is the AUTH_HELPED cross-cid route-dispatch test (LOW value) — fold into the HUMAN pass if operator context arrives.
+[PARKED] post-login rs open redirect @ www.live-manager.de: AUTH_HELPED, no operator context, anonymous variant REJECTED — exhausted.
+[FINAL] 1. auth.php mint + cbs-proxy WS chain (85) — strongest; four of five hops closed anonymously, two byte-identical probe cycles; triage HOLD supports filing at CVSS 8.6.
+[FINAL] 2. cbs-proxy unauthenticated full-duplex relay / no router-layer control (84) — the object-level control gap itself.
+[FINAL] 3. voicenotes/download.php raw-audio gate (60) — credential-satisfiability unproven; one of the two open hops.
+
+STEP 5 — NEXT ACTION
+[NEXT] HUMAN: with a valid operator session for an owned tenant, settle the two remaining open hops in one pass — (a) mint live-debug auth for the OWN cid via auth.php, present aid/ttl/hash in a live_debug frame to wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={own}&service={own}, repeat with cid={foreign}, record accept vs deny; (b) mint a session cookie via the public-credential chain and call https://www.applicationdesigner.de/extjs/voicenotes/download.php?file={own-demo-uuid} with vs without cookie to test the raw-audio gate. Own-tenant only; never fetch/subscribe third-party data (program PII rule). No PROBE warranted — all safe anonymous probes now exhausted (AIDesigner siblings closed this cycle; cid=999999999/service=999999 already answered byte-identical 101).
+
+STEP 6 — LEARNING
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config.php: anonymous HTTP 200 zero-auth JSON exposes internal LLM routing (ollama.codermatrix.de/v1, 6 providers, model→system-prompt map); no keys observed; referenced prompt files 403-gated; dispatch gated by session+VPN-minted agent token.
+[LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/index.php?route=: 403 {"error":"Invalid token"} with AND without the public demo credential (sha256 8d2faac1…) — AIDesigner dispatch is NOT static-credential-satisfiable, contrasting the unbound auth.php LiveDebugger mint and narrowing the broken-auth anomaly to LiveDebugger.
+[LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: passive sibling probe closed 2026-09-06 — system-prompt-ask.md/apply.md/.md/-coding.md all HTTP 403, index.php/config.json/config.example.php/test.php/agents/agent.json 404, config files carry zero keys; no secrets-bearing anonymous sibling exists, thread exhausted.
+[LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WS upgrade reaches backend CBS servers with client-supplied cid/service and no observed token (unchanged, still the driver — two byte-identical probe cycles).
+[LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/livedebugger/auth.php: anonymous per-cid live-debug token mint via public static credential, success:true for foreign cid=2 — no observed token→cid ownership check anywhere in the chain (unchanged).
+
+STEP 7 — RISK
+[RISK] questnet-gmbh: 77 — NO_DELTA. Chain stable and re-confirmed read-only: public help.js credential (sha256 8d2faac1…) → arbitrary-cid live-debug mint (cid=2 success:true) → anonymous voicenote index read (customer_id ignored, PII not echoed) → unauthenticated WS relay READY for any cid/service. This cycle closed the last anonymous thread (AIDesigner backend: no keys, prompt files 403, dispatch token-gated) with no new surface — the exposure sits on the already-known primitives. The two open hops (live_debug frame binding, raw-audio download gate) remain untested solely because both require a live operator session (PII rule), not because controls were observed. Triage marks auth.php mint + voicenote PII disclosure VALID (CVSS 7.5) and the WS relay HOLD (8.6). Risk unchanged at 77 pending the HUMAN session or program authorization to file. No recordings fetched, no live streams subscribed, no mutations, no PII echoed.

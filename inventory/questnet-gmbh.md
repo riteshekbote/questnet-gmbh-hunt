@@ -141,3 +141,7 @@ www.live-manager.de
 ## 2026-09-06 03:56:36 UTC
 - NEW www.applicationdesigner.de/AIDesigner/backend/: config.php + config_coding.php return anonymous HTTP 200 zero-auth JSON — internal LLM routing (ollama.codermatrix.de/v1, 6 providers, model→system-prom
 - CHANGED AIDesigner dispatch is NOT satisfiable via the static-credential chain (unlike auth.php) — positive control: this router's token gate holds, sharpening the auth.php-mint anomaly.
+
+## 2026-09-06 08:43:18 UTC
+- CHANGED www.applicationdesigner.de/AIDesigner/backend/: passive sibling probe executed 2026-09-06 — config.php/config_coding.php re-confirmed HTTP 200 zero-auth (public provider URLs, model→prompt map, zero k
+- CHANGED AIDesigner MISCONFIG downgraded from open hypothesis to closed LOW: prompt files gated, dispatch 403-gated with AND without public demo credential (sha256 8d2faac1…), mint (get_agent_token.php) sessio

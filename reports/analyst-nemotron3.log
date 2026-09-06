@@ -3582,3 +3582,62 @@ testability: PASSIVE (handshake reachable anonymously; auth-scoping confirmation
 ## STEP 7 — RISK
 
 [RISK] questnet-gmbh: 72 — Full primitive chain confirmed read-only and now probe-verified: public static credential in help.js (sha256 8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf) → per-tenant debug auth token minted for ANY customer_id via auth.php (tested cid=2, 999999999) → anonymous 101 WS to in-scope cbs-proxy backend with identical CONNECT/READY frames for any cid. Cross-tenant live call-flow/voice debug attach is plausible and only blocked by an unverified WS-side binding. Real program surface stays at 4 hosts; CDN-wildcard breadth 0 caps scope expansion. PoC chain complete for bug gate; no live customer data touched.
+===== ANALYST nemotron3 2026-09-06 08:43:18 UTC =====
+[0m
+> build · nemotron-3-ultra-free
+[0m
+[0m$ [0mls -la /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/
+total 172
+drwxr-xr-x 12 runner runner  4096 Sep  6 08:32 .
+drwxr-xr-x  3 runner runner  4096 Sep  6 08:32 ..
+drwxr-xr-x  7 runner runner  4096 Sep  6 08:32 .git
+drwxr-xr-x  3 runner runner  4096 Sep  6 08:32 .github
+-rw-r--r--  1 runner runner  1609 Sep  6 08:32 README.md
+-rw-r--r--  1 runner runner    43 Sep  6 08:32 analyst-out.txt
+-rw-r--r--  1 runner runner 42802 Sep  6 08:32 analyst-prompt.txt
+-rw-r--r--  1 runner runner 39082 Sep  6 08:32 ctx.txt
+drwxr-xr-x  2 runner runner  4096 Sep  6 08:32 inventory
+drwxr-xr-x  2 runner runner  4096 Sep  6 08:32 knowledge
+drwxr-xr-x  2 runner runner  4096 Sep  6 08:32 leads
+-rw-r--r--  1 runner runner   696 Sep  6 08:32 probe-results.md
+drwxr-xr-x  2 runner runner  4096 Sep  6 08:32 recon-notes
+drwxr-xr-x  2 runner runner  4096 Sep  6 08:32 reports
+drwxr-xr-x  2 runner runner  4096 Sep  6 08:32 reposcan-raw
+-rw-r--r--  1 runner runner  3133 Sep  6 08:32 scope.yml
+drwxr-xr-x  2 runner runner  4096 Sep  6 08:32 scripts
+-rw-r--r--  1 runner runner    33 Sep  6 08:32 state_bigpickle.json
+-rw-r--r--  1 runner runner    33 Sep  6 08:32 state_laguna.json
+-rw-r--r--  1 runner runner    33 Sep  6 08:32 state_ling3.json
+-rw-r--r--  1 runner runner    33 Sep  6 08:32 state_longcat.json
+-rw-r--r--  1 runner runner    33 Sep  6 08:32 state_mimo.json
+-rw-r--r--  1 runner runner    33 Sep  6 08:32 state_nemotron3.json
+drwxr-xr-x  2 runner runner  4096 Sep  6 08:32 triage
+[0m
+[0m→ [0mRead scope.yml
+[0m✱ [0mGlob "**/*"[90m in inventory · 1 match[0m
+[0m→ [0mRead inventory/questnet-gmbh.md
+[0m✱ [0mGlob "**/*"[90m in knowledge · 1 match[0m
+[0m→ [0mRead knowledge/index.md
+[0m✱ [0mGlob "**/*"[90m in leads · 7 matches[0m
+[0m→ [0mRead leads/lead-nemotron3.md
+[0m→ [0mRead leads/lead-bigpickle.md
+[0m→ [0mRead probe-results.md
+[0m→ [0mRead analyst-out.txt
+[0m→ [0mRead leads/lead-laguna.md
+[0m→ [0mRead leads/lead-longcat.md
+[0m
+[0m← [0mWrite analyst-output.md
+Wrote file successfully.
+[0m
+Now I have full context. Let me produce the 8-step analysis output.
+[0m→ [0mRead state_nemotron3.json
+[0m→ [0mRead analyst-output.md
+Analysis complete. Output written to `analyst-output.md` with all 8 steps:
+
+1. **DELTA** — 2 NEW (AIDesigner config.php + index.php control), 4 CHANGED (cbs-proxy re-probes, auth.php re-confirm, chain confirmation, risk stability)
+2. **PRIORITIZE** — Top 5 assets scored; cbs-proxy leads at 8.90
+3. **HYPOTHESES** — 3 final hypotheses (95, 90, 85 confidence) all IDOR class
+4. **SELF-CRITIQUE** — 3 parked (AUTH_HELPED-only), 3 final ranked
+5. **NEXT ACTION** — HUMAN: operator session behavioral test to settle WS binding check
+6. **LEARNING** — 10 entries (7 ACCEPTED, 3 REJECTED)
+7. **RISK** — 72: full primitive chain probe-verified, only live_debug frame binding unverified
