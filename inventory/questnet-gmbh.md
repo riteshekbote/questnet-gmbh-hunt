@@ -161,3 +161,16 @@ www.live-manager.de
 - CHANGED AIDesigner MISCONFIG downgraded to closed LOW: prompt files 403-gated, dispatch 403-gated with/without static credential, get_agent_token.php requires session+VPN — no anonymous sibling (2026-09-06 pa
 - CHANGED www.applicationdesigner.de/AIDesigner/backend/public/index.php?route=: 403 {"error":"Invalid token"} with AND without public demo credential (sha256 8d2faac1…) — AIDesigner dispatch NOT static-credent
 - NEW www.applicationdesigner.de/AIDesigner/backend/config.php: anonymous HTTP 200 zero-auth JSON exposes internal LLM routing (ollama.codermatrix.de/v1, 6 providers, model→system-prompt map); dispatch gate
+
+## 2026-09-06 17:59:32 UTC
+- NEW cbs-proxy.api.live-manager.de: two byte-identical probe cycles (2026-09-04, 2026-09-05 21:50/21:51 UTC) confirm anonymous WS 101 + CONNECT CBS100/190/200 + READY for any cid/service — cid parameter no
+- CHANGED Cross-tenant primitive chain confirmed read-only: help.js static credential (sha256 8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf) → auth.php mints per-cid token for ANY customer_id
+- CHANGED AIDesigner MISCONFIG downgraded to closed LOW: prompt files 403-gated, dispatch 403-gated with/without static credential, get_agent_token.php requires session+VPN — no anonymous sibling (2026-09-06 pa
+- CHANGED www.applicationdesigner.de/AIDesigner/backend/public/index.php?route=: 403 {"error":"Invalid token"} with AND without public demo credential (sha256 8d2faac1…) — AIDesigner dispatch NOT static-credent
+- NEW www.applicationdesigner.de/AIDesigner/backend/config.php: anonymous HTTP 200 zero-auth JSON exposes internal LLM routing (ollama.codermatrix.de/v1, 6 providers, model→system-prompt map); dispatch gate
+- NEW No new in-scope hosts discovered since 2026-09-04; surface frozen at 4 live hosts (cbs-proxy.api.live-manager.de, www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de)
+- NEW www.applicationdesigner.de/AIDesigner/backend/config.php: anonymous HTTP 200 zero-auth JSON exposes internal LLM routing (ollama.codermatrix.de/v1, 6 providers, model→system-prompt map); no keys obser
+- NEW www.applicationdesigner.de/AIDesigner/backend/public/index.php?route=: 403 {"error":"Invalid token"} with AND without public demo credential (sha256 8d2faac1b96e020c077fb81aa3452b590d015d59bb826be7008
+- CHANGED AIDesigner MISCONFIG downgraded to closed LOW: prompt files 403-gated, dispatch 403-gated with/without static credential, get_agent_token.php requires session+VPN — no anonymous sibling exists (2026-0
+- CHANGED cbs-proxy.api.live-manager.de: two byte-identical probe cycles (2026-09-04, 2026-09-05 21:50/21:51 UTC) confirm anonymous WS 101 + CONNECT CBS100/190/200 + READY for any cid/service — cid parameter no
+- CHANGED Cross-tenant primitive chain confirmed read-only: help.js static credential (sha256 8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf) → auth.php mints per-cid token for ANY customer_id
