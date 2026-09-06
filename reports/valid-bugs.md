@@ -9,3 +9,7 @@
   - | Q4 Provable | ❌ | Requires valid customer session; anonymous GET does not redirect |
   - | 2 | Static credential → auth.php token mint | **VALID** | **7.5** | File report |
   - | 3 | Voicenote metadata PII disclosure | **VALID** | **7.5** | File report |
+
+- 2 lead(s) marked VALID at 2026-09-06 11:08:36 UTC
+  - | 2 | Static credential → auth.php token mint | **VALID** | **7.5** | File report |
+  - | 3 | Voicenote metadata PII disclosure | **VALID** | **7.5** | File report |
