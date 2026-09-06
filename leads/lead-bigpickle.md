@@ -770,3 +770,46 @@ evidence_needed: whether a session obtained via the public-credential chain pass
 verify_steps: AUTH_HELPED — own demo tenant only; behavioral gating compare with/without session cookie; never fetch third-party audio.
 impact: anonymous raw call/voicemail audio exfil for a real tenant via public JS credential — HIGH if gate is credential-satisfiable.
 testability: AUTH_HELPED
+## 2026-09-06 03:55:01 UTC [target] (model bigpickle)
+[NEW] www.applicationdesigner.de/AIDesigner/backend/: config.php + config_coding.php return anonymous HTTP 200 zero-auth JSON — internal LLM routing (ollama.codermatrix.de/v1, 6 providers, model→system-prompt map), no keys seen; public/index.php?route= → 403 {"error":"Invalid token"} anonymous AND with public demo credential (sha256 8d2faac1…); get_agent_token.php session+VPN gated (probe 2026-09-05 21:52-21:53).
+[CHANGED] AIDesigner dispatch is NOT satisfiable via the static-credential chain (unlike auth.php) — positive control: this router's token gate holds, sharpening the auth.php-mint anomaly.
+[PRIO] cbs-proxy.api.live-manager.de,7.4,attack_surface=9/business_value=10/tech=3/gate=10/cloud=5/fresh=2
+[PRIO] www.applicationdesigner.de,6.6,attack_surface=8/business_value=8/tech=4/gate=8/cloud=5/fresh=3 (AIDesigner config fresh)
+[PRIO] www.live-manager.de,4.6,attack_surface=5/business_value=7/tech=4/gate=3/cloud=4/fresh=1
+[HYP] Cross-tenant live-debug chain via public-credential auth.php mint feeding unbound cbs-proxy WS relay
+class: IDOR
+asset: chain GET https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token={sha256 8d2faac1…}&customer_id={cid}&srn={srn} -> wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={cid}&service={srn}
+confidence: 85
+reasoning: static credential in public help.js (sha256 8d2faac1…) sole auth for auth.php mint — success:true for demo 131727 AND foreign cid=2, "Not logged in" only when token omitted (2026-09-05 21:52-21:53); no token→cid ownership check observed anywhere in chain; anonymous WS upgrade returns 101 + CONNECT CBS100/190/200 + READY byte-identical for invalid cid=999999999/service=999999 and cid=1 (2026-09-05 21:50-21:54). Four of five hops closed anonymously.
+evidence_needed: whether CBS rejects a live_debug frame whose minted token was issued for a cid different from the presenting session's cid.
+verify_steps: AUTH_HELPED — operator session for owned tenant: mint via auth.php for OWN cid, present aid/ttl/hash in live_debug frame to wss://cbs-proxy?cid={own}, repeat with cid={foreign}, record accept vs deny. Own-tenant only; never third-party streams.
+impact: anonymous per-tenant live-debug token (any cid) over unauthenticated bidirectional relay into internal CBS systems; if frame binding absent, cross-tenant live call/debug attach (voice/PII) — HIGH/CRITICAL.
+testability: AUTH_HELPED
+[HYP] cbs-proxy WS router is an unauthenticated full-duplex relay with no object-level control
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service={service}
+confidence: 84
+reasoning: live probes 2026-09-05 21:50-21:54 — anonymous upgrades with invalid cid=999999999/service=999999 and cid=1 return byte-identical HTTP 101 + CONNECT/READY frame set, zero credentials; attacker controls every element the relay could bind on (cid, service, minted token); only CBS-side frame payload validation remains.
+evidence_needed: same as prior — whether CBS rejects a live_debug packet whose minted token was issued for a cid different from the presenting session's cid.
+verify_steps: AUTH_HELPED only — behavioral own-tenant comparison (own vs foreign cid with OWN minted token); never anonymous payloads, never real-stream subscription.
+impact: anonymous bidirectional pipe into internal CBS systems (CBS100/190/200) by any tenant id; if frame binding absent, cross-tenant live call/debug attach (voice/PII) — HIGH/CRITICAL.
+testability: AUTH_HELPED
+[HYP] AIDesigner backend router: anonymous config disclosure + possibly non-bound route dispatch
+class: MISCONFIG
+asset: https://www.applicationdesigner.de/AIDesigner/backend/{config.php,config_coding.php,public/index.php?route=}
+confidence: 55
+reasoning: 2026-09-05 21:52 probes — config.php/config_coding.php return HTTP 200 zero-auth identical JSON (LLM routing incl. internal ollama.codermatrix.de/v1, six provider endpoints, model→system-prompt map); no keys observed in JSON. public/index.php?route= → 403 {"error":"Invalid token"} anonymous AND with the public demo credential (sha256 8d2faac1…), so this dispatch is NOT reachable via the static-credential chain; get_agent_token.php (the router's mint) is session+VPN gated. Harmful reach beyond config disclosure unproven.
+evidence_needed: whether any config sibling leaks keys/secrets (none observed), and whether a session-minted agent token dispatches for a cid other than the minted session's cid.
+verify_steps: PASSIVE — GET siblings under AIDesigner/backend/ (config.php/config_coding.php confirmed 200; test index.php, *.json/*.md referenced by system-prompt files, config.example.php) for secrets, <=1 rps GET only. AUTH_HELPED — operator session: mint agent token for OWN cid, dispatch route with own-cid token vs a token minted for a foreign cid; record accept vs deny.
+impact: anonymous disclosure of internal LLM infrastructure topology + provider config (no keys found); execution requires session-bound token — LOW/MED.
+testability: PASSIVE
+[PARKED] voicenotes/download.php raw-audio gate: unchanged at 60, AUTH_HELPED, already in leads and in the operator-session NEXT; no new anonymous surface — pending HUMAN pass.
+[PARKED] post-login rs open redirect @ www.live-manager.de: AUTH_HELPED, no operator context, anonymous variant REJECTED — exhausted.
+[FINAL] 1. auth.php mint + cbs-proxy WS chain (85) — strongest; four of five hops closed anonymously, two live-probe cycles byte-identical.
+[FINAL] 2. cbs-proxy unauthenticated full-duplex relay / no router-layer control (84) — the object-level control gap itself.
+[FINAL] 3. AIDesigner backend config disclosure + dispatch gate test (55) — confirmed but low-impact so far; the one fresh surface this cycle.
+[NEXT] PROBE: single 1-rps GET series under https://www.applicationdesigner.de/AIDesigner/backend/ (config.php, config_coding.php confirmed 200; probe index.php, config.json, *.md/*.json named in the system-prompt map, config.example.php, test.php) hunting for a secrets-bearing sibling; read-only, no route dispatch mutations.
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config.php: anonymous HTTP 200 zero-auth JSON exposes internal LLM routing (ollama.codermatrix.de/v1, 6 providers, model→system-prompt map); no keys observed; dispatch gated by session+VPN-minted agent token.
+[LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/index.php?route=: 403 {"error":"Invalid token"} with AND without the public demo credential (sha256 8d2faac1…) — AIDesigner dispatch is NOT static-credential-satisfiable, contrasting the unbound auth.php LiveDebugger mint and narrowing the broken-auth anomaly to LiveDebugger.
+[LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WS upgrade reaches backend CBS servers with client-supplied cid/service and no observed token (unchanged, still the driver — two byte-identical probe cycles).
+[RISK] questnet-gmbh: 77 — NO_DELTA. Chain stable and re-confirmed read-only: public help.js credential (sha256 8d2faac1…) → arbitrary-cid live-debug mint (cid=2 success:true) → anonymous voicenote index read → unauthenticated WS relay READY for any cid/service. One open hop (live_debug frame binding) and the raw-audio download gate remain untested solely because they require a live session (PII rule), not because controls were observed; the one fresh surface this cycle (AIDesigner config) is LOW/MED with no keys and a holding token gate. No recordings fetched, no live streams subscribed, no mutations, no PII echoed.

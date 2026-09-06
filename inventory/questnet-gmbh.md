@@ -137,3 +137,7 @@ www.live-manager.de
 - CHANGED Live probe 2026-09-05 21:52 UTC: GET https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token=LIVE_DEMO_CUSTOMER_TOKEN&customer_id=999999999&srn=100 → success:true, 64-hex auth+ttl — arbit
 - CHANGED Live probe 2026-09-05 21:53 UTC: GET https://www.applicationdesigner.de/extjs/livedebugger/auth.php (no token) → success:false, "Not logged in" — token is sole auth gate
 - CHANGED Live probe 2026-09-05 21:54 UTC: WS-upgrade with minted token (origin=LiveDebugger&cid=2&service=100&token=...) → HTTP/1.1 101 + identical CONNECT/READY — token accepted but no observable scoping enfo
+
+## 2026-09-06 03:56:36 UTC
+- NEW www.applicationdesigner.de/AIDesigner/backend/: config.php + config_coding.php return anonymous HTTP 200 zero-auth JSON — internal LLM routing (ollama.codermatrix.de/v1, 6 providers, model→system-prom
+- CHANGED AIDesigner dispatch is NOT satisfiable via the static-credential chain (unlike auth.php) — positive control: this router's token gate holds, sharpening the auth.php-mint anomaly.
