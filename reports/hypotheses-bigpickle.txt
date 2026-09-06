@@ -1,4 +1,4 @@
-## 2026-09-06 20:15:21 UTC [target] (model bigpickle)
+## 2026-09-06 22:12:55 UTC [target] (model bigpickle)
 [PRIO] cbs-proxy.api.live-manager.de,9.0,a=9,b=10,t=7,g=10,c=8,f=5
 [PRIO] www.applicationdesigner.de,7.0,a=8,b=8,t=8,g=8,c=5,f=1
 [PRIO] www.live-manager.de,4.6,a=5,b=7,t=5,g=2,c=6,f=1
