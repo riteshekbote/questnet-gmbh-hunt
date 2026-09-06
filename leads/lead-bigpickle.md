@@ -982,3 +982,33 @@ impact: low
 verify_steps: 1) Information disclosure only — no direct exploitation 2) Verify this IP is not routable from the internet 3) Could be correlated with other internal network details if found
 [HYP] Default SIP directory passwords "1234" across all FreeSWITCH extensions
 class: MISCONFIG
+## 2026-09-06 15:39:48 UTC [target] (model bigpickle)
+[HYP] LiveDebugger token is minted-but-unbound: same token passes cbs-proxy for cid=131727 and foreign cids, proving BOLA reachability is client-controlled
+class: IDOR
+asset: cbs-proxy.api.live-manager.de (chain: www.applicationdesigner.de/extjs/livedebugger/auth.php + wss://cbs-proxy.api.live-manager.de)
+confidence: 75
+reasoning: Probes 2026-09-05 21:50-54: anonymous WS-upgrade GET returns HTTP/1.1 101 + CONNECT CBS100/190/200 + READY for cid=999999999, cid=1, and cid=2-with-minted-token — frames byte-identical across all three, token accepted with no observable cid scoping. auth.php mints success:true for arbitrary customer_id incl. 999999999 using the public help.js credential; 64-hex auth+ttl returned. What is NOT yet observed is data-plane proof that a minted token for one cid is honored when presented for another cid.
+evidence_needed: mint token for demo cid=131727 (sanctioned demo tenant), connect with cid=131727 vs cid=2 using the SAME token, and observe whether proxy/READY behavior or any downstream binding differs.
+verify_steps: 1) GET https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token=<value-of-LIVE_DEMO_CUSTOMER_TOKEN-from-help.js>&customer_id=131727&srn=100 (sanctioned demo tenant, read-only) 2) WS-upgrade GET wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid=131727&service=100&token=<minted> 3) repeat with cid=2, same token 4) compare frames byte-for-byte; divergence ⇒ token bound (gate holds), identity ⇒ token unbound (BOLA candidate stands).
+impact: cross-tenant live-debug/CBS call-plane access via public credential + arbitrary cid — high if binding absent, none if gate holds.
+testability: AUTH_HELPED
+[HYP] Questnet public org repos (beyond freeswitch) ship production configs with live secrets — repeat of the committed-internal-IP + default-cred pattern
+class: MISCONFIG
+asset: github.com/questnet/* (public repos; secret value correlated to in-scope hosts/IPs)
+confidence: 55
+reasoning: questnet/freeswitch (v1.10-qn) already proves the org commits non-placeholder deployment material: insideout/vars.xml contains real RFC1918 address 192.168.86.254 (the only human edit in an otherwise stock profile) plus default creds and an internal endpoint layout. Same org tends to publish glue/ops repos; pattern-following config dumps are a plausible left-hand side of the chain.
+evidence_needed: a committed env/config/terraform/docker-compose file containing a live credential (sha256-reported, never plaintext in output), service key, or internal hostname that resolves into the in-scope /22.
+verify_steps: 1) passive-only: enumerate public questnet repos via GitHub org/API search 2) grep commits for .env, config.php, *.pem, password=, apikey, token=, 185.158.96.* 3) any finding reported as hash + host correlation, no live auth attempt.
+impact: credential/config disclosure that ties to in-scope assets — medium, enables the driver chain's authenticated hop.
+testability: PASSIVE
+[HYP] A FreeSWITCH instance behind 185.158.96.0/22 runs the insideout/v1.10-qn config: ESL 8021 ClueCon (no ACL), Rayo 5222 usera:1, SIP 5060/5061 ext 1000-1019 pw 1234
+class: MISCONFIG
+asset: 185.158.96.0/22 (ports 8021, 5222, 5060, 5061)
+confidence: 45
+reasoning: The insideout profile is a customization (hardcoded 192.168.86.254, ESL listen-ip=0.0.0.0 password=ClueCon with apply-inbound-acl commented out, rayo shared-secret=ClueCon, SIP pw 1234). Vanilla profile also uses ClueCon/:: binding. Deployment of these configs on the in-scope /22 is entirely unconfirmed; no in-scope host is known to run FreeSWITCH, so this stays a live-risk candidate until port surface is seen.
+evidence_needed: a scoped host answering TCP 8021/5222/5060/5061 with FreeSWITCH/fs_cli/Rayo behavior.
+verify_steps: (authorized operator, non-HTTP) 1) targeted nmap -sV -Pn -p8021,5222,5060,5061 on 185.158.98.53 and bugs-report-adjacent hosts only, low rate 2) if open, banner/id → fs_cli -H <host> -P ClueCon "status" (read-only) 3) no auth-rounds on SIP endpoints without prior scope confirmation.
+impact: arbitrary FreeSWITCH control (originate/bridge/record/shutdown) or Rayo call-plane control — high if live, none if port surface absent.
+testability: HUMAN_ONLY
+[NEXT] PROBE: settlement of the last open hop on the driver chain, demo-tenant-sanctioned and read-only, <=1 rps. (1) GET https://www.applicationdesigner.de/extjs/livedebugger/auth.php with query token=<LIVE_DEMO_CUSTOMER_TOKEN value from help.js, sha256 8d2faac1…>&customer_id=131727&srn=100 → capture 64-hex mint; (2) WS-upgrade GET wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid=131727&service=100&token=<minted>; (3) same token, WS-upgrade GET wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid=2&service=100&token=<minted>; compare frame streams byte-for-byte. Identical ⇒ token unbound, cross-tenant primitive complete (report chain as BOLA/reachable). Divergent ⇒ token→cid gate holds, cbs-proxy anomaly reported as TheBOLA only.
+[RISK] questnet-gmbh: 70 — full transport primitive verified read-only (public credential → any-cid token → zero-cred 101 to backend CBS with byte-identical frames across cids); last hop (token→cid binding/data read) unverified and protected by program no-touch rule; source-level default-cred exposure adds potential, unconfirmed. Confidence unchanged from driver chain; impact escalation pending demo-tenant binding test.

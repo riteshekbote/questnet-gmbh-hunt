@@ -1,124 +1,30 @@
-## 2026-09-06 12:20:39 UTC [target] (model bigpickle)
-[CHANGED] www.applicationdesigner.de/AIDesigner/backend/: passive sibling probe executed 2026-09-06 — config.php/config_coding.php re-confirmed HTTP 200 zero-auth (public provider URLs, model→prompt map, zero keys); system-prompt-ask.md / system-prompt-apply.md / system-prompt.md / system-prompt-coding.md all HTTP 403; index.php / config.json / config.example.php / test.php / agents/agent.json / prompts/ all 404. No secret-bearing sibling exists anonymously.
-[CHANGED] AIDesigner MISCONFIG downgraded from open hypothesis to closed LOW: prompt files gated, dispatch 403-gated with AND without public demo credential (sha256 8d2faac1…), mint (get_agent_token.php) session+VPN gated — passive thread exhausted.
-[PRIO] cbs-proxy.api.live-manager.de,7.4,attack_surface=9/business_value=10/tech=3/gate=10/cloud=5/fresh=2
-[PRIO] www.applicationdesigner.de,6.5,attack_surface=8/business_value=8/tech=4/gate=8/cloud=5/fresh=1 (AIDesigner thread closed; freshness 3→1)
-[PRIO] www.live-manager.de,4.6,attack_surface=5/business_value=7/tech=4/gate=3/cloud=4/fresh=1
-[HYP] Cross-tenant live-debug chain via public-credential auth.php mint feeding unbound cbs-proxy WS relay
+## 2026-09-06 15:39:48 UTC [target] (model bigpickle)
+[HYP] LiveDebugger token is minted-but-unbound: same token passes cbs-proxy for cid=131727 and foreign cids, proving BOLA reachability is client-controlled
 class: IDOR
-asset: chain GET https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token={sha256 8d2faac1…}&customer_id={cid}&srn={srn} -> wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={cid}&service={srn}
-confidence: 85
-reasoning: static credential in public help.js (sha256 8d2faac1…) sole auth for auth.php mint — success:true for demo 131727 AND foreign cid=2, "Not logged in" only when token omitted (2026-09-05 21:52-21:53); no token→cid ownership check observed; anonymous WS upgrade returns 101 + CONNECT CBS100/190/200 + READY byte-identical for invalid cid=999999999/service=999999 and cid=1 (2026-09-05 21:50-21:54, two cycles). Four of five hops closed anonymously; only CBS-side live_debug frame binding untested.
-evidence_needed: whether CBS rejects a live_debug frame whose minted token was issued for a cid different from the presenting session's cid.
-verify_steps: AUTH_HELPED — operator session for owned tenant: mint via auth.php for OWN cid, present aid/ttl/hash in a live_debug frame to wss://cbs-proxy?cid={own}, repeat with cid={foreign}, record accept vs deny. Own-tenant only; never third-party streams.
-impact: anonymous per-tenant live-debug token (any cid) over unauthenticated bidirectional relay into CBS; if frame binding absent, cross-tenant live call/debug attach (voice/PII) — HIGH/CRITICAL (CVSS 8.6).
-testability: AUTH_HELPED
-[HYP] cbs-proxy WS router is an unauthenticated full-duplex relay with no object-level control
-class: IDOR
-asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service={service}
-confidence: 84
-reasoning: live probes 2026-09-05 21:50-21:54 — anonymous upgrades with invalid cid=999999999/service=999999 and cid=1 return byte-identical HTTP 101 + CONNECT/READY frame set, zero credentials; attacker controls every binding element (cid, service, minted token); only CBS-side frame payload validation remains.
-evidence_needed: same as prior — whether CBS rejects a live_debug packet whose minted token was issued for a cid different from the presenting session's cid.
-verify_steps: AUTH_HELPED only — behavioral own-tenant comparison (own vs foreign cid with OWN minted token); never anonymous payloads, never real-stream subscription.
-impact: anonymous bidirectional pipe into internal CBS systems (CBS100/190/200) by any tenant id; if frame binding absent, cross-tenant live call/debug attach (voice/PII) — HIGH/CRITICAL.
-testability: AUTH_HELPED
-[HYP] voicenotes/download.php raw-audio gate is credential-satisfiable via the public-credential session chain
-class: IDOR
-asset: https://www.applicationdesigner.de/extjs/voicenotes/download.php?file={uuid-from-get.php}
-confidence: 60
-reasoning: get.php/check.php return the token-bound tenant's voicenote index anonymously (customer_id ignored) incl. UUID filenames; download.php returned 403 "No VPN detected." without session (2026-09-05); auth.php demonstrates tokens/sessions mintable from the public static credential; same VPN gate observed on get_agent_token.php — unverified whether download gate re-checks the presenting session's tenant.
-evidence_needed: whether a session obtained via the public-credential chain passes download.php's gate for the demo tenant's OWN file.
-verify_steps: AUTH_HELPED — own demo tenant only; mint session cookie via public credential, compare download.php?file={own-demo-uuid} with/without cookie; never fetch third-party audio.
-impact: anonymous raw call/voicemail audio exfil for a real tenant via public JS credential — HIGH if gate is credential-satisfiable.
-testability: AUTH_HELPED
-[PARKED] AIDesigner backend config disclosure + possible non-bound route dispatch (55→closed): PASSIVE exhausted today — prompt files 403, config siblings 404, no keys; dispatch 403-gated w/o credential, mint VPN-gated. Config disclosure stands as standalone LOW (ACCEPTED MISCONFIG, defended); only leftover is the AUTH_HELPED cross-cid route-dispatch test (LOW value) — fold into the HUMAN pass if operator context arrives.
-[PARKED] post-login rs open redirect @ www.live-manager.de: AUTH_HELPED, no operator context, anonymous variant REJECTED — exhausted.
-[FINAL] 1. auth.php mint + cbs-proxy WS chain (85) — strongest; four of five hops closed anonymously, two byte-identical probe cycles; triage HOLD supports filing at CVSS 8.6.
-[FINAL] 2. cbs-proxy unauthenticated full-duplex relay / no router-layer control (84) — the object-level control gap itself.
-[FINAL] 3. voicenotes/download.php raw-audio gate (60) — credential-satisfiability unproven; one of the two open hops.
-[NEXT] HUMAN: with a valid operator session for an owned tenant, settle the two remaining open hops in one pass — (a) mint live-debug auth for the OWN cid via auth.php, present aid/ttl/hash in a live_debug frame to wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={own}&service={own}, repeat with cid={foreign}, record accept vs deny; (b) mint a session cookie via the public-credential chain and call https://www.applicationdesigner.de/extjs/voicenotes/download.php?file={own-demo-uuid} with vs without cookie to test the raw-audio gate. Own-tenant only; never fetch/subscribe third-party data (program PII rule). No PROBE warranted — all safe anonymous probes now exhausted (AIDesigner siblings closed this cycle; cid=999999999/service=999999 already answered byte-identical 101).
-[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config.php: anonymous HTTP 200 zero-auth JSON exposes internal LLM routing (ollama.codermatrix.de/v1, 6 providers, model→system-prompt map); no keys observed; referenced prompt files 403-gated; dispatch gated by session+VPN-minted agent token.
-[LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/index.php?route=: 403 {"error":"Invalid token"} with AND without the public demo credential (sha256 8d2faac1…) — AIDesigner dispatch is NOT static-credential-satisfiable, contrasting the unbound auth.php LiveDebugger mint and narrowing the broken-auth anomaly to LiveDebugger.
-[LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: passive sibling probe closed 2026-09-06 — system-prompt-ask.md/apply.md/.md/-coding.md all HTTP 403, index.php/config.json/config.example.php/test.php/agents/agent.json 404, config files carry zero keys; no secrets-bearing anonymous sibling exists, thread exhausted.
-[LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WS upgrade reaches backend CBS servers with client-supplied cid/service and no observed token (unchanged, still the driver — two byte-identical probe cycles).
-[LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/livedebugger/auth.php: anonymous per-cid live-debug token mint via public static credential, success:true for foreign cid=2 — no observed token→cid ownership check anywhere in the chain (unchanged).
-[RISK] questnet-gmbh: 77 — NO_DELTA. Chain stable and re-confirmed read-only: public help.js credential (sha256 8d2faac1…) → arbitrary-cid live-debug mint (cid=2 success:true) → anonymous voicenote index read (customer_id ignored, PII not echoed) → unauthenticated WS relay READY for any cid/service. This cycle closed the last anonymous thread (AIDesigner backend: no keys, prompt files 403, dispatch token-gated) with no new surface — the exposure sits on the already-known primitives. The two open hops (live_debug frame binding, raw-audio download gate) remain untested solely because both require a live operator session (PII rule), not because controls were observed. Triage marks auth.php mint + voicenote PII disclosure VALID (CVSS 7.5) and the WS relay HOLD (8.6). Risk unchanged at 77 pending the HUMAN session or program authorization to file. No recordings fetched, no live streams subscribed, no mutations, no PII echoed.
-[HYP] Azure Blob Storage Secret Key in FreeSWITCH mod_http_cache config
-class: SECRET
-asset: freeswitch/src/mod/applications/mod_http_cache/conf/autoload_configs/http_cache.conf.xml:37-38
-confidence: 10
-reasoning: The Azure storage access key `kOOY4Y/sqZU9bsLjmN+9McVwTry+UIn1Owt4Zs/2S2FQT0eAWLKskZ0V6/gGFqCAKVvwXoGjqUn7PNbVjhZiNA==` is present in the FreeSWITCH upstream config file. However: (1) the domain is `account.blob.core.windows.net` (placeholder), (2) the author of the commit is Andrey Volk (upstream SignalWire/FreeSWITCH maintainer), and (3) this file exists identically in upstream FreeSWITCH. This is upstream example config, NOT a questnet-added secret.
-impact: Informational (no real in-scope risk)
-verify_steps: Confirm `account.blob.core.windows.net` is not a live questnet storage account via passive DNS or Azure portal.
-[HYP] AWS Example Access Key in FreeSWITCH mod_http_cache config
-class: SECRET
-asset: freeswitch/src/mod/applications/mod_http_cache/conf/autoload_configs/http_cache.conf.xml:22
-confidence: 5
-reasoning: `AKIAIOSFOD_REDACTED` and `wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY` are the well-known AWS documentation example keys. These are NOT real credentials - they are the canonical example from AWS docs.
-impact: None (example/test credentials)
-verify_steps: N/A - known false positive.
-[HYP] Hardcoded FreeSWITCH ESL default password "ClueCon"
-class: MISCONFIG
-asset: freeswitch/scripts/perl/fs.pl:5, NEventSocket/NEventSocket/InboundSocket.cs:42, free-socks/examples/connection-load.rs:21
-confidence: 20
-reasoning: The string "ClueCon" appears as a default password parameter in ESL client libraries. This is the well-known FreeSWITCH default password. In free-socks it is a CLI default (`--password` arg), not a hardcoded secret. In NEventSocket it is a C# default parameter value. In freeswitch scripts it's a test script. None of these are live production credentials.
-impact: Informational (default credentials in library defaults, not production)
-verify_steps: Confirm that production deployments of these libraries do not rely on the default "ClueCon" password.
-[HYP] RSA Private Keys in sofia-sip test PEM files
-class: SECRET
-asset: freeswitch/libs/sofia-sip/libsofia-sip-ua/*/agent.pem, key.pem
-confidence: 5
-reasoning: These .pem files contain RSA private keys but are upstream test/example certificates bundled with the sofia-sip library. They are publicly known test certs from the upstream project, not questnet production keys.
-impact: None (upstream test certificates)
-verify_steps: N/A
-[HYP] FreeSWITCH Event Socket with default "ClueCon" password, ACL disabled, bound to 0.0.0.0
-class: MISCONFIG
-asset: questnet/freeswitch (v1.10-qn branch) — conf/insideout/autoload_configs/event_socket.conf.xml:3-6
-confidence: 85
-reasoning: The `insideout` profile is the only Questnet-customized FreeSWITCH config (contains hardcoded internal IP 192.168.86.254 in vars.xml:14, proving human modification). It configures the ESL with `listen-ip=0.0.0.0`, `password=ClueCon` (well-known FreeSWITCH default), and `apply-inbound-acl` is commented out. This means the ESL control socket (port 8021) is exposed to all network interfaces with no ACL restriction. If deployed, any network-reachable client can authenticate with the trivially known default password and issue arbitrary FreeSWITCH API commands (originate calls, bridge, record, shutdown, etc.). The `vanilla` profile (included by the main freeswitch.xml) also uses `listen-ip=::` with `password=ClueCon` and ACL commented out.
-impact: high
-verify_steps: 1) Check if any FreeSWITCH instance from Questnet exposes port 8021 (nmap -sV <target> -p 8021) 2) Attempt connection with `fs_cli -H <target> -P ClueCon` 3) If connected, issue `status` or `eval $${local_ip_v4}` to confirm full control 4) Check if bugs.olivermaicher.eu or any in-scope VoIP endpoint runs FreeSWITCH on this port
-[HYP] Rayo XMPP shared-secret "ClueCon" and test user "usera" with password "1"
-class: MISCONFIG
-asset: questnet/freeswitch (v1.10-qn branch) — conf/rayo/autoload_configs/rayo.conf.xml:99,115
+asset: cbs-proxy.api.live-manager.de (chain: www.applicationdesigner.de/extjs/livedebugger/auth.php + wss://cbs-proxy.api.live-manager.de)
 confidence: 75
-reasoning: The rayo.conf.xml configures the Rayo XMPP server with `shared-secret="ClueCon"` (line 99) and an authorized user `name="usera" password="1"` (line 115). The Rayo listener is bound to `port="5222"` with `acl=""` (empty ACL, line 118). If deployed, this allows unauthenticated XMPP connections to control calls via the Rayo protocol using the trivially known default credentials.
-impact: high
-verify_steps: 1) Check if port 5222 is open on any in-scope host 2) Attempt XMPP connection with usera/ClueCon credentials 3) If Rayo is active, attempt to create/monitor calls via the Rayo protocol
-[HYP] Hardcoded internal IP address 192.168.86.254 leaked in config
-class: OTHER
-asset: questnet/freeswitch (v1.10-qn branch) — conf/insideout/vars.xml:14
-confidence: 90
-reasoning: The `insideout` profile's vars.xml contains `<X-PRE-PROCESS cmd="set" data="internal_ip_v4=192.168.86.254"/>`. This is a private RFC1918 address committed to a public repo, revealing Questnet's internal network topology. This IP appears to be an actual deployment address (not a placeholder) because it is specific (not 192.168.1.1 or 10.0.0.1) and is the only non-default modification in the insideout profile.
-impact: low
-verify_steps: 1) This is an information disclosure only — no direct exploitation 2) Could aid internal network reconnaissance if combined with other findings 3) Verify this IP is not routable from the internet
-[HYP] Default SIP directory passwords "1234" across all FreeSWITCH profiles
+reasoning: Probes 2026-09-05 21:50-54: anonymous WS-upgrade GET returns HTTP/1.1 101 + CONNECT CBS100/190/200 + READY for cid=999999999, cid=1, and cid=2-with-minted-token — frames byte-identical across all three, token accepted with no observable cid scoping. auth.php mints success:true for arbitrary customer_id incl. 999999999 using the public help.js credential; 64-hex auth+ttl returned. What is NOT yet observed is data-plane proof that a minted token for one cid is honored when presented for another cid.
+evidence_needed: mint token for demo cid=131727 (sanctioned demo tenant), connect with cid=131727 vs cid=2 using the SAME token, and observe whether proxy/READY behavior or any downstream binding differs.
+verify_steps: 1) GET https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token=<value-of-LIVE_DEMO_CUSTOMER_TOKEN-from-help.js>&customer_id=131727&srn=100 (sanctioned demo tenant, read-only) 2) WS-upgrade GET wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid=131727&service=100&token=<minted> 3) repeat with cid=2, same token 4) compare frames byte-for-byte; divergence ⇒ token bound (gate holds), identity ⇒ token unbound (BOLA candidate stands).
+impact: cross-tenant live-debug/CBS call-plane access via public credential + arbitrary cid — high if binding absent, none if gate holds.
+testability: AUTH_HELPED
+[HYP] Questnet public org repos (beyond freeswitch) ship production configs with live secrets — repeat of the committed-internal-IP + default-cred pattern
 class: MISCONFIG
-asset: questnet/freeswitch (v1.10-qn branch) — conf/insideout/directory/default/*.xml (1018.xml, 1002.xml, brian.xml, 1019.xml, 1015.xml, 1011.xml, 1017.xml, 1012.xml, 1008.xml, 1000.xml)
-confidence: 80
-reasoning: All 10 SIP user entries in the insideout directory use `password="1234"` and `vm-password=<extension_number>`. The vanilla profile uses `$${default_password}` which resolves to `1234`. These are the well-known FreeSWITCH defaults. If deployed, any SIP client can register as any extension using "1234" and make toll-fraud calls.
-impact: medium
-verify_steps: 1) Attempt SIP REGISTER with extension 1000-1019 and password 1234 against any in-scope SIP endpoint 2) Check if any SIP port (5060/5061) is exposed on bugs.olivermaicher.eu or related hosts
-[HYP] Default credentials in multiple service configurations (AMQP, Redis, SMTP, DB, XML-RPC)
+asset: github.com/questnet/* (public repos; secret value correlated to in-scope hosts/IPs)
+confidence: 55
+reasoning: questnet/freeswitch (v1.10-qn) already proves the org commits non-placeholder deployment material: insideout/vars.xml contains real RFC1918 address 192.168.86.254 (the only human edit in an otherwise stock profile) plus default creds and an internal endpoint layout. Same org tends to publish glue/ops repos; pattern-following config dumps are a plausible left-hand side of the chain.
+evidence_needed: a committed env/config/terraform/docker-compose file containing a live credential (sha256-reported, never plaintext in output), service key, or internal hostname that resolves into the in-scope /22.
+verify_steps: 1) passive-only: enumerate public questnet repos via GitHub org/API search 2) grep commits for .env, config.php, *.pem, password=, apikey, token=, 185.158.96.* 3) any finding reported as hash + host correlation, no live auth attempt.
+impact: credential/config disclosure that ties to in-scope assets — medium, enables the driver chain's authenticated hop.
+testability: PASSIVE
+[HYP] A FreeSWITCH instance behind 185.158.96.0/22 runs the insideout/v1.10-qn config: ESL 8021 ClueCon (no ACL), Rayo 5222 usera:1, SIP 5060/5061 ext 1000-1019 pw 1234
 class: MISCONFIG
-asset: questnet/freeswitch (v1.10-qn branch) — conf/vanilla/autoload_configs/*.xml
-confidence: 70
-reasoning: The vanilla profile (included by the active freeswitch.xml) contains: AMQP password "guest" (amqp.conf.xml:9,17,51,74), Redis password "redis" (hiredis.conf.xml:7,13), SMTP password "mypassword" (switch.conf.xml:119), XML-RPC user "freeswitch" / pass "works" (xml_rpc.conf.xml:7-8), DB password "password" (easyroute.conf.xml:5), SMPP password "password" (smpp.conf.xml:10), PostgreSQL connection with user:freeswitch password:'' (switch.conf.xml:172). These are all upstream FreeSWITCH defaults. If any of these services are deployed with these configs, they are trivially compromiseable.
-impact: medium
-verify_steps: 1) Check if AMQP (5672), Redis (6379), XML-RPC (8021 HTTP) ports are exposed 2) Attempt default credential authentication against any running services
-[HYP] FreeSWITCH Event Socket with default "ClueCon" password, bound to 0.0.0.0, ACL disabled
-class: MISCONFIG
-asset: questnet/freeswitch (v1.10-qn branch) — conf/insideout/autoload_configs/event_socket.conf.xml:3-6
-confidence: 85
-reasoning: The `insideout` profile (Questnet-customized, distinct from upstream vanilla) configures ESL with listen-ip=0.0.0.0, password=ClueCon, and apply-inbound-acl commented out. The vanilla profile (also included by the main freeswitch.xml) similarly binds to :: with password=ClueCon and ACL loopback.auto commented out. If deployed on any host in the 185.158.96.0/22 range, the ESL control socket (port 8021) is exposed to all network interfaces with the trivially known default password, allowing arbitrary FreeSWITCH API commands (originate, bridge, record, shutdown).
-impact: high
-verify_steps: 1) nmap -sV 185.158.96.0/22 -p 8021 to find exposed ESL ports 2) fs_cli -H <target> -P ClueCon to authenticate 3) If connected, issue `status` or `eval $${local_ip_v4}` to confirm full control 4) Check bugs.olivermaicher.eu or *.live-manager.de for port 8021
-[HYP] Hardcoded internal RFC1918 IP address 192.168.86.254 leaked in FreeSWITCH config
-class: OTHER
-asset: questnet/freeswitch (v1.10-qn branch) — conf/insideout/vars.xml:14
-confidence: 90
-reasoning: vars.xml contains `<X-PRE-PROCESS cmd="set" data="internal_ip_v4=192.168.86.254"/>`. This is a specific non-default private IP (not 192.168.1.1) committed to a public repo, suggesting it is an actual Questnet deployment address. It is the only human modification in the insideout profile (the rest is stock FreeSWITCH). Could aid internal network reconnaissance if combined with other findings.
-impact: low
-verify_steps: 1) Information disclosure only — no direct exploitation 2) Verify this IP is not routable from the internet 3) Could be correlated with other internal network details if found
-[HYP] Default SIP directory passwords "1234" across all FreeSWITCH extensions
-class: MISCONFIG
+asset: 185.158.96.0/22 (ports 8021, 5222, 5060, 5061)
+confidence: 45
+reasoning: The insideout profile is a customization (hardcoded 192.168.86.254, ESL listen-ip=0.0.0.0 password=ClueCon with apply-inbound-acl commented out, rayo shared-secret=ClueCon, SIP pw 1234). Vanilla profile also uses ClueCon/:: binding. Deployment of these configs on the in-scope /22 is entirely unconfirmed; no in-scope host is known to run FreeSWITCH, so this stays a live-risk candidate until port surface is seen.
+evidence_needed: a scoped host answering TCP 8021/5222/5060/5061 with FreeSWITCH/fs_cli/Rayo behavior.
+verify_steps: (authorized operator, non-HTTP) 1) targeted nmap -sV -Pn -p8021,5222,5060,5061 on 185.158.98.53 and bugs-report-adjacent hosts only, low rate 2) if open, banner/id → fs_cli -H <host> -P ClueCon "status" (read-only) 3) no auth-rounds on SIP endpoints without prior scope confirmation.
+impact: arbitrary FreeSWITCH control (originate/bridge/record/shutdown) or Rayo call-plane control — high if live, none if port surface absent.
+testability: HUMAN_ONLY
+[NEXT] PROBE: settlement of the last open hop on the driver chain, demo-tenant-sanctioned and read-only, <=1 rps. (1) GET https://www.applicationdesigner.de/extjs/livedebugger/auth.php with query token=<LIVE_DEMO_CUSTOMER_TOKEN value from help.js, sha256 8d2faac1…>&customer_id=131727&srn=100 → capture 64-hex mint; (2) WS-upgrade GET wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid=131727&service=100&token=<minted>; (3) same token, WS-upgrade GET wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid=2&service=100&token=<minted>; compare frame streams byte-for-byte. Identical ⇒ token unbound, cross-tenant primitive complete (report chain as BOLA/reachable). Divergent ⇒ token→cid gate holds, cbs-proxy anomaly reported as TheBOLA only.
+[RISK] questnet-gmbh: 70 — full transport primitive verified read-only (public credential → any-cid token → zero-cred 101 to backend CBS with byte-identical frames across cids); last hop (token→cid binding/data read) unverified and protected by program no-touch rule; source-level default-cred exposure adds potential, unconfirmed. Confidence unchanged from driver chain; impact escalation pending demo-tenant binding test.
