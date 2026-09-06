@@ -10256,3 +10256,358 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 [RISK] questnet-gmbh: 77 — NO_DELTA. Chain stable and re-confirmed read-only: public help.js credential (sha256 8d2faac1…) → arbitrary-cid live-debug mint (cid=2 success:true) → anonymous voicenote index read (customer_id ignored, PII not echoed) → unauthenticated WS relay READY for any cid/service. This cycle closed the last anonymous thread (AIDesigner backend: no keys, prompt files 403, dispatch token-gated) with no new surface — the exposure sits on the already-known primitives. The two open hops (live_debug frame binding, raw-audio download gate) remain untested solely because both require a live operator session (PII rule), not because controls were observed. Triage marks auth.php mint + voicenote PII disclosure VALID (CVSS 7.5) and the WS relay HOLD (8.6). Risk unchanged at 77 pending the HUMAN session or program authorization to file. No recordings fetched, no live streams subscribed, no mutations, no PII echoed.
+===== ANALYST bigpickle 2026-09-06 12:28:37 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m• [0mRead workspace state files[90m Explore Agent[0m
+[0m✓ [0mRead workspace state files[90m Explore Agent[0m
+I need to check the actual state and evidence files available. Let me look at the reports, knowledge, and leads directories.
+[0m
+[0m$ [0mcat /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/state_bigpickle.json 2>/dev/null; echo "=====KNOWLEDGE====="; ls -la /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/knowledge/ 2>/dev/null; echo "=====LEADS====="; ls -la /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/leads/ 2>/dev/null; echo "=====REPORTS====="; ls -la /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/reports/ 2>/dev/null; echo "=====TRIAGE====="; ls -la /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/triage/ 2>/dev/null
+{"phase": "POC", "target": "api"}=====KNOWLEDGE=====
+total 20
+drwxr-xr-x  2 runner runner 4096 Sep  6 12:19 .
+drwxr-xr-x 12 runner runner 4096 Sep  6 12:19 ..
+-rw-r--r--  1 runner runner 9913 Sep  6 12:19 index.md
+=====LEADS=====
+total 336
+drwxr-xr-x  2 runner runner   4096 Sep  6 12:19 .
+drwxr-xr-x 12 runner runner   4096 Sep  6 12:19 ..
+-rw-r--r--  1 runner runner 139659 Sep  6 12:19 lead-bigpickle.md
+-rw-r--r--  1 runner runner   1020 Sep  6 12:19 lead-laguna.md
+-rw-r--r--  1 runner runner   1000 Sep  6 12:19 lead-ling3.md
+-rw-r--r--  1 runner runner   1040 Sep  6 12:19 lead-longcat.md
+-rw-r--r--  1 runner runner     18 Sep  6 12:19 lead-mimo.md
+-rw-r--r--  1 runner runner 151941 Sep  6 12:19 lead-nemotron3.md
+-rw-r--r--  1 runner runner  16716 Sep  6 12:19 reposcan-questnet-gmbh.md
+=====REPORTS=====
+total 1128
+drwxr-xr-x  2 runner runner   4096 Sep  6 12:19 .
+drwxr-xr-x 12 runner runner   4096 Sep  6 12:19 ..
+-rw-r--r--  1 runner runner 637889 Sep  6 12:19 analyst-bigpickle.log
+-rw-r--r--  1 runner runner   4340 Sep  6 12:19 analyst-laguna.log
+-rw-r--r--  1 runner runner   4320 Sep  6 12:19 analyst-ling3.log
+-rw-r--r--  1 runner runner   4360 Sep  6 12:19 analyst-longcat.log
+-rw-r--r--  1 runner runner 407114 Sep  6 12:19 analyst-nemotron3.log
+-rw-r--r--  1 runner runner   9087 Sep  6 12:19 hypotheses-bigpickle.txt
+-rw-r--r--  1 runner runner     51 Sep  6 12:19 hypotheses-laguna.txt
+-rw-r--r--  1 runner runner     50 Sep  6 12:19 hypotheses-ling3.txt
+-rw-r--r--  1 runner runner     52 Sep  6 12:19 hypotheses-longcat.txt
+-rw-r--r--  1 runner runner     54 Sep  6 12:19 hypotheses-nemotron3.txt
+-rw-r--r--  1 runner runner  40426 Sep  6 12:19 hypotheses.md
+-rw-r--r--  1 runner runner    849 Sep  6 12:19 valid-bugs.md
+=====TRIAGE=====
+total 128
+drwxr-xr-x  2 runner runner  4096 Sep  6 12:19 .
+drwxr-xr-x 12 runner runner  4096 Sep  6 12:19 ..
+-rw-r--r--  1 runner runner     0 Sep  6 12:19 .gitkeep
+-rw-r--r--  1 runner runner   228 Sep  6 12:19 run-2026-09-02-21-42.md
+-rw-r--r--  1 runner runner   150 Sep  6 12:19 run-2026-09-02-23-54.md
+-rw-r--r--  1 runner runner   754 Sep  6 12:19 run-2026-09-03-03-39.md
+-rw-r--r--  1 runner runner   315 Sep  6 12:19 run-2026-09-03-08-18.md
+-rw-r--r--  1 runner runner   143 Sep  6 12:19 run-2026-09-03-12-53.md
+-rw-r--r--  1 runner runner   229 Sep  6 12:19 run-2026-09-03-16-58.md
+-rw-r--r--  1 runner runner   163 Sep  6 12:19 run-2026-09-03-19-43.md
+-rw-r--r--  1 runner runner   269 Sep  6 12:19 run-2026-09-03-22-24.md
+-rw-r--r--  1 runner runner   214 Sep  6 12:19 run-2026-09-04-00-23.md
+-rw-r--r--  1 runner runner   186 Sep  6 12:19 run-2026-09-04-05-05.md
+-rw-r--r--  1 runner runner   226 Sep  6 12:19 run-2026-09-04-09-45.md
+-rw-r--r--  1 runner runner   174 Sep  6 12:19 run-2026-09-04-14-05.md
+-rw-r--r--  1 runner runner   144 Sep  6 12:19 run-2026-09-04-17-42.md
+-rw-r--r--  1 runner runner   190 Sep  6 12:19 run-2026-09-04-19-53.md
+-rw-r--r--  1 runner runner   189 Sep  6 12:19 run-2026-09-04-22-13.md
+-rw-r--r--  1 runner runner   163 Sep  6 12:19 run-2026-09-05-00-11.md
+-rw-r--r--  1 runner runner   229 Sep  6 12:19 run-2026-09-05-04-41.md
+-rw-r--r--  1 runner runner  3734 Sep  6 12:19 run-2026-09-05-08-38.md
+-rw-r--r--  1 runner runner   182 Sep  6 12:19 run-2026-09-05-12-04.md
+-rw-r--r--  1 runner runner   350 Sep  6 12:19 run-2026-09-05-15-21.md
+-rw-r--r--  1 runner runner   236 Sep  6 12:19 run-2026-09-05-17-37.md
+-rw-r--r--  1 runner runner   193 Sep  6 12:19 run-2026-09-05-19-30.md
+-rw-r--r--  1 runner runner   189 Sep  6 12:19 run-2026-09-05-21-41.md
+-rw-r--r--  1 runner runner   218 Sep  6 12:19 run-2026-09-05-23-38.md
+-rw-r--r--  1 runner runner   213 Sep  6 12:19 run-2026-09-06-01-20.md
+-rw-r--r--  1 runner runner 12840 Sep  6 12:19 run-2026-09-06-06-10.md
+-rw-r--r--  1 runner runner  1952 Sep  6 12:19 run-2026-09-06-11-08.md
+[0m
+[0m→ [0mRead triage/run-2026-09-06-11-08.md
+[0m→ [0mRead knowledge/index.md
+Let me look at the most recent triage run and the knowledge index to understand the current state.
+[0m→ [0mRead reports/valid-bugs.md
+[0m→ [0mRead probe-results.md[90m [limit=80][0m
+[0m→ [0mRead triage/run-2026-09-06-06-10.md[90m [limit=80][0m
+Let me check the probe-results and valid-bugs files, and the most recent analyst log to understand the freshest state.
+[0m
+[0m$ [0mtail -120 /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/reports/analyst-bigpickle.log
+"reasoning": [],
+            "endpoint": "openrouter",
+            "parameters": {
+                "max_output_tokens": 128000
+            },
+            "instructions_ask": "system-prompt-ask.md",
+            "instructions_apply": "system-prompt-apply.md"
+        },
+        {
+            "value": "anthropic\/claude-sonnet-4.6",
+            "label": "Anthropic Claude Sonnet 4.6",
+            "reasoning": [],
+            "endpoint": "openrouter",
+            "parameters": {
+                "max_output_tokens": 128000
+            },
+            "instructions_ask": "system-prompt-ask.md",
+            "instructions_apply": "system-prompt-apply.md"
+        },
+        {
+            "value": "anthropic\/claude-haiku-4.5",
+            "label": "Anthropic Claude 4.5 Haiku",
+            "reasoning": [],
+            "endpoint": "openrouter",
+            "parameters": {
+                "max_output_tokens": 65536
+            },
+            "instructions_ask": "system-prompt-ask.md",
+            "instructions_apply": "system-prompt-apply.md"
+        }
+    ],
+    "reasoning_labels": {
+        "-": "–",
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High",
+        "xhigh": "xHigh"
+    },
+    "default_model": "~deepseek\/deepseek-v4-flash-latest"
+}
+[0m
+[0m$ [0mcurl -s --max-time 12 "https://www.applicationdesigner.de/AIDesigner/backend/config_coding.php" -k -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64)' > /tmp/opencode/config_full.json; grep -o '"[a-zA-Z0-9._-]*\.md"' /tmp/opencode/config_full.json | sort -u
+"system-prompt-apply.md"
+"system-prompt-ask.md"
+[0m
+[0m$ [0mfor p in "AIDesigner/backend/system-prompt-ask.md" "AIDesigner/backend/system-prompt-apply.md" "AIDesigner/backend/system-prompt.md" "AIDesigner/backend/system-prompt-coding.md" "AIDesigner/backend/agents/agent.json" "AIDesigner/backend/prompts/system-prompt-ask.md"; do
+code=$(curl -s -o /tmp/opencode/presp.txt -w "%{http_code}" --max-time 12 "https://www.applicationdesigner.de/$p" -k -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64)')
+bytes=$(wc -c < /tmp/opencode/presp.txt)
+echo "== $p -> HTTP $code (${bytes}b)"
+sleep 1
+done
+== AIDesigner/backend/system-prompt-ask.md -> HTTP 403 (153b)
+== AIDesigner/backend/system-prompt-apply.md -> HTTP 403 (153b)
+== AIDesigner/backend/system-prompt.md -> HTTP 403 (153b)
+== AIDesigner/backend/system-prompt-coding.md -> HTTP 403 (153b)
+== AIDesigner/backend/agents/agent.json -> HTTP 404 (146b)
+== AIDesigner/backend/prompts/system-prompt-ask.md -> HTTP 403 (153b)
+[0m
+Probe complete — AIDesigner/backend passive thread is now closed: `config.php`/`config_coding.php` HTTP 200 (confirmed zero-auth, references `system-prompt-{ask,apply,}.md`), prompt files all HTTP 403, `index.php`/`config.json`/`config.example.php`/`test.php`/`agents/agent.json` 404. No secrets, no anon-accessible prompt content. Full config body holds only public provider URLs + model→prompt map, zero keys.
+
+## 2026-09-06 09:10:00 UTC | ANALYST questnet-gmbh (model bigpickle)
+
+STEP 1 — DELTA
+[CHANGED] www.applicationdesigner.de/AIDesigner/backend/: passive sibling probe executed 2026-09-06 — config.php/config_coding.php re-confirmed HTTP 200 zero-auth (public provider URLs, model→prompt map, zero keys); system-prompt-ask.md / system-prompt-apply.md / system-prompt.md / system-prompt-coding.md all HTTP 403; index.php / config.json / config.example.php / test.php / agents/agent.json / prompts/ all 404. No secret-bearing sibling exists anonymously.
+[CHANGED] AIDesigner MISCONFIG downgraded from open hypothesis to closed LOW: prompt files gated, dispatch 403-gated with AND without public demo credential (sha256 8d2faac1…), mint (get_agent_token.php) session+VPN gated — passive thread exhausted.
+NO_DELTA: inventory frozen at 4 live in-scope hosts; cbs-proxy chain unchanged (two byte-identical probe cycles); no new subdomain/surface.
+
+STEP 2 — PRIORITIZE
+[PRIO] cbs-proxy.api.live-manager.de,7.4,attack_surface=9/business_value=10/tech=3/gate=10/cloud=5/fresh=2
+[PRIO] www.applicationdesigner.de,6.5,attack_surface=8/business_value=8/tech=4/gate=8/cloud=5/fresh=1 (AIDesigner thread closed; freshness 3→1)
+[PRIO] www.live-manager.de,4.6,attack_surface=5/business_value=7/tech=4/gate=3/cloud=4/fresh=1
+
+STEP 3 — HYPOTHESES
+[HYP] Cross-tenant live-debug chain via public-credential auth.php mint feeding unbound cbs-proxy WS relay
+class: IDOR
+asset: chain GET https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token={sha256 8d2faac1…}&customer_id={cid}&srn={srn} -> wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={cid}&service={srn}
+confidence: 85
+reasoning: static credential in public help.js (sha256 8d2faac1…) sole auth for auth.php mint — success:true for demo 131727 AND foreign cid=2, "Not logged in" only when token omitted (2026-09-05 21:52-21:53); no token→cid ownership check observed; anonymous WS upgrade returns 101 + CONNECT CBS100/190/200 + READY byte-identical for invalid cid=999999999/service=999999 and cid=1 (2026-09-05 21:50-21:54, two cycles). Four of five hops closed anonymously; only CBS-side live_debug frame binding untested.
+evidence_needed: whether CBS rejects a live_debug frame whose minted token was issued for a cid different from the presenting session's cid.
+verify_steps: AUTH_HELPED — operator session for owned tenant: mint via auth.php for OWN cid, present aid/ttl/hash in a live_debug frame to wss://cbs-proxy?cid={own}, repeat with cid={foreign}, record accept vs deny. Own-tenant only; never third-party streams.
+impact: anonymous per-tenant live-debug token (any cid) over unauthenticated bidirectional relay into CBS; if frame binding absent, cross-tenant live call/debug attach (voice/PII) — HIGH/CRITICAL (CVSS 8.6).
+testability: AUTH_HELPED
+[HYP] cbs-proxy WS router is an unauthenticated full-duplex relay with no object-level control
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service={service}
+confidence: 84
+reasoning: live probes 2026-09-05 21:50-21:54 — anonymous upgrades with invalid cid=999999999/service=999999 and cid=1 return byte-identical HTTP 101 + CONNECT/READY frame set, zero credentials; attacker controls every binding element (cid, service, minted token); only CBS-side frame payload validation remains.
+evidence_needed: same as prior — whether CBS rejects a live_debug packet whose minted token was issued for a cid different from the presenting session's cid.
+verify_steps: AUTH_HELPED only — behavioral own-tenant comparison (own vs foreign cid with OWN minted token); never anonymous payloads, never real-stream subscription.
+impact: anonymous bidirectional pipe into internal CBS systems (CBS100/190/200) by any tenant id; if frame binding absent, cross-tenant live call/debug attach (voice/PII) — HIGH/CRITICAL.
+testability: AUTH_HELPED
+[HYP] voicenotes/download.php raw-audio gate is credential-satisfiable via the public-credential session chain
+class: IDOR
+asset: https://www.applicationdesigner.de/extjs/voicenotes/download.php?file={uuid-from-get.php}
+confidence: 60
+reasoning: get.php/check.php return the token-bound tenant's voicenote index anonymously (customer_id ignored) incl. UUID filenames; download.php returned 403 "No VPN detected." without session (2026-09-05); auth.php demonstrates tokens/sessions mintable from the public static credential; same VPN gate observed on get_agent_token.php — unverified whether download gate re-checks the presenting session's tenant.
+evidence_needed: whether a session obtained via the public-credential chain passes download.php's gate for the demo tenant's OWN file.
+verify_steps: AUTH_HELPED — own demo tenant only; mint session cookie via public credential, compare download.php?file={own-demo-uuid} with/without cookie; never fetch third-party audio.
+impact: anonymous raw call/voicemail audio exfil for a real tenant via public JS credential — HIGH if gate is credential-satisfiable.
+testability: AUTH_HELPED
+
+STEP 4 — SELF-CRITIQUE
+[PARKED] AIDesigner backend config disclosure + possible non-bound route dispatch (55→closed): PASSIVE exhausted today — prompt files 403, config siblings 404, no keys; dispatch 403-gated w/o credential, mint VPN-gated. Config disclosure stands as standalone LOW (ACCEPTED MISCONFIG, defended); only leftover is the AUTH_HELPED cross-cid route-dispatch test (LOW value) — fold into the HUMAN pass if operator context arrives.
+[PARKED] post-login rs open redirect @ www.live-manager.de: AUTH_HELPED, no operator context, anonymous variant REJECTED — exhausted.
+[FINAL] 1. auth.php mint + cbs-proxy WS chain (85) — strongest; four of five hops closed anonymously, two byte-identical probe cycles; triage HOLD supports filing at CVSS 8.6.
+[FINAL] 2. cbs-proxy unauthenticated full-duplex relay / no router-layer control (84) — the object-level control gap itself.
+[FINAL] 3. voicenotes/download.php raw-audio gate (60) — credential-satisfiability unproven; one of the two open hops.
+
+STEP 5 — NEXT ACTION
+[NEXT] HUMAN: with a valid operator session for an owned tenant, settle the two remaining open hops in one pass — (a) mint live-debug auth for the OWN cid via auth.php, present aid/ttl/hash in a live_debug frame to wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={own}&service={own}, repeat with cid={foreign}, record accept vs deny; (b) mint a session cookie via the public-credential chain and call https://www.applicationdesigner.de/extjs/voicenotes/download.php?file={own-demo-uuid} with vs without cookie to test the raw-audio gate. Own-tenant only; never fetch/subscribe third-party data (program PII rule). No PROBE warranted — all safe anonymous probes now exhausted (AIDesigner siblings closed this cycle; cid=999999999/service=999999 already answered byte-identical 101).
+
+STEP 6 — LEARNING
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config.php: anonymous HTTP 200 zero-auth JSON exposes internal LLM routing (ollama.codermatrix.de/v1, 6 providers, model→system-prompt map); no keys observed; referenced prompt files 403-gated; dispatch gated by session+VPN-minted agent token.
+[LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/index.php?route=: 403 {"error":"Invalid token"} with AND without the public demo credential (sha256 8d2faac1…) — AIDesigner dispatch is NOT static-credential-satisfiable, contrasting the unbound auth.php LiveDebugger mint and narrowing the broken-auth anomaly to LiveDebugger.
+[LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: passive sibling probe closed 2026-09-06 — system-prompt-ask.md/apply.md/.md/-coding.md all HTTP 403, index.php/config.json/config.example.php/test.php/agents/agent.json 404, config files carry zero keys; no secrets-bearing anonymous sibling exists, thread exhausted.
+[LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WS upgrade reaches backend CBS servers with client-supplied cid/service and no observed token (unchanged, still the driver — two byte-identical probe cycles).
+[LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/livedebugger/auth.php: anonymous per-cid live-debug token mint via public static credential, success:true for foreign cid=2 — no observed token→cid ownership check anywhere in the chain (unchanged).
+
+STEP 7 — RISK
+[RISK] questnet-gmbh: 77 — NO_DELTA. Chain stable and re-confirmed read-only: public help.js credential (sha256 8d2faac1…) → arbitrary-cid live-debug mint (cid=2 success:true) → anonymous voicenote index read (customer_id ignored, PII not echoed) → unauthenticated WS relay READY for any cid/service. This cycle closed the last anonymous thread (AIDesigner backend: no keys, prompt files 403, dispatch token-gated) with no new surface — the exposure sits on the already-known primitives. The two open hops (live_debug frame binding, raw-audio download gate) remain untested solely because both require a live operator session (PII rule), not because controls were observed. Triage marks auth.php mint + voicenote PII disclosure VALID (CVSS 7.5) and the WS relay HOLD (8.6). Risk unchanged at 77 pending the HUMAN session or program authorization to file. No recordings fetched, no live streams subscribed, no mutations, no PII echoed.
+[0m
+I have a strong picture of the state. Let me look at the tail of the analyst-bigpickle log to understand the very latest probe activity, and the lead-bigpickle file's current leading content.
+[0m$ [0mhead -120 /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/leads/reposcan-questnet-gmbh.md
+## REPOSCAN 2026-09-03 15:55:49 UTC
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-03 19:09:53 UTC
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-03 21:45:30 UTC
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-03 23:48:47 UTC
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-04 03:16:18 UTC
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-04 08:04:41 UTC
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-04 12:46:44 UTC
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-04 16:48:32 UTC
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-04 19:20:37 UTC
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-04 21:40:58 UTC
+[HYP] Azure Blob Storage Secret Key in FreeSWITCH mod_http_cache config
+class: SECRET
+asset: freeswitch/src/mod/applications/mod_http_cache/conf/autoload_configs/http_cache.conf.xml:37-38
+confidence: 10
+reasoning: The Azure storage access key `kOOY4Y/sqZU9bsLjmN+9McVwTry+UIn1Owt4Zs/2S2FQT0eAWLKskZ0V6/gGFqCAKVvwXoGjqUn7PNbVjhZiNA==` is present in the FreeSWITCH upstream config file. However: (1) the domain is `account.blob.core.windows.net` (placeholder), (2) the author of the commit is Andrey Volk (upstream SignalWire/FreeSWITCH maintainer), and (3) this file exists identically in upstream FreeSWITCH. This is upstream example config, NOT a questnet-added secret.
+impact: Informational (no real in-scope risk)
+verify_steps: Confirm `account.blob.core.windows.net` is not a live questnet storage account via passive DNS or Azure portal.
+[HYP] AWS Example Access Key in FreeSWITCH mod_http_cache config
+class: SECRET
+asset: freeswitch/src/mod/applications/mod_http_cache/conf/autoload_configs/http_cache.conf.xml:22
+confidence: 5
+reasoning: `AKIAIOSFOD_REDACTED` and `wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY` are the well-known AWS documentation example keys. These are NOT real credentials - they are the canonical example from AWS docs.
+impact: None (example/test credentials)
+verify_steps: N/A - known false positive.
+[HYP] Hardcoded FreeSWITCH ESL default password "ClueCon"
+class: MISCONFIG
+asset: freeswitch/scripts/perl/fs.pl:5, NEventSocket/NEventSocket/InboundSocket.cs:42, free-socks/examples/connection-load.rs:21
+confidence: 20
+reasoning: The string "ClueCon" appears as a default password parameter in ESL client libraries. This is the well-known FreeSWITCH default password. In free-socks it is a CLI default (`--password` arg), not a hardcoded secret. In NEventSocket it is a C# default parameter value. In freeswitch scripts it's a test script. None of these are live production credentials.
+impact: Informational (default credentials in library defaults, not production)
+verify_steps: Confirm that production deployments of these libraries do not rely on the default "ClueCon" password.
+[HYP] RSA Private Keys in sofia-sip test PEM files
+class: SECRET
+asset: freeswitch/libs/sofia-sip/libsofia-sip-ua/*/agent.pem, key.pem
+confidence: 5
+reasoning: These .pem files contain RSA private keys but are upstream test/example certificates bundled with the sofia-sip library. They are publicly known test certs from the upstream project, not questnet production keys.
+impact: None (upstream test certificates)
+verify_steps: N/A
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-04 23:18:43 UTC
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-05 01:07:11 UTC
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-05 06:03:41 UTC
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-05 10:04:00 UTC
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-05 13:28:32 UTC
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-05 16:15:46 UTC
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-05 18:23:12 UTC
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-05 20:49:22 UTC
+[HYP] FreeSWITCH Event Socket with default "ClueCon" password, ACL disabled, bound to 0.0.0.0
+class: MISCONFIG
+asset: questnet/freeswitch (v1.10-qn branch) — conf/insideout/autoload_configs/event_socket.conf.xml:3-6
+confidence: 85
+reasoning: The `insideout` profile is the only Questnet-customized FreeSWITCH config (contains hardcoded internal IP 192.168.86.254 in vars.xml:14, proving human modification). It configures the ESL with `listen-ip=0.0.0.0`, `password=ClueCon` (well-known FreeSWITCH default), and `apply-inbound-acl` is commented out. This means the ESL control socket (port 8021) is exposed to all network interfaces with no ACL restriction. If deployed, any network-reachable client can authenticate with the trivially known default password and issue arbitrary FreeSWITCH API commands (originate calls, bridge, record, shutdown, etc.). The `vanilla` profile (included by the main freeswitch.xml) also uses `listen-ip=::` with `password=ClueCon` and ACL commented out.
+impact: high
+verify_steps: 1) Check if any FreeSWITCH instance from Questnet exposes port 8021 (nmap -sV <target> -p 8021) 2) Attempt connection with `fs_cli -H <target> -P ClueCon` 3) If connected, issue `status` or `eval $${local_ip_v4}` to confirm full control 4) Check if bugs.olivermaicher.eu or any in-scope VoIP endpoint runs FreeSWITCH on this port
+[HYP] Rayo XMPP shared-secret "ClueCon" and test user "usera" with password "1"
+class: MISCONFIG
+asset: questnet/freeswitch (v1.10-qn branch) — conf/rayo/autoload_configs/rayo.conf.xml:99,115
+confidence: 75
+reasoning: The rayo.conf.xml configures the Rayo XMPP server with `shared-secret="ClueCon"` (line 99) and an authorized user `name="usera" password="1"` (line 115). The Rayo listener is bound to `port="5222"` with `acl=""` (empty ACL, line 118). If deployed, this allows unauthenticated XMPP connections to control calls via the Rayo protocol using the trivially known default credentials.
+impact: high
+verify_steps: 1) Check if port 5222 is open on any in-scope host 2) Attempt XMPP connection with usera/ClueCon credentials 3) If Rayo is active, attempt to create/monitor calls via the Rayo protocol
+[HYP] Hardcoded internal IP address 192.168.86.254 leaked in config
+class: OTHER
+asset: questnet/freeswitch (v1.10-qn branch) — conf/insideout/vars.xml:14
+confidence: 90
+reasoning: The `insideout` profile's vars.xml contains `<X-PRE-PROCESS cmd="set" data="internal_ip_v4=192.168.86.254"/>`. This is a private RFC1918 address committed to a public repo, revealing Questnet's internal network topology. This IP appears to be an actual deployment address (not a placeholder) because it is specific (not 192.168.1.1 or 10.0.0.1) and is the only non-default modification in the insideout profile.
+impact: low
+verify_steps: 1) This is an information disclosure only — no direct exploitation 2) Could aid internal network reconnaissance if combined with other findings 3) Verify this IP is not routable from the internet
+[HYP] Default SIP directory passwords "1234" across all FreeSWITCH profiles
+class: MISCONFIG
+asset: questnet/freeswitch (v1.10-qn branch) — conf/insideout/directory/default/*.xml (1018.xml, 1002.xml, brian.xml, 1019.xml, 1015.xml, 1011.xml, 1017.xml, 1012.xml, 1008.xml, 1000.xml)
+confidence: 80
+reasoning: All 10 SIP user entries in the insideout directory use `password="1234"` and `vm-password=<extension_number>`. The vanilla profile uses `$${default_password}` which resolves to `1234`. These are the well-known FreeSWITCH defaults. If deployed, any SIP client can register as any extension using "1234" and make toll-fraud calls.
+impact: medium
+verify_steps: 1) Attempt SIP REGISTER with extension 1000-1019 and password 1234 against any in-scope SIP endpoint 2) Check if any SIP port (5060/5061) is exposed on bugs.olivermaicher.eu or related hosts
+[HYP] Default credentials in multiple service configurations (AMQP, Redis, SMTP, DB, XML-RPC)
+class: MISCONFIG
+asset: questnet/freeswitch (v1.10-qn branch) — conf/vanilla/autoload_configs/*.xml
+confidence: 70
+reasoning: The vanilla profile (included by the active freeswitch.xml) contains: AMQP password "guest" (amqp.conf.xml:9,17,51,74), Redis password "redis" (hiredis.conf.xml:7,13), SMTP password "mypassword" (switch.conf.xml:119), XML-RPC user "freeswitch" / pass "works" (xml_rpc.conf.xml:7-8), DB password "password" (easyroute.conf.xml:5), SMPP password "password" (smpp.conf.xml:10), PostgreSQL connection with user:freeswitch password:'' (switch.conf.xml:172). These are all upstream FreeSWITCH defaults. If any of these services are deployed with these configs, they are trivially compromiseable.
+impact: medium
+verify_steps: 1) Check if AMQP (5672), Redis (6379), XML-RPC (8021 HTTP) ports are exposed 2) Attempt default credential authentication against any running services
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-05 22:40:59 UTC
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-06 00:38:29 UTC
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-06 05:10:27 UTC
+[HYP] FreeSWITCH Event Socket with default "ClueCon" password, bound to 0.0.0.0, ACL disabled
+class: MISCONFIG
+asset: questnet/freeswitch (v1.10-qn branch) — conf/insideout/autoload_configs/event_socket.conf.xml:3-6
+confidence: 85
+reasoning: The `insideout` profile (Questnet-customized, distinct from upstream vanilla) configures ESL with listen-ip=0.0.0.0, password=ClueCon, and apply-inbound-acl commented out. The vanilla profile (also included by the main freeswitch.xml) similarly binds to :: with password=ClueCon and ACL loopback.auto commented out. If deployed on any host in the 185.158.96.0/22 range, the ESL control socket (port 8021) is exposed to all network interfaces with the trivially known default password, allowing arbitrary FreeSWITCH API commands (originate, bridge, record, shutdown).
+impact: high
+verify_steps: 1) nmap -sV 185.158.96.0/22 -p 8021 to find exposed ESL ports 2) fs_cli -H <target> -P ClueCon to authenticate 3) If connected, issue `status` or `eval $${local_ip_v4}` to confirm full control 4) Check bugs.olivermaicher.eu or *.live-manager.de for port 8021
+[HYP] Hardcoded internal RFC1918 IP address 192.168.86.254 leaked in FreeSWITCH config
+class: OTHER
+asset: questnet/freeswitch (v1.10-qn branch) — conf/insideout/vars.xml:14
+confidence: 90
+reasoning: vars.xml contains `<X-PRE-PROCESS cmd="set" data="internal_ip_v4=192.168.86.254"/>`. This is a specific non-default private IP (not 192.168.1.1) committed to a public repo, suggesting it is an actual Questnet deployment address. It is the only human modification in the insideout profile (the rest is stock FreeSWITCH). Could aid internal network reconnaissance if combined with other findings.
+impact: low
+verify_steps: 1) Information disclosure only — no direct exploitation 2) Verify this IP is not routable from the internet 3) Could be correlated with other internal network details if found
+[HYP] Default SIP directory passwords "1234" across all FreeSWITCH extensions
+class: MISCONFIG
+[0m
+The last bigpickle cycle (2026-09-06 09:10) was essentially identical to the current state I've been given (08:43 state). I have complete context. The state is extremely stable — all the same findings persist. No new information since the last cycle.
+
+Let me check the reposcan lead which could offer a fresh surface angle, and verify nothing new in the current surface. Let me quickly inspect the reposcan lead for any unexplored endpoint patterns that could represent a truly fresh angle.
+The reposcan leads are FreeSWITCH-related from a separate questnet/freeswitch repo — but those were previously deemed informational/unverified (the FreeSWITCH ports 8021/5060 have not been confirmed exposed on in-scope hosts; triage marked "FreeSWITCH defaults" as INVALID—unverified deployment). Hosts in-scope are only the 4 confirmed live HTTP hosts; no SIP/ESL port exposure was ever confirmed. These are NOT new this cycle.
+
+I have full context now. My analysis is stable. Everything is unchanged from the 09:10 cycle. The surface is frozen, all anonymous probes exhausted, and the only remaining hops require the HUMAN operator session.
+
+Let me verify there is genuinely nothing new to probe. The two open hops are both AUTH_HELPED/HUMAN_ONLY. All anonymous surface is closed. I should not emit a PROBE for anything already answered. There is no new fresh surface.
+
+Let me confirm I'm not missing any net-new subdomain or path. The inventory is frozen at 4 hosts. All threads closed. The output should reflect NO_DELTA with the HUMAN next action.
+
+Since I've done my diligence and verified current state, I'll now produce the structured analysis output.
+
+STEP 1 — DELTA: No changes since the 09:10 cycle. The current state I was given (08:43) and the immediately prior analyst cycle (09:10) are byte-consistent across all findings. Inventory frozen, AIDesigner thread closed, cbs-proxy chain unchanged.
+
+STEP 2 — PRIORITIZE: Same scoring, cbs-proxy leads.
+
+STEP 3 — HYPOTHESES: Top 3 same chain hypotheses, all AUTH_HELPED since anonymous surface is exhausted.
+
+STEP 4 — SELF-CRITIQUE: Park the closed threads; FINAL survivors.
+
+STEP 5 — NEXT: HUMAN (no PROBE warranted; all anonymous probes exhausted).
+
+STEP 6 — LEARNING: restate.
+
+STEP 7 — RISK: 77 NO_DELTA.
+
+Let me finalize.

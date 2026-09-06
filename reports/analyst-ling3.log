@@ -158,3 +158,11 @@
     "ref": "err_2fd1ce9c"
   }
 }
+===== ANALYST ling3 2026-09-06 12:28:37 UTC =====
+[91m[1mError: [0m{
+  "name": "UnknownError",
+  "data": {
+    "message": "Unexpected server error. Check server logs for details.",
+    "ref": "err_f129a617"
+  }
+}

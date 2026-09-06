@@ -145,3 +145,12 @@ www.live-manager.de
 ## 2026-09-06 08:43:18 UTC
 - CHANGED www.applicationdesigner.de/AIDesigner/backend/: passive sibling probe executed 2026-09-06 — config.php/config_coding.php re-confirmed HTTP 200 zero-auth (public provider URLs, model→prompt map, zero k
 - CHANGED AIDesigner MISCONFIG downgraded from open hypothesis to closed LOW: prompt files gated, dispatch 403-gated with AND without public demo credential (sha256 8d2faac1…), mint (get_agent_token.php) sessio
+
+## 2026-09-06 12:28:37 UTC
+- CHANGED www.applicationdesigner.de/AIDesigner/backend/: passive sibling probe executed 2026-09-06 — config.php/config_coding.php re-confirmed HTTP 200 zero-auth (public provider URLs, model→prompt map, zero k
+- CHANGED AIDesigner MISCONFIG downgraded from open hypothesis to closed LOW: prompt files gated, dispatch 403-gated with AND without public demo credential (sha256 8d2faac1…), mint (get_agent_token.php) sessio
+- NEW www.applicationdesigner.de/AIDesigner/backend/config.php: anonymous HTTP 200 zero-auth JSON exposes internal LLM routing (ollama.codermatrix.de/v1, 6 providers, model→system-prompt map); dispatch gate
+- NEW www.applicationdesigner.de/AIDesigner/backend/public/index.php?route=: 403 {"error":"Invalid token"} with AND without public demo credential (sha256 8d2faac1…) — AIDesigner dispatch NOT static-credent
+- CHANGED AIDesigner MISCONFIG downgraded to closed LOW: prompt files 403-gated, dispatch 403-gated with/without static credential, get_agent_token.php requires session+VPN — no anonymous sibling (2026-09-06 pa
+- CHANGED cbs-proxy.api.live-manager.de: two byte-identical probe cycles (2026-09-04, 2026-09-05 21:50/21:51 UTC) confirm anonymous WS 101 + CONNECT CBS100/190/200 + READY for any cid/service — cid parameter no
+- CHANGED Cross-tenant primitive chain confirmed read-only: help.js static credential (sha256 8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf) → auth.php mints per-cid token for ANY customer_id
