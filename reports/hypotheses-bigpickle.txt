@@ -1,4 +1,28 @@
-## 2026-09-07 00:06:43 UTC [target] (model bigpickle)
+## 2026-09-07 04:58:04 UTC [target] (model bigpickle)
+evidence_needed: committed env/config/terraform/docker-compose with a credential correlated to in-scope assets (sha256, never plaintext).
+verify_steps: passive-only — GitHub org/repo search, grep commits for .env/password=/apikey/token=/185.158.96.*; report hash + host correlation, no live auth.
+impact: credential/config exposure enabling authenticated hop of the chain — medium.
+testability: PASSIVE
+[FINAL] 1. Cross-tenant CBS live-debug attach (92) — positively confirmed vs demo tenant control; reportable as BOLA on demonstrated transport-level evidence. The last hop (data-plane binding) is the only remaining gap and is AUTH_HELPED only.
+[FINAL] 2. Voicenote metadata index (85) — already VALID per triage; details.php probe extends but does not add new security signal (ceiling = PII-exposure). LOW incremental value for a new probe.
+[FINAL] 3. Questnet repo secrets (55) — speculative; no new data since last cycle.
+[PARKED] Voicenote raw-audio exfil gate (60): AUTH_HELPED, already in HUMAN pass queue.
+[PARKED] Post-login rs open-redirect (45): AUTH_HELPED, anonymous REJECTED — exhausted.
+[PARKED] AI Designer agent-token endpoint (55): parallel to confirmed auth.php flaw, lower priority.
+[PARKED] FreeSWITCH ESL/Rayo/SIP default creds (85/80/75): HUMAN_ONLY, no port surface confirmed on in-scope hosts.
+[NEXT] PROBE: read-only confirmation of the voicenote metadata scope (the second already-VALID finding, extend to file-level metadata without touching raw audio): GET https://www.applicationdesigner.de/extjs/voicenotes/details.php?token=<public-static sha256 8d2faac1…>&customer_id=131727 and again with customer_id=2, compare returned file metadata structure/scope (identical ⇒ same token-bound tenant, no cid enforcement). DO NOT call download.php on existing recordings, DO NOT call delete.php (mutating/OUT). 2 requests @1rps.
+[LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WS upgrade reaches backend CBS servers with client-supplied cid/service and no observed token — cross-tenant BOLA chain positively confirmed vs demo tenant control (cid=131727 vs foreign cid=2, byte-identical frames). Transport-complete.
+[LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/livedebugger/auth.php: anonymous per-cid live-debug token mint via public static credential, success:true for foreign cid=2 — no observed token→cid ownership check anywhere in the chain (unchanged).
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de: ExtJS help app (help.js, help.json, resources.help/*) publicly exposes internal CBS proxy endpoints and backend hostnames (unchanged).
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: public ExtJS bundle ships static backend credential + full LiveDebugger/CallBuilder/AIDesigner endpoint map including /api/callbuilder/ proxy prefix and AIDesigner backend router (unchanged).
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config.php: anonymous HTTP 200 zero-auth JSON exposes internal LLM routing; no keys; dispatch gated (unchanged).
+[LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/index.php?route=: 403 {"error":"Invalid token"} — AIDesigner dispatch NOT static-credential-satisfiable (unchanged).
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/common/getCustomers.php: token-scoped (unchanged).
+[LEARN] REJECTED AUTH @ www.live-manager.de rs param: no anonymous open redirect (unchanged).
+[LEARN] REJECTED wildcard-subdomain-enum @ *.live-manager.de: 8632 hostnames, 0 dedicated endpoints (unchanged).
+[LEARN] REJECTED api.live-manager.de debug endpoints: host non-resolving (unchanged).
+[LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: passive sibling probe closed 2026-09-06 — no secrets-bearing anonymous sibling exists (unchanged).
+[RISK] questnet-gmbh: 74 — Cross-tenant BOLA transport now probe-confirmed read-only with a positive demo-tenant (cid=131727, sanctioned control) binding test: public credential → any-cid mint → SAME token honored byte-identically for foreign cid=2 at cbs-proxy (101 + CONNECT/READY). The final open hop (token→cid gate) is REFUTED at the transport layer, so the full chain is transport-complete; the unverified remainder is only whether the downstream data plane separately enforces token→cid before streaming tenant voice/call data — that boundary is deliberately not probed (program no-touch rule). Compound with already-VALID auth.php mint (CVSS 7.5) + voicenote PII (CVSS 7.5). Source-level default-cred exposure (freeswitch) adds potential, unconfirmed deployment. No live customer data touched; control frames only. Risk holds at 74 — no new surface, no new control, breadth exhausted.
 [FINAL] 1. Cross-tenant CBS live-debug attach (92) — positively confirmed vs demo tenant control; reportable as BOLA on demonstrated transport-level evidence. The last hop (data-plane binding) is the only remaining gap and is AUTH_HELPED only.
 [FINAL] 2. Voicenote metadata index (85) — already VALID per triage; details.php probe extends but does not add new security signal (ceiling = PII-exposure). LOW incremental value for a new probe.
 [FINAL] 3. Questnet repo secrets (55) — speculative; no new data since last cycle.

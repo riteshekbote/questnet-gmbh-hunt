@@ -192,3 +192,17 @@ www.live-manager.de
 - CHANGED valid-bugs.md confirmed: 2 VALID HIGH (auth.php mint, voicenote PII), Q4 frame-binding HOLD needing AUTH_HELPED; surface frozen at 4 live hosts; no new host.
 - CHANGED One read-only GET to www.applicationdesigner.de/extjs/voicenotes/check.php (redacted placeholder token) returned {"success":false,"message":"Not logged in","tech-info":"No VPN detected."} — new "No VP
 - CHANGED valid-bugs.md: 2 VALID HIGH (auth.php mint, voicenote PII), Q4 frame-binding HOLD (AUTH_HELPED); surface frozen at 4 live hosts.
+
+## 2026-09-07 04:58:12 UTC
+- CHANGED One read-only GET to `www.applicationdesigner.de/extjs/voicenotes/check.php` (redacted placeholder token) returned `{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}` — new `N
+- CHANGED valid-bugs.md confirmed: 2 VALID HIGH (auth.php mint, voicenote PII), Q4 frame-binding HOLD needing AUTH_HELPED; surface frozen at 4 live hosts; no new host.
+- CHANGED One read-only GET to www.applicationdesigner.de/extjs/voicenotes/check.php (redacted placeholder token) returned {"success":false,"message":"Not logged in","tech-info":"No VPN detected."} — new "No VP
+- CHANGED valid-bugs.md: 2 VALID HIGH (auth.php mint, voicenote PII), Q4 frame-binding HOLD (AUTH_HELPED); surface frozen at 4 live hosts.
+- NEW Voicenotes metadata surface signal change: check.php now returns `{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}` (was `success:true` for arbitrary cid with public static c
+- NEW Surface confirmed frozen: 4 live in-scope hosts (cbs-proxy.api.live-manager.de, www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de) since 2026-09-04; no new hosts discovered.
+- CHANGED Voicenote metadata IDOR confidence adjusted from 85→55 pending clean re-confirmation; "No VPN detected" tech-info is novel signal on metadata surface (previously only on download.php).
+- CHANGED Risk score stable at 72-77 across models: cbs-proxy BOLA transport-complete + auth.php mint remain VALID HIGH (CVSS 7.5 each); voicenote half may be VPN-gated but doesn't change driver findings.
+- NEW Voicenotes metadata surface signal change: check.php now returns `{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}` (was `success:true` for arbitrary cid with public static c
+- NEW Surface confirmed frozen: 4 live in-scope hosts (cbs-proxy.api.live-manager.de, www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de) since 2026-09-04; no new hosts discovered.
+- CHANGED Voicenote metadata IDOR confidence adjusted from 85→55 pending clean re-confirmation; "No VPN detected" tech-info is novel signal on metadata surface (previously only on download.php).
+- CHANGED Risk score stable at 72-77 across models: cbs-proxy BOLA transport-complete + auth.php mint remain VALID HIGH (CVSS 7.5 each); voicenote half may be VPN-gated but doesn't change driver findings.
