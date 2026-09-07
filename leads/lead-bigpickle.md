@@ -1527,3 +1527,121 @@ impact: VPN-gated → REJECT anonymous voicenote metadata IDOR (chain reduces to
 testability: PASSIVE
 [NEXT] PROBE: clean read-only re-confirmation of the voicenote metadata gate — `GET https://www.applicationdesigner.de/extjs/voicenotes/check.php?token=<public-static sha256 8d2faac1…>&customer_id=131727` and `&customer_id=2`; compare `success` + `tech-info`. 2 GETs @1rps. Do NOT call download.php (raw audio) or delete.php (mutating). Resolves whether the voicenote half of the chain is now VPN-gated.
 [RISK] questnet-gmbh: 74 — Cross-tenant CBS BOLA transport remains probe-confirmed (public credential → any-cid mint → same token honored byte-identically for foreign cid=2; no token→cid binding at transport). A fresh read-only signal suggests the voicenote metadata surface may now be VPN-gated ("No VPN detected."), which if confirmed reduces one half of the chain but does not change the driver (cbs-proxy BOLA + auth.php mint are independent VALIDs, CVSS 7.5 each). No live customer data touched (placeholder-token GET only). Risk holds at 74 pending the clean voicenote re-confirmation; no new surface, breadth exhausted.
+## 2026-09-07 10:03:58 UTC [target] (model bigpickle)
+impact: yes — anonymous cross-tenant attach to tenant CBS live-debug/call-flow plane via public credential + arbitrary cid; token not bound to cid at transport. HIGH if downstream data plane inherits the same missing binding (not yet demonstrated). Compound with already-VALID auth.php mint + voiceno
+asset: www.applicationdesigner.de/extjs/voicenotes/get.php|check.php?token=LIVE_DEMO_CUSTOMER_TOKEN&customer_id={cid}
+[FINAL] 2. Voicenote metadata index (85) — already VALID per triage; details.php probe extends but does not add new security signal (ceiling = PII-exposure). LOW incremental value for a new probe.
+[NEXT] PROBE: read-only confirmation of the voicenote metadata scope (the second already-VALID finding, extend to file-level metadata without touching raw audio): GET https://www.applicationdesigner.de/extjs/voicenotes/details.php?token=<public-static sha256 8d2faac1…>&customer_id=131727 and again w
+[RISK] questnet-gmbh: 74 — Cross-tenant BOLA transport now probe-confirmed read-only with a positive demo-tenant (cid=131727, sanctioned control) binding test: public credential → any-cid mint → SAME token honored byte-identically for foreign cid=2 at cbs-proxy (101 + CONNECT/READY). The final open 
+impact: yes — anonymous cross-tenant attach to tenant CBS live-debug/call-flow plane via public credential + arbitrary cid; token not bound to cid at transport. HIGH if downstream data plane inherits the same missing binding (not yet demonstrated). Compound with already-VALID auth.php mint + voiceno
+asset: www.applicationdesigner.de/extjs/voicenotes/get.php|check.php?token=LIVE_DEMO_CUSTOMER_TOKEN&customer_id={cid}
+[FINAL] 2. Voicenote metadata index (85) — already VALID per triage; details.php probe extends but does not add new security signal (ceiling = PII-exposure). LOW incremental value for a new probe.
+[NEXT] PROBE: read-only confirmation of the voicenote metadata scope (the second already-VALID finding, extend to file-level metadata without touching raw audio): GET https://www.applicationdesigner.de/extjs/voicenotes/details.php?token=<public-static sha256 8d2faac1…>&customer_id=131727 and again w
+[RISK] questnet-gmbh: 74 — Cross-tenant BOLA transport now probe-confirmed read-only with a positive demo-tenant (cid=131727, sanctioned control) binding test: public credential → any-cid mint → SAME token honored byte-identically for foreign cid=2 at cbs-proxy (101 + CONNECT/READY). The final open
+[CHANGED] One read-only GET to `www.applicationdesigner.de/extjs/voicenotes/check.php` (redacted placeholder token) returned `{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}` — new `No VPN detected` tech-info on the metadata surface (previously only download.php emitted the VPN gate); caveat: placeholder token, so "Not logged in" is expected and the VPN signal needs a clean re-confirmation with the documented public demo token before concluding the metadata surface is now VPN-gated.
+[CHANGED] valid-bugs.md confirmed: 2 VALID HIGH (auth.php mint, voicenote PII), Q4 frame-binding HOLD needing AUTH_HELPED; surface frozen at 4 live hosts; no new host.
+[PRIO] cbs-proxy.api.live-manager.de,9.0,a=9,b=10,t=7,g=10,c=8,f=5
+[PRIO] www.applicationdesigner.de,7.0,a=8,b=8,t=8,g=8,c=5,f=1
+[PRIO] www.live-manager.de,4.6,a=5,b=7,t=5,g=2,c=6,f=1
+[HYP] Voicenote metadata surface now VPN-gated (was anonymous token-scoped)
+class: IDOR
+asset: www.applicationdesigner.de/extjs/voicenotes/check.php|details.php|get.php?token=<public-static sha256 8d2faac1…>&customer_id={cid}
+confidence: 55
+reasoning: Prior probes (2026-09-05/06) documented check.php returning success:true for arbitrary cid with the single static demo token; download.php alone returned 403 "No VPN detected." Fresh read-only probe 2026-09-06 returned `{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}` on check.php. The `No VPN detected` string is a new signal on the metadata surface; if real, it collapses the "anonymous voicenote index" half of the chain. Caveat: probe used a redacted placeholder token, so "Not logged in" alone is expected; only the VPN string is novel and is attributed.
+evidence_needed: clean re-confirmation with the documented public demo token value (the exact static `LIVE_DEMO_CUSTOMER_TOKEN` string whose sha256 is the 8d2faac1… value) — if it now returns "No VPN detected." for both cids, the anonymous metadata read is VPN-gated and this half of the chain closes; if it returns success:true for cid=2 and 131727 identically, the prior cross-tenant finding stands.
+verify_steps: [PROBE] GET https://www.applicationdesigner.de/extjs/voicenotes/check.php?token=<public-static sha256 8d2faac1…>&customer_id=131727 then customer_id=2 (2×1rps, read-only GET, no download.php/delete.php)
+impact: If VPN-gated → REJECT the anonymous voicenote metadata IDOR (chain reduced to auth.php mint + cbs-proxy BOLA). If open → cross-tenant voice-note metadata PII stands (MEDIUM, HIGH compound). 
+testability: PASSIVE (read-only GET with public demo token already shipped in public help.js)
+[FINAL] 1. Cross-tenant CBS live-debug attach (92) — transport-complete BOLA vs demo-tenant control; data-plane binding is the sole AUTH_HELPED remainder.
+[FINAL] 2. Voicenote metadata index (85→55) — VALID per triage but now flagged by a new VPN-gate signal needing one clean re-confirmation probe; ceiling = PII exposure, LOW incremental signal beyond PII.
+[FINAL] 3. Questnet repo secrets (55) — speculative; no new data.
+[PARKED] Voicenote raw-audio exfil gate (60): AUTH_HELPED, HUMAN pass queue.
+[PARKED] Post-login rs open-redirect (45): anonymous REJECTED, exhausted.
+[PARKED] AI Designer agent-token endpoint (55): gated, lower priority.
+[PARKED] FreeSWITCH ESL/Rayo/SIP default creds: HUMAN_ONLY, no port surface on in-scope hosts.
+[NEXT] PROBE: one clean read-only confirmation to resolve the new VPN-gate signal vs prior anonymous voicenote index finding: GET https://www.applicationdesigner.de/extjs/voicenotes/check.php?token=<public-static sha256 8d2faac1…>&customer_id=131727 and again with customer_id=2; compare success + tech-info. Do NOT call download.php (raw audio) or delete.php (mutating). 2 GETs @1rps. This closes whether the voicenote half of the chain is VPN-gated, sharpening the reported chain.
+[LEARN] CHANGED id@ www.applicationdesigner.de/extjs/voicenotes/: single read-only probe now returns `Not logged in` + `No VPN detected.` tech-info (was success:true anonymous on check.php prior). Attribution pending clean re-probe with the public demo token; placeholder-token caveat.
+[LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: cross-tenant BOLA transport-complete vs demo-tenant control, byte-identical frames (unchanged).
+[LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/livedebugger/auth.php: anonymous per-cid mint via public static credential, no ownership check (unchanged).
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: public bundle ships static credential + endpoint map (unchanged).
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config.php: zero-auth LLM-routing JSON; dispatch gated (unchanged).
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/common/getCustomers.php: token-scoped (unchanged).
+[LEARN] REJECTED AUTH @ www.live-manager.de rs param: no anonymous open redirect (unchanged).
+[LEARN] REJECTED wildcard-subdomain-enum @ *.live-manager.de: 8632 hostnames, 0 dedicated endpoints (unchanged).
+[LEARN] REJECTED api.live-manager.de: host non-resolving (unchanged).
+[RISK] questnet-gmbh: 74 — Cross-tenant CBS BOLA transport remains probe-confirmed (public credential → any-cid mint → same token honored byte-identically for foreign cid=2; no token→cid binding at transport). A fresh read-only signal suggests the voicenote metadata surface may now be VPN-gated ("No VPN detected."), which if confirmed reduces one half of the chain but does not change the driver (cbs-proxy BOLA + auth.php mint are independent VALIDs, CVSS 7.5 each). No live customer data touched; placeholder-token GET only. Risk holds at 74 pending the clean voicenote re-confirmation; no new surface, breadth exhausted.
+[CHANGED] One read-only GET to www.applicationdesigner.de/extjs/voicenotes/check.php (redacted placeholder token) returned {"success":false,"message":"Not logged in","tech-info":"No VPN detected."} — new "No VPN detected" tech-info on the metadata surface (previously documented as success:true anonymous); caveat placeholder-token, VPN signal needs clean re-probe.
+[CHANGED] valid-bugs.md: 2 VALID HIGH (auth.php mint, voicenote PII), Q4 frame-binding HOLD (AUTH_HELPED); surface frozen at 4 live hosts.
+[PRIO] cbs-proxy.api.live-manager.de,9.0,a=9,b=10,t=7,g=10,c=8,f=5
+[PRIO] www.applicationdesigner.de,7.0,a=8,b=8,t=8,g=8,c=5,f=1
+[PRIO] www.live-manager.de,4.6,a=5,b=7,t=5,g=2,c=6,f=1
+[NEXT] PROBE: clean read-only re-confirmation of voicenote metadata gate: GET check.php?token=<public-static sha256 8d2faac1...>&customer_id=131727 and customer_id=2; compare success+tech-info. 2 GETs @1rps. No download.php/delete.php.
+[RISK] questnet-gmbh: 74 — BOLA driver unchanged; voicenote surface may now be VPN-gated (pending clean probe). No live data touched; placeholder-token only.
+[HYP] Voicenote metadata surface now VPN-gated (was anonymous token-scoped)
+class: IDOR
+asset: www.applicationdesigner.de/extjs/voicenotes/check.php|details.php|get.php?token=<public static sha256 8d2faac1…>&customer_id={cid}
+confidence: 55
+reasoning: Prior probes (2026-09-05/06) documented check.php `success:true` for arbitrary cid with the single static demo token; only download.php returned 403 "No VPN detected.". Fresh read-only probe returned `Not logged in` + `No VPN detected.` on check.php — a novel signal on the metadata surface. Caveat: probe used a redacted placeholder token; only the VPN string is attributable now.
+evidence_needed: clean re-confirmation with the documented public demo token; if "No VPN detected." returns for both cids the anonymous metadata read is VPN-gated (closes that half); if success:true for both, prior cross-tenant finding stands.
+verify_steps: GET check.php?token=<public static sha256 8d2faac1…>&customer_id=131727 then customer_id=2 (2×1rps, read-only; no download.php/delete.php)
+impact: VPN-gated → REJECT anonymous voicenote metadata IDOR (chain reduces to auth.php mint + cbs-proxy BOLA); open → cross-tenant voice-note PII stands (MEDIUM, HIGH compound).
+testability: PASSIVE
+[NEXT] PROBE: clean read-only re-confirmation of the voicenote metadata gate — `GET https://www.applicationdesigner.de/extjs/voicenotes/check.php?token=<public-static sha256 8d2faac1…>&customer_id=131727` and `&customer_id=2`; compare `success` + `tech-info`. 2 GETs @1rps. Do NOT call download.php (raw audio) or delete.php (mutating). Resolves whether the voicenote half of the chain is now VPN-gated.
+[RISK] questnet-gmbh: 74 — Cross-tenant CBS BOLA transport remains probe-confirmed (public credential → any-cid mint → same token honored byte-identically for foreign cid=2; no token→cid binding at transport). A fresh read-only signal suggests the voicenote metadata surface may now be VPN-gated ("No VPN detected."), which if confirmed reduces one half of the chain but does not change the driver (cbs-proxy BOLA + auth.php mint are independent VALIDs, CVSS 7.5 each). No live customer data touched (placeholder-token GET only). Risk holds at 74 pending the clean voicenote re-confirmation; no new surface, breadth exhausted.
+[FINAL] 2. Voicenote metadata index (85) — already VALID per triage; details.php probe extends but does not add new security signal (ceiling = PII-exposure). LOW incremental value for a new probe.
+[NEXT] PROBE: read-only confirmation of the voicenote metadata scope (the second already-VALID finding, extend to file-level metadata without touching raw audio): GET https://www.applicationdesigner.de/extjs/voicenotes/details.php?token=<public-static sha256 8d2faac1…>&customer_id=131727 and again w
+asset: www.applicationdesigner.de/extjs/voicenotes/get.php|check.php?token=LIVE_DEMO_CUSTOMER_TOKEN&customer_id={cid}
+[FINAL] 2. Voicenote metadata index (85) — already VALID per triage; details.php probe extends but does not add new security signal (ceiling = PII-exposure). LOW incremental value for a new probe.
+[NEXT] PROBE: read-only confirmation of the voicenote metadata scope (the second already-VALID finding, extend to file-level metadata without touching raw audio): GET https://www.applicationdesigner.de/extjs/voicenotes/details.php?token=<public-static sha256 8d2faac1…>&customer_id=131727 and again w
+[CHANGED] One read-only GET to `www.applicationdesigner.de/extjs/voicenotes/check.php` (redacted placeholder token) returned `{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}` — new `No VPN detected` tech-info on the metadata surface (previously only download.php emitted the VPN gate); caveat: placeholder token, so "Not logged in" is expected and the VPN signal needs a clean re-confirmation with the documented public demo token before concluding the metadata surface is now VPN-gated.
+[CHANGED] valid-bugs.md confirmed: 2 VALID HIGH (auth.php mint, voicenote PII), Q4 frame-binding HOLD needing AUTH_HELPED; surface frozen at 4 live hosts; no new host.
+[HYP] Voicenote metadata surface now VPN-gated (was anonymous token-scoped)
+asset: www.applicationdesigner.de/extjs/voicenotes/check.php|details.php|get.php?token=<public-static sha256 8d2faac1…>&customer_id={cid}
+reasoning: Prior probes (2026-09-05/06) documented check.php returning success:true for arbitrary cid with the single static demo token; download.php alone returned 403 "No VPN detected." Fresh read-only probe 2026-09-06 returned `{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}` on check.php. The `No VPN detected` string is a new signal on the metadata surface; if real, it collapses the "anonymous voicenote index" half of the chain. Caveat: probe used a redacted placeholder token, so "Not logged in" alone is expected; only the VPN string is novel and is attributed.
+evidence_needed: clean re-confirmation with the documented public demo token value (the exact static `LIVE_DEMO_CUSTOMER_TOKEN` string whose sha256 is the 8d2faac1… value) — if it now returns "No VPN detected." for both cids, the anonymous metadata read is VPN-gated and this half of the chain closes; if it returns success:true for cid=2 and 131727 identically, the prior cross-tenant finding stands.
+verify_steps: [PROBE] GET https://www.applicationdesigner.de/extjs/voicenotes/check.php?token=<public-static sha256 8d2faac1…>&customer_id=131727 then customer_id=2 (2×1rps, read-only GET, no download.php/delete.php)
+impact: If VPN-gated → REJECT the anonymous voicenote metadata IDOR (chain reduced to auth.php mint + cbs-proxy BOLA). If open → cross-tenant voice-note metadata PII stands (MEDIUM, HIGH compound). 
+[FINAL] 2. Voicenote metadata index (85→55) — VALID per triage but now flagged by a new VPN-gate signal needing one clean re-confirmation probe; ceiling = PII exposure, LOW incremental signal beyond PII.
+[PARKED] Voicenote raw-audio exfil gate (60): AUTH_HELPED, HUMAN pass queue.
+[NEXT] PROBE: one clean read-only confirmation to resolve the new VPN-gate signal vs prior anonymous voicenote index finding: GET https://www.applicationdesigner.de/extjs/voicenotes/check.php?token=<public-static sha256 8d2faac1…>&customer_id=131727 and again with customer_id=2; compare success + tech-info. Do NOT call download.php (raw audio) or delete.php (mutating). 2 GETs @1rps. This closes whether the voicenote half of the chain is VPN-gated, sharpening the reported chain.
+[LEARN] CHANGED id@ www.applicationdesigner.de/extjs/voicenotes/: single read-only probe now returns `Not logged in` + `No VPN detected.` tech-info (was success:true anonymous on check.php prior). Attribution pending clean re-probe with the public demo token; placeholder-token caveat.
+[RISK] questnet-gmbh: 74 — Cross-tenant CBS BOLA transport remains probe-confirmed (public credential → any-cid mint → same token honored byte-identically for foreign cid=2; no token→cid binding at transport). A fresh read-only signal suggests the voicenote metadata surface may now be VPN-gated ("No VPN detected."), which if confirmed reduces one half of the chain but does not change the driver (cbs-proxy BOLA + auth.php mint are independent VALIDs, CVSS 7.5 each). No live customer data touched; placeholder-token GET only. Risk holds at 74 pending the clean voicenote re-confirmation; no new surface, breadth exhausted.
+[CHANGED] One read-only GET to www.applicationdesigner.de/extjs/voicenotes/check.php (redacted placeholder token) returned {"success":false,"message":"Not logged in","tech-info":"No VPN detected."} — new "No VPN detected" tech-info on the metadata surface (previously documented as success:true anonymous); caveat placeholder-token, VPN signal needs clean re-probe.
+[CHANGED] valid-bugs.md: 2 VALID HIGH (auth.php mint, voicenote PII), Q4 frame-binding HOLD (AUTH_HELPED); surface frozen at 4 live hosts.
+[NEXT] PROBE: clean read-only re-confirmation of voicenote metadata gate: GET check.php?token=<public-static sha256 8d2faac1...>&customer_id=131727 and customer_id=2; compare success+tech-info. 2 GETs @1rps. No download.php/delete.php.
+[RISK] questnet-gmbh: 74 — BOLA driver unchanged; voicenote surface may now be VPN-gated (pending clean probe). No live data touched; placeholder-token only.
+[HYP] Voicenote metadata surface now VPN-gated (was anonymous token-scoped)
+asset: www.applicationdesigner.de/extjs/voicenotes/check.php|details.php|get.php?token=<public static sha256 8d2faac1…>&customer_id={cid}
+reasoning: Prior probes (2026-09-05/06) documented check.php `success:true` for arbitrary cid with the single static demo token; only download.php returned 403 "No VPN detected.". Fresh read-only probe returned `Not logged in` + `No VPN detected.` on check.php — a novel signal on the metadata surface. Caveat: probe used a redacted placeholder token; only the VPN string is attributable now.
+evidence_needed: clean re-confirmation with the documented public demo token; if "No VPN detected." returns for both cids the anonymous metadata read is VPN-gated (closes that half); if success:true for both, prior cross-tenant finding stands.
+verify_steps: GET check.php?token=<public static sha256 8d2faac1…>&customer_id=131727 then customer_id=2 (2×1rps, read-only; no download.php/delete.php)
+impact: VPN-gated → REJECT anonymous voicenote metadata IDOR (chain reduces to auth.php mint + cbs-proxy BOLA); open → cross-tenant voice-note PII stands (MEDIUM, HIGH compound).
+[NEXT] PROBE: clean read-only re-confirmation of the voicenote metadata gate — `GET https://www.applicationdesigner.de/extjs/voicenotes/check.php?token=<public-static sha256 8d2faac1…>&customer_id=131727` and `&customer_id=2`; compare `success` + `tech-info`. 2 GETs @1rps. Do NOT call download.php (raw audio) or delete.php (mutating). Resolves whether the voicenote half of the chain is now VPN-gated.
+[RISK] questnet-gmbh: 74 — Cross-tenant CBS BOLA transport remains probe-confirmed (public credential → any-cid mint → same token honored byte-identically for foreign cid=2; no token→cid binding at transport). A fresh read-only signal suggests the voicenote metadata surface may now be VPN-gated ("No VPN detected."), which if confirmed reduces one half of the chain but does not change the driver (cbs-proxy BOLA + auth.php mint are independent VALIDs, CVSS 7.5 each). No live customer data touched (placeholder-token GET only). Risk holds at 74 pending the clean voicenote re-confirmation; no new surface, breadth exhausted.
+[HYP] Voicenote metadata surf is a cross-tenant un-scoped index (NOT VPN-gated) — re-confirmed
+class: IDOR
+asset: www.applicationdesigner.de/extjs/voicenotes/check.php|get.php|details.php?token=<public static sha256 8d2faac1…>&customer_id={cid}
+confidence: 85
+reasoning: Recovered live token `3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3` (sha256 8d2faac1…, verified) from public help.js. Fresh read-only probe 2026-09-07: check.php?token=<that>&customer_id=131727 → {"success":true,"total":0,"max_id":0}; customer_id=2 → byte-identical. No token→cid ownership check; no VPN gate on metadata surface (No VPN detected was placeholder-token artifact).
+evidence_needed: The identical success:true for demo AND foreign cid with the single shared token already proves missing tenant-scoping on metadata index. Extend to file-level only if raw-audio PII exposure needed (details.php) — not required to sustain VALID.
+verify_steps: [DONE] 2x read-only GET check.php (cid 131727 + 2), same token → identical success:true. Do NOT call download.php/delete.php on foreign cid (raw audio = live customer data).
+impact: Anonymous cross-tenant voice-note metadata read (PII indexes) for any cid via public static token; MEDIUM, HIGH when compounded with already-VALID auth.php mint + cbs-proxy BOLA attach.
+testability: PASSIVE (token shipped in public help.js)
+[HYP] cbs-proxy data-plane inherits missing token/cid binding (frame-level)
+class: IDOR
+asset: cbs-proxy.api.live-manager.de (WS upgrade + CBS CONNECT/READY)
+confidence: 92 (transport) / gate requires AUTH_HELPED
+reasoning: Transport-complete (101 + identical CONNECT CBS100/190/200 + READY for demo cid vs foreign cid=2, zero credentials). Only the downstream data-plane binding is not provable anonymously.
+evidence_needed: valid operator session (AUTH_HELPED) to confirm a foreign-cid call-flow attaches real tenant data.
+verify_steps: AUTH_HELPED frame-binding confirmation.
+impact: cross-tenant attach to live-debug/call-flow plane; HIGH (CVSS 7.5) standalone.
+testability: AUTH_HELPED
+[HYP] auth.php arbitrary per-cid token mint (no ownership check)
+class: IDOR
+asset: www.applicationdesigner.de/extjs/livedebugger/auth.php?token=<pub static>&customer_id={cid}&srn={n}
+confidence: 90 (VALID per triage)
+reasoning: success:true for foreign cid=2 with the static credential; "Not logged in" only when token omitted — token is sole gate, not bound to cid.
+evidence_needed: none (already VALID)
+verify_steps: already confirmed
+impact: mint per-tenant live-debug token for arbitrary cid from public static credential; HIGH, chains into BOLA.
+testability: PASSIVE

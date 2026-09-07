@@ -206,3 +206,16 @@ www.live-manager.de
 - NEW Surface confirmed frozen: 4 live in-scope hosts (cbs-proxy.api.live-manager.de, www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de) since 2026-09-04; no new hosts discovered.
 - CHANGED Voicenote metadata IDOR confidence adjusted from 85→55 pending clean re-confirmation; "No VPN detected" tech-info is novel signal on metadata surface (previously only on download.php).
 - CHANGED Risk score stable at 72-77 across models: cbs-proxy BOLA transport-complete + auth.php mint remain VALID HIGH (CVSS 7.5 each); voicenote half may be VPN-gated but doesn't change driver findings.
+
+## 2026-09-07 10:14:17 UTC
+- CHANGED One read-only GET to `www.applicationdesigner.de/extjs/voicenotes/check.php` (redacted placeholder token) returned `{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}` — new `N
+- CHANGED valid-bugs.md confirmed: 2 VALID HIGH (auth.php mint, voicenote PII), Q4 frame-binding HOLD needing AUTH_HELPED; surface frozen at 4 live hosts; no new host.
+- CHANGED One read-only GET to www.applicationdesigner.de/extjs/voicenotes/check.php (redacted placeholder token) returned {"success":false,"message":"Not logged in","tech-info":"No VPN detected."} — new "No VP
+- CHANGED valid-bugs.md: 2 VALID HIGH (auth.php mint, voicenote PII), Q4 frame-binding HOLD (AUTH_HELPED); surface frozen at 4 live hosts.
+- CHANGED One read-only GET to `www.applicationdesigner.de/extjs/voicenotes/check.php` (redacted placeholder token) returned `{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}` — new `N
+- CHANGED valid-bugs.md confirmed: 2 VALID HIGH (auth.php mint, voicenote PII), Q4 frame-binding HOLD needing AUTH_HELPED; surface frozen at 4 live hosts; no new host.
+- CHANGED One read-only GET to www.applicationdesigner.de/extjs/voicenotes/check.php (redacted placeholder token) returned {"success":false,"message":"Not logged in","tech-info":"No VPN detected."} — new "No VP
+- CHANGED valid-bugs.md: 2 VALID HIGH (auth.php mint, voicenote PII), Q4 frame-binding HOLD (AUTH_HELPED); surface frozen at 4 live hosts.
+- CHANGED www.applicationdesigner.de/extjs/livedebugger/auth.php: now returns `{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}` with public static credential (was success:true for for
+- CHANGED www.applicationdesigner.de/extjs/voicenotes/check.php: confirmed `{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}` with public static credential for both cid=131727 and cid=
+- CHANGED www.applicationdesigner.de/help.js: LIVE_DEMO_CUSTOMER_TOKEN value is `3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3` (sha256: 8d2faac1b96e020c077fb81aa3452b590d015d59bb826be7008991

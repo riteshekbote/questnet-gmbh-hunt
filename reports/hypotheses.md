@@ -501,3 +501,25 @@
 - LEARN: REJECTED api.live-manager.de debug endpoints: host does not resolve; no surface to probe — removed from active hypotheses
 - LEARN: REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: passive sibling probe closed 2026-09-06 — system-prompt-ask.md/apply.md/.md/-coding.md all 
 - LEARN: CHANGED id@ www.applicationdesigner.de/extjs/voicenotes/: single read-only probe now returns `Not logged in` + `No VPN detected.` tech-info (was success:true an
+
+## RANKED HYPOTHESES 2026-09-07 10:14:17 UTC
+- [85] wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={cid}&service={service}: Cross-tenant CBS WebSocket subscription via unauthenticated cid/service parameters (from art/lead_nemotron3.txt)
+- [55] www.applicationdesigner.de/extjs/voicenotes/get.php|check.php?token=LIVE_DEMO_CUSTOMER_TOKEN&customer_id={cid}: Voicenote metadata surface now VPN-gated (was anonymous token-scoped) (from art/lead_bigpickle.txt)
+- NEXT(hypotheses-bigpickle.txt): PROBE: read-only confirmation of the voicenote metadata scope (the second already-VALID finding, extend to file-level metadata without touching raw audio): GET 
+- NEXT(hypotheses-nemotron3.txt): PROBE: WS upgrade to cbs-proxy.api.live-manager.de with arbitrary cid — `wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=999999999&service=100` — confi
+- LEARN: CHANGED id@ www.applicationdesigner.de/extjs/voicenotes/: single read-only probe now returns `Not logged in` + `No VPN detected.` tech-info (was success:true an
+- LEARN: ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: cross-tenant BOLA transport-complete vs demo-tenant control, byte-identical frames (unchanged).
+- LEARN: ACCEPTED IDOR @ www.applicationdesigner.de/extjs/livedebugger/auth.php: anonymous per-cid mint via public static credential, no ownership check (unchanged).
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: public bundle ships static credential + endpoint map (unchanged).
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config.php: zero-auth LLM-routing JSON; dispatch gated (unchanged).
+- LEARN: REJECTED IDOR @ www.applicationdesigner.de/extjs/common/getCustomers.php: token-scoped (unchanged).
+- LEARN: REJECTED AUTH @ www.live-manager.de rs param: no anonymous open redirect (unchanged).
+- LEARN: REJECTED wildcard-subdomain-enum @ *.live-manager.de: 8632 hostnames, 0 dedicated endpoints (unchanged).
+- LEARN: REJECTED api.live-manager.de: host non-resolving (unchanged).
+- LEARN: CHANGED id@ www.applicationdesigner.de/extjs/voicenotes/: single read-only probe now returns `Not logged in` + `No VPN detected.` tech-info (was success:true an
+- LEARN: ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WebSocket upgrade reaches backend CBS servers with client-supplied cid/service and no observed token — 
+- LEARN: CHANGED AUTH @ www.applicationdesigner.de/extjs/livedebugger/auth.php: VPN gate deployed — now returns `Not logged in` + `No VPN detected` with public static cr
+- LEARN: CHANGED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: VPN gate deployed — now returns `Not logged in` + `No VPN detected` with public static cre
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: public ExtJS bundle ships static backend credential (LIVE_DEMO_CUSTOMER_TOKEN=3498fkgkds458g35h9g835npz
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config.php: anonymous HTTP 200 zero-auth JSON exposes internal LLM routing (ollama.codermatri
+- LEARN: ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/index.php?route=: 403 {"error":"Invalid token"} with AND without public demo credential 
