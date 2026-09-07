@@ -523,3 +523,31 @@
 - LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: public ExtJS bundle ships static backend credential (LIVE_DEMO_CUSTOMER_TOKEN=3498fkgkds458g35h9g835npz
 - LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config.php: anonymous HTTP 200 zero-auth JSON exposes internal LLM routing (ollama.codermatri
 - LEARN: ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/index.php?route=: 403 {"error":"Invalid token"} with AND without public demo credential 
+
+## RANKED HYPOTHESES 2026-09-07 16:03:12 UTC
+- [85] wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={cid}&service={service}: Cross-tenant CBS WebSocket subscription via unauthenticated cid/service parameters (from art/lead_nemotron3.txt)
+- [55] www.applicationdesigner.de/extjs/agent/get_agent_token.php?token=<pub-static: AI Designer agent-token endpoint mints per-cid tokens for arbitrary customerId via public static credential (parallel to auth.php) (from art/lead_bigpickle.txt)
+- NEXT(hypotheses-bigpickle.txt): PROBE: GET https://www.applicationdesigner.de/extjs/agent/get_agent_token.php?token=<public-static sha256 8d2faac1…>&customerId=131727 then customerId=2; compar
+- NEXT(hypotheses-nemotron3.txt): PROBE: WS upgrade to cbs-proxy.api.live-manager.de with arbitrary cid — `wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=999999999&service=100` — confi
+- LEARN: ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: cross-tenant BOLA transport-complete vs demo-tenant control, byte-identical frames (unchanged).
+- LEARN: ACCEPTED IDOR @ www.applicationdesigner.de/extjs/livedebugger/auth.php: anonymous per-cid mint via public static credential, no ownership check; success:true fo
+- LEARN: ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: re-confirmed cross-tenant un-scoped index, NOT VPN-gated; "No VPN detected" was placehold
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: public bundle ships static credential + endpoint map (unchanged).
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config.php: zero-auth LLM-routing JSON; dispatch gated (unchanged).
+- LEARN: ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/index.php: AIDesigner dispatch NOT static-credential-satisfiable (unchanged).
+- LEARN: REJECTED IDOR @ www.applicationdesigner.de/extjs/common/getCustomers.php: token-scoped (unchanged).
+- LEARN: REJECTED AUTH @ www.live-manager.de rs param: no anonymous open redirect (unchanged).
+- LEARN: REJECTED wildcard-subdomain-enum @ *.live-manager.de: 8632 hostnames, 0 dedicated endpoints (unchanged).
+- LEARN: REJECTED api.live-manager.de: host non-resolving (unchanged).
+- LEARN: REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: no secrets-bearing anonymous siblings (unchanged).
+- LEARN: ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WebSocket upgrade reaches backend CBS servers with client-supplied cid/service and no observed token — 
+- LEARN: CHANGED AUTH @ www.applicationdesigner.de/extjs/livedebugger/auth.php: VPN gate deployed — now returns `Not logged in` + `No VPN detected` with public static cr
+- LEARN: CHANGED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: VPN gate deployed — now returns `Not logged in` + `No VPN detected` with public static cre
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: public ExtJS bundle ships static backend credential (LIVE_DEMO_CUSTOMER_TOKEN=3498fkgkds458g35h9g835npz
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config.php: anonymous HTTP 200 zero-auth JSON exposes internal LLM routing (ollama.codermatri
+- LEARN: ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/index.php?route=: 403 {"error":"Invalid token"} with AND without public demo credential 
+- LEARN: REJECTED IDOR @ www.applicationdesigner.de/extjs/common/getCustomers.php: token-scoped — returns only demo customer 131727; no global tenant directory (unchange
+- LEARN: REJECTED AUTH @ www.live-manager.de rs param: no anonymous open redirect (unchanged)
+- LEARN: REJECTED wildcard-subdomain-enum @ *.live-manager.de: 8632 hostnames, 0 dedicated endpoints (unchanged)
+- LEARN: REJECTED api.live-manager.de: host non-resolving (unchanged)
+- LEARN: REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: passive sibling probe closed 2026-09-06 — no secrets-bearing anonymous sibling exists (unch

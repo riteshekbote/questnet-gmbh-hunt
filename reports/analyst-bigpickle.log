@@ -12887,3 +12887,104 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 - [RISK] questnet-gmbh: 78 — Voicenote VPN-gate false alarm resolved; all three independent findings now cleanly VALID/HIGH (auth.php mint, voicenote un-scoped PII index, cbs-proxy BOLA transport) with read-only POCs using only the public static credential. Confirmed live token value recovered and matching documented sha256. No live customer data touched (check.php only; no raw-audio/mutating calls). Breadth fully exhausted at 4 in-scope hosts; remaining risk is data-plane frame-binding (AUTH_HELPED) which sustains/or raises the cbs-proxy finding. Risk modestly up on restored voicenote certainty.
+===== ANALYST bigpickle 2026-09-07 16:03:12 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m✱ [0mGlob "**/*"[90m in . · 76 matches[0m
+Let me check the current state of the workspace files to understand what's been documented.
+[0m✱ [0mGlob "art/**/*"[90m in . · 0 matches[0m
+[0m→ [0mRead reports/valid-bugs.md
+[0m→ [0mRead state_bigpickle.json
+[0m→ [0mRead reports/hypotheses-bigpickle.txt
+[0m→ [0mRead leads/lead-bigpickle.md
+[0m→ [0mRead probe-results.md
+[0m→ [0mRead leads/lead-bigpickle.md[90m [offset=354][0m
+[0m→ [0mRead triage/run-2026-09-07-12-45.md
+Now let me read the latest tail of the bigpickle lead file to check if there are more recent entries:
+[0m
+[0m$ [0mwc -l /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/leads/lead-bigpickle.md
+1647 /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/leads/lead-bigpickle.md
+[0m
+[0m→ [0mRead leads/lead-bigpickle.md[90m [offset=1580][0m
+Now I have full context. Here is my structured analysis:
+
+---
+
+**STEP 1 — DELTA**
+
+[CHANGED] Voicenote metadata re-confirmed NOT VPN-gated (2026-09-07 probe): fresh read-only probe with real public demo token shows check.php returns `success:true` byte-identically for demo cid=131727 and foreign cid=2. Earlier "No VPN detected" was a placeholder-token artifact.
+[NEW] get_agent_token.php endpoint (help.js) proposed as parallel BOLA candidate at 2026-09-04 20:00 UTC but NEVER PROBED across 5 consecutive cycles — sole untested hypothesis in the chain.
+NO_DELTA on: cbs-proxy transport-complete BOLA (92), auth.php mint (90 VALID), help.js MISCONFIG, AIDesigner config.php/control, surface (4 hosts frozen), all REJECTED findings.
+
+**STEP 2 — PRIORITIZE**
+
+[PRIO] cbs-proxy.api.live-manager.de,9.0,a=9,b=10,t=7,g=10,c=8,f=5
+[PRIO] www.applicationdesigner.de,7.85,a=8,b=8,t=8,g=9,c=5,f=8
+[PRIO] www.live-manager.de,4.6,a=5,b=7,t=5,g=2,c=6,f=1
+
+**STEP 3 — HYPOTHESES**
+
+[HYP] AI Designer agent-token endpoint mints per-cid tokens for arbitrary customerId via public static credential (parallel to auth.php)
+class: IDOR
+asset: www.applicationdesigner.de/extjs/agent/get_agent_token.php?token=<pub-static sha256 8d2faac1…>&customerId={cid}
+confidence: 55
+reasoning: help.js calls get_agent_token.php with GET params {customerId:c} and decrypts the response client-side (CB.util.security.decryptData); sibling get_agent_costs.php exists. auth.php on the same host accepts the same public static credential to mint per-cid tokens without ownership check (success:true for foreign cid=2). If get_agent_token.php uses the same auth pattern, it parallels the confirmed auth.php flaw, granting cross-tenant AI agent token minting. Never probed despite being proposed 5 cycles ago.
+evidence_needed: whether get_agent_token.php returns a distinct/identical token for foreign customerId=2 vs demo 131727, i.e. no ownership check pre-mint.
+verify_steps: [PROBE] GET https://www.applicationdesigner.de/extjs/agent/get_agent_token.php?token=<public-static sha256 8d2faac1…>&customerId=131727 then customerId=2; compare success/response presence/structure. 2 GETs @1rps, read-only, no agent invocation.
+impact: cross-tenant AI-agent token minting → on-behalf actions / cost abuse — MEDIUM/HIGH when compounded with existing chain.
+testability: PASSIVE (token shipped in public help.js)
+
+[HYP] cbs-proxy data-plane inherits missing token/cid binding (frame-level)
+class: IDOR
+asset: cbs-proxy.api.live-manager.de (WS upgrade + CBS CONNECT/READY)
+confidence: 92 (transport) / gate requires AUTH_HELPED
+reasoning: Transport-complete (101 + identical CONNECT CBS100/190/200 + READY for demo cid vs foreign cid=2, zero credentials). Only the downstream data-plane binding is not provable anonymously.
+evidence_needed: valid operator session (AUTH_HELPED) to confirm a foreign-cid call-flow attaches real tenant data.
+verify_steps: AUTH_HELPED frame-binding confirmation.
+impact: cross-tenant attach to live-debug/call-flow plane; HIGH (CVSS 7.5) standalone.
+testability: AUTH_HELPED
+
+[HYP] auth.php arbitrary per-cid token mint (no ownership check)
+class: IDOR
+asset: www.applicationdesigner.de/extjs/livedebugger/auth.php?token=<pub static>&customer_id={cid}&srn={n}
+confidence: 90 (VALID per triage)
+reasoning: success:true for foreign cid=2 with the static credential; "Not logged in" only when token omitted — token is sole gate, not bound to cid.
+evidence_needed: none (already VALID)
+verify_steps: already confirmed
+impact: mint per-tenant live-debug token for arbitrary cid from public static credential; HIGH, chains into BOLA.
+testability: PASSIVE
+
+**STEP 4 — SELF-CRITIQUE**
+
+[PARKED] Post-login rs open-redirect @ www.live-manager.de (45): anonymous REJECTED, AUTH_HELPED with no operator context, exhausted across 5 cycles.
+[PARKED] voicenotes/details.php extension: re-confirmed cross-tenant (85), ceiling = PII-exposure already documented; LOW incremental value per prior triage.
+[PARKED] voicenote raw-audio exfil gate (60): AUTH_HELPED, HUMAN pass queue.
+[PARKED] AIDesigner agent-token endpoint (55 → now active): upgraded from parked to active since it was never probed.
+
+[FINAL] 1. Cross-tenant CBS live-debug attach (92/transport) — data-plane binding is sole AUTH_HELPED remainder.
+[FINAL] 2. auth.php mint + cbs-proxy WS chain (90) — four of five hops closed, report well-formed on demonstrated primitives.
+[FINAL] 3. Voicenote metadata PII (85) — re-confirmed cross-tenant, customer_id decoration ignored.
+[FINAL] 4. get_agent_token.php parallel BOLA (55) — sole untested hypothesis; 2-read-only-GET probe resolves it.
+
+**STEP 5 — NEXT ACTION**
+
+[NEXT] PROBE: GET https://www.applicationdesigner.de/extjs/agent/get_agent_token.php?token=<public-static sha256 8d2faac1…>&customerId=131727 then customerId=2; compare success/response presence/structure. 2 GETs @1rps, read-only, no agent invocation. Tests whether get_agent_token.php parallels the confirmed auth.php flaw (per-cid token mint without ownership check). This resolves the sole untested hypothesis in the chain after 5 idle cycles.
+
+**STEP 6 — LEARNING**
+
+[LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: cross-tenant BOLA transport-complete vs demo-tenant control, byte-identical frames (unchanged).
+[LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/livedebugger/auth.php: anonymous per-cid mint via public static credential, no ownership check; success:true for foreign cid=2 (unchanged).
+[LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: re-confirmed cross-tenant un-scoped index, NOT VPN-gated; "No VPN detected" was placeholder-token artifact (UPDATED from CHANGED→ACCEPTED).
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: public bundle ships static credential + endpoint map (unchanged).
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config.php: zero-auth LLM-routing JSON; dispatch gated (unchanged).
+[LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/index.php: AIDesigner dispatch NOT static-credential-satisfiable (unchanged).
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/common/getCustomers.php: token-scoped (unchanged).
+[LEARN] REJECTED AUTH @ www.live-manager.de rs param: no anonymous open redirect (unchanged).
+[LEARN] REJECTED wildcard-subdomain-enum @ *.live-manager.de: 8632 hostnames, 0 dedicated endpoints (unchanged).
+[LEARN] REJECTED api.live-manager.de: host non-resolving (unchanged).
+[LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: no secrets-bearing anonymous siblings (unchanged).
+
+**STEP 7 — RISK**
+
+[RISK] questnet-gmbh: 74 — Chain stable and fully re-confirmed read-only: public help.js static credential (sha256 8d2faac1…) → arbitrary-cid live-debug token mint (success:true for foreign cid=2) → anonymous read of real-tenant voicenote index (customer_id ignored, byte-identical, re-confirmed NOT VPN-gated) → unauthenticated WS relay READY to backend CBS for any client-chosen cid/service. Four of five hops closed anonymously; only binary live_debug frame binding and raw-audio download gate remain untested (both AUTH_HELPED, not because controls were observed). One untested parallel hypothesis (get_agent_token.php) remains; if it mirrors auth.php the chain compounds further. Risk holds at 74 — no new control, no new surface, breadth exhausted. No recordings fetched, no live streams subscribed, no mutations, no PII echoed.
