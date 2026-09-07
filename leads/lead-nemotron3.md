@@ -1226,3 +1226,55 @@ testability: PASSIVE
 [LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/index.php?route=: 403 {"error":"Invalid token"} with AND without the public demo credential (sha256 8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf) — AIDesigner dispatch is NOT static-credential-satisfiable, contrasting the unbound auth.php LiveDebugger mint and narrowing the broken-auth anomaly to LiveDebugger
 [LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: passive sibling probe closed 2026-09-06 — system-prompt-ask.md/apply.md/.md/-coding.md all HTTP 403, index.php/config.json/config.example.php/test.php/agents/agent.json 404, config files carry zero keys; no secrets-bearing anonymous sibling exists, thread exhausted
 [RISK] questnet-gmbh: 72 — Full primitive chain confirmed read-only and now probe-verified: public static credential in help.js (sha256 8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf) → per-tenant debug auth token minted for ANY customer_id via auth.php (tested cid=2, 999999999) → anonymous 101 WS to in-scope cbs-proxy backend with identical CONNECT/READY frames for any cid. Cross-tenant live call-flow/voice debug attach is plausible and only blocked by an unverified WS-side binding. Real program surface stays at 4 hosts; CDN-wildcard breadth 0 caps scope expansion. PoC chain complete for bug gate; no live customer data touched.
+## 2026-09-07 00:05:38 UTC [target] (model nemotron3)
+[PRIO] cbs-proxy.api.live-manager.de,8.90,attack_surface=9,business_value=10,tech_exposure=9,gate_ease=10,cloud_surface=8,freshness=5
+[PRIO] www.applicationdesigner.de,7.85,attack_surface=8,business_value=8,tech_exposure=8,gate_ease=9,cloud_surface=6,freshness=5
+[PRIO] www.live-manager.de,7.30,attack_surface=7,business_value=10,tech_exposure=7,gate_ease=6,cloud_surface=6,freshness=5
+[PRIO] auth.live-manager.de,5.95,attack_surface=6,business_value=10,tech_exposure=6,gate_ease=5,cloud_surface=6,freshness=5
+[PRIO] dev.applicationdesigner.de,5.35,attack_surface=6,business_value=6,tech_exposure=6,gate_ease=4,cloud_surface=5,freshness=5
+[HYP] Unauthenticated CBS WebSocket proxy allows arbitrary customer_id cross-tenant subscription
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={customer_id}&service={service_number}
+confidence: 95
+reasoning: Live probes (2026-09-04, 2026-09-05 21:50/21:51 UTC) confirm anonymous WS upgrade with client-supplied cid/service returns HTTP/1.1 101, CONNECT frames to CBS100/190/200, then PROXY READY — zero credentials/headers beyond upgrade. Test with cid=999999999/service=100 and cid=1/service=100 yielded byte-identical frame sets. No proxy-level auth or cid validation observed pre-upgrade.
+evidence_needed: proxy enforces authenticated session token tied to claimed cid and denies foreign cid; without it, cross-tenant live call/debug stream subscription possible
+verify_steps: WS upgrade GET to wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=1&service=100 with Upgrade: websocket, Connection: Upgrade, Sec-WebSocket-Version: 13, Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==; observe CONNECT/READY; repeat with foreign cid (e.g., 999999) and note if READY/data still returned; do NOT subscribe to live customer data
+impact: cross-tenant exposure of customer business-system call streams / live debugging (PII/voice data) — HIGH if unauthenticated actor can enumerate cid
+testability: PASSIVE
+[HYP] Cross-tenant live-debug/call attach via public-credential auth.php mint feeding unbound cbs-proxy WS frame layer
+class: IDOR
+asset: chain GET https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token=LIVE_DEMO_CUSTOMER_TOKEN&customer_id={cid}&srn={service} → wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={cid}&service={service}&token={minted}
+confidence: 90
+reasoning: help.js publicly ships static credential (sha256 8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf) that auth.php accepts as sole authorization ("Not logged in" only when token omitted); auth.php returns success:true + 64-hex auth+ttl for both demo cid 131727 and foreign cid 2,999999999 — zero ownership/session binding observed. Anonymous WS upgrade to cbs-proxy returns 101 and CONNECT/READY frames for any cid/service with zero credentials. LiveDebugger client sends live_debug{customer_id,CLI,srn,token,ttl,hash} frame to attach to tenant call-flow session. Attacker needs only public JS credential, then any cid.
+evidence_needed: cbs-proxy/live_debug backend binds minted token to real operator session owner of cid and denies foreign cid that was nonetheless minted — without binding check, minting-is-authorization and cross-tenant call-flow/voice debug attach possible
+verify_steps: (AUTH_HELPED/HUMAN) with valid operator session for owned tenant, mint token for OWN cid via auth.php, present it to cbs-proxy for FOREIGN cid and confirm server denial; behavioral comparison only. No live customer data subscribed.
+impact: cross-tenant attach to customer business-system live call/debug streams (PII/voice) — HIGH/CRITICAL if no binding check
+testability: AUTH_HELPED
+[HYP] Static demo credential exposes foreign-tenant voice-note metadata (PII) via customer_id decoration
+class: IDOR
+asset: https://www.applicationdesigner.de/extjs/voicenotes/check.php?token=LIVE_DEMO_CUSTOMER_TOKEN&customer_id={cid}
+confidence: 85
+reasoning: Confirmed anonymously: check.php returns success:true for both cid=2 and cid=131727 with public static credential — customer_id parameter accepted but not enforced for authorization (identical responses). Token is entire authorization; any customer_id renders same tenant object. get.php behavior previously confirmed for 131727.
+evidence_needed: whether details.php exposes per-file metadata for same token-bound tenant regardless of customer_id, and whether delete.php requires session (mutating, skipped)
+verify_steps: PASSIVE confirmation only — GET check.php?customer_id=2 vs 131727 (done, identical structure). Do NOT list/download recordings; do NOT touch delete.php.
+impact: anonymous cross-tenant voice-note metadata index (PII incl. phone numbers) of a real tenant via public JS credential; raw audio still VPN/session-gated — HIGH compound, MEDIUM standalone
+testability: PASSIVE
+[PARKED] Post-login open redirect via rs parameter enables OAuth code theft: confidence 45 but AUTH_HELPED testability blocks passive verification; requires valid customer session which we cannot obtain — parked until auth-assisted context available
+[PARKED] Voicenote raw-audio exfil gate (session + "No VPN detected."): confidence 60 but AUTH_HELPED only; cannot verify anonymously per program PII rule
+[PARKED] AI Designer agent-token endpoint mints tenant-bound tokens for arbitrary customerId: confidence 55 but parallel to confirmed auth.php flaw; lower priority
+[FINAL] 1. Unauthenticated CBS WebSocket proxy allows arbitrary customer_id cross-tenant subscription (95)
+[FINAL] 2. Cross-tenant live-debug/call attach via public-credential auth.php mint feeding unbound cbs-proxy WS frame layer (90)
+[FINAL] 3. Static demo credential exposes foreign-tenant voice-note metadata (PII) via customer_id decoration (85)
+[NEXT] HUMAN: with a valid operator session for an owned tenant, settle both open hops in one pass — (a) mint live-debug auth for the OWN cid via auth.php, present it to cbs-proxy for a FOREIGN cid and confirm server denial; (b) mint token for OWN cid, present to cbs-proxy for OWN cid and confirm CONNECT/READY still works — behavioral comparison only, no live customer data subscribed
+[LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WebSocket upgrade reaches backend CBS servers with client-supplied cid/service and no observed token — candidates for cross-tenant BOLA
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de: ExtJS help app (help.js, help.json, resources.help/*) publicly exposes internal CBS proxy endpoints and backend hostnames
+[LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/livedebugger/auth.php: anonymous minting of per-tenant live-debug auth token for arbitrary customer_id using a static credential embedded in public help.js — observed success:true for foreign cid=2, "Not logged in" only when token omitted
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: public ExtJS bundle ships static backend credential + full LiveDebugger/CallBuilder/AIDesigner endpoint map including /api/callbuilder/ proxy prefix and AIDesigner backend router
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/common/getCustomers.php: token-scoped — returns only demo customer 131727; no global tenant directory
+[LEARN] REJECTED AUTH @ www.live-manager.de rs param: GET /?rs= not reflected/server-side redirected to external domain, so no anonymous open redirect
+[LEARN] REJECTED wildcard-subdomain-enum @ *.live-manager.de: DEDICATED-DEEP.md confirms 8632 resolving hostnames all share CDN/wildcard IPs — no dedicated subdomain surface exists; attack surface is path-based behind CDN
+[LEARN] REJECTED api.live-manager.de debug endpoints: host does not resolve; no surface to probe — removed from active hypotheses
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config.php: anonymous HTTP 200 zero-auth JSON exposes internal LLM routing (ollama.codermatrix.de/v1, 6 providers, model→system-prompt map); no keys observed; referenced prompt files 403-gated; dispatch gated by session+VPN-minted agent token
+[LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/index.php?route=: 403 {"error":"Invalid token"} with AND without the public demo credential (sha256 8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf) — AIDesigner dispatch is NOT static-credential-satisfiable, contrasting the unbound auth.php LiveDebugger mint and narrowing the broken-auth anomaly to LiveDebugger
+[LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: passive sibling probe closed 2026-09-06 — system-prompt-ask.md/apply.md/.md/-coding.md all HTTP 403, index.php/config.json/config.example.php/test.php/agents/agent.json 404, config files carry zero keys; no secrets-bearing anonymous sibling exists, thread exhausted
+[RISK] questnet-gmbh: 72 — Full primitive chain confirmed read-only and now probe-verified: public static credential in help.js (sha256 8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf) → per-tenant debug auth token minted for ANY customer_id via auth.php (tested cid=2, 999999999) → anonymous 101 WS to in-scope cbs-proxy backend with identical CONNECT/READY frames for any cid. Cross-tenant live call-flow/voice debug attach is plausible and only blocked by an unverified WS-side binding. Real program surface stays at 4 hosts; CDN-wildcard breadth 0 caps scope expansion. PoC chain complete for bug gate; no live customer data touched.

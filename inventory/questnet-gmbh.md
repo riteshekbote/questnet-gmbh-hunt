@@ -186,3 +186,9 @@ www.live-manager.de
 - CHANGED AIDesigner MISCONFIG downgraded to closed LOW: prompt files 403-gated, dispatch 403-gated with/without static credential (sha256 8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf), get_
 - CHANGED Cross-tenant primitive chain confirmed read-only and probe-verified: help.js static credential → auth.php mints per-cid token for ANY customer_id (tested cid=2, 999999999) → anonymous WS 101 to cbs-pr
 - CHANGED cbs-proxy.api.live-manager.de: two byte-identical probe cycles (2026-09-04, 2026-09-05 21:50/21:51 UTC) confirm anonymous WS 101 + CONNECT CBS100/190/200 + READY for any cid/service — cid parameter no
+
+## 2026-09-07 00:06:54 UTC
+- CHANGED One read-only GET to `www.applicationdesigner.de/extjs/voicenotes/check.php` (redacted placeholder token) returned `{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}` — new `N
+- CHANGED valid-bugs.md confirmed: 2 VALID HIGH (auth.php mint, voicenote PII), Q4 frame-binding HOLD needing AUTH_HELPED; surface frozen at 4 live hosts; no new host.
+- CHANGED One read-only GET to www.applicationdesigner.de/extjs/voicenotes/check.php (redacted placeholder token) returned {"success":false,"message":"Not logged in","tech-info":"No VPN detected."} — new "No VP
+- CHANGED valid-bugs.md: 2 VALID HIGH (auth.php mint, voicenote PII), Q4 frame-binding HOLD (AUTH_HELPED); surface frozen at 4 live hosts.
