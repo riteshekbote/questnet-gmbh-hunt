@@ -112,3 +112,4 @@
 - 2026-09-07 ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDDesigner/backend/config.php: anonymous HTTP 200 zero-auth JSON exposes internal LLM routing (ollama.codermatrix.de/v1, 6 providers, model→system-prompt map); no keys; dispatch gated — UNCHANGED.
 - 2026-09-07 ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/index.php?route=: 403 {"error":"Invalid token"} with AND without public demo credential — AIDesigner dispatch NOT static-credential-satisfiable — UNCHANGED.
 - 2026-09-07 REJECTED IDOR @ www.applicationdesigner.de/extjs/common/getCustomers.php: token-scoped — returns only demo customer 131727; no global tenant directory (unchanged).
+- 2026-09-07 ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config.php: anonymous HTTP 200 zero-auth JSON exposes internal LLM routing (ollama.codermatrix.de/v1, 6 providers, model→system-prompt map); no keys; dispatch gated — UNCHANGED.

@@ -1,9 +1,4 @@
-## 2026-09-07 19:51:39 UTC [target] (model nemotron3)
-[NEW] www.applicationdesigner.de/extjs/agent/get_agent_token.php: Parallel BOLA candidate minting per-cid agent tokens via public static credential (from help.js) — proposed 2026-09-04, NEVER PROBED across 5 cycles.
-[CHANGED] www.applicationdesigner.de/extjs/livedebugger/auth.php: VPN gate deployed — returns `{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}` with public static credential (was success:true for foreign cid=2) — anonymous mint BLOCKED.
-[CHANGED] www.applicationdesigner.de/extjs/voicenotes/check.php: VPN gate signal observed with placeholder token; BUT 2026-09-07 16:03 re-probe with REAL public demo token returns `success:true` byte-identically for demo cid=131727 and foreign cid=2 — NOT VPN-gated (placeholder-token artifact).
-[CHANGED] cbs-proxy.api.live-manager.de: Still returns 426 Upgrade Required — anonymous WS handshake (101 + CONNECT CBS100/190/200 + READY frames) confirmed byte-identical for demo cid=131727 vs foreign cid=2 — transport-complete BOLA CONFIRMED STILL LIVE.
-[CHANGED] Surface frozen at 4 live in-scope hosts since 2026-09-04 (cbs-proxy.api.live-manager.de, www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de) — no new hosts discovered.
+## 2026-09-07 22:42:55 UTC [target] (model nemotron3)
 [PRIO] cbs-proxy.api.live-manager.de, 8.5, attack_surface=9, business_value=9, tech_exposure=8, gate_ease=10, cloud_surface=7, freshness=7
 [PRIO] www.applicationdesigner.de/extjs/agent/get_agent_token.php, 7.2, attack_surface=8, business_value=8, tech_exposure=7, gate_ease=10, cloud_surface=5, freshness=6
 [PRIO] www.applicationdesigner.de/extjs/voicenotes/check.php, 6.8, attack_surface=7, business_value=8, tech_exposure=7, gate_ease=8, cloud_surface=5, freshness=8
@@ -45,7 +40,7 @@ testability: PASSIVE
 [LEARN] CHANGED AUTH @ www.applicationdesigner.de/extjs/livedebugger/auth.php: VPN gate deployed — now returns `Not logged in` + `No VPN detected` with public static credential (was success:true for foreign cid) — anonymous mint BLOCKED.
 [LEARN] CHANGED→ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: VPN gate was placeholder-token artifact; re-probe with real public demo token shows success:true byte-identically for demo cid=131727 and foreign cid=2 — cross-tenant metadata index NOT VPN-gated.
 [LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: public ExtJS bundle ships static backend credential (LIVE_DEMO_CUSTOMER_TOKEN=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3, sha256 8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf) + full endpoint map including /api/callbuilder/ proxy prefix — UNCHANGED.
-[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDDesigner/backend/config.php: anonymous HTTP 200 zero-auth JSON exposes internal LLM routing (ollama.codermatrix.de/v1, 6 providers, model→system-prompt map); no keys; dispatch gated — UNCHANGED.
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config.php: anonymous HTTP 200 zero-auth JSON exposes internal LLM routing (ollama.codermatrix.de/v1, 6 providers, model→system-prompt map); no keys; dispatch gated — UNCHANGED.
 [LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/index.php?route=: 403 {"error":"Invalid token"} with AND without public demo credential — AIDesigner dispatch NOT static-credential-satisfiable — UNCHANGED.
 [LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/common/getCustomers.php: token-scoped — returns only demo customer 131727; no global tenant directory (unchanged).
 [LEARN] REJECTED AUTH @ www.live-manager.de rs param: no anonymous open redirect (unchanged).
