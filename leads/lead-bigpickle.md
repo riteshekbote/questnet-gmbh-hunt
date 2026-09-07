@@ -1699,3 +1699,22 @@ testability: PASSIVE
 [LEARN] REJECTED api.live-manager.de: host non-resolving (unchanged).
 [LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: no secrets-bearing anonymous siblings (unchanged).
 [RISK] questnet-gmbh: 74 — Chain stable and fully re-confirmed read-only: public help.js static credential (sha256 8d2faac1…) → arbitrary-cid live-debug token mint (success:true for foreign cid=2) → anonymous read of real-tenant voicenote index (customer_id ignored, byte-identical, re-confirmed NOT VPN-gated) → unauthenticated WS relay READY to backend CBS for any client-chosen cid/service. Four of five hops closed anonymously; only binary live_debug frame binding and raw-audio download gate remain untested (both AUTH_HELPED, not because controls were observed). One untested parallel hypothesis (get_agent_token.php) remains; if it mirrors auth.php the chain compounds further. Risk holds at 74 — no new control, no new surface, breadth exhausted. No recordings fetched, no live streams subscribed, no mutations, no PII echoed.
+## 2026-09-07 19:48:16 UTC [target] (model bigpickle)
+[HYP] cbs-proxy data-plane binding for arbitrary cid (live-closure remainder)
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={cid}&service={service}&token={minted}
+confidence: 92
+reasoning: Transport-complete: WS upgrade 101 + identical CONNECT CBS100/190/200 + READY frames for demo cid=131727 vs foreign cid=2, zero credentials; minted token accepted with no observable scoping; reconfirmed live last cycle (426 on non-WS HTTP only).
+evidence_needed: operator-confirmed (AUTH_HELPED) that a foreign-cid minted-token call-flow attaches real tenant data-plane frames vs demo-tenant control.
+verify_steps: AUTH_HELPED WS upgrade with token minted for foreign cid=2; compare live-debug frame payloads vs demo control.
+impact: cross-tenant live-debug stream attach; HIGH (CVSS 7.5); chain capstone.
+testability: AUTH_HELPED
+[HYP] voicenote raw-audio download gate for arbitrary cid
+class: IDOR
+asset: www.applicationdesigner.de/extjs/voicenotes/download.php?token={raw}&customer_id={cid}
+confidence: 60
+reasoning: check.php index re-confirmed cross-tenant byte-identical (success:true) for demo and foreign cid with raw static credential; download.php "No VPN detected." observed only on placeholder token — raw-token path needs operator session, not anonymous.
+evidence_needed: operator session to fetch a foreign-cid voicenote id from check.php output.
+verify_steps: AUTH_HELPED GET download.php for foreign cid + observed id; assert real audio bytes.
+impact: cross-tenant call-recording exfil; HIGH PII.
+testability: AUTH_HELPED

