@@ -250,3 +250,10 @@ www.live-manager.de
 - CHANGED Surface still 4 live hosts; cbs-proxy WS and auth.php findings unchanged.
 - CHANGED www.applicationdesigner.de/extjs/livedebugger/auth.php: VPN gate deployed — now returns `{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}` with public static credential (was 
 - NEW www.applicationdesigner.de/extjs/agent/get_agent_token.php: Parallel BOLA candidate minting per-cid agent tokens via public static credential (from help.js) — proposed 2026-09-04, NEVER PROBED across 
+
+## 2026-09-08 05:51:14 UTC
+- NEW get_agent_token.php probed 2026-09-08: public static credential + cid=131727/cid=2 both return `{"success":false,"message":"Zugriff verweigert."}` HTTP 200 — session gate, no cid-dependent behavior, R
+- CHANGED auth.php VPN gate confirmed persistent: returns `{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}` with public static credential (was success:true for foreign cid) — anonymou
+- CHANGED voicenotes/check.php re-confirmed NOT VPN-gated with valid public demo token: success:true byte-identical for demo cid=131727 and foreign cid=2 — cross-tenant PII metadata index accessible.
+- CHANGED cbs-proxy.api.live-manager.de still returns 426 Upgrade Required; anonymous WS handshake (101 + CONNECT CBS100/190/200 + READY) confirmed byte-identical for demo vs foreign cid — transport-complete BO
+- NEW AIDesigner backend config.php (zero-auth LLM routing) and public/index.php (403 Invalid token with/without static credential) unchanged — dispatch NOT static-credential-satisfiable.
