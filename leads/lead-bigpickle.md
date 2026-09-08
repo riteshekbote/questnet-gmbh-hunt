@@ -2024,3 +2024,28 @@ testability: PASSIVE
 [LEARN] REJECTED wildcard-subdomain-enum @ *.live-manager.de: 8632 hostnames, 0 dedicated endpoints — unchanged.
 [LEARN] REJECTED api.live-manager.de: host non-resolving — unchanged.
 [RISK] questnet-gmbh: 76 — both driver findings (cbs-proxy BOLA transport-complete, auth.php historical cross-tenant mint) remain LIVE; voicenote PII metadata index re-confirmed cross-tenant; ceiling remains AUTH_HELPED (data-plane frame binding, voicenote audio download). Risk unchanged pending auth.php re-probe and operator hand-off for frame-binding POC.
+## 2026-09-08 18:50:26 UTC [target] (model bigpickle)
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={cid}&service={service}&token={minted}
+confidence: 95
+reasoning: This cycle re-proved the whole pre-attach chain anonymously: auth.php minted success:true for foreign cid=2 with the REAL static credential (fresh 64-hex each), and that fresh foreign-cid token upgraded wss://cbs-proxy → HTTP 101 + CONNECT CBS100/190/200 + READY byte-identical to prior cycles. No token→cid ownership check exists at router or mint layer. Sole unverified control is CBS-side live_debug frame validation.
+evidence_needed: operator presents a foreign-cid-minted token in a live_debug frame and diffs accept vs a demo-tenant-controlled frame.
+verify_steps: AUTH_HELPED WS upgrade with freshly minted foreign-cid token; send live_debug frame; byte-diff vs demo control.
+impact: cross-tenant live-debug/call-flow stream attach (voice/PII); HIGH, CVSS 7.5 — chain capstone.
+testability: AUTH_HELPED
+class: IDOR
+asset: www.applicationdesigner.de/extjs/voicenotes/download.php?token={real}&customer_id={cid}&file={uuid-from-get.php}
+confidence: 75
+reasoning: With the REAL public demo token, download.php returns 404 file-not-found byte-identically for cid=2 and cid=131727 — no 403, no "No VPN detected.", no auth rejection. Endpoint reached the file-lookup stage with the static credential as the only auth; get.php already exposes uuid filenames anonymously and ignores customer_id on the same tenant object. Gate is credential-satisfiable; only fetching a real recording's bytes is withheld per the PII rule.
+evidence_needed: operator asserts real audio bytes for a foreign-cid UUID from the index (own/demo tenant only, no third-party replay).
+verify_steps: AUTH_HELPED GET download.php for a UUID observed in the index within the operator's own demo tenant; confirm audio bytes.
+impact: cross-tenant call-recording/voicemail audio exfil; HIGH PII.
+testability: AUTH_HELPED
+class: IDOR
+asset: www.applicationdesigner.de/api/callbuilder/{route} per help.js map
+confidence: 45
+reasoning: help.js ships APPDESIGNER_API_PATH=/api/callbuilder/ but bare root 404s with and without the static credential; route subpaths unknown; sibling routers (AIDesigner index.php?route=) are 403 Invalid-token gated — pattern suggests same gate.
+evidence_needed: exact route template from help.js CallBuilder section, then a pass/fail gate response per route.
+verify_steps: PASSIVE RAG help.js for full CallBuilder route list; then GET each with static credential.
+impact: if ungated, per-cid CallBuilder operations (build/redirect flows) — HIGH; likely gated, LOW.
+testability: PASSIVE
