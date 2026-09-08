@@ -1,12 +1,13 @@
-## 2026-09-08 10:57:40 UTC [target] (model bigpickle)
-[PRIO] cbs-proxy.api.live-manager.de,7.65,a=9,b=9,t=4,g=2,c=10,f=10
-[PRIO] voicenotes/check.php,6.80,a=8,b=8,t=2,g=2,c=10,f=9
-[PRIO] voicenotes/download.php,6.45,a=7,b=9,t=2,g=2,c=10,f=8
+## 2026-09-08 15:02:49 UTC [target] (model bigpickle)
+[PRIO] cbs-proxy.api.live-manager.de,10.00,a=9,b=9,t=4,g=10,c=10,f=10
+[PRIO] www.applicationdesigner.de/extjs/voicenotes/download.php,6.85,a=8,b=9,t=2,g=6,c=4,f=8
+[PRIO] www.applicationdesigner.de/api/callbuilder/,5.10,a=6,b=7,t=3,g=4,c=0,f=5
+[PRIO] www.applicationdesigner.de/extjs/livedebugger/auth.php,5.35,a=7,b=7,t=1,g=7,c=0,f=4
 [HYP] cbs-proxy data-plane binds minted foreign-cid token to real tenant frames
 class: IDOR
 asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={cid}&service={service}&token={minted}
 confidence: 95
-reasoning: Transport re-confirmed this cycle end-to-end: fresh auth.php mint for foreign cid=2 upgraded WS → HTTP 101 + CONNECT CBS100/190/200 + READY byte-frames; 426 on non-WS HTTP. Only downstream frame binding vs real tenant traffic is unprovable anonymously — no control observed, not because one exists.
+reasoning: Transport re-confirmed this cycle end-to-end: fresh auth.php mint for foreign cid=2 upgraded WS → HTTP 101 + CONNECT CBS100/190/200 + READY byte-frames; 426 on non-WS HTTP. Only downstream frame binding vs real tenant traffic is unprovable anonymously — no control observed, not because one doesn't exist.
 evidence_needed: operator upgrades WS with a token minted for a foreign cid and diffs live-debug frame payloads against a demo-tenant control.
 verify_steps: AUTH_HELPED WS upgrade with foreign-cid minted token; byte-diff data-plane frames vs demo control.
 impact: cross-tenant live-debug/call-flow stream attach; HIGH, CVSS 7.5 — chain capstone.
