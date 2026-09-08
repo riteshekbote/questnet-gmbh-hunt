@@ -272,3 +272,5 @@ reasoning: "ClueCon" appears as a default parameter value in ESL client library 
 impact: INFORMATIONAL — library defaults, not deployed secrets
 verify_steps: N/A
 TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-08 23:39:54 UTC
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
