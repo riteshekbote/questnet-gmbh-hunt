@@ -20,3 +20,15 @@
   - | Q2 Reachable? | **Unknown** — needs valid customer session (AUTH_HELPED). Anonymous variant (GET /?rs=) does NOT reflect value or redirect externally — already REJECTED by multiple models. |
   - | Q4 Provable? | **No** — requires valid customer session to test post-login behavior. Cannot be proven non-invasively. |
   - | 1 | auth.php static-credential token mint + voicenote PII disclosure | **VALID** | 7.5 HIGH | Broken Auth / IDOR — report via bugs.olivermaicher.eu |
+
+- 10 lead(s) marked VALID at 2026-09-08 08:45:08 UTC
+  - **Verdict: VALID — HIGH**
+  - **Verdict: VALID — HIGH**
+  - | Q5 Novel? | **YES** | This is the enabler for Leads 1 and 2. Reporting as standalone finding is valid for broken auth / credential exposure |
+  - **Verdict: VALID — HIGH** (chain enabler)
+  - | Q4 Provable? | **NO** | Requires valid customer session to test post-login behavior. Cannot be proven non-invasively |
+  - **Verdict: HOLD — Requires AUTH_HELPED (valid customer session) to confirm post-login redirect behavior**
+  - | Q4 Provable? | **NO** | Requires AUTH_HELPED (valid session) to test download gate |
+  - | 1 | cbs-proxy WS BOLA | **VALID** | HIGH | 7.5 | File report |
+  - | 2 | voicenote PII metadata | **VALID** | HIGH | 7.5 | File report |
+  - | 3 | help.js static credential | **VALID** | HIGH | 7.5 | File report (chain enabler) |
