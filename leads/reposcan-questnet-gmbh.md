@@ -193,3 +193,82 @@ TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
 TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
 ## REPOSCAN 2026-09-08 18:48:58 UTC
 TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-08 21:42:46 UTC
+[HYP] FreeSWITCH Event Socket default "ClueCon" password, bound 0.0.0.0, ACL disabled
+class: MISCONFIG
+asset: questnet/freeswitch (v1.10-qn branch) — conf/insideout/autoload_configs/event_socket.conf.xml:3-6
+confidence: 85
+reasoning: The insideout profile (Questnet-customized — proven by hardcoded internal IP 192.168.86.254 in vars.xml:14) configures ESL with listen-ip=0.0.0.0, password=ClueCon, and apply-inbound-acl is commented out. This means the ESL control socket (port 8021) is exposed to all network interfaces with no ACL restriction and the trivially known FreeSWITCH default password. Any network-reachable client can authenticate and issue arbitrary FreeSWITCH API commands (originate calls, bridge, record, shutdown). The vanilla profile (also included by the active freeswitch.xml) similarly binds to :: with password=ClueCon and ACL commented out.
+impact: HIGH — full FreeSWITCH control from any network-reachable client
+verify_steps: 1) nmap -sV 185.158.96.0/22 -p 8021 to find exposed ESL ports 2) fs_cli -H <target> -P ClueCon to authenticate 3) If connected, issue `status` or `eval $${local_ip_v4}` to confirm full control 4) Check bugs.olivermaicher.eu or *.live-manager.de for port 8021
+[HYP] Rayo XMPP shared-secret "ClueCon" and test user "usera" password "1" with empty ACL
+class: MISCONFIG
+asset: questnet/freeswitch (v1.10-qn branch) — conf/rayo/autoload_configs/rayo.conf.xml:99,105,115
+confidence: 75
+reasoning: The rayo.conf.xml configures the Rayo XMPP server with shared-secret="ClueCon" (line 99), an authorized user name="usera" password="1" (line 115), and a listener on port 5222 with acl="" (empty ACL, line 105). This allows unauthenticated XMPP connections to control calls via the Rayo protocol using trivially known default credentials. The rayo profile is present in the Questnet repo and could be deployed.
+impact: HIGH — call control via Rayo protocol with default credentials
+verify_steps: 1) Check if port 5222 is open on any in-scope host 2) Attempt XMPP connection with usera/ClueCon credentials 3) If Rayo is active, attempt to create/monitor calls via the Rayo protocol
+[HYP] Hardcoded internal RFC1918 IP 192.168.86.254 in FreeSWITCH config
+class: OTHER
+asset: questnet/freeswitch (v1.10-qn branch) — conf/insideout/vars.xml:14
+confidence: 90
+reasoning: vars.xml contains `<X-PRE-PROCESS cmd="set" data="internal_ip_v4=192.168.86.254"/>`. This is a specific non-default private IP (not 192.168.1.1) committed to a public repo, revealing Questnet's internal network topology. This is the only non-default modification in the insideout profile (the rest is stock FreeSWITCH), proving it is an actual deployment address.
+impact: LOW — information disclosure aiding internal network reconnaissance
+verify_steps: 1) Information disclosure only — no direct exploitation 2) Verify this IP is not routable from the internet 3) Could be correlated with other internal network details if found
+[HYP] Default SIP directory passwords "1234" across all FreeSWITCH extensions
+class: MISCONFIG
+asset: questnet/freeswitch (v1.10-qn branch) — conf/insideout/directory/default/*.xml (20+ user entries: 1000-1019, brian)
+confidence: 80
+reasoning: All 20+ SIP user entries in the insideout directory use password="1234" and vm-password=<extension_number>. The vanilla profile uses $${default_password} which resolves to "1234". If deployed, any SIP client can register as any extension using the trivially known default and make toll-fraud calls.
+impact: MEDIUM — unauthorized SIP registration and toll fraud
+verify_steps: 1) Attempt SIP REGISTER with extension 1000-1019 and password 1234 against any in-scope SIP endpoint 2) Check if SIP ports 5060/5061 are exposed on *.live-manager.de or 185.158.96.0/22 3) Use sipsak or pjsua to test registration
+[HYP] Default service credentials across FreeSWITCH vanilla configs (AMQP, Redis, SMTP, DB, XML-RPC)
+class: MISCONFIG
+asset: questnet/freeswitch (v1.10-qn branch) — conf/vanilla/autoload_configs/{amqp,hiredis,switch,xml_rpc,easyroute,smpp}.conf.xml
+confidence: 50
+reasoning: The vanilla profile (included by the active freeswitch.xml) contains: AMQP password "guest" (amqp.conf.xml:9,17,51,74), Redis password "redis" (hiredis.conf.xml:7,13), SMTP password "mypassword" (switch.conf.xml:119), XML-RPC user "freeswitch"/pass "works" (xml_rpc.conf.xml:7-8), DB password "password" (easyroute.conf.xml:5), SMPP password "password" (smpp.conf.xml:10). These are all upstream FreeSWITCH defaults. The risk depends on whether these services are actually deployed — the insideout profile (the active one) does not include these configs.
+impact: MEDIUM — default credentials on auxiliary services if deployed
+verify_steps: 1) Check if AMQP (5672), Redis (6379), XML-RPC (8021 HTTP) ports are exposed on in-scope hosts 2) Attempt default credential authentication against any running services
+[HYP] Drachtio-freeswitch-modules example config with default secrets "cymru" and "ClueCon"
+class: MISCONFIG
+asset: questnet/drachtio-freeswitch-modules — examples/config/default.json:5,10
+confidence: 30
+reasoning: The example config contains "secret": "cymru" for the drachtio server and "secret": "ClueCon" for FreeSWITCH ESL. These are well-known defaults for drachtio and FreeSWITCH respectively. This is an example file, but if deployed without modification, the drachtio server would be accessible with the default secret.
+impact: LOW — default credentials in example config
+verify_steps: 1) Check if drachtio (port 9022) is exposed on any in-scope host 2) If exposed, attempt connection with the default "cymru" secret
+[HYP] Azure Blob Storage access key in upstream mod_http_cache config
+class: SECRET
+asset: questnet/freeswitch — src/mod/applications/mod_http_cache/conf/autoload_configs/http_cache.conf.xml:37-38
+confidence: 10
+reasoning: The Azure storage access key kOOY4Y/sqZU9bsLjmN+9McVwTry+UIn1Owt4Zs/... is present in the upstream example config. However: (1) the domain is account.blob.core.windows.net (placeholder), (2) the commit author is Andrey Volk (upstream SignalWire/FreeSWITCH maintainer), and (3) this file exists identically in upstream FreeSWITCH. This is upstream example config, NOT a Questnet-added secret.
+impact: INFORMATIONAL — known upstream example credential
+verify_steps: N/A — known false positive
+[HYP] AWS Example Access Key in upstream mod_http_cache config
+class: SECRET
+asset: questnet/freeswitch — src/mod/applications/mod_http_cache/conf/autoload_configs/http_cache.conf.xml:22
+confidence: 5
+reasoning: AKIAIOSFODNN7EXAMPLE and wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY are the well-known AWS documentation example keys. These are NOT real credentials.
+impact: NONE — known false positive
+verify_steps: N/A
+[HYP] RSA Private Keys in sofia-sip test PEM files
+class: SECRET
+asset: questnet/freeswitch/libs/sofia-sip/libsofia-sip-ua/*/agent.pem, key.pem
+confidence: 5
+reasoning: These .pem files contain RSA private keys but are upstream test/example certificates bundled with the sofia-sip library. They are publicly known test certs from the upstream project, not questnet production keys.
+impact: NONE — upstream test certificates
+verify_steps: N/A
+[HYP] PEM files in socket/examples contain private keys
+class: SECRET
+asset: questnet/socket/examples/localhost.pem, localhost_swordfish.pem
+confidence: 5
+reasoning: These are example PEM files for the PHP Ratchet WebSocket library — test certs for localhost development, not production keys.
+impact: NONE — example/test certificates
+verify_steps: N/A
+[HYP] FreeSWITCH ESL default "ClueCon" password in NEventSocket and free-socks
+class: MISCONFIG
+asset: questnet/NEventSocket/NEventSocket/InboundSocket.cs:42, questnet/free-socks/examples/connection-load.rs:20
+confidence: 10
+reasoning: "ClueCon" appears as a default parameter value in ESL client library code (C# and Rust). These are library defaults, not hardcoded production credentials.
+impact: INFORMATIONAL — library defaults, not deployed secrets
+verify_steps: N/A
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
