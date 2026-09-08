@@ -125,3 +125,9 @@
 - 2026-09-08 REJECTED wildcard-subdomain-enum @ *.live-manager.de: 8632 hostnames, 0 dedicated endpoints (unchanged)
 - 2026-09-08 REJECTED api.live-manager.de: host non-resolving (unchanged)
 - 2026-09-08 REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: passive sibling probe closed 2026-09-06 — no secrets-bearing anonymous sibling exists (unchanged)
+- 2026-09-08 ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: cross-tenant BOLA transport-complete, byte-identical frames for demo vs foreign cid, confirmed still live (426 Upgrade Required) — unchanged.
+- 2026-09-08 ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: re-confirmed cross-tenant, NOT VPN-gated with real public demo token — unchanged.
+- 2026-09-08 REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_token.php: session-gated, no anonymous mint, byte-identical Zugriff verweigert for both cids — unchanged, closed.
+- 2026-09-08 CHANGED AUTH @ www.applicationdesigner.de/extjs/livedebugger/auth.php: VPN gate persistent — anonymous mint BLOCKED, contested status persists pending clean re-probe.
+- 2026-09-08 REJECTED wildcard-subdomain-enum @ *.live-manager.de: 8632 hostnames, 0 dedicated endpoints — unchanged.
+- 2026-09-08 REJECTED api.live-manager.de: host non-resolving — unchanged.

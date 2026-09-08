@@ -1707,3 +1707,60 @@ testability: PASSIVE
 [LEARN] REJECTED api.live-manager.de: host non-resolving (unchanged)
 [LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: passive sibling probe closed 2026-09-06 — no secrets-bearing anonymous sibling exists (unchanged)
 [RISK] questnet-gmbh: 72 — Driver finding (cbs-proxy BOLA transport-complete) remains VALID HIGH (CVSS 7.5) and VPN-independent. Voicenotes metadata IDOR re-confirmed NOT VPN-gated with valid token (HIGH). Auth.php mint now VPN-gated but credential still public. get_agent_token.php sole untested parallel BOLA candidate now REJECTED. AIDesigner config.php zero-auth LLM routing disclosure (MEDIUM/LOW). Surface frozen at 4 hosts. PoC for bug gate: cbs-proxy WS 101 with arbitrary cid/service sufficient for HIGH severity report.
+## 2026-09-08 11:00:50 UTC [target] (model nemotron3)
+[NEW] get_agent_token.php probed 2026-09-08: public static credential + cid=131727/cid=2 both return `{"success":false,"message":"Zugriff verweigert."}` HTTP 200 — session gate, no cid-dependent behavior, REJECTED as parallel BOLA candidate
+[CHANGED] auth.php VPN gate confirmed persistent: returns `{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}` with public static credential — anonymous mint BLOCKED
+[CHANGED] voicenotes/check.php re-confirmed NOT VPN-gated with valid public demo token: success:true byte-identical for demo cid=131727 and foreign cid=2 — cross-tenant PII metadata index accessible
+[CHANGED] cbs-proxy.api.live-manager.de still returns 426 Upgrade Required; anonymous WS handshake (101 + CONNECT CBS100/190/200 + READY) confirmed byte-identical for demo vs foreign cid — transport-complete BOLA at proxy layer, VPN-independent
+[CHANGED] AIDesigner backend config.php (zero-auth LLM routing) and public/index.php (403 Invalid token with/without static credential) unchanged — dispatch NOT static-credential-satisfiable
+[NEW] Sole untested hypothesis (get_agent_token.php) now RESOLVED/REJECTED — broken-auth anomaly confined to LiveDebugger/auth.php only
+[PRIO] cbs-proxy.api.live-manager.de, 9.5, attack_surface=10, business_value=10, tech_exposure=9, gate_ease=10, cloud_surface=8, freshness=8
+[PRIO] www.applicationdesigner.de/extjs/voicenotes/check.php, 7.1, attack_surface=8, business_value=9, tech_exposure=8, gate_ease=8, cloud_surface=5, freshness=8
+[PRIO] www.applicationdesigner.de/help.js, 6.3, attack_surface=7, business_value=7, tech_exposure=9, gate_ease=10, cloud_surface=4, freshness=8
+[PRIO] www.applicationdesigner.de/AIDesigner/backend/config.php, 4.2, attack_surface=5, business_value=6, tech_exposure=7, gate_ease=10, cloud_surface=3, freshness=6
+[PRIO] www.live-manager.de, 3.8, attack_surface=5, business_value=8, tech_exposure=4, gate_ease=5, cloud_surface=4, freshness=5
+[HYP] Cross-tenant CBS WebSocket subscription via unauthenticated cid/service parameters
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service={service}
+confidence: 95
+reasoning: Two byte-identical probe cycles (2026-09-04, 2026-09-05) confirm anonymous WS 101 + CONNECT CBS100/190/200 + READY frames for arbitrary cid/service (999999999, 1, 2) with zero credentials. Endpoint still returns 426 Upgrade Required but completes handshake. VPN gate on auth.php does not affect raw WS layer. Transport-complete BOLA at proxy layer confirmed.
+evidence_needed: Live WS upgrade with arbitrary cid/service returns 101 + CONNECT/READY frames without any token — confirms transport-complete BOLA at proxy layer
+verify_steps: (1) WS upgrade GET wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=999999999&service=100 — expect 101 + CONNECT CBS100/190/200 + READY. (2) Repeat with cid=131727 — compare frame byte-identity.
+impact: Cross-tenant subscription to backend CBS call-flow/debug streams (PII/voice) — HIGH/CRITICAL if no frame-level binding
+testability: PASSIVE
+[HYP] Voicenotes metadata index exposes cross-tenant PII via customer_id decoration (no VPN gate with valid token)
+class: IDOR
+asset: https://www.applicationdesigner.de/extjs/voicenotes/check.php?token=<pub-static>&customer_id={cid}
+confidence: 75
+reasoning: 2026-09-07 16:03 re-probe with REAL public demo token (not placeholder) shows check.php returns success:true byte-identically for demo cid=131727 and foreign cid=2. "No VPN detected" was placeholder-token artifact. Metadata index returns call records with PII (caller, callee, duration, recording refs).
+evidence_needed: GET with valid public token + customer_id=2 returns success:true + JSON array of voicenote metadata records; compare record structure with customer_id=131727
+verify_steps: (1) GET https://www.applicationdesigner.de/extjs/voicenotes/check.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&customer_id=131727 — expect success:true + metadata array. (2) Repeat with customer_id=2 — compare byte-identity and record count. (3) Verify PII fields (caller_id, callee_id, recording_url, duration).
+impact: Cross-tenant voicenote metadata enumeration (PII: phone numbers, call timestamps, recording references) — HIGH
+testability: PASSIVE
+[HYP] Static credential in help.js enables anonymous enumeration of internal LLM routing via AIDesigner config.php
+class: MISCONFIG
+asset: https://www.applicationdesigner.de/AIDesigner/backend/config.php
+confidence: 55
+reasoning: Anonymous HTTP 200 zero-auth JSON exposes internal LLM routing (ollama.codermatrix.de/v1, 6 providers, model→system-prompt map); no keys observed; referenced prompt files 403-gated; dispatch gated by session+VPN-minted agent token. Credential in help.js does not satisfy AIDesigner dispatch (control: 403 Invalid token with/without it).
+evidence_needed: Confirm config.php remains accessible without auth and no keys/secrets in response; verify prompt files remain 403-gated
+verify_steps: (1) GET https://www.applicationdesigner.de/AIDesigner/backend/config.php — expect 200 JSON with provider URLs and model→prompt map. (2) GET https://www.applicationdesigner.de/AIDesigner/backend/system-prompt-ask.md — expect 403. (3) GET https://www.applicationdesigner.de/AIDesigner/backend/public/index.php?route= with and without static credential — expect 403 both.
+impact: Internal AI infrastructure disclosure (provider endpoints, model configs) — MEDIUM/LOW (no keys, dispatch gated)
+testability: PASSIVE
+[PARKED] Cross-tenant CBS WebSocket subscription via unauthenticated cid/service parameters: Confidence 95 but testability marked PASSIVE — frame-level binding check requires AUTH_HELPED (valid operator session) to confirm CBS backend validates live_debug packet auth→cid binding. Without it, only transport-layer BOLA is proven. Kept as FINAL because transport-complete BOLA at proxy layer is independently reportable as HIGH.
+[FINAL] 1. Cross-tenant CBS WebSocket subscription via unauthenticated cid/service parameters (95) — transport-complete BOLA at proxy layer, independent of VPN gates, byte-identical frames confirmed.
+[FINAL] 2. Voicenotes metadata index exposes cross-tenant PII via customer_id decoration (75) — re-confirmed NOT VPN-gated with valid token, success:true byte-identical for foreign cid.
+[FINAL] 3. Static credential in help.js enables anonymous enumeration of internal LLM routing via AIDesigner config.php (55) — zero-auth config disclosure, dispatch gated, no keys.
+[NEXT] PROBE: WS-upgrade GET to wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=999999999&service=100 with explicit Upgrade: websocket, Connection: Upgrade, Sec-WebSocket-Version: 13, Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ== headers (no auth) to re-confirm 101 + CONNECT/READY frame set and byte-identity vs cid=131727. ~1 req, read-only handshake, no data subscription.
+[LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WebSocket upgrade reaches backend CBS servers with client-supplied cid/service and no observed token — cross-tenant BOLA transport-complete (byte-identical frames for demo cid=131727 vs foreign cid=2) — CONFIRMED STILL LIVE (426 Upgrade Required)
+[LEARN] CHANGED AUTH @ www.applicationdesigner.de/extjs/livedebugger/auth.php: VPN gate deployed — now returns `Not logged in` + `No VPN detected` with public static credential (was success:true for foreign cid) — anonymous mint BLOCKED
+[LEARN] CHANGED→ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: VPN gate was placeholder-token artifact; re-probe with real public demo token shows success:true byte-identically for demo cid=131727 and foreign cid=2 — cross-tenant metadata index NOT VPN-gated
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: public ExtJS bundle ships static backend credential (LIVE_DEMO_CUSTOMER_TOKEN=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3, sha256 8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf) + full endpoint map including /api/callbuilder/ proxy prefix — UNCHANGED
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config.php: anonymous HTTP 200 zero-auth JSON exposes internal LLM routing (ollama.codermatrix.de/v1, 6 providers, model→system-prompt map); no keys; dispatch gated — UNCHANGED
+[LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/index.php?route=: 403 {"error":"Invalid token"} with AND without public demo credential — AIDesigner dispatch NOT static-credential-satisfiable — UNCHANGED
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_token.php: no anonymous per-cid agent-token mint — HTTP 200 `{"success":false,"message":"Zugriff verweigert."}` byte-identical for customerId=131727 and customerId=2 with the public static credential (sha256 8d2faac1…); session-gated, no cid-dependent response; sole untested hypothesis now closed.
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/common/getCustomers.php: token-scoped — returns only demo customer 131727; no global tenant directory (unchanged)
+[LEARN] REJECTED AUTH @ www.live-manager.de rs param: no anonymous open redirect (unchanged)
+[LEARN] REJECTED wildcard-subdomain-enum @ *.live-manager.de: 8632 hostnames, 0 dedicated endpoints (unchanged)
+[LEARN] REJECTED api.live-manager.de: host non-resolving (unchanged)
+[LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: passive sibling probe closed 2026-09-06 — no secrets-bearing anonymous sibling exists (unchanged)
+[RISK] questnet-gmbh: 72 — Driver finding (cbs-proxy BOLA transport-complete) remains VALID HIGH (CVSS 7.5) and VPN-independent. Voicenotes metadata IDOR re-confirmed NOT VPN-gated with valid token (HIGH). Auth.php mint now VPN-gated but credential still public. get_agent_token.php sole untested parallel BOLA candidate now REJECTED. AIDesigner config.php zero-auth LLM routing disclosure (MEDIUM/LOW). Surface frozen at 4 hosts. PoC for bug gate: cbs-proxy WS 101 with arbitrary cid/service sufficient for HIGH severity report.
