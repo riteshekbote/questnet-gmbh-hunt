@@ -243,3 +243,10 @@ www.live-manager.de
 - CHANGED cbs-proxy.api.live-manager.de: Still returns 426 Upgrade Required — anonymous WS handshake (101 + CONNECT CBS100/190/200 + READY frames) confirmed byte-identical for demo cid=131727 vs foreign cid=2 —
 - CHANGED Surface frozen at 4 live in-scope hosts since 2026-09-04 (cbs-proxy.api.live-manager.de, www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de) — no new hosts discovered.
 - NEW get_agent_token.php endpoint (help.js) proposed as parallel BOLA candidate at 2026-09-04 20:00 UTC but NEVER PROBED across 5 consecutive cycles — sole untested hypothesis in the chain.
+
+## 2026-09-08 00:44:14 UTC
+- NEW get_agent_token.php probed this cycle: WITH public static credential, cid=131727 vs cid=2 both return flat `Zugriff verweigert.` HTTP 200 — session gate, no cid-dependent behavior, no token issued.
+- CHANGED Sole untested hypothesis resolved: the anonymous static-credential chain does NOT extend to the AIDesigner agent mint; broken-auth anomaly stays confined to LiveDebugger/auth.php.
+- CHANGED Surface still 4 live hosts; cbs-proxy WS and auth.php findings unchanged.
+- CHANGED www.applicationdesigner.de/extjs/livedebugger/auth.php: VPN gate deployed — now returns `{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}` with public static credential (was 
+- NEW www.applicationdesigner.de/extjs/agent/get_agent_token.php: Parallel BOLA candidate minting per-cid agent tokens via public static credential (from help.js) — proposed 2026-09-04, NEVER PROBED across 

@@ -1864,3 +1864,46 @@ evidence_needed: operator session to fetch a foreign-cid voicenote id from check
 verify_steps: AUTH_HELPED GET download.php for foreign cid + observed UUID.
 impact: cross-tenant call-recording exfil; HIGH PII.
 testability: AUTH_HELPED
+## 2026-09-08 00:44:03 UTC [target] (model bigpickle)
+[NEW] get_agent_token.php probed this cycle: WITH public static credential, cid=131727 vs cid=2 both return flat `Zugriff verweigert.` HTTP 200 — session gate, no cid-dependent behavior, no token issued.
+[CHANGED] Sole untested hypothesis resolved: the anonymous static-credential chain does NOT extend to the AIDesigner agent mint; broken-auth anomaly stays confined to LiveDebugger/auth.php.
+[CHANGED] Surface still 4 live hosts; cbs-proxy WS and auth.php findings unchanged.
+[PRIO] www.applicationdesigner.de/extjs/livedebugger/auth.php,7.3,IDOR (surface10/val8/tech5/gate9/cloud0/fresh7)
+[PRIO] cbs-proxy.api.live-manager.de WS,7.2,IDOR (surface10/val9/tech6/gate9/cloud0/fresh2)
+[PRIO] www.applicationdesigner.de/extjs/voicenotes/check.php,5.8,PII (surface7/val7/tech4/gate9/cloud0/fresh3)
+[HYP] auth.php per-cid token mint status (contested after VPN-gate signal)
+class: IDOR
+asset: www.applicationdesigner.de/extjs/livedebugger/auth.php?token=<pub static>&customer_id={cid}&srn={n}
+confidence: 55
+reasoning: History has success:true for foreign cid=2 with the public static credential across multiple cycles; 2026-09-07 probe (redacted placeholder token) returned `Not logged in` + `No VPN detected.` and the true VPN/session gate is UNCONFIRMED app-wide — this cycle get_agent_token.php returned `Zugriff verweigert.` (a different, session-flavored denial), so each endpoint's gate status must be judged individually, not extrapolated.
+evidence_needed: clean GET with the REAL public static token for a foreign cid vs demo cid; success:true+token vs `No VPN detected.`/`Zugriff verweigert.`.
+verify_steps: GET auth.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&customer_id=131727&srn=100 vs customer_id=2 — 2 GETs @1rps.
+impact: if still mintable, arbitrary-cid live-debug token from public credential → chains into BOLA (HIGH, CVSS 7.5); if gated, broken-auth anomaly is closed.
+testability: PASSIVE
+[HYP] cbs-proxy data-plane binds minted foreign-cid token to real tenant frames
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={cid}&service={service}&token={minted}
+confidence: 92
+reasoning: Transport-complete: WS 101 + byte-identical CONNECT CBS100/190/200 + READY for demo cid=131727 vs foreign cid=2 with zero credentials; 426 on non-WS HTTP reconfirms live. Only downstream data-plane binding is unprovable anonymously — no control observed, not because one exists.
+evidence_needed: operator session upgrading WS with a token minted for foreign cid=2 and comparing live-debug frame payloads vs demo-tenant control.
+verify_steps: AUTH_HELPED WS upgrade with foreign-cid minted token; diff data-plane frames vs demo control.
+impact: cross-tenant live-debug/call-flow stream attach; HIGH (CVSS 7.5) — chain capstone.
+testability: AUTH_HELPED
+[HYP] voicenote raw-audio download gate for arbitrary cid
+class: IDOR
+asset: www.applicationdesigner.de/extjs/voicenotes/download.php?token={raw}&customer_id={cid}
+confidence: 60
+reasoning: check.php index cross-tenant byte-identical success:true with the real token; `No VPN detected.` on download.php was only observed with placeholder/absent token; real raw-token path requires operator context.
+evidence_needed: operator session to take a foreign-cid voicenote id from check.php and assert real audio bytes.
+verify_steps: AUTH_HELPED GET download.php for foreign cid + observed UUID.
+impact: cross-tenant call-recording exfil; HIGH PII.
+testability: AUTH_HELPED
+[PARKED] get_agent_token.php parallel BOLA: resolved THIS cycle — session-gated, no anonymous mint; hypothesis closed, no further probes.
+[PARKED] voicenotes metadata index: re-confirmed cross-tenant but ceiling = PII-exposure already documented; LOW incremental value.
+[PARKED] post-login rs open-redirect: exhausted across cycles, needs AUTH_HELPED operator context.
+[FINAL] 1. auth.php contested mint status (55) — sole anonymously-resolvable remaining question; next probe.
+[FINAL] 2. cbs-proxy data-plane binding (92/transport) — AUTH_HELPED remainder, unchanged.
+[FINAL] 3. voicenote raw-audio exfil (60) — AUTH_HELPED.
+[NEXT] PROBE: GET https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&customer_id=131727&srn=100 then customer_id=2 — settle contested mint status with the REAL public static credential (2 GETs @1rps, read-only).
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_token.php: no anonymous per-cid agent-token mint — HTTP 200 `{"success":false,"message":"Zugriff verweigert."}` byte-identical for customerId=131727 and customerId=2 with the public static credential (sha256 8d2faac1…); session-gated, no cid-dependent response; sole untested hypothesis now closed.
+[RISK] questnet-gmbh: 70 — both driver findings intact (cbs-proxy BOLA transport-complete; auth.php mint historical success:true for foreign cid), but get_agent_token.php parallel is now closed and auth.php gate status is contested pending re-probe; upside capped until AUTH_HELPED frame-binding confirms data-plane impact.
