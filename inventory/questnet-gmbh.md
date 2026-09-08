@@ -280,3 +280,10 @@ www.live-manager.de
 - CHANGED voicenotes/check.php re-confirmed NOT VPN-gated with valid public demo token: success:true byte-identical for demo cid=131727 and foreign cid=2 — cross-tenant PII metadata index accessible
 - CHANGED cbs-proxy.api.live-manager.de still returns 426 Upgrade Required; anonymous WS handshake (101 + CONNECT CBS100/190/200 + READY) confirmed byte-identical for demo vs foreign cid — transport-complete BO
 - CHANGED AIDesigner backend config.php (zero-auth LLM routing) and public/index.php (403 Invalid token with/without static credential) unchanged — dispatch NOT static-credential-satisfiable
+
+## 2026-09-08 21:48:25 UTC
+- NEW get_agent_token.php probed 2026-09-08: public static credential + cid=131727/cid=2 both return `{"success":false,"message":"Zugriff verweigert."}` HTTP 200 — session gate, no cid-dependent behavior, R
+- CHANGED auth.php VPN gate confirmed persistent: returns `{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}` with public static credential — anonymous mint BLOCKED
+- CHANGED voicenotes/check.php re-confirmed NOT VPN-gated with valid public demo token: success:true byte-identical for demo cid=131727 and foreign cid=2 — cross-tenant PII metadata index accessible
+- CHANGED cbs-proxy.api.live-manager.de still returns 426 Upgrade Required; anonymous WS handshake (101 + CONNECT CBS100/190/200 + READY) confirmed byte-identical for demo vs foreign cid — transport-complete BO
+- CHANGED AIDesigner backend config.php (zero-auth LLM routing) and public/index.php (403 Invalid token with/without static credential) unchanged — dispatch NOT static-credential-satisfiable

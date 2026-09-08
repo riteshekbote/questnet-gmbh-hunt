@@ -2049,3 +2049,33 @@ evidence_needed: exact route template from help.js CallBuilder section, then a p
 verify_steps: PASSIVE RAG help.js for full CallBuilder route list; then GET each with static credential.
 impact: if ungated, per-cid CallBuilder operations (build/redirect flows) — HIGH; likely gated, LOW.
 testability: PASSIVE
+## 2026-09-08 21:48:16 UTC [target] (model bigpickle)
+[HYP] cbs-proxy data-plane frame binding for foreign-cid minted token
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={cid}&service={service}&token={minted}
+confidence: 95
+reasoning: Fresh real-credential mint for foreign cid=2 returned HTTP 200 success:true + fresh 64-hex (this cycle); that token upgraded WS → 101 + CONNECT CBS100/190/200 + READY, byte-identical to prior cycles. No token→cid ownership check at mint or router layer.
+evidence_needed: operator presents a foreign-cid-minted token in a live_debug frame and diffs accept vs a demo-tenant control.
+verify_steps: AUTH_HELPED WS upgrade with freshly minted foreign-cid token; send live_debug frame; byte-diff vs demo control.
+impact: cross-tenant live-debug/call-flow stream attach (voice/PII); HIGH, CVSS 7.5 — chain capstone.
+testability: AUTH_HELPED
+[HYP] voicenotes raw-audio download gate is credential-satisfiable
+class: IDOR
+asset: www.applicationdesigner.de/extjs/voicenotes/download.php?token={static}&customer_id={cid}&file={uuid} (+ details.php, playback.php POST play/download)
+confidence: 70
+reasoning: download.php already returns HTTP 404 file-not-found byte-identical for cid=131727 and cid=2 with the real static token — reaches the file-lookup stage, no 403/VPN/auth gate; check.php returns success:true for foreign cid (this cycle total:0 max_id:0); details.php/playback.php exist per help.js RAG.
+evidence_needed: operator fetches real audio bytes for a UUID observed in the index (own/demo tenant only, no third-party replay).
+verify_steps: AUTH_HELPED GET download.php for an indexed UUID; confirm audio bytes.
+impact: cross-tenant call-recording/voicemail/explicit-consent audio exfil; HIGH PII.
+testability: AUTH_HELPED
+[HYP] flexlist data-grid read across tenants via shared flexlist_id space
+class: IDOR
+asset: www.applicationdesigner.de/extjs/flexlist/getFields.php|getList.php|getDetails.php
+confidence: 45
+reasoning: help.js shows flexlist reads as GET (Ext.data.Store autoLoad) with BACKEND_TOKEN appended to the URL and `flexlist_id`/`search` params — GET is an allowed verb. If flexlist_id is a global id space (not per-customer), sequential ids expose foreign tenant table definitions+rows; gate shape never tested.
+evidence_needed: gate response differential for flexlist_id=0/1/2 with the static credential.
+verify_steps: PASSIVE→PROBE GET getFields.php?token=STATIC&flexlist_id=1 then flexlist_id=0 (2 GETs @1rps, read-only, synthetic ids).
+impact: cross-tenant data-table read (any flexlist payload incl PII); HIGH if ungated.
+testability: PASSIVE
+[NEXT] PROBE: `GET https://www.applicationdesigner.de/extjs/flexlist/getFields.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&flexlist_id=1` then `flexlist_id=0` (2 GETs @1rps, read-only) — map the flexlist gate (expect AIDesigner-style 403 Invalid-token vs 200 `{"success":true,"data":[…]}`).
+[RISK] questnet-gmbh: 78 — contested auth.php mint status RESOLVED in ACCEPTED direction (anonymous foreign-cid mint live this cycle with fresh 64-hex), and that token still upgrades the cbs-proxy BOLA chain to HTTP 101 + CONNECT/READY (driver confirmed live end-to-end). check.php cross-tenant index re-confirmed ungated; help.js RAG surfaced a broader reachable read surface (voicenotes details/download, flexlist GET CRUD). Ceiling remains AUTH_HELPED (live-debug frame binding + real-audio fetch both need operator context); no live tenant data exposed this cycle (index empty for foreign cid, synthetic ids only).
