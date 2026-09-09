@@ -247,7 +247,7 @@ verify_steps: N/A — known false positive
 class: SECRET
 asset: questnet/freeswitch — src/mod/applications/mod_http_cache/conf/autoload_configs/http_cache.conf.xml:22
 confidence: 5
-reasoning: AKIAIOSFODNN7EXAMPLE and wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY are the well-known AWS documentation example keys. These are NOT real credentials.
+reasoning: AKIAIOSFOD_REDACTED and wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY are the well-known AWS documentation example keys. These are NOT real credentials.
 impact: NONE — known false positive
 verify_steps: N/A
 [HYP] RSA Private Keys in sofia-sip test PEM files

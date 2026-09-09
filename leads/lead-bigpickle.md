@@ -2079,3 +2079,36 @@ impact: cross-tenant data-table read (any flexlist payload incl PII); HIGH if un
 testability: PASSIVE
 [NEXT] PROBE: `GET https://www.applicationdesigner.de/extjs/flexlist/getFields.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&flexlist_id=1` then `flexlist_id=0` (2 GETs @1rps, read-only) — map the flexlist gate (expect AIDesigner-style 403 Invalid-token vs 200 `{"success":true,"data":[…]}`).
 [RISK] questnet-gmbh: 78 — contested auth.php mint status RESOLVED in ACCEPTED direction (anonymous foreign-cid mint live this cycle with fresh 64-hex), and that token still upgrades the cbs-proxy BOLA chain to HTTP 101 + CONNECT/READY (driver confirmed live end-to-end). check.php cross-tenant index re-confirmed ungated; help.js RAG surfaced a broader reachable read surface (voicenotes details/download, flexlist GET CRUD). Ceiling remains AUTH_HELPED (live-debug frame binding + real-audio fetch both need operator context); no live tenant data exposed this cycle (index empty for foreign cid, synthetic ids only).
+## 2026-09-09 00:00:00 UTC [target] (model bigpickle)
+[HYP] cbs-proxy data-plane frame binding for foreign-cid minted token
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={cid}&service={service}&token={minted}
+confidence: 95
+reasoning: fresh real-credential mint for foreign cid returns success:true + fresh 64-hex; that token upgrades WS → HTTP 101 + CONNECT CBS100/190/200 + READY byte-identical to demo control; no token→cid ownership check observed at mint or router layer.
+evidence_needed: operator presents foreign-cid-minted token in a live_debug frame and diffs accept vs demo-tenant control.
+verify_steps: AUTH_HELPED WS upgrade with freshly minted foreign-cid token; send live_debug frame; byte-diff vs demo control.
+impact: cross-tenant live-debug/call-flow stream attach (voice/PII); HIGH, CVSS 7.5 — chain capstone.
+testability: AUTH_HELPED
+[HYP] flexlist read endpoints accept any global flexlist_id with the public credential (no per-tenant ownership check on the getFields/getDetails proxy)
+class: IDOR
+asset: www.applicationdesigner.de/extjs/flexlist/{getFields,getDetails}.php?token={LIVE_DEMO_CUSTOMER_TOKEN}&flexlist_id={n}
+confidence: 55
+reasoning: proven this cycle — public token accepted (success:true, HTTP 200), getFields/getDetails resolve live per-id data (id 345 → 32 defs, 25 rows) with NO customer_id in the request; directory getList is token-scoped (10/10 lists owned by 131727) so the only key for reads is the global autoincrement flexlist_id; sibling endpoints bind to the token tenant and ignore customer_id, but a global-keyed read without a tenant filter is the one pattern that would still leak. Assertion "foreign id resolves" is UNCONFIRMED — requires an id belonging to another tenant.
+evidence_needed: operator creates a flexlist under a second tenant they own, then GETs getDetails with the public static credential + that flexlist_id; rows returning = cross-tenant read via global id space.
+verify_steps: AUTH_HELPED (operator, two owned tenants only): GET https://www.applicationdesigner.de/extjs/flexlist/getDetails.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&flexlist_id={list-owned-by-2nd-tenant}&search= — diff data_len vs zero.
+impact: cross-tenant data-table read (any flexlist payload incl PII); HIGH if the id space is not ownership-filtered.
+testability: AUTH_HELPED
+[HYP] voicenotes raw-audio download gate is credential-satisfiable
+class: IDOR
+asset: www.applicationdesigner.de/extjs/voicenotes/download.php?token={static}&customer_id={cid}&file={uuid} (+ playback.php POST play/download)
+confidence: 70
+reasoning: download.php returns HTTP 404 file-not-found byte-identically for cid=131727 and cid=2 with the real static token — reaches the file-lookup stage, no 403/VPN/auth gate; check.php returns success:true for foreign cid (index empty this cycle); details/playback endpoints exist per help.js RAG.
+evidence_needed: operator fetches real audio bytes for a UUID observed in the index (own/demo tenant only, no third-party replay).
+verify_steps: AUTH_HELPED GET download.php for an indexed UUID; confirm audio bytes + Content-Type.
+impact: cross-tenant call-recording/voicemail/explicit-consent audio exfil; HIGH PII.
+testability: AUTH_HELPED
+[NEXT] HUMAN: operator holds two tenant accounts — create one flexlist under a second owned tenant, then `GET https://www.applicationdesigner.de/extjs/flexlist/getDetails.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&flexlist_id={that-list-id}&search=` (and `getFields.php` same id) and record `data_len`/`total` vs 0. Rows returning under the public demo credential = second HIGH (cross-tenant data tables via global flexlist_id) without any third-party data exposure.
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php: public static credential accepted (HTTP 200 `{"success":true,…}`), reads resolve live per-id data (id 345 → 32 defs; details → total 25 rows, body sha256 aba9094f0a615eab; content not echoed); synthetic ids 0/1 → empty; gate is token-only, identical shape to voicenotes/check.php.
+[LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/flexlist/getList.php: directory token-scoped — 10 flexlists, all customer_id=131727 (demo tenant only); no foreign-tenant rows reachable at list level; global autoincrement id space (138–345) implies foreign rows live in the gaps.
+[LEARN] REJECTED (partial) IDOR @ www.applicationdesigner.de/extjs/flexlist/: cross-tenant data read NOT observed anonymous — no foreign flexlist_id known without out-of-scope enumeration; ownership check on global id space must be settled by operator via second owned tenant.
+[RISK] questnet-gmbh: 78 — driver findings unchanged and live (cbs-proxy BOLA transport-complete, 426-gated at router; auth.php mint VPN-blocked but historically live). New this cycle: a second credential-satisfiable READ surface (flexlist) that returns live rows of the sanctioned demo tenant with a public token, plus a token-scoped directory control — cross-tenant leg unproven and parked to operator (AUTH_HELPED, second-owned-tenant only, no third-party data). Ceiling remains AUTH_HELPED; no foreign-live data touched this cycle (demo-tenant rows structurally fingerprinted only, PII never echoed). Flexlist own-id read at 5 GETs @~0.6rps stayed under rate limits.
