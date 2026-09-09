@@ -2286,3 +2286,4 @@ testability: AUTH_HELPED
 [LEARN] REJECTED api.live-manager.de: host non-resolving (unchanged)
 [LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: passive sibling probe closed 2026-09-06 — no secrets-bearing anonymous sibling exists (unchanged)
 [RISK] questnet-gmbh: 72 — Driver finding (cbs-proxy BOLA transport-complete) remains VALID HIGH (CVSS 7.5) and VPN-independent. Voicenotes metadata IDOR re-confirmed NOT VPN-gated with valid token (HIGH). Auth.php mint now VPN-gated but credential still public. get_agent_token.php sole untested parallel BOLA candidate now REJECTED. Flexlist per-id endpoints NEW token-only gate with global ID space — cross-tenant read pending operator confirmation. AIDesigner config.php zero-auth LLM routing disclosure (MEDIUM/LOW). Surface frozen at 4 hosts. PoC for bug gate: cbs-proxy WS 101 with arbitrary cid/service sufficient for HIGH severity report.
+## 2026-09-09 23:16:11 UTC [target] (model nemotron3)

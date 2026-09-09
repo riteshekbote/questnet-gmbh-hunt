@@ -344,3 +344,7 @@ www.live-manager.de
 - CHANGED www.applicationdesigner.de/extjs/voicenotes/details.php: Per-record detail read hierarchy-checked on customer_id+log_id — all foreign cids (2, 999999, 131727) return identical "Kundennummer nicht in d
 - CHANGED www.applicationdesigner.de/extjs/agent/get_agent_token.php: REJECTED — session-gated, byte-identical "Zugriff verweigert" for both cids; sole untested parallel BOLA candidate closed
 - CHANGED Surface frozen at 4 live in-scope hosts since 2026-09-04 (cbs-proxy.api.live-manager.de, www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de) — no new hosts discovered
+
+## 2026-09-09 23:16:22 UTC
+- NEW www.applicationdesigner.de/extjs/get_user_rights.php: anonymous cid-resolving authz endpoint surfaced last cycle — HTTP 200 with the public static credential, body sha256 differs per cid ''/2/131727/9
+- CHANGED Surface frozen: still 4 live in-scope hosts (cbs-proxy.api.live-manager.de, www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de); 8632 wildcard hostnames → 0 dedicated endpoint

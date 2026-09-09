@@ -857,3 +857,9 @@
 - LEARN: REJECTED wildcard-subdomain-enum @ *.live-manager.de: 8632 hostnames, 0 dedicated endpoints (unchanged)
 - LEARN: REJECTED api.live-manager.de: host non-resolving (unchanged)
 - LEARN: REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: passive sibling probe closed 2026-09-06 — no secrets-bearing anonymous sibling exists (unch
+
+## RANKED HYPOTHESES 2026-09-09 23:16:22 UTC
+- [95] wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service={service}: cbs-proxy data-plane cross-tenant frame binding (chain capstone) (from art/lead_bigpickle.txt)
+- NEXT(hypotheses-bigpickle.txt): PROBE: GET https://www.applicationdesigner.de/extjs/get_user_rights.php?token={LIVE_DEMO_CUSTOMER_TOKEN}&customer_id=131727 twice back-to-back and once with cus
+- LEARN: ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/get_user_rights.php: HTTP 200 with public static credential only; body sha256 cid-dependent and rotating acr
+- LEARN: ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WS BOLA transport-complete unchanged — demo 131727 vs foreign 2 byte-identical CONNECT/READY, reconfirm

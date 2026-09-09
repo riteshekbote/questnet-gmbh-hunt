@@ -2346,3 +2346,43 @@ evidence_needed: operator creates flexlist under second owned tenant, GETs with 
 verify_steps: AUTH_HELPED (operator, two owned tenants only): GET getDetails.php?token=...&flexlist_id={tenant-B id}&search=; record data_len vs zero and sha256 of body.
 impact: cross-tenant data-table read (flexlist payload incl PII); HIGH if id space not ownership-filtered.
 testability: AUTH_HELPED
+## 2026-09-09 23:06:49 UTC [target] (model bigpickle)
+[NEW] www.applicationdesigner.de/extjs/get_user_rights.php: anonymous cid-resolving authz endpoint surfaced last cycle — HTTP 200 with the public static credential, body sha256 differs per cid ''/2/131727/999999999, rotates across requests; the only fresh anonymous-verifiable surface. Not in KB LEARN tail (unresolved status).
+[CHANGED] Surface frozen: still 4 live in-scope hosts (cbs-proxy.api.live-manager.de, www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de); 8632 wildcard hostnames → 0 dedicated endpoints, api.live-manager.de non-resolving. No new host delta.
+[PRIO] cbs-proxy.api.live-manager.de,7.60,a=8,b=9,t=7,g=10,c=6,f=2
+[PRIO] www.applicationdesigner.de/extjs/get_user_rights.php,6.90,a=6,b=8,t=6,g=8,c=4,f=9
+[PRIO] www.applicationdesigner.de/extjs/voicenotes/download.php,6.50,a=6,b=9,t=5,g=8,c=3,f=5
+[PRIO] www.applicationdesigner.de/extjs/flexlist/{getFields,getDetails}.php,6.25,a=6,b=8,t=5,g=8,c=3,f=5
+[HYP] cbs-proxy data-plane cross-tenant frame binding (chain capstone)
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service={service}
+confidence: 95
+reasoning: anonymous WS upgrade returns 101 with zero credentials; client-supplied cid accepted byte-identically for demo 131727 vs foreign 2 (CONNECT CBS100/190/200 + READY); re-confirmed live this cycle (426 Upgrade Required on non-upgrade). No token→cid binding observed at proxy layer; only unverified link is per-cid data-plane frame acceptance.
+evidence_needed: operator replays demo-tenant live_debug frame and diffs accepted response set vs a foreign cid control (own two tenants only, no third-party).
+verify_steps: AUTH_HELPED: WS-upgrade cid=131727&service=100, send one live_debug/call-frame, record accept; repeat with own second cid; byte-diff.
+impact: cross-tenant live-debug/call-flow stream attach (voice/PII); HIGH CVSS 7.5.
+testability: AUTH_HELPED
+[HYP] get_user_rights resolves per-tenant rights payload under the public static credential (no ownership gate)
+class: IDOR
+asset: www.applicationdesigner.de/extjs/get_user_rights.php?token={LIVE_DEMO_CUSTOMER_TOKEN}&customer_id={cid}
+confidence: 50
+reasoning: HTTP 200 with public token only; body sha256 cid-dependent (''/2/131727/999999999) and non-deterministic across requests (per-request nonce/IV) — server resolves cid-scoped rights for any customer with a public static credential; no VPN gate (contrast auth.php which alone got VPN-gated). Payload high-entropy base64 (~3230 B, head 3e7afaff) → encrypted/serialized, not anonymously readable.
+evidence_needed: decryption key or operator session making same endpoint return plaintext; otherwise resolver-level defect only.
+verify_steps: PASSIVE: 3 GETs @1rps — same cid=131727 twice + cid=2 once (no cookies, no writes); record body sha256+length. Same-cid pairs identical → cid-stable ciphertext under static key (escalation, shared-key decrypt risk); rotating → per-request nonce (opaque, authz-design signal only).
+impact: per-tenant rights/authz-config disclosure if payload decryptable; opaqueness currently caps severity LOW–MED; authz-design defect confirmed.
+testability: PASSIVE
+[HYP] voicenotes raw-audio download reaches file-lookup with credential-satisfiable gate
+class: IDOR
+asset: www.applicationdesigner.de/extjs/voicenotes/download.php?token={LIVE_DEMO_CUSTOMER_TOKEN}&customer_id={cid}&file={uuid}
+confidence: 60
+reasoning: download.php returns HTTP 404 file-not-found byte-identically for cid=131727 and cid=2 with real static token — reaches file-lookup stage, no 403/VPN/auth gate. But per-record sibling details.php is hierarchy-checked on customer_id+log_id (CONTROL), narrowing cross-tenant surface to raw download only; needs a UUID in target tenant's range — demo index empty this cycle (total=0,max_id=0).
+evidence_needed: operator fetches real audio bytes for a UUID observed in the index (own/demo tenant only, no third-party replay).
+verify_steps: AUTH_HELPED GET download.php for an indexed UUID; confirm audio bytes + Content-Type.
+impact: cross-tenant call-recording/voicemail/explicit-consent audio exfil; HIGH PII.
+testability: AUTH_HELPED
+[PARKED] flexlist getFields/getDetails (55): token-only gate confirmed but cross-tenant read unprovable anonymously — no foreign flexlist_id known without out-of-scope enumeration; only operator with second owned tenant can prove. No anonymous-verifiable step remains → parked, not dropped.
+[FINAL] 1. cbs-proxy BOLA (95) — chain capstone, transport-complete, anonymous-confirmed, highest CVSS. 2. voicenotes raw-audio (60) — gate-stage confirmed credential-satisfiable (404 not 403), needs positive-control UUID. 3. get_user_rights resolver (50) — only fresh anonymous-decidable thread; ciphertext-stability probe may escalate.
+[NEXT] PROBE: GET https://www.applicationdesigner.de/extjs/get_user_rights.php?token={LIVE_DEMO_CUSTOMER_TOKEN}&customer_id=131727 twice back-to-back and once with customer_id=2 (@1rps, no cookies, no writes); compare body sha256+length per cid to discriminate cid-stable ciphertext (escalation signal) from per-request nonce (opaque).
+[LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/get_user_rights.php: HTTP 200 with public static credential only; body sha256 cid-dependent and rotating across requests; payload high-entropy base64 (~3230 B) — encrypted/serialized, not anonymous-plaintext-readable; resolver-level authz-design defect only, severity capped LOW–MED until ciphertext stability or key is demonstrated.
+[LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WS BOLA transport-complete unchanged — demo 131727 vs foreign 2 byte-identical CONNECT/READY, reconfirmed live (426 Upgrade Required).
+[RISK] questnet-gmbh: 76 — driver cbs-proxy BOLA (95) unchanged and live. Voicenotes surface refined: details.php hierarchy-gated (CONTROL) while metadata check/get remain credential-only; demo index empty → no positive-control anchor for raw-audio. Flexlist cross-tenant parked to operator (AUTH_HELPED). get_user_rights opaque (no escalation this cycle). Ceiling AUTH_HELPED; no foreign-live data touched, no PII echoed.
