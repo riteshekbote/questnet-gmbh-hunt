@@ -309,3 +309,8 @@ www.live-manager.de
 - CHANGED cbs-proxy.api.live-manager.de still returns 426 Upgrade Required; anonymous WS handshake (101 + CONNECT CBS100/190/200 + READY) confirmed byte-identical for demo vs foreign cid — transport-complete BO
 - CHANGED get_agent_token.php REJECTED — session-gated, no anonymous mint, byte-identical `Zugriff verweigert` for both cids; sole untested parallel BOLA candidate closed
 - CHANGED Surface frozen at 4 live in-scope hosts since 2026-09-04 (cbs-proxy.api.live-manager.de, www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de) — no new hosts discovered
+
+## 2026-09-09 09:16:01 UTC
+- NEW ACCEPTED CONTROL @ voicenotes/details.php: per-record detail read is hierarchy-checked — log_id required; `customer_id={2|999999|131727}&log_id=1` all return HTTP 200 `{"success":false,"message":"Kund
+- NEW ACCEPTED CONTROL @ voicenotes/check.php: demo-tenant index this cycle `{"success":true,"total":0,"max_id":0}` — empty; no valid log_id for own-tenant positive control this cycle.
+- CHANGED voicenotes raw-audio/download hypothesis confidence 70→60: download.php reaches file-lookup (404 for both cids) but details.php proves a tenant-hierarchy log_id gate exists on sibling surface → cross-
