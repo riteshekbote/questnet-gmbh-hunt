@@ -1,11 +1,11 @@
-## 2026-09-09 13:52:50 UTC [target] (model nemotron3)
-[NEW] www.applicationdesigner.de/extjs/voicenotes/details.php: per-record detail read is hierarchy-checked on customer_id+log_id — all foreign cids (2, 999999, 131727) return identical "Kundennummer nicht in der Hierarchie / keine Berechtigung" — narrows voicenote cross-tenant surface to raw download only
-[NEW] www.applicationdesigner.de/extjs/voicenotes/check.php: demo-tenant index empty this cycle (total=0, max_id=0) — no valid log_id for own-tenant positive control on details.php/download.php
+## 2026-09-09 17:45:17 UTC [target] (model nemotron3)
+[NEW] www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php: ACCEPTED MISCONFIG — public static credential accepted (HTTP 200 `{"success":true,…}`), reads resolve live per-id data (id 345 → 32 defs; details → 25 rows, body sha256 aba9094f0a615eab); synthetic ids 0/1 → empty; gate is token-only, no customer_id in request, identical pattern to voicenotes/check.php
+[NEW] www.applicationdesigner.de/extjs/flexlist/getList.php: ACCEPTED CONTROL — directory token-scoped; 10 flexlists, all customer_id=131727 (demo tenant only); no foreign-tenant rows at list level; global autoincrement id space (138–345) implies foreign rows live in gaps
+[CHANGED] voicenotes/details.php: ACCEPTED CONTROL — per-record detail read is hierarchy-checked on customer_id+log_id; all foreign cids (2, 999999, 131727) return identical "Kundennummer nicht in der Hierarchie / keine Berechtigung" — narrows voicenote cross-tenant surface to raw download only
 [CHANGED] voicenotes raw-audio/download hypothesis confidence 70→60: download.php reaches file-lookup (404 for both cids) but details.php proves tenant-hierarchy log_id gate exists on sibling surface → cross-tenant audio read unlikely without valid log_id
-[CHANGED] flexlist per-id endpoints (getFields.php|getDetails.php) confirmed token-only gate, global autoincrement ID space (138–345), cross-tenant read pending operator with second tenant — unchanged from 2026-09-09 04:32
-[CHANGED] cbs-proxy.api.live-manager.de: still returns 426 Upgrade Required; anonymous WS handshake (101 + CONNECT CBS100/190/200 + READY) byte-identical for demo cid=131727 vs foreign cid=2 — transport-complete BOLA CONFIRMED LIVE
-[CHANGED] auth.php VPN gate persistent — anonymous mint BLOCKED; credential still public in help.js
+[CHANGED] auth.php VPN gate persistent — anonymous mint BLOCKED; credential still public in help.js (sha256 8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf)
 [CHANGED] get_agent_token.php REJECTED — session-gated, byte-identical "Zugriff verweigert" for both cids; sole untested parallel BOLA candidate closed
+[CHANGED] cbs-proxy.api.live-manager.de: still returns 426 Upgrade Required; anonymous WS handshake (101 + CONNECT CBS100/190/200 + READY) byte-identical for demo cid=131727 vs foreign cid=2 — transport-complete BOLA CONFIRMED LIVE
 [CHANGED] Surface frozen at 4 live in-scope hosts since 2026-09-04 (cbs-proxy.api.live-manager.de, www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de) — no new hosts discovered
 [PRIO] cbs-proxy.api.live-manager.de, 9.5, attack_surface=10, business_value=10, tech_exposure=9, gate_ease=10, cloud_surface=8, freshness=8
 [PRIO] www.applicationdesigner.de/extjs/voicenotes/check.php, 7.8, attack_surface=8, business_value=9, tech_exposure=8, gate_ease=8, cloud_surface=5, freshness=8

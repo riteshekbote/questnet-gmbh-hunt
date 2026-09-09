@@ -1,4 +1,4 @@
-## 2026-09-09 13:49:30 UTC [target] (model bigpickle)
+## 2026-09-09 17:44:30 UTC [target] (model bigpickle)
 [PRIO] cbs-proxy.api.live-manager.de,8.3,attack_surface=9 business_value=9 tech_exposure=8 gate_ease=10 cloud_surface=2 freshness=9
 [PRIO] www.applicationdesigner.de/extjs/flexlist/,7.05,attack_surface=7 business_value=8 tech_exposure=6 gate_ease=8 cloud_surface=2 freshness=10
 [PRIO] www.applicationdesigner.de/extjs/voicenotes/,6.4,attack_surface=7 business_value=9 tech_exposure=5 gate_ease=7 cloud_surface=2 freshness=9
@@ -13,15 +13,6 @@ evidence_needed: operator presents foreign-cid-minted token in a live_debug fram
 verify_steps: AUTH_HELPED WS upgrade with freshly minted foreign-cid token; send live_debug frame; byte-diff vs demo control.
 impact: cross-tenant live-debug/call-flow stream attach (voice/PII); HIGH, CVSS 7.5 — chain capstone.
 testability: AUTH_HELPED
-[HYP] flexlist read endpoints accept any global flexlist_id with the public credential (no per-tenant ownership check)
-class: IDOR
-asset: www.applicationdesigner.de/extjs/flexlist/{getFields,getDetails}.php?token={LIVE_DEMO_CUSTOMER_TOKEN}&flexlist_id={n}
-confidence: 55
-reasoning: public token accepted (HTTP 200 success:true), getFields/getDetails resolve live per-id data (id 345 → 32 defs, 25 rows) with NO customer_id in the request; directory getList token-scoped (10/10 owned by 131727); global autoincrement id space (138–345) implies foreign rows in gaps; "foreign id resolves" UNCONFIRMED — needs an id owned by another tenant.
-evidence_needed: operator creates a flexlist under a second owned tenant, GETs getDetails with public credential + that flexlist_id; rows = cross-tenant read.
-verify_steps: AUTH_HELPED (operator, two owned tenants only): GET getDetails.php?token=...&flexlist_id={list-owned-by-2nd-tenant}&search= — diff data_len vs zero.
-impact: cross-tenant data-table read (flexlist payload incl PII); HIGH if id space not ownership-filtered.
-testability: AUTH_HELPED
 [HYP] voicenotes raw-audio download gate is credential-satisfiable
 class: IDOR
 asset: www.applicationdesigner.de/extjs/voicenotes/download.php?token={static}&customer_id={cid}&file={uuid}
@@ -31,14 +22,27 @@ evidence_needed: operator fetches real audio bytes for a UUID observed in the in
 verify_steps: AUTH_HELPED GET download.php for an indexed UUID; confirm audio bytes + Content-Type.
 impact: cross-tenant call-recording/voicemail/explicit-consent audio exfil; HIGH PII.
 testability: AUTH_HELPED
-[PARKED] voicenotes details/download positive control: index empty (max_id=0) this cycle, no valid own-tenant log_id/UUID to anchor a non-zero response; requires operator session/AUTH_HELPED.
+[HYP] flexlist read endpoints accept any global flexlist_id with the public credential (no per-tenant ownership check)
+class: IDOR
+asset: www.applicationdesigner.de/extjs/flexlist/{getFields,getDetails}.php?token={LIVE_DEMO_CUSTOMER_TOKEN}&flexlist_id={n}
+confidence: 55
+reasoning: public token accepted (HTTP 200 success:true), getFields/getDetails resolve live per-id data (id 345 → 32 defs, 25 rows) with NO customer_id in the request; directory getList token-scoped (10/10 owned by 131727); global autoincrement id space (138–345) implies foreign rows in gaps; "foreign id resolves" UNCONFIRMED — needs an id owned by another tenant.
+evidence_needed: operator creates a flexlist under a second owned tenant, GETs getDetails with public credential + that flexlist_id; rows = cross-tenant read.
+verify_steps: AUTH_HELPED (operator, two owned tenants only): GET getDetails.php?token=...&flexlist_id={list-owned-by-2nd-tenant}&search= — diff data_len vs zero.
+impact: cross-tenant data-table read (flexlist payload incl PII); HIGH if id space not ownership-filtered.
+testability: AUTH_HELPED
 [FINAL] 1. cbs-proxy BOLA (95) — chain capstone, transport-complete, anonymous-confirmed, highest CVSS
 [FINAL] 2. voicenotes raw-audio (60) — gate-stage confirmed credential-satisfiable (404 not 403), needs positive-control UUID
 [FINAL] 3. flexlist data-grid (55) — token-only gate confirmed, global id space, cross-tenant unproven
-[NEXT] HUMAN: operator creates one flexlist under a second owned tenant, then `GET https://www.applicationdesigner.de/extjs/flexlist/getDetails.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&flexlist_id={that-list-id}&search=` (and getFields.php same id); record data_len/total vs 0. Rows under public demo credential = second HIGH (cross-tenant data via global flexlist_id), no third-party data.
 [LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/voicenotes/details.php: per-record read hierarchy-checked on customer_id+log_id (byte-identical "Kundennummer nicht in der Hierarchie / keine Berechtigung" for cid 2,999999,131727) — contrasts credential-only check.php/get.php; narrows voicenote cross-tenant surface to raw download only.
 [LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/voicenotes/check.php: demo index empty this cycle (total=0,max_id=0).
 [LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php: public static credential accepted, reads resolve live per-id data; gate token-only, no customer_id in request (unchanged).
 [LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/flexlist/getList.php: directory token-scoped, all customer_id=131727; global autoincrement id space (138–345) (unchanged).
 [LEARN] REJECTED (partial) IDOR @ www.applicationdesigner.de/extjs/flexlist/: cross-tenant NOT observed anonymous — no foreign flexlist_id known; needs operator with second owned tenant (unchanged).
-[RISK] questnet-gmbh: 76 — driver cbs-proxy BOLA transport-complete (95) unchanged and live (426 Upgrade Required); voicenotes surface refined this cycle: per-record details.php hierarchy-gated (CONTROL) while metadata check/get remain credential-only; demo index empty (no positive control anchor); flexlist cross-tenant still parked to operator. auth.php VPN-blocked but cbs-proxy anonymous WS live. Ceiling AUTH_HELPED; no foreign-live data touched (empty index, synthetic log_id only).
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_token.php: session-gated, byte-identical "Zugriff verweigert" for both cids; sole untested parallel BOLA candidate closed.
+[LEARN] CHANGED AUTH @ www.applicationdesigner.de/extjs/livedebugger/auth.php: VPN gate deployed — anonymous mint BLOCKED.
+[LEARN] CHANGED→ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: VPN gate was placeholder-token artifact; re-probe with real public demo token shows success:true byte-identically for demo cid=131727 and foreign cid=2 — cross-tenant metadata index NOT VPN-gated.
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: public ExtJS bundle ships static backend credential + full endpoint map including /api/callbuilder/ proxy prefix — UNCHANGED.
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config.php: anonymous HTTP 200 zero-auth JSON exposes internal LLM routing; no keys; dispatch gated — UNCHANGED.
+[LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/index.php?route=: 403 {"error":"Invalid token"} — AIDesigner dispatch NOT static-credential-satisfiable — UNCHANGED.
+[RISK] questnet-gmbh: 76 — driver cbs-proxy BOLA transport-complete (95) unchanged and live (426 Upgrade Required). Voicenotes surface refined this cycle: per-record `details.php` hierarchy-gated (CONTROL) while metadata `check.php`/`get.php` remain credential-only; demo index empty (no positive-control anchor). Flexlist cross-tenant still parked to operator (AUTH_HELPED, second-owned-tenant only). auth.php VPN-blocked but cbs-proxy anonymous WS live. Ceiling AUTH_HELPED; no foreign-live data touched (empty index, synthetic log_id only).

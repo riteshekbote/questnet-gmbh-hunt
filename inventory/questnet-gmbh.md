@@ -324,3 +324,13 @@ www.live-manager.de
 - CHANGED auth.php VPN gate persistent — anonymous mint BLOCKED; credential still public in help.js
 - CHANGED get_agent_token.php REJECTED — session-gated, byte-identical "Zugriff verweigert" for both cids; sole untested parallel BOLA candidate closed
 - CHANGED Surface frozen at 4 live in-scope hosts since 2026-09-04 (cbs-proxy.api.live-manager.de, www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de) — no new hosts discovered
+
+## 2026-09-09 17:45:28 UTC
+- NEW www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php: ACCEPTED MISCONFIG — public static credential accepted (HTTP 200 `{"success":true,…}`), reads resolve live per-id data (id 345 →
+- NEW www.applicationdesigner.de/extjs/flexlist/getList.php: ACCEPTED CONTROL — directory token-scoped; 10 flexlists, all customer_id=131727 (demo tenant only); no foreign-tenant rows at list level; global 
+- CHANGED voicenotes/details.php: ACCEPTED CONTROL — per-record detail read is hierarchy-checked on customer_id+log_id; all foreign cids (2, 999999, 131727) return identical "Kundennummer nicht in der Hierarchi
+- CHANGED voicenotes raw-audio/download hypothesis confidence 70→60: download.php reaches file-lookup (404 for both cids) but details.php proves tenant-hierarchy log_id gate exists on sibling surface → cross-te
+- CHANGED auth.php VPN gate persistent — anonymous mint BLOCKED; credential still public in help.js (sha256 8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf)
+- CHANGED get_agent_token.php REJECTED — session-gated, byte-identical "Zugriff verweigert" for both cids; sole untested parallel BOLA candidate closed
+- CHANGED cbs-proxy.api.live-manager.de: still returns 426 Upgrade Required; anonymous WS handshake (101 + CONNECT CBS100/190/200 + READY) byte-identical for demo cid=131727 vs foreign cid=2 — transport-complet
+- CHANGED Surface frozen at 4 live in-scope hosts since 2026-09-04 (cbs-proxy.api.live-manager.de, www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de) — no new hosts discovered
