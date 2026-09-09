@@ -145,3 +145,8 @@
 - 2026-09-09 REJECTED wildcard-subdomain-enum @ *.live-manager.de: 8632 hostnames, 0 dedicated endpoints (unchanged)
 - 2026-09-09 REJECTED api.live-manager.de: host non-resolving (unchanged)
 - 2026-09-09 REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: passive sibling probe closed 2026-09-06 — no secrets-bearing anonymous sibling exists (unchanged)
+- 2026-09-09 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php: public static credential accepted, reads resolve live per-id data; gate is token-only, no customer_id in request
+- 2026-09-09 ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/flexlist/getList.php: directory token-scoped, all customer_id=131727; global autoincrement id space (138–345)
+- 2026-09-09 REJECTED (partial) IDOR @ www.applicationdesigner.de/extjs/flexlist/: cross-tenant NOT observed — no foreign flexlist_id known; needs operator with second owned tenant to prove
+- 2026-09-09 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php: public static credential accepted (HTTP 200 `{"success":true,…}`), reads resolve live per-id data (id 345 → 32 defs; details → total 25 rows, body sha256 aba9094f0a615eab); synthetic ids 0/1 → empty; gate is token-only, identical shape to voicenotes/check.php
+- 2026-09-09 ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WebSocket upgrade reaches backend CBS servers with client-supplied cid/service and no observed token — cross-tenant BOLA transport-complete (byte-identical frames for demo cid=131727 vs foreign cid=2) — CONFIRMED STILL LIVE (426 Upgrade Required)

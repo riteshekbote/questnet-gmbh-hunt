@@ -295,3 +295,17 @@ www.live-manager.de
 - CHANGED cbs-proxy.api.live-manager.de still returns 426 Upgrade Required; anonymous WS handshake (101 + CONNECT CBS100/190/200 + READY) confirmed byte-identical for demo vs foreign cid — transport-complete BO
 - CHANGED AIDesigner backend config.php (zero-auth LLM routing) and public/index.php (403 Invalid token with/without static credential) unchanged — dispatch NOT static-credential-satisfiable
 - CHANGED Surface frozen at 4 live in-scope hosts since 2026-09-04 (cbs-proxy.api.live-manager.de, www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de) — no new hosts discovered
+
+## 2026-09-09 04:32:30 UTC
+- NEW ACCEPTED MISCONFIG @ flexlist/getFields.php|getDetails.php: public static credential accepted (HTTP 200 success:true), reads resolve live per-id data (id 345 → 32 defs, 25 rows); gate is token-only, n
+- NEW ACCEPTED CONTROL @ flexlist/getList.php: directory token-scoped — 10 flexlists, all customer_id=131727; global autoincrement id space (138–345) implies foreign rows in gaps
+- NEW REJECTED (partial) IDOR @ flexlist/: cross-tenant data read NOT observed — no foreign flexlist_id known without out-of-scope enumeration; ownership check on global id space must be settled by operator
+- CHANGED flexlist hypothesis confidence 45→55 (gate confirmed token-only, global id space, cross-tenant unproven)
+- NEW www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php: ACCEPTED MISCONFIG — public static credential accepted (HTTP 200 `{"success":true,…}`), reads resolve live per-id data (id 345 →
+- NEW www.applicationdesigner.de/extjs/flexlist/getList.php: ACCEPTED CONTROL — directory token-scoped; 10 flexlists, all customer_id=131727 (demo tenant only); no foreign-tenant rows at list level; global 
+- NEW www.applicationdesigner.de/extjs/flexlist/: REJECTED (partial) IDOR — cross-tenant data read NOT observed anonymous; no foreign flexlist_id known without out-of-scope enumeration; ownership check on g
+- CHANGED auth.php VPN gate confirmed persistent — returns `{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}` with public static credential; anonymous mint BLOCKED
+- CHANGED voicenotes/check.php re-confirmed NOT VPN-gated with valid public demo token — success:true byte-identical for demo cid=131727 and foreign cid=2; cross-tenant PII metadata index accessible
+- CHANGED cbs-proxy.api.live-manager.de still returns 426 Upgrade Required; anonymous WS handshake (101 + CONNECT CBS100/190/200 + READY) confirmed byte-identical for demo vs foreign cid — transport-complete BO
+- CHANGED get_agent_token.php REJECTED — session-gated, no anonymous mint, byte-identical `Zugriff verweigert` for both cids; sole untested parallel BOLA candidate closed
+- CHANGED Surface frozen at 4 live in-scope hosts since 2026-09-04 (cbs-proxy.api.live-manager.de, www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de) — no new hosts discovered
