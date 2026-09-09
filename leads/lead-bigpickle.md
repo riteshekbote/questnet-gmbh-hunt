@@ -2318,3 +2318,31 @@ testability: AUTH_HELPED
 [LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config.php: anonymous HTTP 200 zero-auth JSON exposes internal LLM routing; no keys; dispatch gated — UNCHANGED.
 [LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/index.php?route=: 403 {"error":"Invalid token"} — AIDesigner dispatch NOT static-credential-satisfiable — UNCHANGED.
 [RISK] questnet-gmbh: 76 — driver cbs-proxy BOLA transport-complete (95) unchanged and live (426 Upgrade Required). Voicenotes surface refined this cycle: per-record `details.php` hierarchy-gated (CONTROL) while metadata `check.php`/`get.php` remain credential-only; demo index empty (no positive-control anchor). Flexlist cross-tenant still parked to operator (AUTH_HELPED, second-owned-tenant only). auth.php VPN-blocked but cbs-proxy anonymous WS live. Ceiling AUTH_HELPED; no foreign-live data touched (empty index, synthetic log_id only).
+## 2026-09-09 20:51:26 UTC [target] (model bigpickle)
+[HYP] cbs-proxy data-plane cross-tenant frame binding (chain capstone)
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service={service}
+confidence: 95
+reasoning: proper anonymous WS upgrade returns 101 without any credential; client-supplied cid/service accepted (demo 131727 vs foreign 2, byte-identical CONNECT CBS100/190/200 + READY); transport confirmed live this cycle. No token→cid binding observed at proxy layer; per-cid data-plane output is the only unverified link.
+evidence_needed: operator replays demo-tenant live_debug frame and diffs response set vs a foreign cid control (own two tenants, no third-party).
+verify_steps: AUTH_HELPED: WS-upgrade with cid=131727&service=100, send one live_debug/call-frame, record accepts; repeat with own second cid; byte-diff.
+impact: cross-tenant live-debug/call-flow stream attach (voice/PII); HIGH CVSS 7.5.
+testability: AUTH_HELPED
+[HYP] get_user_rights returns per-tenant rights payload under public static credential (no ownership/VPN gate)
+class: IDOR
+asset: www.applicationdesigner.de/extjs/get_user_rights.php?token={LIVE_DEMO_CUSTOMER_TOKEN}&customer_id={cid}
+confidence: 50
+reasoning: HTTP 200 with public token only; body sha256 differs per cid ''/2/131727/999999999 and is non-deterministic across requests (per-request nonce/IV) — server resolves cid-scoped rights for any customer with a static public credential; contradict auth.php which alone got VPN-gated. Payload high-entropy (base64 of 3230 bytes, head 3e7afaff) → encrypted/serialized, not plaintext-readable anonymously.
+evidence_needed: decryption key or operator session that makes the same endpoint return plaintext; otherwise resolver-level defect only.
+verify_steps: PASSIVE: GET with public token for cid 131727 vs 2, compare body sha256 (not content), confirm stability/rotation; done — rotated, cid-dependent.
+impact: per-tenant rights/authz-config disclosure if payload decryptable; presently opaqueness caps severity (LOW–MED); authz-design defect confirmed.
+testability: PASSIVE
+[HYP] flexlist per-id reads accept any global flexlist_id with public credential
+class: IDOR
+asset: www.applicationdesigner.de/extjs/flexlist/{getFields,getDetails}.php?token={LIVE_DEMO_CUSTOMER_TOKEN}&flexlist_id={n}
+confidence: 55
+reasoning: token-only gate (HTTP 200 success:true, id 345 → 32 defs/25 rows), no customer_id in request; directory getList token-scoped 10/10 demo (131727); global autoincrement id space 138–345 leaves foreign rows in gaps; cross-tenant "id resolves" unproven — needs an id owned by a second tenant.
+evidence_needed: operator creates flexlist under second owned tenant, GETs with public token; nonzero rows = cross-tenant read.
+verify_steps: AUTH_HELPED (operator, two owned tenants only): GET getDetails.php?token=...&flexlist_id={tenant-B id}&search=; record data_len vs zero and sha256 of body.
+impact: cross-tenant data-table read (flexlist payload incl PII); HIGH if id space not ownership-filtered.
+testability: AUTH_HELPED

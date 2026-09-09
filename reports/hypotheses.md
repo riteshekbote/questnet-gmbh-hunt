@@ -836,3 +836,24 @@
 - LEARN: REJECTED wildcard-subdomain-enum @ *.live-manager.de: 8632 hostnames, 0 dedicated endpoints (unchanged)
 - LEARN: REJECTED api.live-manager.de: host non-resolving (unchanged)
 - LEARN: REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: passive sibling probe closed 2026-09-06 — no secrets-bearing anonymous sibling exists (unch
+
+## RANKED HYPOTHESES 2026-09-09 20:51:36 UTC
+- [95] wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service={service}: cbs-proxy data-plane cross-tenant frame binding (chain capstone) (from art/lead_bigpickle.txt)
+- [95] wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service={service}: Cross-tenant CBS WebSocket subscription via unauthenticated cid/service parameters (from art/lead_nemotron3.txt)
+- NEXT(hypotheses-nemotron3.txt): PROBE: WS-upgrade GET to wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=999999999&service=100 with explicit Upgrade: websocket, Connection: Upgrade, S
+- LEARN: ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WebSocket upgrade reaches backend CBS servers with client-supplied cid/service and no observed token — 
+- LEARN: CHANGED AUTH @ www.applicationdesigner.de/extjs/livedebugger/auth.php: VPN gate deployed — now returns `Not logged in` + `No VPN detected` with public static cr
+- LEARN: CHANGED→ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: VPN gate was placeholder-token artifact; re-probe with real public demo token sho
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php: public static credential accepted (HTTP 200 `{"success":true,…}`), 
+- LEARN: ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/flexlist/getList.php: directory token-scoped — 10 flexlists, all customer_id=131727 (demo tenant only); no f
+- LEARN: REJECTED (partial) IDOR @ www.applicationdesigner.de/extjs/flexlist/: cross-tenant data read NOT observed anonymous — no foreign flexlist_id known without out-o
+- LEARN: REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_token.php: no anonymous per-cid agent-token mint — HTTP 200 `{"success":false,"message":"Zugrif
+- LEARN: ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/voicenotes/details.php: per-record read hierarchy-checked on customer_id+log_id (byte-identical "Kundennumme
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: public ExtJS bundle ships static backend credential (LIVE_DEMO_CUSTOMER_TOKEN=3498fkgkds458g35h9g835npz
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config.php: anonymous HTTP 200 zero-auth JSON exposes internal LLM routing (ollama.codermatri
+- LEARN: ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/index.php?route=: 403 {"error":"Invalid token"} with AND without public demo credential 
+- LEARN: REJECTED IDOR @ www.applicationdesigner.de/extjs/common/getCustomers.php: token-scoped — returns only demo customer 131727; no global tenant directory (unchange
+- LEARN: REJECTED AUTH @ www.live-manager.de rs param: no anonymous open redirect (unchanged)
+- LEARN: REJECTED wildcard-subdomain-enum @ *.live-manager.de: 8632 hostnames, 0 dedicated endpoints (unchanged)
+- LEARN: REJECTED api.live-manager.de: host non-resolving (unchanged)
+- LEARN: REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: passive sibling probe closed 2026-09-06 — no secrets-bearing anonymous sibling exists (unch
