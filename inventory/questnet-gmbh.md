@@ -348,3 +348,14 @@ www.live-manager.de
 ## 2026-09-09 23:16:22 UTC
 - NEW www.applicationdesigner.de/extjs/get_user_rights.php: anonymous cid-resolving authz endpoint surfaced last cycle — HTTP 200 with the public static credential, body sha256 differs per cid ''/2/131727/9
 - CHANGED Surface frozen: still 4 live in-scope hosts (cbs-proxy.api.live-manager.de, www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de); 8632 wildcard hostnames → 0 dedicated endpoint
+
+## 2026-09-10 01:15:21 UTC
+- NEW www.applicationdesigner.de/extjs/get_user_rights.php: anonymous cid-resolving authz endpoint — HTTP 200 with public static credential, body sha256 differs per cid (empty/2/131727/999999), payload high
+- CHANGED cbs-proxy.api.live-manager.de: still returns 426 Upgrade Required; anonymous WS handshake (101 + CONNECT CBS100/190/200 + READY) byte-identical for demo cid=131727 vs foreign cid=2 — transport-complet
+- CHANGED www.applicationdesigner.de/extjs/livedebugger/auth.php: VPN gate persistent — anonymous mint BLOCKED; credential still public in help.js (sha256 8d2faac1b96e020c077fb81aa3452b590d015d59bb826be70089918
+- CHANGED www.applicationdesigner.de/extjs/voicenotes/check.php: re-confirmed NOT VPN-gated with valid public demo token — success:true byte-identically for demo cid=131727 and foreign cid=2 — cross-tenant PII 
+- CHANGED www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php: public static credential accepted (HTTP 200 success:true), reads resolve live per-id data (id 345 → 32 defs, 25 rows, body sha25
+- CHANGED www.applicationdesigner.de/extjs/flexlist/getList.php: directory token-scoped — 10 flexlists, all customer_id=131727; global autoincrement id space (138–345) implies foreign rows in gaps
+- CHANGED www.applicationdesigner.de/extjs/voicenotes/details.php: per-record detail read hierarchy-checked on customer_id+log_id — all foreign cids (2, 999999, 131727) return identical "Kundennummer nicht in d
+- CHANGED www.applicationdesigner.de/extjs/agent/get_agent_token.php: REJECTED — session-gated, byte-identical "Zugriff verweigert" for both cids; sole untested parallel BOLA candidate closed
+- CHANGED Surface frozen: still 4 live in-scope hosts (cbs-proxy.api.live-manager.de, www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de); 8632 wildcard hostnames → 0 dedicated endpoint

@@ -2386,3 +2386,33 @@ testability: AUTH_HELPED
 [LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/get_user_rights.php: HTTP 200 with public static credential only; body sha256 cid-dependent and rotating across requests; payload high-entropy base64 (~3230 B) — encrypted/serialized, not anonymous-plaintext-readable; resolver-level authz-design defect only, severity capped LOW–MED until ciphertext stability or key is demonstrated.
 [LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WS BOLA transport-complete unchanged — demo 131727 vs foreign 2 byte-identical CONNECT/READY, reconfirmed live (426 Upgrade Required).
 [RISK] questnet-gmbh: 76 — driver cbs-proxy BOLA (95) unchanged and live. Voicenotes surface refined: details.php hierarchy-gated (CONTROL) while metadata check/get remain credential-only; demo index empty → no positive-control anchor for raw-audio. Flexlist cross-tenant parked to operator (AUTH_HELPED). get_user_rights opaque (no escalation this cycle). Ceiling AUTH_HELPED; no foreign-live data touched, no PII echoed.
+## 2026-09-10 01:15:11 UTC [target] (model bigpickle)
+[HYP] cbs-proxy data-plane cross-tenant frame binding (chain capstone)
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service={service}
+confidence: 95
+reasoning: anonymous WS upgrade returns 101 with zero credentials; client-supplied cid accepted byte-identically for demo 131727 vs foreign 2 (CONNECT CBS100/190/200 + READY); token→cid binding absent at proxy layer; re-confirmed live this cycle (426 on plain GET). Only unverified link: per-cid data-plane frame acceptance.
+evidence_needed: operator replays a demo-tenant live_debug/call frame and diffs the accepted response set against own second-owned tenant (two owned tenants only, no third-party).
+verify_steps: AUTH_HELPED: WS-upgrade cid=131727&service=100, send one live_debug/call-frame, record accept; repeat with own second cid; byte-diff.
+impact: cross-tenant live-debug/call-flow stream attach (voice/PII); HIGH CVSS 7.5.
+testability: AUTH_HELPED
+[HYP] check_mailserver SMTP test is a server-side outbound-connect primitive (SSRF/port-banner)
+class: SSRF
+asset: www.applicationdesigner.de/extjs/check_mailserver.php (POST, `useDefaultXhrHeader:false`, params smtp_host/smtp_port/smtp_encryption/smtp_auth/smtp_username/smtp_password/customerId; NO token in URL)
+confidence: 45
+reasoning: help.js shows the client sends attacker-influenced smtp_host/port to server, which must open an SMTP connection server-side (connection-test dialog); unlike every sibling it omits BACKEND_TOKEN on URL — auth surface unlike get_agent_token/costs pattern; POST-only so not probeable under passive rules this cycle.
+evidence_needed: authorized POST with smtp_host=internal target to observe server-side connect/differential reply.
+verify_steps: AUTH_HELPED: POST {smtp_host:127.0.0.1,smtp_port:25,...} vs {smtp_host:169.254.169.254,smtp_port:80} differ diagnostic/response timing; no external host targeted.
+impact: internal-network SMTP banner/port probe; if reply echoed, limited blind SSRF; MED.
+testability: AUTH_HELPED
+[HYP] voicenotes raw-audio download is credential-satisfiable and reaches file-lookup for any tenant UUID
+class: IDOR
+asset: www.applicationdesigner.de/extjs/voicenotes/download.php?token={LIVE_DEMO_CUSTOMER_TOKEN}&customer_id={cid}&file={uuid}
+confidence: 60
+reasoning: download.php returns HTTP 404 file-not-found byte-identically for cid=131727 and 2 with real static token — reaches file-lookup, no auth/VPN gate; per-record sibling details.php is hierarchy-checked (CONTROL), narrowing cross-tenant surface to raw download; demo index empty this cycle (total=0,max_id=0) → no own-tenant positive UUID.
+evidence_needed: operator fetches real audio bytes for a UUID observed in a demo/own-tenant index and confirms Content-Type + bytes.
+verify_steps: AUTH_HELPED GET download.php for an indexed UUID; confirm audio + Content-Type.
+impact: cross-tenant call-recording/voicemail/explicit-consent audio exfil; HIGH PII.
+testability: AUTH_HELPED
+[NEXT] HUMAN: operator replay on wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={own-tenant-B}&service=100 vs demo cid=131727 with one authentic live_debug/call frame; byte-diff accepted response sets (capstone). Second: create flexlist under own second tenant and GET getDetails.php?token={LIVE_DEMO_CUSTOMER_TOKEN}&flexlist_id={tenant-B id}&search= (nonzero rows = cross-tenant read).
+[RISK] questnet-gmbh: 76 — driver cbs-proxy BOLA (95) unchanged and re-confirmed live; fresh sibling sweep added no new HIGH (catalogs LOW, agent-costs gated, coding.php gated); get_user_rights escalation rejected (rotation). Across models the ceiling stays AUTH_HELPED for capstone; no foreign-live data touched, no PII echoed, hash-only analysis.

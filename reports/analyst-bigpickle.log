@@ -15713,3 +15713,360 @@ STEP 6 — LEARNING:
 
 STEP 7 — RISK:
 [RISK] questnet-gmbh: 76 — driver cbs-proxy BOLA (95) unchanged and live. Voicenotes surface refined: details.php hierarchy-gated (CONTROL) while metadata check/get remain credential-only; demo index empty → no positive-control anchor for raw-audio. Flexlist cross-tenant parked to operator (AUTH_HELPED). get_user_rights opaque (no escalation this cycle). Ceiling AUTH_HELPED; no foreign-live data touched, no PII echoed.
+===== ANALYST bigpickle 2026-09-10 01:15:21 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mTOK="3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3"
+UA="Mozilla/5.0 (X11; Linux x86_64) BUProbe/1.0"
+n=0
+for cid in 131727 131727 2; do
+  n=$((n+1))
+  curl -sS -A "$UA" -o /tmp/opencode/gr_$n.bin -w "req$n cid=$cid http=%{http_code} " "https://www.applicationdesigner.de/extjs/get_user_rights.php?token=$TOK&customer_id=$cid"
+  sz=$(wc -c < /tmp/opencode/gr_$n.bin)
+  sha=$(sha256sum /tmp/opencode/gr_$n.bin | cut -d' ' -f1)
+  echo "bytes=$sz sha256=$sha"
+  sleep 1
+done
+echo "--- cbs-proxy reconfirm (non-upgrade plain GET) ---"
+curl -sS -A "$UA" -o /dev/null -w "http=%{http_code}\n" "https://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=131727&service=100"
+req1 cid=131727 http=200 bytes=4308 sha256=1752ec1cd90503d5107bb65b47397f27c5c61994d5bbaafceabbb0e1bbe49785
+req2 cid=131727 http=200 bytes=4308 sha256=d25a8dbc8204e6b04d64835c1183791c8c6b7b9d424d23c2c9af4b818a4b7643
+req3 cid=2 http=200 bytes=4308 sha256=f79861c791f4c274566a0113cf8585b446faed18dbbad1eb69d616454ab1a7da
+--- cbs-proxy reconfirm (non-upgrade plain GET) ---
+http=426
+[0m
+[0m$ [0mUA="Mozilla/5.0 (X11; Linux x86_64) BUProbe/1.0"
+curl -sS -A "$UA" -o /tmp/opencode/help.js -w "help.js http=%{http_code} bytes=%{size_download}\n" "https://www.applicationdesigner.de/help.js"
+sleep 1
+grep -oE '/api/[a-zA-Z0-9_/-]+\.php[a-zA-Z0-9_?=&./{}$-]*' /tmp/opencode/help.js | sort -u | head -80
+echo "--- callbuilder refs ---"
+grep -oE '.{60}callbuilder.{80}' /tmp/opencode/help.js | head -20
+echo "--- proxy root ---"
+curl -sS -A "$UA" -o /dev/null -w "api/callbuilder/ http=%{http_code} bytes=%{size_download}\n" "https://www.applicationdesigner.de/api/callbuilder/"
+help.js http=200 bytes=3290201
+--- callbuilder refs ---
+ection',{dialog:a,cid:a.context.customerId});a.ws=b}}}},1,['callbuilder-designer'],['component','box','container','callbuilder-designer'],{'component':
+'box':!0,'container':!0,'callbuilder-designer':!0},['widget.callbuilder-designer'],0,[CB.view.main,'dialog'],0);Ext.cmd.derive('CB.view.main.voicenotes
+v.applicationdesigner.de/'}else {APPDESIGNER_API_PATH='/api/callbuilder/';APPDESIGNER_API_PATH_NOPROXY='https://applicationdesigner.de/'}}}help_history
+--- proxy root ---
+api/callbuilder/ http=404 bytes=146
+[0m
+[0m$ [0mUA="Mozilla/5.0 (X11; Linux x86_64) BUProbe/1.0"
+echo "--- .php endpoints in help.js ---"
+grep -oE "(extjs|backend|api|cbs)[a-zA-Z0-9_/.-]*\.php" /tmp/opencode/help.js | sort -u
+echo "--- url: strings ---"
+grep -oE "url:'[^']+'" /tmp/opencode/help.js | sort -u | head -40
+echo "--- route= refs ---"
+grep -oE ".{0,40}route=.{0,60}" /tmp/opencode/help.js | head -10
+echo "--- via ticketing/http params hints ---"
+grep -oE ".{0,30}(get_user_rights|voicenotes|flexlist|agent_token|live_debug|callbuilder).{0,30}" /tmp/opencode/help.js | grep -iE "http|url|php|/api" | head -20
+--- .php endpoints in help.js ---
+backend/config.php
+backend/config_coding.php
+backend/public/coding.php
+backend/public/index.php
+extjs/agent/get_agent_costs.php
+extjs/agent/get_agent_token.php
+extjs/chat/provider.php
+extjs/chatgpt/provider.php
+extjs/check_mailserver.php
+extjs/common/getCustomers.php
+extjs/encrypt/index.php
+extjs/flexlist/addRow.php
+extjs/flexlist/createList.php
+extjs/flexlist/deleteRow.php
+extjs/flexlist/getDetails.php
+extjs/flexlist/getFields.php
+extjs/flexlist/getList.php
+extjs/flexlist/importcsv.php
+extjs/flexlist/saveValue.php
+extjs/flexlist/updateList.php
+extjs/get_provider.php
+extjs/get_speaker.php
+extjs/get_speaker_languages.php
+extjs/get_user_rights.php
+extjs/livedebugger/auth.php
+extjs/playback.php
+extjs/voicenotes/check.php
+extjs/voicenotes/delete.php
+extjs/voicenotes/details.php
+extjs/voicenotes/download.php
+extjs/voicenotes/get.php
+--- url: strings ---
+url:'URL'
+url:'cURL'
+url:'wss://cbs-proxy.api.live-manager.de?origin=LiveDebugger&cid={customer_id}&service={service_number}'
+url:'wss://cbs-proxy.api.live-manager.de?origin=LiveDemo&cid={customer_id}&service={service_number}'
+url:'{prefix}/{entityName}'
+--- route= refs ---
+izer){Ext.resizer={}}if(!Ext.route){Ext.route={}}if(!Ext.rtl){Ext.rtl={}}if(!Ext.rtl.button){Ext.rtl.butto
+Ext.route.Handler(a)}b.push(a);return a.route=this},removeHandler:function(g,e){var d=this.getHandlers(),f
+XY+'AIDesigner/backend/public/index.php?route='},fetchAuthToken:function(a,b){var c=a&&a.context&&a.contex
+--- via ticketing/http params hints ---
+NER_API_PATH+'extjs/agent/get_agent_token.php',useDefaultXhrHeader:!1,m
+NER_API_PATH+'extjs/agent/get_agent_token.php',useDefaultXhrHeader:!1,m
+uest({url:BACKEND_URL+'/extjs/get_user_rights.php'+BACKEND_TOKEN,method:'GE
+ajax',url:BACKEND_URL+'/extjs/flexlist/getFields.php'+BACKEND_TOKEN,
+uest({url:BACKEND_URL+'/extjs/flexlist/getFields.php'+BACKEND_TOKEN,
+uest({url:BACKEND_URL+'/extjs/flexlist/getFields.php'+BACKEND_TOKEN,
+ajax',url:BACKEND_URL+'/extjs/flexlist/getList.php'+BACKEND_TOKEN,re
+uest({url:BACKEND_URL+'/extjs/flexlist/updateList.php'+BACKEND_TOKEN
+uest({url:BACKEND_URL+'/extjs/flexlist/createList.php'+BACKEND_TOKEN
+uest({url:BACKEND_URL+'/extjs/flexlist/createList.php'+BACKEND_TOKEN
+uest({url:BACKEND_URL+'/extjs/flexlist/importcsv.php'+BACKEND_TOKEN,
+ajax',url:BACKEND_URL+'/extjs/flexlist/getDetails.php'+BACKEND_TOKEN
+uest({url:BACKEND_URL+'/extjs/flexlist/getFields.php'+BACKEND_TOKEN,
+uest({url:BACKEND_URL+'/extjs/flexlist/deleteRow.php'+BACKEND_TOKEN,
+uest({url:BACKEND_URL+'/extjs/flexlist/saveValue.php'+BACKEND_TOKEN,
+uest({url:BACKEND_URL+'/extjs/flexlist/addRow.php'+BACKEND_TOKEN,met
+ajax',url:BACKEND_URL+'/extjs/voicenotes/get.php'+BACKEND_TOKEN,reader
+uest({url:BACKEND_URL+'/extjs/voicenotes/details.php'+BACKEND_TOKEN,me
+urn}var c=BACKEND_URL+'/extjs/voicenotes/download.php?file='+encodeURI
+urn}var c=BACKEND_URL+'/extjs/voicenotes/download.php?file='+encodeURI
+[0m
+Fresh read-only siblings surfaced from the public bundle. Let me extract their request shapes from help.js before probing.
+[0m$ [0mecho "=== get_speaker ==="
+grep -oE ".{0,120}get_speaker.{0,200}" /tmp/opencode/help.js | grep -oE "(method|params|Ext\.Ajax\.request).{0,180}" | head -6
+echo "=== get_speaker_languages ==="
+grep -oE ".{0,450}get_speaker_languages.{0,250}" /tmp/opencode/help.js | head -4
+echo "=== get_provider ==="
+grep -oE ".{0,450}extjs/get_provider.php.{0,250}" /tmp/opencode/help.js | head -4
+echo "=== chat/provider ==="
+grep -oE ".{0,200}chat/provider.php.{0,300}" /tmp/opencode/help.js | head -4
+echo "=== chatgpt/provider ==="
+grep -oE ".{0,200}chatgpt/provider.php.{0,300}" /tmp/opencode/help.js | head -4
+echo "=== encrypt ==="
+grep -oE ".{0,200}encrypt/index.php.{0,300}" /tmp/opencode/help.js | head -4
+echo "=== check_mailserver ==="
+grep -oE ".{0,200}check_mailserver.php.{0,300}" /tmp/opencode/help.js | head -4
+=== get_speaker ===
+
+
+<shell_metadata>
+shell tool terminated command after exceeding timeout 30000 ms. If this command is expected to take longer and is not waiting for interactive input, retry with a larger timeout value in milliseconds.
+</shell_metadata>
+[0m
+[0m$ [0mpython3 - <<'EOF'
+data = open('/tmp/opencode/help.js','rb').read()
+for kw in [b'get_speaker', b'get_provider.php', b'chat/provider.php', b'chatgpt/provider.php', b'encrypt/index.php', b'check_mailserver.php', b'get_agent_costs.php', b'playback.php', b'coding.php']:
+    hits = []
+    start = 0
+    while True:
+        i = data.find(kw, start)
+        if i < 0: break
+        hits.append(i)
+        start = i + 1
+        if len(hits) > 6: break
+    print(f"===== {kw.decode()} ({len(hits)} hits) =====")
+    for h in hits[:3]:
+        win = data[max(0,h-260):h+300]
+        print(win.decode('latin1').replace('\n',' '))
+        print('---')
+EOF
+===== get_speaker (2 hits) =====
+oveProviderSettings(b,d);if(a.current_provider&&a.current_provider!==c){a.speaker_value='';a.speaker_iso=e}a.current_provider=c;a.selected_provider=c;var f=Ext.create('Ext.data.Store',{fields:['value','text'],proxy:{type:'ajax',url:APPDESIGNER_API_PATH+'extjs/get_speaker_languages.php'+BACKEND_TOKEN,reader:{type:'json',rootProperty:'data'}},autoLoad:!0,loadingInProgress:!1,listeners:{load:function(k,g,j,l){if(j){var h=b.down('[itemId=lang]');if(h){var f=e;if(e){var i=k.findRecord('value',e);if(!i){if(g.length>0){f=g[0].get('value');if(f===''&&g.length>1)
+---
+      margin-top: 1px;\n            /*font-style: italic;*/\n        }\n    ');var e=Ext.create('Ext.data.Store',{fields:['value','text','iso','sub','sub1','sub2','provider','gender','country','multilingual'],proxy:{type:'ajax',url:APPDESIGNER_API_PATH+'extjs/get_speaker.php'+BACKEND_TOKEN,reader:{type:'json',rootProperty:'data'}},autoLoad:!0,loadingInProgress:!1,sorters:[{property:'text',direction:'ASC'}],listeners:{load:function(j,s,p,q){if(p){j.each(function(e){var t=e.get('provider')||'-';var A=e.get('iso')||'-';var w=e.get('country')||'-';var k=e.ge
+---
+===== get_provider.php (1 hits) =====
+ovider=b.node.data.data.speaker.provider||''}a.speaker_value=c.value;a.speaker_iso=c.iso;var e=c.iso||'';var i=Ext.create('Ext.data.Store',{fields:[{name:'value',mapping:'id'},{name:'text',mapping:'caption'}],proxy:{type:'ajax',url:APPDESIGNER_API_PATH+'extjs/get_provider.php'+BACKEND_TOKEN,reader:{type:'json',rootProperty:'data'}},autoLoad:!0,loadingInProgress:!1,listeners:{load:function(j,g,h,i){if(h&&g.length>0){var f=d.down('[itemId=provider]');if(f){if(!a.current_provider&&g.length>0){var c=g[0].get('value');a.selected_provider=c;f.setValue(c);a.han
+---
+===== chat/provider.php (1 hits) =====
+on(b){return (b.text||'').split('|')[0]||''}},{name:'provider_name',calculate:function(b){return (b.text||'').split('|')[1]||''}},{name:'country',calculate:function(b){return (b.text||'').split('|')[2]||''}}],proxy:{type:'ajax',url:APPDESIGNER_API_PATH+'extjs/chat/provider.php'+BACKEND_TOKEN,reader:{type:'json',rootProperty:'data'},listeners:{exception:function(e,c,d){try{var b=c.responseJson;if(b&&b.success===!1&&b.message){AlertError(TR.chat.providerError+': '+b.message)}else {AlertError(TR.chat.providerError+': '+(c.statusText||'Unbekannter Fehler'))}
+---
+===== chatgpt/provider.php (1 hits) =====
+l:!0,style:{position:'absolute',top:'0',left:'0',right:'0',bottom:'30px'}}]}]});p.add(g);var f=g.items.getAt(0);var c=100;var i=Ext.create('Ext.data.Store',{fields:['value','text','use_custom_api','template'],proxy:{type:'ajax',url:APPDESIGNER_API_PATH+'extjs/chatgpt/provider.php'+BACKEND_TOKEN,reader:{type:'json',rootProperty:'data'},listeners:{exception:function(e,c,d){try{var b=c.responseJson;if(b&&b.success===!1&&b.message){AlertError(TR.chatgpt.provider_error+': '+b.message)}else {AlertError(TR.chatgpt.provider_error+': '+(c.statusText||'Unbekannter
+---
+===== encrypt/index.php (1 hits) =====
+e('%s',a.message));b.down('#encryptorPassword').setDisabled(!1)})}}).show()},callEncryptApi:function(a,e,d,g,b,i){var h=typeof APPDESIGNER_API_PATH!=='undefined'?APPDESIGNER_API_PATH:'/';var j=typeof BACKEND_TOKEN!=='undefined'?BACKEND_TOKEN:'';var k=h+'extjs/encrypt/index.php'+j;var f=a&&a.designer&&a.designer.context?a.designer.context.customerId||0:0;var c={action:e,password:g,customerId:f};if(e==='encrypt'){c.content=d}else {c.envelope=d}Ext.Ajax.request({url:k,method:'POST',params:c,success:function(h){var f=h.responseText;try{var c=JSON.parse(f);if
+---
+===== check_mailserver.php (2 hits) =====
+a.smtp_encryption,smtp_auth:a.smtp_auth,smtp_username:a.smtp_username,smtp_password:a.smtp_password,customerId:d.designer.context.customerId};Ext.MessageBox.wait(TR.mail.testing_connection,TR.mail.please_wait);Ext.Ajax.request({url:APPDESIGNER_API_PATH+'extjs/check_mailserver.php',useDefaultXhrHeader:!1,method:'POST',params:b,success:function(i){Ext.MessageBox.hide();var a;try{a=Ext.decode(i.responseText)}catch(w){Ext.MessageBox.alert(TR.mail.error,TR.mail.invalid_server_response);return}var g=a.success?'x-message-box-info':'x-message-box-error';var f=a.
+---
+a.smtp_encryption,smtp_auth:a.smtp_auth,smtp_username:a.smtp_username,smtp_password:a.smtp_password,customerId:d.designer.context.customerId};Ext.MessageBox.wait(TR.mail.testing_connection,TR.mail.please_wait);Ext.Ajax.request({url:APPDESIGNER_API_PATH+'extjs/check_mailserver.php',useDefaultXhrHeader:!1,method:'POST',params:b,success:function(i){Ext.MessageBox.hide();var a;try{a=Ext.decode(i.responseText)}catch(P){a={success:!1,message:TR.mail.invalid_response}}var g=a.success?'x-message-box-info':'x-message-box-error';var f=a.success?TR.mail.success:TR.
+---
+===== get_agent_costs.php (3 hits) =====
+zable:!0,maximizable:!0,width:750,height:520,minWidth:600,minHeight:360,layout:'fit',customerId:null,apiUrl:null,initComponent:function(){var a=this;if(!a.apiUrl){var i=typeof APPDESIGNER_API_PATH!=='undefined'?APPDESIGNER_API_PATH:'/';a.apiUrl=i+'extjs/agent/get_agent_costs.php'}var b=new Date();var g=new Date(b.getFullYear(),b.getMonth(),1);var h=new Date(b.getFullYear(),b.getMonth()+1,0);a.store=Ext.create('Ext.data.Store',{fields:[{name:'id',type:'int'},{name:'customer_id',type:'int'},{name:'service_id',type:'int'},{name:'model',type:'string'},{name:
+---
+ h=c.getFullYear()+'-'+d(c.getMonth()+1)+'-'+d(c.getDate());var f=new Date(c.getTime()+24*60*60*1000);var i=f.getFullYear()+'-'+d(f.getMonth()+1)+'-'+d(f.getDate());a.classList.add('cb-ai-costs-loading');Ext.Ajax.request({url:APPDESIGNER_API_PATH+'extjs/agent/get_agent_costs.php',useDefaultXhrHeader:!1,method:'GET',params:{customerId:g,start:h,end:i,summary:'true'},success:function(h){a.classList.remove('cb-ai-costs-loading');try{var c=Ext.decode(h.responseText);var f,d;if(c&&c.success&&c.data&&c.data.length){var g=c.data[0];f=e.formatAiCost(g.total_cost
+---
+d.getFullYear()+'-'+e(d.getMonth()+1)+'-'+e(d.getDate());var g=new Date(d.getTime()+24*60*60*1000);var i=g.getFullYear()+'-'+e(g.getMonth()+1)+'-'+e(g.getDate());b.classList.add('cb-agent-costs-loading');Ext.Ajax.request({url:APPDESIGNER_API_PATH+'extjs/agent/get_agent_costs.php',useDefaultXhrHeader:!1,method:'GET',params:{customerId:c,start:h,end:i,summary:'true'},success:function(e){b.classList.remove('cb-agent-costs-loading');try{var c=Ext.decode(e.responseText);if(c&&c.success&&c.data&&c.data.length){var d=c.data[0];b.innerHTML='<span>'+Ext.String.ht
+---
+===== playback.php (2 hits) =====
+c){if(c.category=='settings'&&c.key==a.settings){if(c.data.speaker){d.speaker=c.data.speaker}else {Ext.Msg.alert(TR.message.error,TR.message.selectedSettingsNoSpeaker);return}}});if(!b.checkValidProvider(b,a.settings)){return}var f=APPDESIGNER_API_PATH+'extjs/playback.php';Ext.Ajax.request({url:f,useDefaultXhrHeader:!1,method:'POST',timeout:120000,params:{action:'download',customerId:b.designer.context.customerId,text:d.text,speaker:d.speaker?JSON.stringify(d.speaker):null},binary:!0,success:function(c){var f=c.getResponseHeader('Content-Type')||'';if(f.
+---
+d){if(d.category=='settings'&&d.key==b.settings){if(d.data.speaker){c.speaker=d.data.speaker}else {Ext.Msg.alert(TR.message.error,TR.message.selectedSettingsNoSpeaker);return}}});if(!a.checkValidProvider(a,b.settings)){return}var f=APPDESIGNER_API_PATH+'extjs/playback.php';Ext.Ajax.request({url:f,useDefaultXhrHeader:!1,method:'POST',timeout:120000,params:{action:'play',customerId:a.designer.context.customerId,text:c.text,speaker:c.speaker?JSON.stringify(c.speaker):null},binary:!0,success:function(d){var g=d.getResponseHeader('Content-Type')||'';if(g.incl
+---
+===== coding.php (2 hits) =====
+tUiSuffix(a)||''}catch(e){return null}if(c){var b=null;try{b=a.down('#'+d+c)}catch(f){return null}if(b){return b}}try{return a.down('#'+d)}catch(g){return null}},getDefaultAgentEndpoint:function(){return APPDESIGNER_API_PATH_NOPROXY+'AIDesigner/backend/public/coding.php'},fetchAuthToken:function(a,b){var c='';if(a&&a.context&&a.context.customerId){c=a.context.customerId}else if(a&&a.designer&&a.designer.context&&a.designer.context.customerId){c=a.designer.context.customerId}Ext.Ajax.request({url:APPDESIGNER_API_PATH+'extjs/agent/get_agent_token.php',useD
+---
+function(d){console.log('Token - EntschlÃ¼sselung fehlgeschlagen');b('')})},failure:function(c){console.error('Auth Token Request fehlgeschlagen: '+c.status);b('')}})},getAgentConfigUrl:function(){return APPDESIGNER_API_PATH_NOPROXY+'AIDesigner/backend/config_coding.php'},getAgentRequestState:function(a){return a||null},getActiveAgentRequest:function(a){var b=this.getAgentRequestState(a);if(b&&b.agentRequest){return b.agentRequest}return a?a.agentRequest||null:null},setActiveAgentRequest:function(a,b){var c=this.getAgentRequestState(a);if(c){c.agentReque
+---
+[0m
+Fresh untested siblings extracted. Now a single-pass, <=1rps, GET-only sweep with the public static token, hash/summary-only output.
+[0m$ [0mTOK="3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3"
+UA="Mozilla/5.0 (X11; Linux x86_64) BUProbe/1.0"
+i=0
+p(){ i=$((i+1)); curl -sS -A "$UA" -o /tmp/opencode/s_$i.bin -w "http=%{http_code} " "$1"; sz=$(wc -c < /tmp/opencode/s_$i.bin); sha=$(sha256sum /tmp/opencode/s_$i.bin | cut -d' ' -f1); echo "bytes=$sz sha256=$sha | $(python3 -c "import json,sys; d=open('/tmp/opencode/s_$i.bin','rb').read(); import re; m=re.search(rb'\"success\"\s*:\s*(true|false)', d); print('success='+(m.group(1).decode() if m else ''));" 2>/dev/null)"; sleep 1; }
+p "https://www.applicationdesigner.de/extjs/get_speaker_languages.php?token=$TOK"
+p "https://www.applicationdesigner.de/extjs/get_speaker.php?token=$TOK"
+p "https://www.applicationdesigner.de/extjs/get_provider.php?token=$TOK"
+p "https://www.applicationdesigner.de/extjs/chat/provider.php?token=$TOK"
+p "https://www.applicationdesigner.de/extjs/chatgpt/provider.php?token=$TOK"
+p "https://www.applicationdesigner.de/extjs/agent/get_agent_costs.php?token=$TOK&customerId=2&start=2026-09-01&end=2026-09-30&summary=true"
+p "https://applicationdesigner.de/AIDesigner/backend/public/coding.php"
+http=200 bytes=10536 sha256=2e5e471e14674c03a04809f537ad9bddc33e78dd07224917c39f9fa33f3f4ce4 | success=true
+http=200 bytes=560409 sha256=74513b287ae280e3644506ceca0158e1a7c5a1f803feba6807b790426ed4899e | success=true
+http=200 bytes=187 sha256=322a64e7d80011e551c7b69dd1904617884f71fa739b59113847ed027cca059d | success=true
+http=200 bytes=3521 sha256=d6c37ba100d95b4e8c2fc15b8a4ac6592d02883135bc4cd53ecf0f5d745f1c40 | success=true
+http=200 bytes=1225 sha256=a64cce62628452edfbb35908cecb5f12de0c26f1c180c0ff1d977f9907b5d800 | success=true
+http=200 bytes=49 sha256=3b0256f75dd1b2488aeaa6e67606ec129b34d5ae9197f0d3aa75ff9f65efb89f | success=false
+http=403 bytes=25 sha256=612fddc8d6fd3443ec520ccadc45dd33a39e6b9d5793626bf429ddf5899aac84 | success=
+[0m
+[0m$ [0mTOK="3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3"
+UA="Mozilla/5.0 (X11; Linux x86_64) BUProbe/1.0"
+echo "--- get_agent_costs body (49B) ---"
+python3 - <<'EOF'
+import json
+print(json.load(open('/tmp/opencode/s_6.bin')))
+EOF
+echo "--- structure summary of each response ---"
+python3 - <<'EOF'
+import json
+for n,name in [(1,'get_speaker_languages'),(2,'get_speaker'),(3,'get_provider'),(4,'chat/provider'),(5,'chatgpt/provider')]:
+    d=json.load(open(f'/tmp/opencode/s_{n}.bin'))
+    data=d.get('data') if isinstance(d,dict) else None
+    rows = data if isinstance(data,list) else None
+    print(f"{name}: top_keys={list(d.keys()) if isinstance(d,dict) else type(d)} rows={len(rows) if rows is not None else 'n/a'}")
+    if rows and len(rows)>0 and isinstance(rows[0],dict):
+        keys=set().union(*[set(r.keys()) for r in rows[:50]])
+        cids={r.get('customer_id') for r in rows if isinstance(r,dict) and 'customer_id' in r}
+        print(f"   sample_keys={sorted(keys)[:14]} customer_id_col={'customer_id' in keys} distinct_cids={len(cids)} demo/foreign_present={(131727 in cids, 2 in cids)}")
+        print(f"   first_row_preview={ {k:rows[0].get(k) for k in list(keys)[:6]} }")
+EOF
+echo "--- get_agent_costs with demo cid 131727 ---"
+curl -sS -A "$UA" -o /tmp/opencode/s_7.bin -w "http=%{http_code} bytes=%{size_download}\n" "https://www.applicationdesigner.de/extjs/agent/get_agent_costs.php?token=$TOK&customerId=131727&start=2026-09-01&end=2026-09-30&summary=true"
+python3 -c "import json; d=json.load(open('/tmp/opencode/s_7.bin')); print(d)"
+--- get_agent_costs body (49B) ---
+{'success': False, 'message': 'Zugriff verweigert.'}
+--- structure summary of each response ---
+get_speaker_languages: top_keys=['success', 'data', 'total', 'provider'] rows=198
+   sample_keys=['text', 'value'] customer_id_col=False distinct_cids=0 demo/foreign_present=(False, False)
+   first_row_preview={'text': 'Alle Sprachen', 'value': ''}
+get_speaker: top_keys=['success', 'data', 'total', 'provider', 'language'] rows=1724
+   sample_keys=['country', 'gender', 'iso', 'multilingual', 'provider', 'settings', 'sub', 'text', 'value'] customer_id_col=False distinct_cids=0 demo/foreign_present=(False, False)
+   first_row_preview={'iso': 'hi', 'gender': 'female', 'multilingual': False, 'country': 'hi / HI', 'text': 'Aadhya - Soother', 'settings': '{"id":"f91ab3e6-5071-4e15-b016-cde6f2bcd222","model":"sonic-latest"}'}
+get_provider: top_keys=['success', 'data'] rows=4
+   sample_keys=['text', 'value'] customer_id_col=False distinct_cids=0 demo/foreign_present=(False, False)
+   first_row_preview={'text': 'Microsoft Azure', 'value': 'azure'}
+chat/provider: top_keys=['success', 'data'] rows=14
+   sample_keys=['parameters', 'role', 'text', 'use_custom_api', 'value'] customer_id_col=False distinct_cids=0 demo/foreign_present=(False, False)
+   first_row_preview={'use_custom_api': 1, 'role': 'system', 'text': 'Eigene API Zugangsdaten', 'parameters': '{\n  "temperature": 0.2,\n  "top_p": 1.0,\n  "presence_penalty": 0,\n  "frequency_penalty": 0\n}', 'value': 'ChatGPT'}
+chatgpt/provider: top_keys=['success', 'data'] rows=11
+   sample_keys=['template', 'text', 'use_custom_api', 'value'] customer_id_col=False distinct_cids=0 demo/foreign_present=(False, False)
+   first_row_preview={'use_custom_api': 1, 'template': 1, 'text': 'Microsoft Azure - konfigurierbar', 'value': 'AZURE'}
+--- get_agent_costs with demo cid 131727 ---
+http=200 bytes=49
+{'success': False, 'message': 'Zugriff verweigert.'}
+[0m
+[0m$ [0mpython3 - <<'EOF'
+import json, re, hashlib, collections
+d=json.load(open('/tmp/opencode/s_2.bin'))
+rows=d['data']
+print("providers:", collections.Counter(r.get('provider','') for r in rows))
+keynames=collections.Counter()
+samples={}
+for r in rows:
+    s=r.get('settings')
+    if not s: continue
+    try:
+        obj=json.loads(s) if isinstance(s,str) else s
+    except Exception:
+        continue
+    if isinstance(obj,dict):
+        for k in obj:
+            keynames[k]+=1
+            if k not in samples: samples[k]=obj[k]
+print("all settings key names:", dict(keynames))
+FK=('api','key','token','secret','password','bearer','auth','credential','x-')
+print("--- values of auth-ish keys (redacted) ---")
+for k,v in samples.items():
+    kl=k.lower()
+    if any(f in kl for f in FK):
+        vs=str(v) if not isinstance(v,str) else v
+        print(f"{k} [{len(vs)} chars] sha256={hashlib.sha256(vs.encode()).hexdigest() if isinstance(vs,str) else 'non-str'}")
+print("--- sample non-sensitive values ---")
+for k,v in list(samples.items()):
+    if not any(f in k.lower() for f in FK):
+        print(f"{k} = {str(v)[:80]!r}")
+EOF
+providers: Counter({'cartesia': 761, 'azure': 593, 'elevenlabs': 370})
+all settings key names: {'id': 1724, 'model': 1131, 'config': 1}
+--- values of auth-ish keys (redacted) ---
+--- sample non-sensitive values ---
+id = 'f91ab3e6-5071-4e15-b016-cde6f2bcd222'
+model = 'sonic-latest'
+config = "{'stability': 0.9, 'use_speaker_boost': True, 'similarity_boost': 0.5, 'style': "
+[0m
+get_agent_costs is session-gated (rejects both cids — closed). The big lead: get_speaker.php returns 1724 rows with per-row `settings` JSON blobs. Let me inspect their key names locally (hash-only if any credential appears).
+## STEP 1 — DELTA
+- [NEW] get_user_rights ciphertext-stability probe (was 09-09 NEXT): cid=131727 twice → sha256 1752ec1c… vs d25a8dbc… (identical len 4308) → same-cid payload ROTATES → per-request IV/nonce, shared-key decrypt risk absent → anonymous thread closed non-escalating.
+- [NEW] Untested read-only sibling sweep (extracted from public help.js): get_speaker (200/success:true, 1724 rows), get_speaker_languages (200, 198 rows), get_provider (200, 4), chat/provider (200, 14), chatgpt/provider (200, 11) all token-only; 0 rows carry customer_id; get_speaker settings JSON = id/model/config voice-tune only, no credentials. get_agent_costs.php → 200 `Zugriff verweigert` for cid=2 AND 131727 (session-gated). AIDesigner coding.php → 403 Invalid token.
+- [CHANGED] Surface frozen at 4 live hosts; api.live-manager.de non-resolving; cbs-proxy re-confirmed live (426 Upgrade Required plain GET).
+
+## STEP 2 — PRIORITIZE
+- [PRIO] cbs-proxy.api.live-manager.de,7.60,a=8,b=9,t=7,g=10,c=6,f=2
+- [PRIO] www.applicationdesigner.de/extjs/check_mailserver.php,6.55,a=5,b=7,t=7,g=6,c=7,f=9
+- [PRIO] www.applicationdesigner.de/extjs/voicenotes/download.php,6.50,a=6,b=9,t=5,g=8,c=3,f=5
+- [PRIO] www.applicationdesigner.de/extjs/flexlist/{getFields,getDetails}.php,6.25,a=6,b=8,t=5,g=8,c=3,f=5
+- [PRIO] www.applicationdesigner.de/extjs/get_user_rights.php,6.10,a=6,b=8,t=6,g=8,c=4,f=1
+
+## STEP 3 — HYPOTHESES
+[HYP] cbs-proxy data-plane cross-tenant frame binding (chain capstone)
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service={service}
+confidence: 95
+reasoning: anonymous WS upgrade returns 101 with zero credentials; client-supplied cid accepted byte-identically for demo 131727 vs foreign 2 (CONNECT CBS100/190/200 + READY); token→cid binding absent at proxy layer; re-confirmed live this cycle (426 on plain GET). Only unverified link: per-cid data-plane frame acceptance.
+evidence_needed: operator replays a demo-tenant live_debug/call frame and diffs the accepted response set against own second-owned tenant (two owned tenants only, no third-party).
+verify_steps: AUTH_HELPED: WS-upgrade cid=131727&service=100, send one live_debug/call-frame, record accept; repeat with own second cid; byte-diff.
+impact: cross-tenant live-debug/call-flow stream attach (voice/PII); HIGH CVSS 7.5.
+testability: AUTH_HELPED
+[HYP] check_mailserver SMTP test is a server-side outbound-connect primitive (SSRF/port-banner)
+class: SSRF
+asset: www.applicationdesigner.de/extjs/check_mailserver.php (POST, `useDefaultXhrHeader:false`, params smtp_host/smtp_port/smtp_encryption/smtp_auth/smtp_username/smtp_password/customerId; NO token in URL)
+confidence: 45
+reasoning: help.js shows the client sends attacker-influenced smtp_host/port to server, which must open an SMTP connection server-side (connection-test dialog); unlike every sibling it omits BACKEND_TOKEN on URL — auth surface unlike get_agent_token/costs pattern; POST-only so not probeable under passive rules this cycle.
+evidence_needed: authorized POST with smtp_host=internal target to observe server-side connect/differential reply.
+verify_steps: AUTH_HELPED: POST {smtp_host:127.0.0.1,smtp_port:25,...} vs {smtp_host:169.254.169.254,smtp_port:80} differ diagnostic/response timing; no external host targeted.
+impact: internal-network SMTP banner/port probe; if reply echoed, limited blind SSRF; MED.
+testability: AUTH_HELPED
+[HYP] voicenotes raw-audio download is credential-satisfiable and reaches file-lookup for any tenant UUID
+class: IDOR
+asset: www.applicationdesigner.de/extjs/voicenotes/download.php?token={LIVE_DEMO_CUSTOMER_TOKEN}&customer_id={cid}&file={uuid}
+confidence: 60
+reasoning: download.php returns HTTP 404 file-not-found byte-identically for cid=131727 and 2 with real static token — reaches file-lookup, no auth/VPN gate; per-record sibling details.php is hierarchy-checked (CONTROL), narrowing cross-tenant surface to raw download; demo index empty this cycle (total=0,max_id=0) → no own-tenant positive UUID.
+evidence_needed: operator fetches real audio bytes for a UUID observed in a demo/own-tenant index and confirms Content-Type + bytes.
+verify_steps: AUTH_HELPED GET download.php for an indexed UUID; confirm audio + Content-Type.
+impact: cross-tenant call-recording/voicemail/explicit-consent audio exfil; HIGH PII.
+testability: AUTH_HELPED
+
+## STEP 4 — SELF-CRITIQUE
+- [PARKED] get_user_rights.php: same-cid rotation confirmed → per-request IV, no decrypt escalation; anonymous thread exhausted, capped LOW–MED authz-design defect only.
+- [PARKED] flexlist getFields/getDetails: token-only gate confirmed, but cross-tenant unprovable anonymously (no foreign flexlist_id without out-of-scope enumeration); only operator's second tenant can prove.
+- [PARKED] catalog siblings (get_speaker/get_provider/chat provider/chatgpt provider): 0 customer_id rows, no secrets in settings JSON → global lookup data behind public token, LOW, not BOLA.
+- [PARKED] get_agent_costs.php: session-gated for both cids → anonymous money surface closed.
+- [FINAL] 1. cbs-proxy BOLA (95) — chain capstone, transport-complete, live, highest CVSS. 2. voicenotes raw-audio download (60) — gate credential-satisfiable, needs own-tenant UUID positive control. 3. check_mailserver SSRF (45) — fresh untested surface, POST-limited.
+
+## STEP 5 — NEXT ACTION
+[NEXT] HUMAN: operator replay on wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={own-tenant-B}&service=100 vs demo cid=131727 with one authentic live_debug/call frame; byte-diff accepted response sets (capstone). Second: create flexlist under own second tenant and GET getDetails.php?token={LIVE_DEMO_CUSTOMER_TOKEN}&flexlist_id={tenant-B id}&search= (nonzero rows = cross-tenant read).
+
+## STEP 6 — LEARNING
+- [LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/get_user_rights.php: same-cid 131727 back-to-back returns differing sha256 (1752ec1c…/d25a8dbc…, len 4308) → per-request nonce/IV; ciphertext not cid-stable → no static-key decrypt escalation observable; resolver-level authz defect only, capped LOW–MED, anonymous thread closed.
+- [LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_costs.php: HTTP 200 `{"success":false,"message":"Zugriff verweigert."}` byte-identical for customerId=2 and 131727 with public static token → session-gated, no anonymous per-tenant cost read; money surface closed anonymously.
+- [LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/{get_speaker,get_speaker_languages,get_provider,chat/provider,chatgpt/provider}.php: HTTP 200 success:true with public static token; global lookup catalogs (1724/198/4/14/11 rows), 0 rows contain customer_id, get_speaker settings JSON holds id/model/voice-config only — no credentials, no tenant rows; LOW anonymous catalog exposure, not BOLA.
+- [LEARN] ACCEPTED CONTROL @ applicationdesigner.de/AIDesigner/backend/public/coding.php: HTTP 403 (25 B, Invalid token) anonymous — dispatch-side gate holds, sibling config.php remains the lone zero-auth LLM-routing surface; no new coding surface.
+- [LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: plain GET → 426 Upgrade Required this cycle; driver unchanged and live.
+
+## STEP 7 — RISK
+[RISK] questnet-gmbh: 76 — driver cbs-proxy BOLA (95) unchanged and re-confirmed live; fresh sibling sweep added no new HIGH (catalogs LOW, agent-costs gated, coding.php gated); get_user_rights escalation rejected (rotation). Across models the ceiling stays AUTH_HELPED for capstone; no foreign-live data touched, no PII echoed, hash-only analysis.
