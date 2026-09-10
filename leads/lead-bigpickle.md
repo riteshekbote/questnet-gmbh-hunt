@@ -2582,3 +2582,60 @@ testability: AUTH_HELPED
 [LEARN] REJECTED api.live-manager.de: host non-resolving — unchanged.
 [LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: no secrets-bearing anonymous siblings — unchanged.
 [RISK] questnet-gmbh: 77 — driver cbs-proxy BOLA (95) unchanged and live. get_agent_costs.php elevated from PARKED (35) to FINAL (52) as sole probe-able new GET endpoint; cost-data cross-tenant IDOR now actively tested this cycle. playback.php (42) and check_mailserver.php (40) POST-only blocked. Voicenote surface refined: details.php hierarchy-gated (CONTROL) while check.php metadata remains cross-tenant confirmed. Flexlist cross-tenant parked to operator (AUTH_HELPED). get_user_rights.php opaque (LOW-MED). Ceiling AUTH_HELPED for data-plane capstones; no foreign-live data touched, no PII echoed this cycle.
+## 2026-09-10 18:36:14 UTC [target] (model bigpickle)
+[PRIO] cbs-proxy.api.live-manager.de,9.25,a=9,b=10,t=8,g=10,c=8,f=10
+[PRIO] www.applicationdesigner.de,8.50,a=8,b=9,t=8,g=9,c=7,f=10
+[PRIO] www.live-manager.de,3.85,a=3,b=5,t=4,g=3,c=3,f=5
+[HYP] cbs-proxy data-plane cross-tenant frame binding (chain capstone, unchanged)
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service={service}
+confidence: 95
+reasoning: anonymous WS upgrade returns 101 with zero credentials; client-supplied cid accepted byte-identically for demo 131727 vs foreign 2 (CONNECT CBS100/190/200 + READY), reconfirmed live (426 Upgrade Required on non-upgrade). No token→cid binding observed at proxy layer; only unverified link is per-cid data-plane frame acceptance. Transport-complete, unchanged.
+evidence_needed: operator replays demo-tenant live_debug frame and diffs accepted response set vs a foreign cid control (own two tenants only, no third-party).
+verify_steps: AUTH_HELPED: WS-upgrade cid=131727&service=100, send one live_debug/call-frame, record accept; repeat with own second cid; byte-diff.
+impact: cross-tenant live-debug/call-flow stream attach (voice/PII); HIGH CVSS 7.5.
+testability: AUTH_HELPED
+[HYP] get_agent_costs.php anonymous cross-tenant cost-data readout (sole probe-able new GET)
+class: IDOR
+asset: www.applicationdesigner.de/extjs/agent/get_agent_costs.php
+confidence: 55
+reasoning: GET endpoint confirmed in help.js with NO token parameter, accepts customerId/start/end/summary. Auth-footprint identical to credential-only siblings (voicenotes/check.php, flexlist/getFields.php — token/scalar as sole gate, no server-side cid ownership check observed). Cost payload may hold call counts, billing periods, agent utilization — business-sensitive per-tenant financial metadata. Probe still outstanding from last cycle.
+evidence_needed: GET with customerId=131727 vs customerId=2 returns differential cost JSON (body sha256 differ, success:true both) = cross-tenant financial metadata leak; also not without token to confirm gate shape.
+verify_steps: (1) GET https://www.applicationdesigner.de/extjs/agent/get_agent_costs.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&customerId=131727&start=2024-01-01&end=2024-12-31&summary=true — expect success:true + cost JSON. (2) Repeat customerId=2 — diff body sha256/structure. (3) GET without token — confirm gate. 3 reads ≤1 rps, no mutation.
+impact: cross-tenant billing/financial metadata enumeration — MEDIUM–HIGH depending on field sensitivity.
+testability: PASSIVE
+[HYP] check_mailserver.php SSRF to cloud metadata (nemotron3 score 80, POST-gated)
+class: SSRF
+asset: www.applicationdesigner.de/extjs/check_mailserver.php
+confidence: 65
+reasoning: POST-only, NO token (help.js), parameter smtp_server; server performs live SMTP connection and returns "Mailserver Test Report". A POST with smtp_server=169.254.169.254&smtp_port=80 would test reachability of link-local metadata; response is diagnostic-only (no data exfil), so signal is timing/behavior-based. No GET trigger exists; passive-first rules (GET/HEAD/OPTIONS only) block all verification this cycle.
+evidence_needed: per-endpoint response-time delta and error text for smtp_server=169.254.169.254 vs an unroutable control (10.255.255.1), via operator POST.
+verify_steps: HUMAN_ONLY: POST body smtp_server=169.254.169.254&smtp_port=80 vs 10.255.255.1; compare response time + report text; no cloud-credential retrieval attempted.
+impact: SSRF to cloud metadata (IMDS) → instance keys; HIGH class, unconfirmed here.
+testability: HUMAN_ONLY
+[PARKED] check_mailserver.php SSRF (65): nemotron3 re-ranked to 80 but POST-only — no passive trigger, blocked under GET/HEAD/OPTIONS rule. Elevated to operator queue; keep in KB as top SSRF candidate.
+[PARKED] get_user_rights.php ciphertext (50): encrypted/serialized payload; cid-stable ciphertext has no exploit without key — authz-design defect only. No escalation path.
+[PARKED] flexlist cross-tenant (55): no foreign flexlist_id known; needs operator second tenant (AUTH_HELPED) — unchanged.
+[PARKED] voicenotes raw-audio download (60): gate-stage confirmed credential-satisfiable (404 not 403); needs positive-control UUID; demo index empty (total=0,max_id=0). AUTH_HELPED.
+[PARKED] playback.php (42): POST-only zero-token binary generation — blocked passive.
+[FINAL] 1. cbs-proxy BOLA (95) — transport-complete, anonymous-confirmed, live, highest CVSS; data-plane hop AUTH_HELPED.
+[FINAL] 2. get_agent_costs.php IDOR (55) — sole probe-able new GET; tokenless cost-data surface.
+[FINAL] 3. voicenotes cross-tenant metadata (85) — already VALID, re-confirmed live.
+[NEXT] PROBE: GET https://www.applicationdesigner.de/extjs/agent/get_agent_costs.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&customerId=131727&start=2024-01-01&end=2024-12-31&summary=true, then same with customerId=2, then same URL without token — compare success field, record structure, body sha256; 3 GETs ≤1 rps, no mutation, no cookies.
+[LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WS BOLA transport-complete unchanged — demo 131727 vs foreign 2 byte-identical CONNECT/READY, reconfirmed live (426 Upgrade Required).
+[LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: re-confirmed cross-tenant, NOT VPN-gated with real public demo token — unchanged.
+[LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/voicenotes/details.php: per-record hierarchy-checked — unchanged.
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: public bundle ships static credential + full endpoint map incl. /api/callbuilder/ proxy prefix — unchanged; confirms get_agent_costs.php and playback.php have no token.
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php: public static credential accepted, token-only gate — unchanged.
+[LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/flexlist/getList.php: directory token-scoped, global autoincrement id space 138–345 — unchanged.
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config.php: zero-auth LLM-routing JSON; dispatch gated — unchanged.
+[LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/index.php?route=: 403 Invalid token — unchanged.
+[LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/get_user_rights.php: high-entropy base64 / encrypted payload only, cid-dependent rotating — LOW caps.
+[LEARN] CHANGED AUTH @ www.applicationdesigner.de/extjs/livedebugger/auth.php: VPN gate persistent — anonymous mint BLOCKED — unchanged.
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_token.php: session-gated, byte-identical Zugriff verweigert — closed.
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/common/getCustomers.php: token-scoped — unchanged.
+[LEARN] REJECTED AUTH @ www.live-manager.de rs param: no anonymous open redirect — unchanged.
+[LEARN] REJECTED wildcard-subdomain-enum @ *.live-manager.de: 8632 hostnames, 0 dedicated endpoints — unchanged.
+[LEARN] REJECTED api.live-manager.de: host non-resolving — unchanged.
+[LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: no secrets-bearing anonymous siblings — unchanged.
+[RISK] questnet-gmbh: 77 — driver cbs-proxy BOLA (95) live and unchanged; transport-complete cross-tenant chain stands. No new surface, no escalation: sole probe-able new endpoint (get_agent_costs.php, tokenless cost data) still unexecuted from last cycle — highest-value remaining passive action. SSRF candidate (check_mailserver.php) re-ranked 80 by nemotron3 but POST-gated → operator queue under HUMAN_ONLY. Ceiling AUTH_HELPED for data-plane capstones; no foreign-live data touched, no PII echoed.

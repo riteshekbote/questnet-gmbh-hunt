@@ -201,3 +201,9 @@
 - 2026-09-10 ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/flexlist/getList.php: directory token-scoped — 10 flexlists, all customer_id=131727; global autoincrement id space (138–345)
 - 2026-09-10 REJECTED (partial) IDOR @ www.applicationdesigner.de/extjs/flexlist/: cross-tenant data read NOT observed anonymous — no foreign flexlist_id known; needs operator with second owned tenant
 - 2026-09-10 ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/voicenotes/details.php: per-record read hierarchy-checked on customer_id+log_id — unchanged
+- 2026-09-10 ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: public bundle ships static credential + full endpoint map incl. /api/callbuilder/ proxy prefix — unchanged; confirms get_agent_costs.php and playback.php have no token.
+- 2026-09-10 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php: public static credential accepted, token-only gate — unchanged.
+- 2026-09-10 ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/flexlist/getList.php: directory token-scoped, global autoincrement id space 138–345 — unchanged.
+- 2026-09-10 ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/get_user_rights.php: high-entropy base64 / encrypted payload only, cid-dependent rotating — LOW caps.
+- 2026-09-10 CHANGED AUTH @ www.applicationdesigner.de/extjs/livedebugger/auth.php: VPN gate persistent — anonymous mint BLOCKED — unchanged.
+- 2026-09-10 REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_token.php: session-gated, byte-identical Zugriff verweigert — closed.

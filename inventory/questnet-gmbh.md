@@ -385,3 +385,16 @@ www.live-manager.de
 ## 2026-09-10 15:18:22 UTC
 - CHANGED `get_agent_costs.php` (GET, NO token, customerId) — confirmed in help.js last cycle, PARKED at 35 confidence, but it's the **sole probe-able new endpoint** this cycle (GET method = allowed). All other
 - CHANGED `help/content.php` (GET, NO token, page string) — confirmed in help.js, trivial help-content surface; confirmed dead-end on earlier probe shape (not user-data-bearing). LOW priority.
+
+## 2026-09-10 18:39:31 UTC
+- NEW www.applicationdesigner.de/extjs/playback.php: POST-only, NO token, accepts customerId/text/speaker — zero-token audio generation surface (help.js confirmed 2026-09-10)
+- NEW www.applicationdesigner.de/extjs/agent/get_agent_costs.php: GET, NO token, accepts customerId/start/end/summary — zero-token cost-data surface (help.js confirmed 2026-09-10)
+- NEW www.applicationdesigner.de/extjs/check_mailserver.php: POST-only, NO token, smtp_server parameter — SSRF-to-metadata candidate re-confirmed (help.js source)
+- NEW www.applicationdesigner.de/extjs/get_user_rights.php: anonymous cid-resolving authz endpoint — HTTP 200 with public static credential, body sha256 cid-dependent rotating, high-entropy base64 (~3230B)
+- CHANGED www.applicationdesigner.de/extjs/livedebugger/auth.php: VPN gate persistent — anonymous mint BLOCKED (returns "Not logged in" + "No VPN detected" with public static credential)
+- CHANGED www.applicationdesigner.de/extjs/voicenotes/check.php: re-confirmed NOT VPN-gated with valid public demo token — cross-tenant PII metadata index accessible (byte-identical success:true for demo cid=13
+- CHANGED cbs-proxy.api.live-manager.de: anonymous WS BOLA transport-complete unchanged — demo 131727 vs foreign 2 byte-identical CONNECT/READY, reconfirmed live (426 Upgrade Required)
+- CHANGED www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php: public static credential accepted (HTTP 200 success:true), reads resolve live per-id data (id 345 → 32 defs, 25 rows, body sha25
+- CHANGED www.applicationdesigner.de/extjs/flexlist/getList.php: directory token-scoped — 10 flexlists all customer_id=131727; global autoincrement id space (138–345) implies foreign rows in gaps
+- CHANGED www.applicationdesigner.de/extjs/agent/get_agent_token.php: REJECTED — session-gated, byte-identical "Zugriff verweigert" for both cids; sole untested parallel BOLA candidate closed
+- CHANGED Surface frozen at 4 live in-scope hosts since 2026-09-04 (cbs-proxy.api.live-manager.de, www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de) — no new hosts discovered
