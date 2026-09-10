@@ -381,3 +381,7 @@ www.live-manager.de
 - CHANGED www.applicationdesigner.de/extjs/voicenotes/download.php: help.js analysis confirms NO token appended to download URL (BACKEND_URL+'/extjs/voicenotes/download.php?file='+encodeURIComponent(a)) — gate 
 - CHANGED www.applicationdesigner.de/extjs/check_mailserver.php: reclassified parameter name from smtp_host to smtp_server (per help.js source); POST-only, NO token; SSRF candidate unchanged.
 - CHANGED www.applicationdesigner.de/extjs/get_user_rights.php: new anonymous cid-resolving authz endpoint — HTTP 200 with public static credential, body sha256 differs per cid, payload high-entropy base64 (~32
+
+## 2026-09-10 15:18:22 UTC
+- CHANGED `get_agent_costs.php` (GET, NO token, customerId) — confirmed in help.js last cycle, PARKED at 35 confidence, but it's the **sole probe-able new endpoint** this cycle (GET method = allowed). All other
+- CHANGED `help/content.php` (GET, NO token, page string) — confirmed in help.js, trivial help-content surface; confirmed dead-end on earlier probe shape (not user-data-bearing). LOW priority.

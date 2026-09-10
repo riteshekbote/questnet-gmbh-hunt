@@ -196,3 +196,8 @@
 - 2026-09-10 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/playback.php: POST-only, NO token, accepts customerId/text/speaker — NEW zero-token audio generation surface
 - 2026-09-10 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/agent/get_agent_costs.php: GET, NO token, accepts customerId/start/end/summary — NEW zero-token cost-data surface
 - 2026-09-10 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/check_mailserver.php: POST-only, NO token, smtp_server parameter — SSRF candidate re-confirmed
+- 2026-09-10 ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: public bundle ships static credential + full endpoint map including /api/callbuilder/ proxy prefix — unchanged; confirms playback.php and get_agent_costs.php have no token.
+- 2026-09-10 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php: public static credential accepted (HTTP 200 success:true), reads resolve live per-id data; gate is token-only, no customer_id in request
+- 2026-09-10 ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/flexlist/getList.php: directory token-scoped — 10 flexlists, all customer_id=131727; global autoincrement id space (138–345)
+- 2026-09-10 REJECTED (partial) IDOR @ www.applicationdesigner.de/extjs/flexlist/: cross-tenant data read NOT observed anonymous — no foreign flexlist_id known; needs operator with second owned tenant
+- 2026-09-10 ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/voicenotes/details.php: per-record read hierarchy-checked on customer_id+log_id — unchanged
