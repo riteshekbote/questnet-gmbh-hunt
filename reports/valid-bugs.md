@@ -32,3 +32,10 @@
   - | 1 | cbs-proxy WS BOLA | **VALID** | HIGH | 7.5 | File report |
   - | 2 | voicenote PII metadata | **VALID** | HIGH | 7.5 | File report |
   - | 3 | help.js static credential | **VALID** | HIGH | 7.5 | File report (chain enabler) |
+
+- 5 lead(s) marked VALID at 2026-09-10 11:51:17 UTC
+  - **Verdict: VALID**
+  - **Verdict: VALID**
+  - | Q4 Provable | **NO** | Requires AUTH_HELPED valid customer session |
+  - | 1. CBS WS Proxy IDOR | **VALID** | 8.6 High | File |
+  - | 2. auth.php + cbs-proxy chain | **VALID** | 9.1 Critical | File |
