@@ -398,3 +398,15 @@ www.live-manager.de
 - CHANGED www.applicationdesigner.de/extjs/flexlist/getList.php: directory token-scoped — 10 flexlists all customer_id=131727; global autoincrement id space (138–345) implies foreign rows in gaps
 - CHANGED www.applicationdesigner.de/extjs/agent/get_agent_token.php: REJECTED — session-gated, byte-identical "Zugriff verweigert" for both cids; sole untested parallel BOLA candidate closed
 - CHANGED Surface frozen at 4 live in-scope hosts since 2026-09-04 (cbs-proxy.api.live-manager.de, www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de) — no new hosts discovered
+
+## 2026-09-10 21:15:35 UTC
+- NEW www.applicationdesigner.de/extjs/playback.php: POST-only, NO token, accepts customerId/text/speaker — zero-token audio generation surface (help.js confirmed 2026-09-10)
+- NEW www.applicationdesigner.de/extjs/agent/get_agent_costs.php: GET, NO token, accepts customerId/start/end/summary — zero-token cost-data surface (help.js confirmed 2026-09-10)
+- NEW www.applicationdesigner.de/extjs/check_mailserver.php: POST-only, NO token, smtp_server parameter — SSRF-to-metadata candidate re-confirmed (help.js source)
+- CHANGED www.applicationdesigner.de/extjs/livedebugger/auth.php: VPN gate persistent — anonymous mint BLOCKED (returns "Not logged in" + "No VPN detected" with public static credential)
+- CHANGED www.applicationdesigner.de/help.js: confirms playback.php and get_agent_costs.php have no token (previously unknown zero-token endpoints)
+- CHANGED cbs-proxy.api.live-manager.de: anonymous WS BOLA transport-complete unchanged — demo 131727 vs foreign 2 byte-identical CONNECT/READY, reconfirmed live (426 Upgrade Required)
+- CHANGED www.applicationdesigner.de/extjs/voicenotes/check.php: re-confirmed cross-tenant, NOT VPN-gated with real public demo token — unchanged
+- CHANGED www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php: public static credential accepted, token-only gate — unchanged
+- CHANGED www.applicationdesigner.de/extjs/flexlist/getList.php: directory token-scoped, global autoincrement id space 138–345 — unchanged
+- CHANGED www.applicationdesigner.de/extjs/get_user_rights.php: high-entropy base64 / encrypted payload only, cid-dependent rotating — LOW caps
