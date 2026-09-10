@@ -359,3 +359,17 @@ www.live-manager.de
 - CHANGED www.applicationdesigner.de/extjs/voicenotes/details.php: per-record detail read hierarchy-checked on customer_id+log_id — all foreign cids (2, 999999, 131727) return identical "Kundennummer nicht in d
 - CHANGED www.applicationdesigner.de/extjs/agent/get_agent_token.php: REJECTED — session-gated, byte-identical "Zugriff verweigert" for both cids; sole untested parallel BOLA candidate closed
 - CHANGED Surface frozen: still 4 live in-scope hosts (cbs-proxy.api.live-manager.de, www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de); 8632 wildcard hostnames → 0 dedicated endpoint
+
+## 2026-09-10 06:14:18 UTC
+- NEW www.applicationdesigner.de/extjs/playback.php: POST-only endpoint confirmed in help.js — NO token, accepts customerId/text/speaker, returns binary audio with 120s timeout; identical auth-footprint to 
+- NEW www.applicationdesigner.de/extjs/agent/get_agent_costs.php: GET endpoint confirmed in help.js — NO token, accepts customerId/start/end/summary; previously untested cost-data endpoint.
+- NEW www.applicationdesigner.de/help/content.php: GET endpoint confirmed in help.js — NO token, accepts page string parameter; help content surface, low priority.
+- CHANGED www.applicationdesigner.de/extjs/voicenotes/download.php: help.js analysis confirms NO token appended to download URL (BACKEND_URL+'/extjs/voicenotes/download.php?file='+encodeURIComponent(a)) — gate 
+- CHANGED www.applicationdesigner.de/extjs/check_mailserver.php: reclassified parameter name from smtp_host to smtp_server (per help.js source); POST-only, NO token; SSRF candidate unchanged.
+- NEW www.applicationdesigner.de/extjs/get_user_rights.php: anonymous cid-resolving authz endpoint — HTTP 200 with public static credential, body sha256 differs per cid (empty/2/131727/999999), high-entropy
+- NEW www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php: ACCEPTED MISCONFIG — public static credential accepted (HTTP 200 success:true), reads resolve live per-id data (id 345 → 32 defs
+- NEW www.applicationdesigner.de/extjs/flexlist/getList.php: ACCEPTED CONTROL — directory token-scoped; 10 flexlists all customer_id=131727; global autoincrement id space 138–345 implies foreign rows in gap
+- CHANGED www.applicationdesigner.de/extjs/voicenotes/details.php: ACCEPTED CONTROL — per-record detail read hierarchy-checked on customer_id+log_id; all foreign cids (2, 999999, 131727) return identical "Kunde
+- CHANGED www.applicationdesigner.de/extjs/agent/get_agent_token.php: REJECTED — session-gated, byte-identical "Zugriff verweigert" for both cids; sole untested parallel BOLA candidate closed
+- CHANGED www.applicationdesigner.de/extjs/livedebugger/auth.php: VPN gate persistent — returns `Not logged in` + `No VPN detected` with public static credential; anonymous mint BLOCKED
+- CHANGED www.applicationdesigner.de/extjs/voicenotes/check.php: re-confirmed NOT VPN-gated with valid public demo token — success:true byte-identically for demo cid=131727 and foreign cid=2

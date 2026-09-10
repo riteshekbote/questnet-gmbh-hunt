@@ -1,13 +1,11 @@
-## 2026-09-10 01:12:07 UTC [target] (model nemotron3)
-[NEW] www.applicationdesigner.de/extjs/get_user_rights.php: anonymous cid-resolving authz endpoint — HTTP 200 with public static credential, body sha256 differs per cid (empty/2/131727/999999), payload high-entropy base64 (~3230 B) rotating per request; encrypted/serialized, not plaintext-readable
-[CHANGED] cbs-proxy.api.live-manager.de: still returns 426 Upgrade Required; anonymous WS handshake (101 + CONNECT CBS100/190/200 + READY) byte-identical for demo cid=131727 vs foreign cid=2 — transport-complete BOLA confirmed live
-[CHANGED] www.applicationdesigner.de/extjs/livedebugger/auth.php: VPN gate persistent — anonymous mint BLOCKED; credential still public in help.js (sha256 8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf)
-[CHANGED] www.applicationdesigner.de/extjs/voicenotes/check.php: re-confirmed NOT VPN-gated with valid public demo token — success:true byte-identically for demo cid=131727 and foreign cid=2 — cross-tenant PII metadata index accessible
-[CHANGED] www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php: public static credential accepted (HTTP 200 success:true), reads resolve live per-id data (id 345 → 32 defs, 25 rows, body sha256 aba9094f0a615eab); gate token-only, no customer_id in request
-[CHANGED] www.applicationdesigner.de/extjs/flexlist/getList.php: directory token-scoped — 10 flexlists, all customer_id=131727; global autoincrement id space (138–345) implies foreign rows in gaps
-[CHANGED] www.applicationdesigner.de/extjs/voicenotes/details.php: per-record detail read hierarchy-checked on customer_id+log_id — all foreign cids (2, 999999, 131727) return identical "Kundennummer nicht in der Hierarchie / keine Berechtigung"
+## 2026-09-10 06:06:43 UTC [target] (model nemotron3)
+[NEW] www.applicationdesigner.de/extjs/get_user_rights.php: anonymous cid-resolving authz endpoint — HTTP 200 with public static credential, body sha256 differs per cid (empty/2/131727/999999), high-entropy base64 payload (~3230 B), encrypted/serialized not plaintext-readable
+[NEW] www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php: ACCEPTED MISCONFIG — public static credential accepted (HTTP 200 success:true), reads resolve live per-id data (id 345 → 32 defs, 25 rows, body sha256 aba9094f0a615eab); gate token-only, no customer_id in request
+[NEW] www.applicationdesigner.de/extjs/flexlist/getList.php: ACCEPTED CONTROL — directory token-scoped; 10 flexlists all customer_id=131727; global autoincrement id space 138–345 implies foreign rows in gaps
+[CHANGED] www.applicationdesigner.de/extjs/voicenotes/details.php: ACCEPTED CONTROL — per-record detail read hierarchy-checked on customer_id+log_id; all foreign cids (2, 999999, 131727) return identical "Kundennummer nicht in der Hierarchie / keine Berechtigung"
 [CHANGED] www.applicationdesigner.de/extjs/agent/get_agent_token.php: REJECTED — session-gated, byte-identical "Zugriff verweigert" for both cids; sole untested parallel BOLA candidate closed
-[CHANGED] Surface frozen: still 4 live in-scope hosts (cbs-proxy.api.live-manager.de, www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de); 8632 wildcard hostnames → 0 dedicated endpoint
+[CHANGED] www.applicationdesigner.de/extjs/livedebugger/auth.php: VPN gate persistent — returns `Not logged in` + `No VPN detected` with public static credential; anonymous mint BLOCKED
+[CHANGED] www.applicationdesigner.de/extjs/voicenotes/check.php: re-confirmed NOT VPN-gated with valid public demo token — success:true byte-identically for demo cid=131727 and foreign cid=2
 [PRIO] cbs-proxy.api.live-manager.de, 9.5, attack_surface=10, business_value=10, tech_exposure=9, gate_ease=10, cloud_surface=8, freshness=8
 [PRIO] www.applicationdesigner.de/extjs/voicenotes/check.php, 7.8, attack_surface=8, business_value=9, tech_exposure=8, gate_ease=8, cloud_surface=5, freshness=8
 [PRIO] www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php, 7.1, attack_surface=7, business_value=8, tech_exposure=7, gate_ease=8, cloud_surface=4, freshness=10
