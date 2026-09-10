@@ -193,3 +193,6 @@
 - 2026-09-10 REJECTED wildcard-subdomain-enum @ *.live-manager.de: 8632 hostnames, 0 dedicated endpoints — unchanged.
 - 2026-09-10 REJECTED api.live-manager.de: host non-resolving — unchanged.
 - 2026-09-10 REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: no secrets-bearing anonymous siblings — unchanged.
+- 2026-09-10 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/playback.php: POST-only, NO token, accepts customerId/text/speaker — NEW zero-token audio generation surface
+- 2026-09-10 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/agent/get_agent_costs.php: GET, NO token, accepts customerId/start/end/summary — NEW zero-token cost-data surface
+- 2026-09-10 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/check_mailserver.php: POST-only, NO token, smtp_server parameter — SSRF candidate re-confirmed

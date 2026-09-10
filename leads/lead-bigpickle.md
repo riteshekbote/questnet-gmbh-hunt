@@ -2472,3 +2472,60 @@ testability: AUTH_HELPED
 [LEARN] REJECTED api.live-manager.de: host non-resolving — unchanged.
 [LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: no secrets-bearing anonymous siblings — unchanged.
 [RISK] questnet-gmbh: 76 — driver cbs-proxy BOLA (95) unchanged and live. New sibling discovery: playback.php (tokenless binary POST with customerId) parallels check_mailserver.php auth-footprint; both POST-only and blocked under passive rules. Voicenote surface refined: details.php hierarchy-gated (CONTROL) while metadata check/get remain credential-only; demo index empty. Flexlist cross-tenant parked to operator (AUTH_HELPED). get_user_rights opaque (no escalation this cycle). Ceiling AUTH_HELPED; no foreign-live data touched, no PII echoed.
+## 2026-09-10 11:32:06 UTC [target] (model bigpickle)
+[NEW] www.applicationdesigner.de/extjs/playback.php: POST-only endpoint confirmed in help.js — NO token, accepts customerId/text/speaker, returns binary audio with 120s timeout; identical auth-footprint to check_mailserver.php.
+[NEW] www.applicationdesigner.de/extjs/agent/get_agent_costs.php: GET endpoint confirmed in help.js — NO token, accepts customerId/start/end/summary; previously untested cost-data endpoint.
+[NEW] www.applicationdesigner.de/help/content.php: GET endpoint confirmed in help.js — NO token, accepts page string parameter; help content surface, low priority.
+[CHANGED] www.applicationdesigner.de/extjs/voicenotes/download.php: help.js analysis confirms NO token appended to download URL (BACKEND_URL+'/extjs/voicenotes/download.php?file='+encodeURIComponent(a)) — gate is purely server-side; prior 404 finding unchanged.
+[CHANGED] www.applicationdesigner.de/extjs/check_mailserver.php: reclassified parameter name from smtp_host to smtp_server (per help.js source); POST-only, NO token; SSRF candidate unchanged.
+[CHANGED] www.applicationdesigner.de/extjs/get_user_rights.php: new anonymous cid-resolving authz endpoint — HTTP 200 with public static credential, body sha256 differs per cid, payload high-entropy base64 (~3230 B) — encrypted/serialized, not anonymous-plaintext-readable; resolver-level authz-design defect only, severity capped LOW–MED.
+[PRIO] cbs-proxy.api.live-manager.de,9.25,a=9,b=10,t=8,g=10,c=8,f=10
+[PRIO] www.applicationdesigner.de,8.50,a=8,b=9,t=8,g=9,c=7,f=10
+[PRIO] www.live-manager.de,3.85,a=3,b=5,t=4,g=3,c=3,f=5
+[HYP] cbs-proxy data-plane cross-tenant frame binding (chain capstone)
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service={service}
+confidence: 95
+reasoning: anonymous WS upgrade returns 101 with zero credentials; client-supplied cid accepted byte-identically for demo 131727 vs foreign 2 (CONNECT CBS100/190/200 + READY); re-confirmed live this cycle (426 Upgrade Required on non-upgrade). No token→cid binding observed at proxy layer; only unverified link is per-cid data-plane frame acceptance.
+evidence_needed: operator replays demo-tenant live_debug frame and diffs accepted response set vs a foreign cid control (own two tenants only, no third-party).
+verify_steps: AUTH_HELPED: WS-upgrade cid=131727&service=100, send one live_debug/call-frame, record accept; repeat with own second cid; byte-diff.
+impact: cross-tenant live-debug/call-flow stream attach (voice/PII); HIGH CVSS 7.5.
+testability: AUTH_HELPED
+[HYP] playback.php tokenless binary-response BOLA
+class: IDOR
+asset: www.applicationdesigner.de/extjs/playback.php
+confidence: 42
+reasoning: help.js confirms playback.php is POST with NO token, accepts customerId, text (spoken text), speaker (provider), and returns binary audio with 120s timeout. customerId is passed client-side from designer.context.customerId — if server does not validate token→cid binding, this is a parallel BOLA vector for audio synthesis/exfil. POST-only blocks passive probe this cycle.
+evidence_needed: authorized POST with customerId=2 vs 131727 using the public static credential; differential response = cross-tenant audio synthesis.
+verify_steps: AUTH_HELPED: POST {action:'play',customerId:2,text:'test',speaker:'default'} vs {action:'play',customerId:131727,text:'test',speaker:'default'} with the public static credential; compare binary response/Content-Type/status.
+impact: cross-tenant TTS synthesis billed to foreign tenant; audio exfil if customerId not validated.
+testability: AUTH_HELPED
+[HYP] voicenotes raw-audio download reaches file-lookup with credential-satisfiable gate
+class: IDOR
+asset: www.applicationdesigner.de/extjs/voicenotes/download.php?token={LIVE_DEMO_CUSTOMER_TOKEN}&customer_id={cid}&file={uuid}
+confidence: 60
+reasoning: download.php returns HTTP 404 file-not-found byte-identically for cid=131727 and cid=2 with real static token — reaches file-lookup stage, no 403/VPN/auth gate. Help.js confirms NO token appended to download URL — gate is purely server-side. Per-record sibling details.php is hierarchy-checked on customer_id+log_id (CONTROL), narrowing cross-tenant surface to raw download only; demo index empty this cycle (total=0,max_id=0).
+evidence_needed: operator fetches real audio bytes for a UUID observed in the index (own/demo tenant only, no third-party replay).
+verify_steps: AUTH_HELPED GET download.php for an indexed UUID; confirm audio bytes + Content-Type.
+impact: cross-tenant call-recording/voicemail/explicit-consent audio exfil; HIGH PII.
+testability: AUTH_HELPED
+[PARKED] check_mailserver.php SSRF (45→40): server-side SMTP connect primitive with attacker-influenced smtp_server/smtp_port; but POST-only blocks passive probe, and the "Mailserver Test Report" response is likely diagnostic-only (no data exfil). Demoted below playback.php which has identical auth-footprint but binary-response + customerId potential.
+[PARKED] get_agent_costs.php (35): GET, NO token, customerId — cost data leakage candidate but 35 confidence without probe; needs operator confirmation.
+[PARKED] get_user_rights.php ciphertext stability (50): passive probe still valid but the endpoint is encrypted/serialized — even if cid-stable ciphertext is confirmed, the security signal is LOW (authz-design defect, not exploitable without decryption key). Keeping in knowledge base but not as a TOP hypothesis.
+[FINAL] 1. cbs-proxy BOLA (95) — chain capstone, transport-complete, anonymous-confirmed, highest CVSS.
+[FINAL] 2. voicenotes raw-audio (60) — gate-stage confirmed credential-satisfiable (404 not 403), needs positive-control UUID.
+[FINAL] 3. playback.php (42) — new tokenless binary endpoint with customerId; POST-only blocks this cycle, needs operator.
+[NEXT] HUMAN: operator replay on wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={own-tenant-B}&service=100 vs demo cid=131727 with one authentic live_debug/call frame; byte-diff accepted response sets (capstone). Second: POST to www.applicationdesigner.de/extjs/playback.php with {action:'play',customerId:2,text:'test',speaker:'default'} vs {customerId:131727,...} using the public static credential to test parallel BOLA on the audio synthesis endpoint.
+[LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WS BOLA transport-complete unchanged — demo 131727 vs foreign 2 byte-identical CONNECT/READY, reconfirmed live (426 Upgrade Required).
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: public bundle ships static credential + full endpoint map including /api/callbuilder/ proxy prefix — unchanged; NEW: confirms playback.php has no token.
+[LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: re-confirmed cross-tenant, NOT VPN-gated with real public demo token — unchanged.
+[LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/voicenotes/details.php: per-record hierarchy-checked — unchanged.
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config.php: zero-auth LLM-routing JSON; dispatch gated — unchanged.
+[LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/index.php?route=: 403 Invalid token — unchanged.
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_token.php: session-gated, byte-identical Zugriff verweigert for both cids — unchanged, closed.
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/common/getCustomers.php: token-scoped — unchanged.
+[LEARN] REJECTED AUTH @ www.live-manager.de rs param: no anonymous open redirect — unchanged.
+[LEARN] REJECTED wildcard-subdomain-enum @ *.live-manager.de: 8632 hostnames, 0 dedicated endpoints — unchanged.
+[LEARN] REJECTED api.live-manager.de: host non-resolving — unchanged.
+[LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: no secrets-bearing anonymous siblings — unchanged.
+[RISK] questnet-gmbh: 76 — driver cbs-proxy BOLA (95) unchanged and live. New sibling discovery: playback.php (tokenless binary POST with customerId) parallels check_mailserver.php auth-footprint; both POST-only and blocked under passive rules. Voicenote surface refined: details.php hierarchy-gated (CONTROL) while metadata check/get remain credential-only; demo index empty. Flexlist cross-tenant parked to operator (AUTH_HELPED). get_user_rights opaque (no escalation this cycle). Ceiling AUTH_HELPED; no foreign-live data touched, no PII echoed.

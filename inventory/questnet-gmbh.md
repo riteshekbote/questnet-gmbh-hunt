@@ -373,3 +373,11 @@ www.live-manager.de
 - CHANGED www.applicationdesigner.de/extjs/agent/get_agent_token.php: REJECTED — session-gated, byte-identical "Zugriff verweigert" for both cids; sole untested parallel BOLA candidate closed
 - CHANGED www.applicationdesigner.de/extjs/livedebugger/auth.php: VPN gate persistent — returns `Not logged in` + `No VPN detected` with public static credential; anonymous mint BLOCKED
 - CHANGED www.applicationdesigner.de/extjs/voicenotes/check.php: re-confirmed NOT VPN-gated with valid public demo token — success:true byte-identically for demo cid=131727 and foreign cid=2
+
+## 2026-09-10 11:41:55 UTC
+- NEW www.applicationdesigner.de/extjs/playback.php: POST-only endpoint confirmed in help.js — NO token, accepts customerId/text/speaker, returns binary audio with 120s timeout; identical auth-footprint to 
+- NEW www.applicationdesigner.de/extjs/agent/get_agent_costs.php: GET endpoint confirmed in help.js — NO token, accepts customerId/start/end/summary; previously untested cost-data endpoint.
+- NEW www.applicationdesigner.de/help/content.php: GET endpoint confirmed in help.js — NO token, accepts page string parameter; help content surface, low priority.
+- CHANGED www.applicationdesigner.de/extjs/voicenotes/download.php: help.js analysis confirms NO token appended to download URL (BACKEND_URL+'/extjs/voicenotes/download.php?file='+encodeURIComponent(a)) — gate 
+- CHANGED www.applicationdesigner.de/extjs/check_mailserver.php: reclassified parameter name from smtp_host to smtp_server (per help.js source); POST-only, NO token; SSRF candidate unchanged.
+- CHANGED www.applicationdesigner.de/extjs/get_user_rights.php: new anonymous cid-resolving authz endpoint — HTTP 200 with public static credential, body sha256 differs per cid, payload high-entropy base64 (~32
