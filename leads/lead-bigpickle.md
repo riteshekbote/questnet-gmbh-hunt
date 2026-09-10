@@ -2666,3 +2666,4 @@ impact: SSRF to cloud metadata (IMDS) → instance keys; HIGH class, unconfirmed
 testability: HUMAN_ONLY
 [NEXT] HUMAN: operator replays demo-tenant live_debug/call-frame on wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid=131727&service=100 with minted token, records accepted frame set, then repeat with their second owned cid and byte-diff — settling the last unverified data-plane hop.
 [RISK] questnet-gmbh: 75 — driver cbs-proxy BOLA (95) live and unchanged; voicenotes cross-tenant metadata (85) still VALID; static credential continues to satisfy a shrinking, explicit subset (voicenotes check, flexlist reads). This cycle closed the last two probe-able secondary candidates (get_agent_costs session-gated; check_mailserver not demo-satisfiable) — no new surface, no escalation. Ceiling AUTH_HELPED on data-plane capstone; no foreign-live data touched, no PII echoed.
+## 2026-09-10 23:15:24 UTC [target] (model bigpickle)
