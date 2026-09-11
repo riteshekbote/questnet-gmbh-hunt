@@ -435,3 +435,14 @@ www.live-manager.de
 - CHANGED www.applicationdesigner.de/extjs/agent/get_agent_token.php: REJECTED — session-gated, byte-identical "Zugriff verweigert" for both cids; sole untested parallel BOLA candidate closed
 - CHANGED www.applicationdesigner.de/AIDesigner/backend/config.php: zero-auth LLM-routing JSON; dispatch gated — unchanged
 - CHANGED www.applicationdesigner.de/AIDesigner/backend/public/index.php?route=: 403 Invalid token with/without static credential — unchanged
+
+## 2026-09-11 06:17:00 UTC
+- NEW www.applicationdesigner.de/extjs/playback.php: POST-only, NO token, accepts customerId/text/speaker — zero-token audio generation surface (help.js confirmed 2026-09-10)
+- NEW www.applicationdesigner.de/extjs/agent/get_agent_costs.php: GET, NO token, accepts customerId/start/end/summary — zero-token cost-data surface (help.js confirmed 2026-09-10)
+- NEW www.applicationdesigner.de/extjs/check_mailserver.php: POST-only, NO token, smtp_server parameter — SSRF-to-metadata candidate re-confirmed (help.js source)
+- NEW www.applicationdesigner.de/extjs/get_user_rights.php: anonymous cid-resolving authz endpoint — HTTP 200 with public static credential, body sha256 cid-dependent rotating, high-entropy base64 (~3230B)
+- CHANGED www.applicationdesigner.de/extjs/livedebugger/auth.php: VPN gate persistent — anonymous mint BLOCKED (returns "Not logged in" + "No VPN detected" with public static credential)
+- CHANGED cbs-proxy.api.live-manager.de: anonymous WS BOLA transport-complete unchanged — demo 131727 vs foreign 2 byte-identical CONNECT/READY, reconfirmed live (426 Upgrade Required)
+- CHANGED www.applicationdesigner.de/extjs/voicenotes/check.php: re-confirmed NOT VPN-gated with valid public demo token — cross-tenant PII metadata index accessible (byte-identical success:true for demo cid=13
+- CHANGED www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php: public static credential accepted, token-only gate, global autoincrement id space 138–345 — unchanged
+- CHANGED www.applicationdesigner.de/api/callbuilder/: prefix root + /live return byte-identical nginx 404 catch-all (146B, 0.63–0.66s) — HTTP front-tier exposes no routed CallBuilder data-plane

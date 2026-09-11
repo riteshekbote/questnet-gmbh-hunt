@@ -232,3 +232,11 @@
 - 2026-09-11 REJECTED wildcard-subdomain-enum @ *.live-manager.de: 8632 hostnames, 0 dedicated endpoints — unchanged
 - 2026-09-11 REJECTED api.live-manager.de: host non-resolving — unchanged
 - 2026-09-11 REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: no secrets-bearing anonymous siblings — unchanged
+- 2026-09-11 REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_costs.php: session-gated ("No VPN detected"), identical response for all cids; earlier ACCEPTED MISCONFIG was wrong — no zero-token cost-data surface exists
+- 2026-09-11 REJECTED IDOR @ www.applicationdesigner.de/extjs/playback.php: session-gated ("unauthorized"), identical response for all cids and no-param; no zero-token audio generation surface exists
+- 2026-09-11 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/voicenotes/delete.php: token-gated (not VPN-gated) destructive endpoint; different error pattern than hierarchy-gated details.php — "Sprachnotiz nicht gefunden oder keine Berechtigung" vs "Kundennummer nicht in der Hierarchie"; potential cross-tenant deletion
+- 2026-09-11 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/voicenotes/get.php: cross-tenant credential-only data endpoint; identical `{"success":true,"data":[],"total":0}` for all cids; same gate pattern as check.php
+- 2026-09-11 ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/download.php: with token-as-query-param reaches file-lookup (404); VPN gate bypassed; no customer_id scoping; cross-tenant download viable if valid UUID known
+- 2026-09-11 ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WS BOLA transport-complete unchanged (426 live) — unchanged
+- 2026-09-11 ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: cross-tenant credential-only, NOT VPN-gated — unchanged; demo index empty this cycle
+- 2026-09-11 REJECTED wildcard-subdomain-enum · api.live-manager.de · live-manager.de rs param · AIDesigner sibling probe — unchanged
