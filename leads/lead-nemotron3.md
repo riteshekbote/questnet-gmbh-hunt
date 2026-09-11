@@ -3141,3 +3141,18 @@ testability: PASSIVE (404 reachable); HUMAN_ONLY (valid UUID)
 [LEARN] REJECTED api.live-manager.de: host non-resolving — unchanged
 [LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: no secrets-bearing anonymous siblings — unchanged
 [RISK] questnet-gmbh: 78 — Driver finding (cbs-proxy BOLA transport-complete) remains VALID HIGH (CVSS 7.5) and VPN-independent. Voicenotes metadata IDOR re-confirmed NOT VPN-gated with valid token (HIGH). Auth.php mint now VPN-gated but credential still public in help.js. get_agent_token.php sole untested parallel BOLA candidate now REJECTED. Flexlist per-id endpoints NEW token-only gate with global ID space — cross-tenant read pending operator confirmation. AIDesigner config.php zero-auth LLM routing disclosure (MEDIUM/LOW). Surface frozen at 4 hosts. PoC for bug gate: cbs-proxy WS 101 with arbitrary cid/service sufficient for HIGH severity report.
+## 2026-09-11 21:23:05 UTC [target] (model nemotron3)
+[NEW] www.applicationdesigner.de/extjs/voicenotes/delete.php: token-gated (not VPN-gated) destructive endpoint; error "Sprachnotiz nicht gefunden oder keine Berechtigung" vs hierarchy-gated details.php "Kundennummer nicht in der Hierarchie"; potential cross-tenant deletion
+[NEW] www.applicationdesigner.de/extjs/voicenotes/get.php: cross-tenant credential-only data endpoint returning identical {"success":true,"data":[],"total":0} for all cids — same gate pattern as check.php
+[NEW] www.applicationdesigner.de/extjs/voicenotes/download.php: with token-as-query-param reaches file-lookup (404); VPN gate bypassed; no customer_id scoping — cross-tenant download viable if valid UUID known
+[CHANGED] www.applicationdesigner.de/extjs/agent/get_agent_costs.php: REJECTED — session-gated ("No VPN detected"), identical response for all cids; earlier ACCEPTED MISCONFIG was wrong
+[CHANGED] www.applicationdesigner.de/extjs/playback.php: REJECTED — session-gated ("unauthorized"), identical response for all cids; no zero-token audio generation surface exists
+[CHANGED] www.applicationdesigner.de/api/callbuilder/: REJECTED MISCONFIG — prefix root + /live return byte-identical nginx 404 catch-all (146B); HTTP front-tier exposes no routed CallBuilder data-plane
+[CHANGED] auth.php VPN gate persistent — anonymous mint BLOCKED (returns "Not logged in" + "No VPN detected" with public static credential); credential still public in help.js
+[CHANGED] cbs-proxy.api.live-manager.de: anonymous WS BOLA transport-complete unchanged — demo 131727 vs foreign 2 byte-identical CONNECT/READY, reconfirmed live (426 Upgrade Required)
+[CHANGED] voicenotes/check.php: re-confirmed NOT VPN-gated with valid public demo token — cross-tenant PII metadata index accessible (byte-identical success:true for demo cid=131727 and foreign cid=2)
+[CHANGED] flexlist/getFields.php|getDetails.php: public static credential accepted, token-only gate, global autoincrement id space 138–345 — unchanged
+[CHANGED] flexlist/getList.php: directory token-scoped, all customer_id=131727; global autoincrement id space 138–345 — unchanged
+[CHANGED] get_user_rights.php: high-entropy base64 / encrypted payload only, cid-dependent rotating — LOW caps
+[CHANGED] AIDesigner backend/config.php: zero-auth LLM-routing JSON; dispatch gated — unchanged
+[CHANGED] AIDesigner backend/public/index.php: 403 Invalid token with/without static credential — unchanged

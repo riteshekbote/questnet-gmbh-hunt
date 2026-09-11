@@ -1226,3 +1226,5 @@
 - LEARN: REJECTED wildcard-subdomain-enum @ *.live-manager.de: 8632 hostnames, 0 dedicated endpoints — unchanged
 - LEARN: REJECTED api.live-manager.de: host non-resolving — unchanged
 - LEARN: REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: no secrets-bearing anonymous siblings — unchanged
+
+## RANKED HYPOTHESES 2026-09-11 21:23:14 UTC
