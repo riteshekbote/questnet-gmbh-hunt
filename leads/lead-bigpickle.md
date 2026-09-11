@@ -2667,3 +2667,40 @@ testability: HUMAN_ONLY
 [NEXT] HUMAN: operator replays demo-tenant live_debug/call-frame on wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid=131727&service=100 with minted token, records accepted frame set, then repeat with their second owned cid and byte-diff — settling the last unverified data-plane hop.
 [RISK] questnet-gmbh: 75 — driver cbs-proxy BOLA (95) live and unchanged; voicenotes cross-tenant metadata (85) still VALID; static credential continues to satisfy a shrinking, explicit subset (voicenotes check, flexlist reads). This cycle closed the last two probe-able secondary candidates (get_agent_costs session-gated; check_mailserver not demo-satisfiable) — no new surface, no escalation. Ceiling AUTH_HELPED on data-plane capstone; no foreign-live data touched, no PII echoed.
 ## 2026-09-10 23:15:24 UTC [target] (model bigpickle)
+## 2026-09-11 01:14:14 UTC [target] (model bigpickle)
+[HYP] CBS data-plane frame acceptance is not tenant-bound (WS)
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={cid}&service=100
+confidence: 95
+reasoning: zero-credential WS upgrade 101 + identical CONNECT CBS100/190/200 + READY frames for demo cid=131727 vs foreign cid=2 and cid=999999999; proxy does not validate cid or require token; 426 on non-upgrade reconfirms live. Proxy-layer transport is anonymous and cid-agnostic.
+evidence_needed: operator-owned second tenant cid sends a live_debug/call-frame and receives the same accepted frame set as demo cid — byte-diff.
+verify_steps: AUTH_HELPED: WS-upgrade cid=131727&service=100, send one live_debug/call frame, record acceptance; repeat with second owned cid; byte-diff response set.
+impact: cross-tenant live-debug/call-stream attach (voice/PII); HIGH CVSS 7.5.
+testability: AUTH_HELPED
+[HYP] voicenote raw-audio download is credential-only, not tenant-scoped
+class: IDOR
+asset: www.applicationdesigner.de/extjs/voicenotes/download.php?file={uuid}
+confidence: 60
+reasoning: help.js appends NO token to download URL; check.php proven credential-only cross-tenant (success:true for cid=2/131727); details.php proves a separate customer_id+log_id hierarchy gate exists but download.php only takes file=. Demo index empty (total=0,max_id=0) → no valid own-tenant positive control yet.
+evidence_needed: operator-owned demo-tenant log UUID → audio 200; foreign cid → 200 (IDOR) or 404 hierarchy gate.
+verify_steps: AUTH_HELPED: GET download.php?file=<own demo UUID> vs <synthetic UUID>; diff status/body.
+impact: cross-tenant voicenote PII audio exfil; HIGH, requires valid index entry.
+testability: AUTH_HELPED
+[HYP] SMTP dial reaches link-local IMDS
+class: SSRF
+asset: www.applicationdesigner.de/extjs/check_mailserver.php
+confidence: 55
+reasoning: POST-only per help.js (smtp_server → live SMTP connection + report); GET returns static `unauthorized` (sha256 74a1c9ac…) with/without demo credential → gate not static-credential-satisfiable; SMTP dial only fires under valid subscribed session.
+evidence_needed: valid-session POST smtp_server=169.254.169.254 smtp_port=80 vs unroutable 10.255.255.1 → response-time/report diff.
+verify_steps: HUMAN_ONLY: POST form body; timing diff only, no data fetch.
+impact: SSRF to cloud metadata → instance keys; HIGH class, unconfirmed, operator-gated.
+testability: HUMAN_ONLY
+[NEXT] HUMAN: operator upgrades wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid=131727&service=100, sends one demo-tenant live_debug/call frame and records the accepted response set, then repeats with their second owned cid and byte-diffs — settling the single remaining unverified hop in the transport-complete BOLA chain. (All passive GET/HEAD/OPTIONS candidates are now exhausted this cycle.)
+[LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/api/callbuilder/: prefix root + /live return byte-identical nginx 404 catch-all (146B, 0.63–0.66s) — HTTP front-tier exposes no routed CallBuilder data-plane; cbs-proxy chain stays WS-only; no new surface.
+[LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WS BOLA transport-complete unchanged (426 live).
+[LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: cross-tenant, NOT VPN-gated — unchanged.
+[LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/voicenotes/details.php: per-record hierarchy-checked — unchanged.
+[LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/flexlist/getList.php + getFields/getDetails + get_user_rights ciphertext + AIDesigner gating — unchanged.
+[LEARN] REJECTED IDOR @ extjs/agent/get_agent_token.php + get_agent_costs.php — session-gated — unchanged.
+[LEARN] REJECTED AUTH @ www.live-manager.de rs param · wildcard-subdomain-enum · api.live-manager.de · AIDesigner sibling probe — unchanged.
+[RISK] questnet-gmbh: 75 — driver cbs-proxy BOLA (95) live, anonymous, transport-complete; voicenote cross-tenant metadata (85) still VALID; static credential continues to satisfy the explicit token-only subset (voicenotes check, flexlist reads). This cycle's sole new probe (callbuilder HTTP prefix) closed with nginx 404 — no new surface, no escalation; remaining unproven HIGHs (voicenote audio exfil, IMDS SSRF) are operator-gated. Ceiling AUTH_HELPED/HUMAN_ONLY; no foreign-live data touched, no PII echoed.

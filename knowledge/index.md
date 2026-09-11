@@ -207,3 +207,28 @@
 - 2026-09-10 ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/get_user_rights.php: high-entropy base64 / encrypted payload only, cid-dependent rotating — LOW caps.
 - 2026-09-10 CHANGED AUTH @ www.applicationdesigner.de/extjs/livedebugger/auth.php: VPN gate persistent — anonymous mint BLOCKED — unchanged.
 - 2026-09-10 REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_token.php: session-gated, byte-identical Zugriff verweigert — closed.
+- 2026-09-11 REJECTED MISCONFIG @ www.applicationdesigner.de/api/callbuilder/: prefix root + /live return byte-identical nginx 404 catch-all (146B, 0.63–0.66s) — HTTP front-tier exposes no routed CallBuilder data-plane; cbs-proxy chain stays WS-only; no new surface.
+- 2026-09-11 ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WS BOLA transport-complete unchanged (426 live).
+- 2026-09-11 ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: cross-tenant, NOT VPN-gated — unchanged.
+- 2026-09-11 ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/voicenotes/details.php: per-record hierarchy-checked — unchanged.
+- 2026-09-11 ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/flexlist/getList.php + getFields/getDetails + get_user_rights ciphertext + AIDesigner gating — unchanged.
+- 2026-09-11 REJECTED IDOR @ extjs/agent/get_agent_token.php + get_agent_costs.php — session-gated — unchanged.
+- 2026-09-11 REJECTED AUTH @ www.live-manager.de rs param · wildcard-subdomain-enum · api.live-manager.de · AIDesigner sibling probe — unchanged.
+- 2026-09-11 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/playback.php: POST-only, NO token, accepts customerId/text/speaker — NEW zero-token audio generation surface
+- 2026-09-11 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/agent/get_agent_costs.php: GET, NO token, accepts customerId/start/end/summary — NEW zero-token cost-data surface
+- 2026-09-11 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/check_mailserver.php: POST-only, NO token, smtp_server parameter — SSRF candidate re-confirmed
+- 2026-09-11 ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WS BOLA transport-complete unchanged — demo 131727 vs foreign 2 byte-identical CONNECT/READY, reconfirmed live (426 Upgrade Required)
+- 2026-09-11 CHANGED AUTH @ www.applicationdesigner.de/extjs/livedebugger/auth.php: VPN gate deployed — now returns `Not logged in` + `No VPN detected` with public static credential (was success:true for foreign cid) — anonymous mint BLOCKED
+- 2026-09-11 CHANGED→ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: VPN gate was placeholder-token artifact; re-probe with real public demo token shows success:true byte-identically for demo cid=131727 and foreign cid=2 — cross-tenant metadata index NOT VPN-gated
+- 2026-09-11 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php: public static credential accepted (HTTP 200 success:true), reads resolve live per-id data; gate is token-only, no customer_id in request
+- 2026-09-11 ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/flexlist/getList.php: directory token-scoped — 10 flexlists, all customer_id=131727; global autoincrement id space (138–345)
+- 2026-09-11 REJECTED (partial) IDOR @ www.applicationdesigner.de/extjs/flexlist/: cross-tenant data read NOT observed anonymous — no foreign flexlist_id known; needs operator with second owned tenant
+- 2026-09-11 REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_token.php: session-gated, byte-identical Zugriff verweigert for both cids — unchanged, closed
+- 2026-09-11 ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/voicenotes/details.php: per-record hierarchy-checked — unchanged
+- 2026-09-11 ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config.php: zero-auth LLM-routing JSON; dispatch gated — unchanged
+- 2026-09-11 ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/index.php?route=: 403 Invalid token — unchanged
+- 2026-09-11 REJECTED IDOR @ www.applicationdesigner.de/extjs/common/getCustomers.php: token-scoped — unchanged
+- 2026-09-11 REJECTED AUTH @ www.live-manager.de rs param: no anonymous open redirect — unchanged
+- 2026-09-11 REJECTED wildcard-subdomain-enum @ *.live-manager.de: 8632 hostnames, 0 dedicated endpoints — unchanged
+- 2026-09-11 REJECTED api.live-manager.de: host non-resolving — unchanged
+- 2026-09-11 REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: no secrets-bearing anonymous siblings — unchanged
