@@ -17324,3 +17324,26 @@ testability: AUTH_HELPED
 ```
 [RISK] questnet-gmbh: 78 — driver cbs-proxy BOLA (95) live and unchanged; NEW delete.php cross-tenant destructive candidate (72) adds destruction class; download.php cross-tenant confirmed at transport level (65) but needs valid UUID; voicenotes check.php cross-tenant metadata still valid but empty this cycle. Two session-gated endpoints (get_agent_costs, playback) closed as non-exploitable. Surface frozen at 4 hosts. Ceiling AUTH_HELPED — no foreign-live data touched, no PII echoed, no destructive actions performed.
 ```
+===== ANALYST bigpickle 2026-09-11 15:22:00 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mcurl -s -o /tmp/check_131727.json -w "%{http_code}" "https://www.applicationdesigner.de/extjs/voicenotes/check.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&customer_id=131727"
+200
+[0m
+[0m$ [0mcurl -s -o /tmp/check_2.json -w "%{http_code}" "https://www.applicationdesigner.de/extjs/voicenotes/check.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&customer_id=2"
+200
+[0m
+Let me run the current NEXT probes to update the analysis.
+[0m$ [0mcurl -s -o /tmp/download_test.json -w "%{http_code}" "https://www.applicationdesigner.de/extjs/voicenotes/download.php?file=test&token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3"
+404
+[0m
+[93m[1m! [0mpermission requested: external_directory (/tmp/*); auto-rejecting
+[0m✗ [0mcat /tmp/check_131727.json failed
+[91m[1mError: [0mThe user rejected permission to use this specific tool call.
+[93m[1m! [0mpermission requested: external_directory (/tmp/*); auto-rejecting
+[0m✗ [0mcat /tmp/check_2.json failed
+[91m[1mError: [0mThe user rejected permission to use this specific tool call.
+[93m[1m! [0mpermission requested: external_directory (/tmp/*); auto-rejecting
+[0m✗ [0mcat /tmp/download_test.json failed
+[91m[1mError: [0mThe user rejected permission to use this specific tool call.

@@ -2799,3 +2799,4 @@ testability: AUTH_HELPED
 [LEARN] REJECTED @ www.applicationdesigner.de/api/callbuilder/: nginx 404 catch-all, no routed data-plane — new rejection
 [LEARN] REJECTED wildcard-subdomain-enum · api.live-manager.de · live-manager.de rs param · AIDesigner sibling probe — unchanged
 [RISK] questnet-gmbh: 78 — driver cbs-proxy BOLA (95) live and unchanged; NEW delete.php cross-tenant destructive candidate (72) adds destruction class; download.php cross-tenant confirmed at transport level (65) but needs valid UUID; voicenotes check.php cross-tenant metadata still valid but empty this cycle. Two session-gated endpoints (get_agent_costs, playback) closed as non-exploitable. Surface frozen at 4 hosts. Ceiling AUTH_HELPED — no foreign-live data touched, no PII echoed, no destructive actions performed.
+## 2026-09-11 15:13:10 UTC [target] (model bigpickle)

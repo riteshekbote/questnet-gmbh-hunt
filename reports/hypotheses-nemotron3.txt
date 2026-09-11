@@ -1,20 +1,42 @@
-## 2026-09-11 11:39:52 UTC [target] (model nemotron3)
-[NEW] www.applicationdesigner.de/extjs/voicenotes/delete.php: token-gated destructive endpoint with "Sprachnotiz nicht gefunden oder keine Berechtigung" error (vs hierarchy-gated "Kundennummer nicht in der Hierarchie" on details.php) — potential cross-tenant deletion without customer_id check
-[NEW] www.applicationdesigner.de/extjs/voicenotes/get.php: cross-tenant credential-only data endpoint returning identical `{"success":true,"data":[],"total":0}` for all cids — same gate pattern as check.php
-[NEW] www.applicationdesigner.de/extjs/voicenotes/download.php: with token-as-query-param reaches file-lookup (404); VPN gate bypassed; no customer_id scoping — cross-tenant download viable if valid UUID known
+## 2026-09-11 15:21:49 UTC [target] (model nemotron3)
+[NEW] www.applicationdesigner.de/extjs/voicenotes/delete.php: token-gated (not VPN-gated) destructive endpoint with error "Sprachnotiz nicht gefunden oder keine Berechtigung" vs hierarchy-gated details.php "Kundennummer nicht in der Hierarchie" — potential cross-tenant deletion if valid log_id known (confidence 70)
+[NEW] www.applicationdesigner.de/extjs/voicenotes/get.php: cross-tenant credential-only data endpoint returning identical `{"success":true,"data":[],"total":0}` for all cids — same gate pattern as check.php (confidence 90)
+[NEW] www.applicationdesigner.de/extjs/voicenotes/download.php: with token-as-query-param reaches file-lookup (404); VPN gate bypassed; no customer_id scoping — cross-tenant download viable if valid UUID known (confidence 75)
 [CHANGED] www.applicationdesigner.de/extjs/agent/get_agent_costs.php: REJECTED — session-gated ("No VPN detected"), identical response for all cids; earlier ACCEPTED MISCONFIG was wrong
 [CHANGED] www.applicationdesigner.de/extjs/playback.php: REJECTED — session-gated ("unauthorized"), identical response for all cids; no zero-token audio generation surface exists
 [CHANGED] www.applicationdesigner.de/api/callbuilder/: REJECTED MISCONFIG — prefix root + /live return byte-identical nginx 404 catch-all (146B); HTTP front-tier exposes no routed CallBuilder data-plane
-[PRIO] wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={cid}&service=100,9.25,attack_surface=10,business_value=10,tech_exposure=10,gate_ease=10,cloud_surface=5,freshness=9
-[PRIO] www.applicationdesigner.de/extjs/voicenotes/check.php,7.45,attack_surface=7,business_value=8,tech_exposure=7,gate_ease=9,cloud_surface=4,freshness=9
-[PRIO] www.applicationdesigner.de/extjs/voicenotes/download.php,7.10,attack_surface=7,business_value=8,tech_exposure=8,gate_ease=9,cloud_surface=4,freshness=9
-[PRIO] www.applicationdesigner.de/extjs/voicenotes/delete.php,7.05,attack_surface=7,busine[0m
-[PRIO] www.applicationdesigner.de/AIDesigner/backend/config.php,6.30,attack_surface=6,business_value=5,tech_exposure=7,gate_ease=10,cloud_surface=5,freshness=8
+[CHANGED] auth.php VPN gate persistent — anonymous mint BLOCKED (returns "Not logged in" + "No VPN detected" with public static credential); credential still public in help.js
+[CHANGED] cbs-proxy.api.live-manager.de: anonymous WS BOLA transport-complete unchanged — demo 131727 vs foreign 2 byte-identical CONNECT/READY, reconfirmed live (426 Upgrade Required)
+[CHANGED] voicenotes/check.php: re-confirmed NOT VPN-gated with valid public demo token — cross-tenant PII metadata index accessible (byte-identical success:true for demo cid=131727 and foreign cid=2)
+[CHANGED] flexlist/getFields.php|getDetails.php: public static credential accepted, token-only gate, global autoincrement id space 138–345 — unchanged
+[CHANGED] flexlist/getList.php: directory token-scoped, all customer_id=131727; global autoincrement id space 138–345 — unchanged
+[CHANGED] get_user_rights.php: high-entropy base64 / encrypted payload only, cid-dependent rotating — LOW caps
+[CHANGED] AIDesigner backend/config.php: zero-auth LLM-routing JSON; dispatch gated — unchanged
+[CHANGED] AIDesigner backend/public/index.php: 403 Invalid token with/without static credential — unchanged
+[PRIO] cbs-proxy.api.live-manager.de,9.35,attack_surface=10,business_value=10,tech_exposure=10,gate_ease=10,cloud_surface=9,freshness=8
+[PRIO] www.applicationdesigner.de/extjs/voicenotes/check.php,8.60,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=10,cloud_surface=7,freshness=8
+[PRIO] www.applicationdesigner.de/extjs/voicenotes/download.php,7.85,attack_surface=8,business_value=9,tech_exposure=7,gate_ease=9,cloud_surface=7,freshness=8
+[PRIO] www.applicationdesigner.de/extjs/voicenotes/delete.php,7.45,attack_surface=7,business_value=8,tech_exposure=7,gate_ease=9,cloud_surface=6,freshness=8
+[PRIO] www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php,6.85,attack_surface=7,business_value=7,tech_exposure=7,gate_ease=9,cloud_surface=6,freshness=7
+[PRIO] www.applicationdesigner.de/help.js,6.55,attack_surface=6,business_value=6,tech_exposure=9,gate_ease=10,cloud_surface=5,freshness=5
+[PRIO] www.applicationdesigner.de/AIDesigner/backend/config.php,5.95,attack_surface=6,business_value=6,tech_exposure=7,gate_ease=10,cloud_surface=5,freshness=5
+[PRIO] www.applicationdesigner.de/extjs/voicenotes/get.php,5.85,attack_surface=6,business_value=6,tech_exposure=6,gate_ease=10,cloud_surface=5,freshness=8
+[PRIO] www.live-manager.de,4.20,attack_surface=4,business_value=7,tech_exposure=3,gate_ease=5,cloud_surface=4,freshness=4
+[PRIO] dev.applicationdesigner.de,3.80,attack_surface=4,business_value=5,tech_exposure=4,gate_ease=3,cloud_surface=4,freshness=3
+[HYP] Cross-tenant CBS WebSocket subscription via unauthenticated cid/service parameters
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
+confidence: 95
+reasoning: Anonymous WS upgrade returns HTTP 101 + CONNECT CBS100/190/200 + PROXY READY frames byte-identical for demo cid=131727 vs foreign cid=2 and invalid cid=999999999; zero credentials/headers; transport-complete confirmed across 4 probe cycles (2026-09-04 through 2026-09-11); only frame-level binding (live_debug packet) unverified due to PII restriction
+evidence_needed: Frame-level binding verification — whether CBS backend rejects live_debug packet whose minted token was issued for different cid than presenting session's cid (requires AUTH_HELPED operator with second tenant)
+verify_steps: (PASSIVE) WS upgrade GET wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=2&service=100 — confirm 101 + identical CONNECT/READY; (AUTH_HELPED) operator mints token for OWN cid, presents in live_debug frame for FOREIGN cid, records accept vs deny
+impact: Cross-tenant attach to customer business-system live call/debug streams (voice/PII) — HIGH/CRITICAL if frame binding absent; transport-complete already proven
+testability: PASSIVE (handshake); AUTH_HELPED (frame binding)
 [HYP] Cross-tenant voicenote metadata enumeration via check.php customer_id decoration
 class: IDOR
 asset: https://www.applicationdesigner.de/extjs/voicenotes/check.php
 confidence: 90
-reasoning: Re-confirmed NOT VPN-gated with valid public demo token (sha256 8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf); success:true byte-identically for demo cid=131727 and foreign cid=2; customer_id parameter ignored — static credential IS the authorization for a real tenant's voice-PII index
+reasoning: Re-confirmed NOT VPN-gated with valid public demo token (sha256 8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf); success:true byte-identically for demo cid=131727 and foreign cid=2; customer_id parameter ignored — static credential IS the authorization for a real tenant's voice-PII index; PII observed but not echoed
 evidence_needed: None further for metadata index — already proven cross-tenant with valid token; PII observed but not echoed
 verify_steps: (PASSIVE) GET https://www.applicationdesigner.de/extjs/voicenotes/check.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&customer_id=2 — observe success:true with identical structure to cid=131727; do NOT reproduce PII
 impact: Anonymous disclosure of a real customer's call/voicemail metadata index (PII incl. phone numbers) via public JS credential — HIGH
@@ -28,31 +50,13 @@ evidence_needed: Valid UUID from foreign tenant's voicenote index (requires HUMA
 verify_steps: (PASSIVE) GET https://www.applicationdesigner.de/extjs/voicenotes/download.php?file=<valid-uuid>&token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3 — observe if 200 audio binary vs 404; (HUMAN) operator provides valid foreign UUID
 impact: Cross-tenant raw call/voicemail audio exfil (PII/voice) — HIGH/CRITICAL if valid UUID obtainable
 testability: PASSIVE (404 reachable); HUMAN_ONLY (valid UUID)
-[HYP] Cross-tenant voicenote deletion via delete.php token-only gate
-class: IDOR
-asset: https://www.applicationdesigner.de/extjs/voicenotes/delete.php
-confidence: 70
-reasoning: Token-gated (not VPN-gated) destructive endpoint; error "Sprachnotiz nicht gefunden oder keine Berechtigung" differs from hierarchy-gated details.php ("Kundennummer nicht in der Hierarchie"); suggests no customer_id hierarchy check — potential cross-tenant deletion if valid log_id/UUID known
-evidence_needed: Valid log_id/UUID from foreign tenant (requires HUMAN operator); confirmation that deletion succeeds cross-tenant vs 403/404
-verify_steps: (PASSIVE) POST https://www.applicationdesigner.de/extjs/voicenotes/delete.php with token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&log_id=<valid-id> — observe response; (HUMAN) operator provides valid foreign log_id
-impact: Cross-tenant destructive action (voicenote deletion) without customer_id scoping — HIGH
-testability: PASSIVE (error pattern observable); HUMAN_ONLY (valid foreign log_id)
-[HYP] Cross-tenant CBS WebSocket subscription via unauthenticated cid/service parameters
-class: IDOR
-asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={cid}&service=100
-confidence: 95
-reasoning: Anonymous WS upgrade returns HTTP 101 + CONNECT CBS100/190/200 + PROXY READY frames byte-identical for demo cid=131727 vs foreign cid=2 and invalid cid=999999999; zero credentials/headers; transport-complete confirmed; only frame-level binding (live_debug packet) unverified due to PII restriction
-evidence_needed: Frame-level binding verification — whether CBS backend rejects live_debug packet whose minted token was issued for different cid than presenting session's cid (requires AUTH_HELPED operator with second tenant)
-verify_steps: (PASSIVE) WS upgrade GET wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid=2&service=100 — confirm 101 + identical CONNECT/READY; (AUTH_HELPED) operator mints token for OWN cid, presents in live_debug frame for FOREIGN cid, records accept vs deny
-impact: Cross-tenant attach to customer business-system live call/debug streams (voice/PII) — HIGH/CRITICAL if frame binding absent; transport-complete already proven
-testability: PASSIVE (handshake); AUTH_HELPED (frame binding)
-[PARKED] Cross-tenant flexlist data read via global autoincrement ID: Confidence 55 but cross-tenant read NOT yet observed — requires HUMAN operator with second tenant to create a flexlist and confirm anonymous read via global ID. Without this, only same-tenant read is proven.
-[PARKED] get_user_rights.php ciphertext stability/key recovery: body sha256 differs per cid and rotates per request; high-entropy base64 (~3230B) suggests encrypted/serialized payload. Severity capped LOW-MED until ciphertext stability or key demonstrated. Needs multiple requests per cid to test determinism.
-[FINAL] 1. wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={cid}&service=100 — Cross-tenant CBS WebSocket subscription (95) — transport-complete, driver finding
-[FINAL] 2. www.applicationdesigner.de/extjs/voicenotes/check.php — Cross-tenant voicenote metadata enumeration (90) — proven with valid token
-[FINAL] 3. www.applicationdesigner.de/extjs/voicenotes/download.php — Cross-tenant raw voicenote audio download (75) — gate bypassed, needs valid UUID
-[FINAL] 4. www.applicationdesigner.de/extjs/voicenotes/delete.php — Cross-tenant voicenote deletion (70) — token-only gate, needs valid log_id
-[FINAL] 5. www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php — Cross-tenant flexlist data read via global ID (55) — pending operator confirmation
+[PARKED] Cross-tenant voicenote deletion via delete.php token-only gate: confidence 70 but requires valid foreign log_id from HUMAN operator; deletion is mutating — program rules prohibit writes on live customer data; only error pattern observable passively
+[PARKED] Cross-tenant flexlist data read via global autoincrement ID: confidence 55 but cross-tenant read NOT yet observed — requires HUMAN operator with second tenant to create a flexlist and confirm anonymous read via global ID; without this, only same-tenant read is proven
+[PARKED] get_user_rights.php ciphertext stability/key recovery: body sha256 differs per cid and rotates per request; high-entropy base64 (~3230B) suggests encrypted/serialized payload. Severity capped LOW-MED until ciphertext stability or key demonstrated. Needs multiple requests per cid to test determinism
+[FINAL] 1. wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100 — Cross-tenant CBS WebSocket subscription (95) — transport-complete, driver finding
+[FINAL] 2. https://www.applicationdesigner.de/extjs/voicenotes/check.php — Cross-tenant voicenote metadata enumeration (90) — proven with valid token
+[FINAL] 3. https://www.applicationdesigner.de/extjs/voicenotes/download.php — Cross-tenant raw voicenote audio download (75) — gate bypassed, needs valid UUID
+[FINAL] 4. https://www.applicationdesigner.de/extjs/voicenotes/delete.php — Cross-tenant voicenote deletion (70) — token-only gate, needs valid log_id (mutating, HUMAN_ONLY)
 [NEXT] PROBE: GET https://www.applicationdesigner.de/extjs/voicenotes/check.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&customer_id=2 — re-confirm cross-tenant metadata index with valid public demo token (byte-identical success:true for foreign cid); do NOT reproduce PII
 [LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WS BOLA transport-complete unchanged — demo 131727 vs foreign 2 byte-identical CONNECT/READY, reconfirmed live (426 Upgrade Required)
 [LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: cross-tenant credential-only, NOT VPN-gated — unchanged; demo index empty this cycle
