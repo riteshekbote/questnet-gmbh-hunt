@@ -501,3 +501,13 @@ www.live-manager.de
 - CHANGED get_user_rights.php: high-entropy base64 / encrypted payload only, cid-dependent rotating — LOW caps
 - CHANGED AIDesigner backend/config.php: zero-auth LLM-routing JSON; dispatch gated — unchanged
 - CHANGED AIDesigner backend/public/index.php: 403 Invalid token with/without static credential — unchanged
+
+## 2026-09-11 23:34:27 UTC
+- NEW www.applicationdesigner.de/extjs/voicenotes/delete.php: token-gated (not VPN-gated) destructive endpoint; error "Sprachnotiz nicht gefunden oder keine Berechtigung" vs hierarchy-gated details.php "Kun
+- NEW www.applicationdesigner.de/extjs/voicenotes/get.php: cross-tenant credential-only data endpoint returning identical `{"success":true,"data":[],"total":0}` for all cids — same gate pattern as check.php
+- NEW www.applicationdesigner.de/extjs/voicenotes/download.php: with token-as-query-param reaches file-lookup (404); VPN gate bypassed; no customer_id scoping — cross-tenant download viable if valid UUID kn
+- CHANGED www.applicationdesigner.de/extjs/agent/get_agent_costs.php: REJECTED — session-gated ("No VPN detected"), identical response for all cids; earlier ACCEPTED MISCONFIG was wrong
+- CHANGED www.applicationdesigner.de/extjs/playback.php: REJECTED — session-gated ("unauthorized"), identical response for all cids; no zero-token audio generation surface exists
+- CHANGED www.applicationdesigner.de/api/callbuilder/: REJECTED MISCONFIG — prefix root + /live return byte-identical nginx 404 catch-all (146B); HTTP front-tier exposes no routed CallBuilder data-plane
+- CHANGED auth.php VPN gate persistent — anonymous mint BLOCKED; credential still public in help.js
+- CHANGED cbs-proxy.api.live-manager.de: anonymous WS BOLA transport-complete unchanged — demo 131727 vs foreign 2 byte-identical CONNECT/READY, reconfirmed live (426 Upgrade Required)

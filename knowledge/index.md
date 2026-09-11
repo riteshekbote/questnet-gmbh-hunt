@@ -248,3 +248,8 @@
 - 2026-09-11 REJECTED MISCONFIG @ www.applicationdesigner.de/api/callbuilder/: prefix root + /live return byte-identical nginx 404 catch-all (146B) — no routed CallBuilder data-plane
 - 2026-09-11 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php: public static credential accepted, token-only gate, global autoincrement id space 138–345 — unchanged
 - 2026-09-11 ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/flexlist/getList.php: directory token-scoped, all customer_id=131727; global autoincrement id space 138–345 — unchanged
+- 2026-09-11 ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: fresh probe 2026-09-11 — success:true,total:0,max_id:0 byte-identical for cid=131727 and cid=2; credential-only cross-tenant gate reconfirmed, index empty (no UUID path vailable).
+- 2026-09-11 ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WS BOLA transport-complete unchanged — demo 131727 vs foreign 2 byte-identical CONNECT/READY, live (426 on non-upgrade).
+- 2026-09-11 ACCEPTED MISCONFIG/CONTROL @ voicenotes get.php, flexlist getFields/getDetails/getList, get_user_rights ciphertext, AIDesigner gating — unchanged.
+- 2026-09-11 REJECTED IDOR @ playback.php + get_agent_costs.php + get_agent_token.php — session/VPN-gated, closed — unchanged.
+- 2026-09-11 REJECTED @ www.applicationdesigner.de/api/callbuilder/ (nginx 404 catch-all) · www.live-manager.de rs param · wildcard-subdomain-enum · api.live-manager.de · AIDesigner sibling probe — unchanged.
