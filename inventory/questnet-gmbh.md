@@ -446,3 +446,11 @@ www.live-manager.de
 - CHANGED www.applicationdesigner.de/extjs/voicenotes/check.php: re-confirmed NOT VPN-gated with valid public demo token — cross-tenant PII metadata index accessible (byte-identical success:true for demo cid=13
 - CHANGED www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php: public static credential accepted, token-only gate, global autoincrement id space 138–345 — unchanged
 - CHANGED www.applicationdesigner.de/api/callbuilder/: prefix root + /live return byte-identical nginx 404 catch-all (146B, 0.63–0.66s) — HTTP front-tier exposes no routed CallBuilder data-plane
+
+## 2026-09-11 11:40:02 UTC
+- NEW www.applicationdesigner.de/extjs/voicenotes/delete.php: token-gated destructive endpoint with "Sprachnotiz nicht gefunden oder keine Berechtigung" error (vs hierarchy-gated "Kundennummer nicht in der 
+- NEW www.applicationdesigner.de/extjs/voicenotes/get.php: cross-tenant credential-only data endpoint returning identical `{"success":true,"data":[],"total":0}` for all cids — same gate pattern as check.php
+- NEW www.applicationdesigner.de/extjs/voicenotes/download.php: with token-as-query-param reaches file-lookup (404); VPN gate bypassed; no customer_id scoping — cross-tenant download viable if valid UUID kn
+- CHANGED www.applicationdesigner.de/extjs/agent/get_agent_costs.php: REJECTED — session-gated ("No VPN detected"), identical response for all cids; earlier ACCEPTED MISCONFIG was wrong
+- CHANGED www.applicationdesigner.de/extjs/playback.php: REJECTED — session-gated ("unauthorized"), identical response for all cids; no zero-token audio generation surface exists
+- CHANGED www.applicationdesigner.de/api/callbuilder/: REJECTED MISCONFIG — prefix root + /live return byte-identical nginx 404 catch-all (146B); HTTP front-tier exposes no routed CallBuilder data-plane
