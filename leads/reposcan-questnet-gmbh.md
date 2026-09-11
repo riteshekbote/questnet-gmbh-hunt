@@ -343,3 +343,5 @@ reasoning: The rayo.conf.xml configures the Rayo XMPP server with shared-secret=
 impact: HIGH — call control via Rayo protocol with default credentials
 verify_steps: 1) Check if port 5222 is open on any in-scope host 2) Attempt XMPP connection with usera/ClueCon credentials 3) If Rayo is active, attempt to create/monitor calls via the Rayo protocol
 TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-11 17:35:26 UTC
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
