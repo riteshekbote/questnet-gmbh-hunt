@@ -520,3 +520,5 @@ www.live-manager.de
 - CHANGED www.applicationdesigner.de/extjs/playback.php: REJECTED — session-gated ("unauthorized"), identical response for all cids; no zero-token audio generation surface exists (2026-09-11)
 - CHANGED www.applicationdesigner.de/api/callbuilder/: REJECTED MISCONFIG — prefix root + /live return byte-identical nginx 404 catch-all (146B); HTTP front-tier exposes no routed CallBuilder data-plane (2026-0
 - CHANGED cbs-proxy.api.live-manager.de: anonymous WS BOLA transport-complete unchanged — demo 131727 vs foreign 2 byte-identical CONNECT/READY, reconfirmed live (426 Upgrade Required) (2026-09-11)
+
+## 2026-09-12 06:32:29 UTC
