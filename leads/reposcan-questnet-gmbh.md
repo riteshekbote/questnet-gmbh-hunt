@@ -401,3 +401,65 @@ reasoning: |
 impact: INFORMATIONAL — library defaults, not deployed secrets
 verify_steps: N/A
 TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-12 18:48:03 UTC
+class: MISCONFIG
+asset: questnet/freeswitch (v1.10-qn) — conf/insideout/autoload_configs/event_socket.conf.xml:3-6
+confidence: 85
+reasoning: The insideout profile (Questnet-customized — proven by hardcoded internal IP 192.168.86.254 in vars.xml:14) configures ESL with listen-ip=0.0.0.0, password=ClueCon, and apply-inbound-acl is commented out. Any network-reachable client can authenticate and issue arbitrary FreeSWITCH API commands (originate, bridge, record, shutdown). The vanilla profile (included by the active freeswitch.xml) also binds to :: with password=ClueCon and ACL commented out.
+impact: HIGH — full FreeSWITCH control from any network-reachable client
+verify_steps: 1) nmap -sV 185.158.96.0/22 -p 8021 2) fs_cli -H <target> -P ClueCon 3) issue `status` or `eval $${local_ip_v4}` to confirm
+class: OTHER
+asset: questnet/freeswitch (v1.10-qn) — conf/insideout/vars.xml:14
+confidence: 90
+reasoning: vars.xml contains internal_ip_v4=192.168.86.254 — a specific non-default private IP committed to a public repo, revealing Questnet internal network topology. The only human modification in the insideout profile.
+impact: LOW — information disclosure aiding internal network reconnaissance
+verify_steps: 1) Verify this IP is not routable from the internet 2) Could be correlated with other internal network details
+class: MISCONFIG
+asset: questnet/freeswitch (v1.10-qn) — conf/insideout/directory/default/*.xml (20+ entries: 1000-1019, brian)
+confidence: 80
+reasoning: All 20+ SIP user entries in the insideout directory use password="1234" and vm-password=<extension_number>. If deployed, any SIP client can register as any extension and make toll-fraud calls.
+impact: MEDIUM — unauthorized SIP registration and toll fraud
+verify_steps: 1) SIP REGISTER with ext 1000-1019 + password 1234 against in-scope SIP endpoint 2) Check SIP ports 5060/5061 on *.live-manager.de or 185.158.96.0/22
+class: MISCONFIG
+asset: questnet/freeswitch (v1.10-qn) — conf/rayo/autoload_configs/rayo.conf.xml:99,105,115
+confidence: 75
+reasoning: Rayo XMPP server configured with shared-secret="ClueCon", authorized user name="usera" password="1", listener on port 5222 with acl="" (empty ACL). Allows unauthenticated XMPP connections to control calls via Rayo protocol using trivially known default credentials.
+impact: HIGH — call control via Rayo protocol with default credentials
+verify_steps: 1) Check if port 5222 is open on any in-scope host 2) XMPP connection with usera/ClueCon 3) Attempt to create/monitor calls via Rayo
+class: MISCONFIG
+asset: questnet/freeswitch (v1.10-qn) — conf/vanilla/autoload_configs/{amqp,hiredis,easyroute,xml_rpc,smpp,switch}.conf.xml
+confidence: 50
+reasoning: Vanilla profile (included by active freeswitch.xml) contains: AMQP password "guest", Redis password "redis", SMTP password "mypassword", XML-RPC user "freeswitch"/pass "works", DB password "password", SMPP password "password". Risk depends on whether these services are actually deployed.
+impact: MEDIUM — default credentials on auxiliary services if deployed
+verify_steps: 1) Check AMQP (5672), Redis (6379), XML-RPC ports on in-scope hosts 2) Attempt default credential auth
+class: MISCONFIG
+asset: questnet/drachtio-freeswitch-modules — examples/config/default.json:5,10
+confidence: 30
+reasoning: Example config contains "secret": "cymru" for drachtio server and "secret": "ClueCon" for FreeSWITCH ESL. Well-known defaults; if deployed without modification, drachtio server accessible with default secret.
+impact: LOW — default credentials in example config
+verify_steps: 1) Check if drachtio (port 9022) is exposed on any in-scope host 2) Attempt connection with default "cymru" secret
+class: SECRET
+asset: questnet/freeswitch — src/mod/applications/mod_http_cache/conf/autoload_configs/http_cache.conf.xml:37-38
+confidence: 10
+reasoning: Azure storage access key kOOY4Y/sqZU9bsLjmN+9McVwTry+UIn1Owt4Zs/... present in upstream example config. Domain is account.blob.core.windows.net (placeholder), commit author is upstream SignalWire maintainer. This is upstream example config, NOT a Questnet-added secret.
+impact: INFORMATIONAL — known upstream example credential
+verify_steps: N/A — confirm account.blob.core.windows.net is not a live Questnet storage account
+class: SECRET
+asset: questnet/freeswitch — src/mod/applications/mod_http_cache/conf/autoload_configs/http_cache.conf.xml:22
+confidence: 5
+reasoning: AKIAIOSFODNN7EXAMPLE and wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY are the well-known AWS documentation example keys. NOT real credentials.
+impact: NONE — known false positive
+verify_steps: N/A
+class: SECRET
+asset: questnet/freeswitch — libs/sofia-sip/libsofia-sip-ua/*/agent.pem, key.pem
+confidence: 5
+reasoning: .pem files contain RSA private keys but are upstream test/example certificates bundled with the sofia-sip library. Publicly known test certs, not Questnet production keys.
+impact: NONE — upstream test certificates
+verify_steps: N/A
+class: OTHER
+asset: questnet/freeswitch — conf/vanilla/autoload_configs/cidlookup.conf.xml:4
+confidence: 5
+reasoning: URL contains api_key=MYAPIKEY — a placeholder string, not a real credential. Used in CNAM lookup service configuration example.
+impact: NONE — placeholder
+verify_steps: N/A
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
