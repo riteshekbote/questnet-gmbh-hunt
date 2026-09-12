@@ -278,3 +278,6 @@
 - 2026-09-12 REJECTED wildcard-subdomain-enum @ *.live-manager.de: 8632 hostnames, 0 dedicated endpoints — unchanged
 - 2026-09-12 REJECTED api.live-manager.de: host non-resolving — unchanged
 - 2026-09-12 REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: no secrets-bearing anonymous siblings — unchanged
+- 2026-09-12 ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: fresh 2026-09-12 14:17 UTC probe — success:true,total:0,max_id:0, credential-only cross-tenant gate, index empty (14th consecutive cycle — no UUID path).
+- 2026-09-12 UNCHANGED @ flexlist getFields/getDetails/getList · get_user_rights ciphertext · AIDesigner config.php/403-gate · help.js static credential · voicenotes details.php hierarchy gate · voicenotes get.php credential-only.
+- 2026-09-12 REJECTED (unchanged) @ /api/callbuilder/ nginx 404 · live-manager.de rs param · wildcard-subdomain-enum · api.live-manager.de · playback/get_agent_costs/get_agent_token session gates · getCustomers token-scoped · playground.php static.

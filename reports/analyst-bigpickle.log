@@ -17926,3 +17926,573 @@ STEP 6 — LEARNING:
 
 STEP 7 — RISK:
 - [RISK] questnet-gmbh: 78 — Driver cbs-proxy anonymous WS BOLA (95) confirmed live this run and report-ready; existing VALID HIGH records stand (broken-auth chain 7.5, voicenote metadata PII 7.5, help.js static credential 7.5). Delete/download record-level findings remain gate-verified but unproven solely due to empty demo index (12th run). No new surface; no destructive action; no PII echoed; no third-party data touched; ceiling unchanged at AUTH_HELPED pending owned-tenant frame binding + record-level proof.
+===== ANALYST bigpickle 2026-09-12 14:20:08 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m• [0mRead workspace state files[90m Explore Agent[0m
+[0m• [0mRead workspace artifacts[90m Explore Agent[0m
+[0m✓ [0mRead workspace artifacts[90m Explore Agent[0m
+[0m✓ [0mRead workspace state files[90m Explore Agent[0m
+[0m
+[0m$ [0mls -la /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/ && ls -la /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/leads/ && cat /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/analyst-out.txt 2>/dev/null | head -50
+total 372
+drwxr-xr-x 12 runner runner   4096 Sep 12 14:13 .
+drwxr-xr-x  3 runner runner   4096 Sep 12 14:13 ..
+drwxr-xr-x  7 runner runner   4096 Sep 12 14:13 .git
+drwxr-xr-x  3 runner runner   4096 Sep 12 14:13 .github
+-rw-r--r--  1 runner runner   1609 Sep 12 14:13 README.md
+-rw-r--r--  1 runner runner    276 Sep 12 14:17 analyst-out.txt
+-rw-r--r--  1 runner runner 145481 Sep 12 14:13 analyst-prompt.txt
+-rw-r--r--  1 runner runner 141761 Sep 12 14:13 ctx.txt
+drwxr-xr-x  2 runner runner   4096 Sep 12 14:13 inventory
+drwxr-xr-x  2 runner runner   4096 Sep 12 14:13 knowledge
+drwxr-xr-x  2 runner runner   4096 Sep 12 14:13 leads
+-rw-r--r--  1 runner runner   1914 Sep 12 14:13 probe-results.md
+drwxr-xr-x  2 runner runner   4096 Sep 12 14:13 recon-notes
+drwxr-xr-x  2 runner runner   4096 Sep 12 14:13 reports
+drwxr-xr-x  2 runner runner   4096 Sep 12 14:13 reposcan-raw
+-rw-r--r--  1 runner runner   3133 Sep 12 14:13 scope.yml
+drwxr-xr-x  2 runner runner   4096 Sep 12 14:13 scripts
+-rw-r--r--  1 runner runner     33 Sep 12 14:13 state_bigpickle.json
+-rw-r--r--  1 runner runner     33 Sep 12 14:13 state_laguna.json
+-rw-r--r--  1 runner runner     33 Sep 12 14:13 state_ling3.json
+-rw-r--r--  1 runner runner     33 Sep 12 14:13 state_longcat.json
+-rw-r--r--  1 runner runner     33 Sep 12 14:13 state_mimo.json
+-rw-r--r--  1 runner runner     33 Sep 12 14:13 state_nemotron3.json
+drwxr-xr-x  2 runner runner   4096 Sep 12 14:13 triage
+total 1096
+drwxr-xr-x  2 runner runner   4096 Sep 12 14:13 .
+drwxr-xr-x 12 runner runner   4096 Sep 12 14:13 ..
+-rw-r--r--  1 runner runner 460173 Sep 12 14:13 lead-bigpickle.md
+-rw-r--r--  1 runner runner   3111 Sep 12 14:13 lead-laguna.md
+-rw-r--r--  1 runner runner   3050 Sep 12 14:13 lead-ling3.md
+-rw-r--r--  1 runner runner   3172 Sep 12 14:13 lead-longcat.md
+-rw-r--r--  1 runner runner     18 Sep 12 14:13 lead-mimo.md
+-rw-r--r--  1 runner runner 594419 Sep 12 14:13 lead-nemotron3.md
+-rw-r--r--  1 runner runner  33862 Sep 12 14:13 reposcan-questnet-gmbh.md
+[0m
+> build · big-pickle
+[0m
+[0m• [0mRead workspace state files[90m Explore Agent[0m
+[0m• [0mRead workspace artifacts[90m Explore Agent[0m
+[0m✓ [0mRead workspace artifacts[90m Explore Agent[0m
+[0m✓ [0mRead workspace state files[90m Explore Agent[0m
+[0m
+[0m$ [0mcat /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/probe-results.md 2>/dev/null | tail -80
+## 2026-09-08 15:08:55 UTC
+
+
+## 2026-09-08 18:50:36 UTC
+
+
+## 2026-09-08 21:48:26 UTC
+
+
+## 2026-09-09 00:00:33 UTC
+
+
+## 2026-09-09 04:32:31 UTC
+
+
+## 2026-09-09 09:16:01 UTC
+
+
+## 2026-09-09 13:53:00 UTC
+
+
+## 2026-09-09 17:45:28 UTC
+
+
+## 2026-09-09 20:51:36 UTC
+
+
+## 2026-09-09 23:16:22 UTC
+
+
+## 2026-09-10 01:15:21 UTC
+
+
+## 2026-09-10 06:14:18 UTC
+
+
+## 2026-09-10 11:41:55 UTC
+
+
+## 2026-09-10 15:18:22 UTC
+
+
+## 2026-09-10 18:39:32 UTC
+
+
+## 2026-09-10 21:15:35 UTC
+
+
+## 2026-09-10 23:16:19 UTC
+
+
+## 2026-09-11 01:16:10 UTC
+
+
+## 2026-09-11 06:17:00 UTC
+
+
+## 2026-09-11 11:40:02 UTC
+
+
+## 2026-09-11 15:22:00 UTC
+
+
+## 2026-09-11 18:45:46 UTC
+
+
+## 2026-09-11 21:23:14 UTC
+
+
+## 2026-09-11 23:34:27 UTC
+
+
+## 2026-09-12 01:37:32 UTC
+
+
+## 2026-09-12 06:32:29 UTC
+
+
+## 2026-09-12 11:17:37 UTC
+[0m
+[0m$ [0mcat /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/state_bigpickle.json && echo "---" && cat /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/state_nemotron3.json && echo "---" && cat /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/state_laguna.json && echo "---" && cat /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/state_longcat.json && echo "---" && echo "---LEADS TAILS---" && for f in lead-laguna.md lead-ling3.md lead-longcat.md; do echo "=== $f ==="; tail -25 /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/leads/$f; done
+{"phase": "POC", "target": "api"}---
+{"phase": "POC", "target": "api"}---
+{"phase": "POC", "target": "api"}---
+{"phase": "POC", "target": "api"}---
+---LEADS TAILS---
+=== lead-laguna.md ===
+## 2026-09-08 21:42:46 UTC [target] (model laguna)
+## 2026-09-08 23:57:25 UTC [target] (model laguna)
+## 2026-09-09 04:27:41 UTC [target] (model laguna)
+## 2026-09-09 09:10:52 UTC [target] (model laguna)
+## 2026-09-09 13:46:49 UTC [target] (model laguna)
+## 2026-09-09 17:43:26 UTC [target] (model laguna)
+## 2026-09-09 20:45:02 UTC [target] (model laguna)
+## 2026-09-09 23:05:24 UTC [target] (model laguna)
+## 2026-09-10 01:10:42 UTC [target] (model laguna)
+## 2026-09-10 06:05:01 UTC [target] (model laguna)
+## 2026-09-10 11:31:10 UTC [target] (model laguna)
+## 2026-09-10 15:08:50 UTC [target] (model laguna)
+## 2026-09-10 18:33:35 UTC [target] (model laguna)
+## 2026-09-10 21:11:54 UTC [target] (model laguna)
+## 2026-09-10 23:14:48 UTC [target] (model laguna)
+## 2026-09-11 01:12:32 UTC [target] (model laguna)
+## 2026-09-11 06:07:09 UTC [target] (model laguna)
+## 2026-09-11 11:32:39 UTC [target] (model laguna)
+## 2026-09-11 15:12:04 UTC [target] (model laguna)
+## 2026-09-11 18:39:04 UTC [target] (model laguna)
+## 2026-09-11 21:20:27 UTC [target] (model laguna)
+## 2026-09-11 23:31:28 UTC [target] (model laguna)
+## 2026-09-12 01:32:52 UTC [target] (model laguna)
+## 2026-09-12 06:30:38 UTC [target] (model laguna)
+## 2026-09-12 11:15:36 UTC [target] (model laguna)
+=== lead-ling3.md ===
+## 2026-09-08 21:42:47 UTC [target] (model ling3)
+## 2026-09-08 23:57:23 UTC [target] (model ling3)
+## 2026-09-09 04:27:35 UTC [target] (model ling3)
+## 2026-09-09 09:10:52 UTC [target] (model ling3)
+## 2026-09-09 13:46:51 UTC [target] (model ling3)
+## 2026-09-09 17:43:24 UTC [target] (model ling3)
+## 2026-09-09 20:45:04 UTC [target] (model ling3)
+## 2026-09-09 23:05:28 UTC [target] (model ling3)
+## 2026-09-10 01:10:41 UTC [target] (model ling3)
+## 2026-09-10 06:04:59 UTC [target] (model ling3)
+## 2026-09-10 11:31:06 UTC [target] (model ling3)
+## 2026-09-10 15:08:53 UTC [target] (model ling3)
+## 2026-09-10 18:33:31 UTC [target] (model ling3)
+## 2026-09-10 21:11:54 UTC [target] (model ling3)
+## 2026-09-10 23:14:46 UTC [target] (model ling3)
+## 2026-09-11 01:12:30 UTC [target] (model ling3)
+## 2026-09-11 06:07:07 UTC [target] (model ling3)
+## 2026-09-11 11:32:39 UTC [target] (model ling3)
+## 2026-09-11 15:11:52 UTC [target] (model ling3)
+## 2026-09-11 18:39:05 UTC [target] (model ling3)
+## 2026-09-11 21:20:28 UTC [target] (model ling3)
+## 2026-09-11 23:31:16 UTC [target] (model ling3)
+## 2026-09-12 01:32:53 UTC [target] (model ling3)
+## 2026-09-12 06:30:38 UTC [target] (model ling3)
+## 2026-09-12 11:15:54 UTC [target] (model ling3)
+=== lead-longcat.md ===
+## 2026-09-08 21:42:45 UTC [target] (model longcat)
+## 2026-09-08 23:57:24 UTC [target] (model longcat)
+## 2026-09-09 04:27:39 UTC [target] (model longcat)
+## 2026-09-09 09:10:53 UTC [target] (model longcat)
+## 2026-09-09 13:46:51 UTC [target] (model longcat)
+## 2026-09-09 17:43:23 UTC [target] (model longcat)
+## 2026-09-09 20:45:04 UTC [target] (model longcat)
+## 2026-09-09 23:05:28 UTC [target] (model longcat)
+## 2026-09-10 01:10:38 UTC [target] (model longcat)
+## 2026-09-10 06:04:59 UTC [target] (model longcat)
+## 2026-09-10 11:31:06 UTC [target] (model longcat)
+## 2026-09-10 15:08:51 UTC [target] (model longcat)
+## 2026-09-10 18:33:34 UTC [target] (model longcat)
+## 2026-09-10 21:11:54 UTC [target] (model longcat)
+## 2026-09-10 23:14:49 UTC [target] (model longcat)
+## 2026-09-11 01:12:30 UTC [target] (model longcat)
+## 2026-09-11 06:07:08 UTC [target] (model longcat)
+## 2026-09-11 11:32:40 UTC [target] (model longcat)
+## 2026-09-11 15:11:53 UTC [target] (model longcat)
+## 2026-09-11 18:39:03 UTC [target] (model longcat)
+## 2026-09-11 21:20:34 UTC [target] (model longcat)
+## 2026-09-11 23:31:17 UTC [target] (model longcat)
+## 2026-09-12 01:33:02 UTC [target] (model longcat)
+## 2026-09-12 06:30:36 UTC [target] (model longcat)
+## 2026-09-12 11:15:50 UTC [target] (model longcat)
+[0m
+[0m$ [0mcd /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt && git log --oneline -15 && echo "---STATUS---" && git status --short && echo "---TRIAGE---" && ls -la triage/ reports/ && tail -40 triage/*.md 2>/dev/null
+9f4216a reposcan 2026-09-12-13-10
+---STATUS---
+?? analyst-out.txt
+?? analyst-prompt.txt
+?? ctx.txt
+---TRIAGE---
+reports/:
+total 2584
+drwxr-xr-x  2 runner runner    4096 Sep 12 14:13 .
+drwxr-xr-x 12 runner runner    4096 Sep 12 14:13 ..
+-rw-r--r--  1 runner runner 1348649 Sep 12 14:13 analyst-bigpickle.log
+-rw-r--r--  1 runner runner   13237 Sep 12 14:13 analyst-laguna.log
+-rw-r--r--  1 runner runner   13176 Sep 12 14:13 analyst-ling3.log
+-rw-r--r--  1 runner runner   13298 Sep 12 14:13 analyst-longcat.log
+-rw-r--r--  1 runner runner 1007493 Sep 12 14:13 analyst-nemotron3.log
+-rw-r--r--  1 runner runner    2983 Sep 12 14:13 hypotheses-bigpickle.txt
+-rw-r--r--  1 runner runner      51 Sep 12 14:13 hypotheses-laguna.txt
+-rw-r--r--  1 runner runner      50 Sep 12 14:13 hypotheses-ling3.txt
+-rw-r--r--  1 runner runner      52 Sep 12 14:13 hypotheses-longcat.txt
+-rw-r--r--  1 runner runner    9856 Sep 12 14:13 hypotheses-nemotron3.txt
+-rw-r--r--  1 runner runner  196385 Sep 12 14:13 hypotheses.md
+-rw-r--r--  1 runner runner    2923 Sep 12 14:13 valid-bugs.md
+
+triage/:
+total 348
+drwxr-xr-x  2 runner runner  4096 Sep 12 14:13 .
+drwxr-xr-x 12 runner runner  4096 Sep 12 14:13 ..
+-rw-r--r--  1 runner runner     0 Sep 12 14:13 .gitkeep
+-rw-r--r--  1 runner runner   228 Sep 12 14:13 run-2026-09-02-21-42.md
+-rw-r--r--  1 runner runner   150 Sep 12 14:13 run-2026-09-02-23-54.md
+-rw-r--r--  1 runner runner   754 Sep 12 14:13 run-2026-09-03-03-39.md
+-rw-r--r--  1 runner runner   315 Sep 12 14:13 run-2026-09-03-08-18.md
+-rw-r--r--  1 runner runner   143 Sep 12 14:13 run-2026-09-03-12-53.md
+-rw-r--r--  1 runner runner   229 Sep 12 14:13 run-2026-09-03-16-58.md
+-rw-r--r--  1 runner runner   163 Sep 12 14:13 run-2026-09-03-19-43.md
+-rw-r--r--  1 runner runner   269 Sep 12 14:13 run-2026-09-03-22-24.md
+-rw-r--r--  1 runner runner   214 Sep 12 14:13 run-2026-09-04-00-23.md
+-rw-r--r--  1 runner runner   186 Sep 12 14:13 run-2026-09-04-05-05.md
+-rw-r--r--  1 runner runner   226 Sep 12 14:13 run-2026-09-04-09-45.md
+-rw-r--r--  1 runner runner   174 Sep 12 14:13 run-2026-09-04-14-05.md
+-rw-r--r--  1 runner runner   144 Sep 12 14:13 run-2026-09-04-17-42.md
+-rw-r--r--  1 runner runner   190 Sep 12 14:13 run-2026-09-04-19-53.md
+-rw-r--r--  1 runner runner   189 Sep 12 14:13 run-2026-09-04-22-13.md
+-rw-r--r--  1 runner runner   163 Sep 12 14:13 run-2026-09-05-00-11.md
+-rw-r--r--  1 runner runner   229 Sep 12 14:13 run-2026-09-05-04-41.md
+-rw-r--r--  1 runner runner  3734 Sep 12 14:13 run-2026-09-05-08-38.md
+-rw-r--r--  1 runner runner   182 Sep 12 14:13 run-2026-09-05-12-04.md
+-rw-r--r--  1 runner runner   350 Sep 12 14:13 run-2026-09-05-15-21.md
+-rw-r--r--  1 runner runner   236 Sep 12 14:13 run-2026-09-05-17-37.md
+-rw-r--r--  1 runner runner   193 Sep 12 14:13 run-2026-09-05-19-30.md
+-rw-r--r--  1 runner runner   189 Sep 12 14:13 run-2026-09-05-21-41.md
+-rw-r--r--  1 runner runner   218 Sep 12 14:13 run-2026-09-05-23-38.md
+-rw-r--r--  1 runner runner   213 Sep 12 14:13 run-2026-09-06-01-20.md
+-rw-r--r--  1 runner runner 12840 Sep 12 14:13 run-2026-09-06-06-10.md
+-rw-r--r--  1 runner runner  1952 Sep 12 14:13 run-2026-09-06-11-08.md
+-rw-r--r--  1 runner runner   210 Sep 12 14:13 run-2026-09-06-14-14.md
+-rw-r--r--  1 runner runner   244 Sep 12 14:13 run-2026-09-06-17-08.md
+-rw-r--r--  1 runner runner   654 Sep 12 14:13 run-2026-09-06-19-17.md
+-rw-r--r--  1 runner runner 17188 Sep 12 14:13 run-2026-09-06-21-29.md
+-rw-r--r--  1 runner runner   283 Sep 12 14:13 run-2026-09-06-23-09.md
+-rw-r--r--  1 runner runner   146 Sep 12 14:13 run-2026-09-07-01-06.md
+-rw-r--r--  1 runner runner   152 Sep 12 14:13 run-2026-09-07-06-11.md
+-rw-r--r--  1 runner runner   234 Sep 12 14:13 run-2026-09-07-12-45.md
+-rw-r--r--  1 runner runner   161 Sep 12 14:13 run-2026-09-07-18-09.md
+-rw-r--r--  1 runner runner   211 Sep 12 14:13 run-2026-09-07-21-36.md
+-rw-r--r--  1 runner runner   204 Sep 12 14:13 run-2026-09-07-23-46.md
+-rw-r--r--  1 runner runner   264 Sep 12 14:13 run-2026-09-08-03-47.md
+-rw-r--r--  1 runner runner 16515 Sep 12 14:13 run-2026-09-08-08-45.md
+-rw-r--r--  1 runner runner   221 Sep 12 14:13 run-2026-09-08-13-25.md
+-rw-r--r--  1 runner runner   167 Sep 12 14:13 run-2026-09-08-17-29.md
+-rw-r--r--  1 runner runner  1066 Sep 12 14:13 run-2026-09-08-20-16.md
+-rw-r--r--  1 runner runner   984 Sep 12 14:13 run-2026-09-08-22-45.md
+-rw-r--r--  1 runner runner   185 Sep 12 14:13 run-2026-09-09-01-06.md
+-rw-r--r--  1 runner runner   151 Sep 12 14:13 run-2026-09-09-06-06.md
+-rw-r--r--  1 runner runner   187 Sep 12 14:13 run-2026-09-09-11-34.md
+-rw-r--r--  1 runner runner   166 Sep 12 14:13 run-2026-09-09-15-17.md
+-rw-r--r--  1 runner runner   198 Sep 12 14:13 run-2026-09-09-18-43.md
+-rw-r--r--  1 runner runner   213 Sep 12 14:13 run-2026-09-09-21-33.md
+-rw-r--r--  1 runner runner   191 Sep 12 14:13 run-2026-09-09-23-30.md
+-rw-r--r--  1 runner runner   188 Sep 12 14:13 run-2026-09-10-01-27.md
+-rw-r--r--  1 runner runner 10247 Sep 12 14:13 run-2026-09-10-06-41.md
+-rw-r--r--  1 runner runner 13285 Sep 12 14:13 run-2026-09-10-11-51.md
+-rw-r--r--  1 runner runner   177 Sep 12 14:13 run-2026-09-10-16-04.md
+-rw-r--r--  1 runner runner   216 Sep 12 14:13 run-2026-09-10-19-09.md
+-rw-r--r--  1 runner runner  1753 Sep 12 14:13 run-2026-09-10-21-42.md
+-rw-r--r--  1 runner runner   175 Sep 12 14:13 run-2026-09-10-23-50.md
+-rw-r--r--  1 runner runner   886 Sep 12 14:13 run-2026-09-11-03-46.md
+-rw-r--r--  1 runner runner   215 Sep 12 14:13 run-2026-09-11-08-45.md
+-rw-r--r--  1 runner runner   182 Sep 12 14:13 run-2026-09-11-13-23.md
+-rw-r--r--  1 runner runner   216 Sep 12 14:13 run-2026-09-11-17-13.md
+-rw-r--r--  1 runner runner   309 Sep 12 14:13 run-2026-09-11-19-49.md
+-rw-r--r--  1 runner runner   236 Sep 12 14:13 run-2026-09-11-22-21.md
+-rw-r--r--  1 runner runner  1502 Sep 12 14:13 run-2026-09-12-00-37.md
+-rw-r--r--  1 runner runner  7845 Sep 12 14:13 run-2026-09-12-05-09.md
+-rw-r--r--  1 runner runner   668 Sep 12 14:13 run-2026-09-12-09-26.md
+-rw-r--r--  1 runner runner   153 Sep 12 14:13 run-2026-09-12-13-08.md
+[0m
+[0m$ [0mdate -u && echo "===" && cat /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/triage/run-2026-09-12-13-08.md && echo "===09-26===" && cat /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/triage/run-2026-09-12-09-26.md && echo "===05-09===" && cat /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/triage/run-2026-09-12-05-09.md
+Sat Sep 12 14:17:31 UTC 2026
+===
+
+===== TRIAGE 2026-09-12 13:08:15 UTC =====
+[0m
+> build · mimo-v2.5-free
+[0m
+The leads section is empty. Please provide the actual leads to validate.
+===09-26===
+
+===== TRIAGE 2026-09-12 09:26:46 UTC =====
+[0m
+> build · mimo-v2.5-free
+[0m
+[0m✱ [0mGlob "**/*leads*"[90m 1 match[0m
+[0m✱ [0mGlob "**/*questnet*"[90m 2 matches[0m
+[0m→ [0mRead inventory/questnet-gmbh.md
+[0m→ [0mRead leads/reposcan-questnet-gmbh.md
+[0m→ [0mRead new-leads.txt
+[0m✱ [0mGlob "**/*scope*"[90m 1 match[0m
+[0m✱ [0mGlob "**/*valid*bug*"[90m 1 match[0m
+[0m→ [0mRead scope.yml
+[0m→ [0mRead reports/valid-bugs.md
+**No leads to validate.** The LEADS section in your message is empty — nothing follows the "LEADS:" heading.
+
+If you have leads from the hunt bot, please paste them and I'll run the 7-Question Gate.
+===05-09===
+
+===== TRIAGE 2026-09-12 05:09:43 UTC =====
+[0m
+> build · mimo-v2.5-free
+[0m
+[0m✱ [0mGlob "**/*lead*"[90m 7 matches[0m
+[0m✱ [0mGlob "**/*.yml"[90m 1 match[0m
+[0m✱ [0mGlob "**/*scope*"[90m 1 match[0m
+The message appears incomplete — the LEADS section is empty. Let me check if there are leads in the repository.
+[0m→ [0mRead scope.yml
+[0m→ [0mRead new-leads.txt
+[0m→ [0mRead leads/lead-longcat.md
+[0m→ [0mRead leads/lead-mimo.md
+[0m→ [0mRead leads/lead-ling3.md
+[0m→ [0mRead leads/lead-laguna.md
+[0m→ [0mRead leads/lead-bigpickle.md
+[0m→ [0mRead leads/lead-nemotron3.md
+[0m→ [0mRead leads/lead-bigpickle.md[90m [offset=355][0m
+[0m→ [0mRead leads/lead-nemotron3.md[90m [offset=349][0m
+Let me read the remaining portions of the longer lead files.
+I've now read all lead files and scope. Let me deduplicate across the 6 bot logs and run the 7-Question Gate on each distinct finding.
+
+---
+
+## TRIAGE RESULTS
+
+### Finding 1: CBS Proxy WebSocket — Anonymous IDOR/BOLA (`cbs-proxy.api.live-manager.de`)
+
+| Q | Answer |
+|---|--------|
+| Q1 Scope | YES — `*.live-manager.de` in scope; `cbs-proxy.api.live-manager.de` resolves to 185.158.98.53 (in-scope /22) |
+| Q2 Reachable | YES — public, zero credentials, anonymous WS upgrade returns HTTP 101 |
+| Q3 Impact | YES — cross-tenant exposure of customer business-system call/debug streams (PII/voice) |
+| Q4 Provable | YES — read-only WS handshake confirmed (101 + CONNECT CBS100/190/200 + READY for cid=1, cid=999999999, service=999999 — byte-identical) |
+| Q5 Novel | YES — no evidence of prior report |
+| Q6 Not always-rejected | YES — not on the always-rejected list |
+| Q7 Reasonable triager | YES — anonymous WS relay to backend CBS systems for any cid is a clear security finding |
+
+**Verdict: VALID**
+
+**Proof steps:** WS-upgrade GET `wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=999999999&service=999999` with Upgrade/Connection/Sec-WebSocket headers (no auth); observe HTTP 101 + CONNECT + READY frames. Compare with `cid=1` — identical response. ~2 read-only requests, no data subscription.
+
+**Impact:** Cross-tenant live call/debug stream attachment via anonymous WebSocket to internal CBS business systems. **HIGH** (broken access control on customer-facing proxy).
+
+**CVSS 3.1:** `AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:N/A:N` → **8.6 (High)**
+
+**Reporting channel:** bugs.olivermaicher.eu — report + PoC + contact + payment
+
+---
+
+### Finding 2: Static Credential Token Mint + Voicenote PII Leak (chained: `www.applicationdesigner.de` → `cbs-proxy`)
+
+| Q | Answer |
+|---|--------|
+| Q1 Scope | YES — `*.applicationdesigner.de` in scope |
+| Q2 Reachable | YES — public help.js ships static credential; auth.php/voicenotes endpoints accept it unauthenticated |
+| Q3 Impact | YES — anonymous per-cid debug token minting + real customer voicenote metadata (phone numbers, UUID filenames) exposed |
+| Q4 Provable | YES — auth.php returns `success:true` for foreign cid=2; get.php/check.php return identical voicenote index ignoring customer_id |
+| Q5 Novel | YES — static credential in public JS used as sole authorization across multiple endpoints |
+| Q6 Not always-rejected | YES — not informational/benign; concrete PII disclosure + broken auth |
+| Q7 Reasonable triager | YES — static credential that mints auth tokens for arbitrary tenants is a clear broken-auth bug |
+
+**Verdict: VALID**
+
+**Proof steps:** (1) GET `https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token={sha256 8d2faac1...}&customer_id=2&srn=100` → `success:true` with auth hash. (2) GET `https://www.applicationdesigner.de/extjs/voicenotes/check.php?token={same}&customer_id=2` → `success:true total=1` (identical to cid=131727). Read-only, ~3 requests, no PII echoed in report.
+
+**Impact:** Broken authentication allowing anonymous minting of per-tenant live-debug tokens for arbitrary customer IDs, combined with disclosure of real customer call/voicemail metadata (PII including phone numbers). **HIGH** (broken auth + PII exposure).
+
+**CVSS 3.1:** `AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N` → **7.5 (High)**
+
+**Reporting channel:** bugs.olivermaicher.eu
+
+---
+
+### Finding 3: ExtJS Help App Endpoint Enumeration (`www.applicationdesigner.de`)
+
+| Q | Answer |
+|---|--------|
+| Q1 Scope | YES |
+| Q2 Reachable | YES — help.js, help.json publicly served |
+| Q3 Impact | WEAK — internal hostname/endpoint discovery only; no data access demonstrated |
+| Q4 Provable | YES — static files served at known URLs |
+| Q5 Novel | YES — but low novelty value (information disclosure) |
+| Q6 Not always-rejected | BORDERLINE — falls under "disclosure of known public files" and information-only findings |
+| Q7 Reasonable triager | NO — triagers routinely reject internal endpoint enumeration without demonstrated exploitation |
+
+**Verdict: INVALID**
+
+**Reason:** Internal asset/endpoint enumeration without demonstrated data access or exploitation path. Low security impact; likely rejected as informational.
+
+---
+
+### Finding 4: Post-Login Open Redirect via `rs` Parameter (`www.live-manager.de`)
+
+| Q | Answer |
+|---|--------|
+| Q1 Scope | YES |
+| Q2 Reachable | NO — requires authenticated session to test |
+| Q3 Impact | HYPOTHETICAL — open redirect → OAuth code theft is plausible but unproven |
+| Q4 Provable | NO — anonymous variant rejected (GET `/?rs=` not reflected server-side); post-login behavior unverified |
+| Q5 Novel | YES |
+| Q6 Not always-rejected | YES |
+| Q7 Reasonable triager | NO — cannot file a report on unverified behavior; anonymous path already disproven |
+
+**Verdict: HOLD**
+
+**Reason:** AUTH_HELPED-only verification needed; anonymous path already rejected. Cannot validate without a live customer session. Park until auth-assisted context available.
+
+---
+
+### Finding 5: api.live-manager.de Debug Endpoints (nemotron3)
+
+| Q | Answer |
+|---|--------|
+| Q1 Scope | In inventory but… |
+| Q2 Reachable | NO — host does not resolve (confirmed dropped by bigpickle) |
+| Q3 Impact | N/A — no surface exists |
+| Q4 Provable | NO — no host to probe |
+| Q5 Novel | N/A |
+| Q6 Not always-rejected | N/A |
+| Q7 Reasonable triager | NO — non-resolving host, no finding possible |
+
+**Verdict: INVALID**
+
+**Reason:** Host does not resolve; no attack surface exists. Removed from all models after initial recon.
+
+---
+
+### Finding 6: auth.live-manager.de OAuth/OIDC Misconfiguration (nemotron3)
+
+| Q | Answer |
+|---|--------|
+| Q1 Scope | YES — in inventory |
+| Q2 Reachable | UNCONFIRMED — 0 live HTTP responses; likely wildcard mirror |
+| Q3 Impact | HYPOTHETICAL — ATO via code theft if OIDC served |
+| Q4 Provable | NO — host not confirmed to serve distinct content |
+| Q5 Novel | YES |
+| Q6 Not always-rejected | YES |
+| Q7 Reasonable triager | NO — no live host confirmed; pure speculation on wildcard DNS |
+
+**Verdict: INVALID**
+
+**Reason:** Host returns 0 live HTTP; consistent with wildcard CDN mirror. No evidence of distinct content or OIDC configuration.
+
+---
+
+## SUMMARY
+
+| # | Finding | Verdict | CVSS |
+|---|---------|---------|------|
+| 1 | CBS Proxy WebSocket IDOR/BOLA | **VALID** | 8.6 |
+| 2 | Static credential token mint + voicenote PII leak | **VALID** | 7.5 |
+| 3 | ExtJS endpoint enumeration | **INVALID** | — |
+| 4 | rs open redirect (post-login) | **HOLD** | — |
+| 5 | api.live-manager.de debug endpoints | **INVALID** | — |
+| 6 | auth.live-manager.de OIDC misconfig | **INVALID** | — |
+
+**Two VALID findings ready to report.** Both are passive-only, non-invasive, and demonstrated on in-scope assets. The CBS proxy finding (Finding 1) is the strongest — anonymous WS relay to backend CBS systems with client-supplied tenant ID. Finding 2 chains the static credential token mint to demonstrate real PII disclosure.
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "HTTP %{http_code} time=%{time_total}s server=%{header_json}\n" --max-time 15 "wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=2&service=100" 2>&1 | head -c 600
+HTTP 000 time=0.000000s server={
+}
+[0m
+Current cycle check: last probes confirmed index empty (12th). Running the two standing read-only watches this cycle — voicenote index (UUID path gating) and cbs-proxy liveness.
+[0m$ [0mcurl -s -o /dev/null -w "HTTP %{http_code} time=%{time_total}s\n" "https://www.applicationdesigner.de/extjs/voicenotes/check.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&customer_id=2"; echo "---body---"; curl -s "https://www.applicationdesigner.de/extjs/voicenotes/check.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&customer_id=2" | head -c 400
+HTTP 200 time=0.778998s
+---body---
+{"success":true,"total":0,"max_id":0}
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "HTTP %{http_code} time=%{time_total}s\n" "https://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=2&service=100"
+HTTP 426 time=1.010789s
+[0m
+STEP 1 — DELTA: NO_DELTA (fresh probes 2026-09-12 14:17 UTC reconfirm identical state to prior cycle: check.php total:0, cbs-proxy 426 live; no new hosts/endpoints since 2026-09-04; surface frozen at 4 live in-scope hosts).
+
+STEP 2 — PRIORITIZE:
+[PRIO] wss://cbs-proxy.api.live-manager.de,7.75,attack_surface=7|business_value=9|tech_exposure=6|gate_ease=10|cloud_surface=8|freshness=7 (transport-complete BOLA, sole hop = AUTH_HELPED frame binding)
+[PRIO] www.applicationdesigner.de/extjs/voicenotes/,6.30,attack_surface=6|business_value=8|tech_exposure=7|gate_ease=6|cloud_surface=5|freshness=7 (delete/download record-level blocked on UUID; metadata side credential-only cross-tenant)
+[PRIO] www.live-manager.de,4.70,attack_surface=4|business_value=8|tech_exposure=5|gate_ease=4|cloud_surface=5|freshness=4 (every anonymous avenue rejected)
+
+STEP 3 — HYPOTHESES:
+[HYP] CBS data-plane frame acceptance not tenant-bound (WS BOLA)
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin={LiveDemo|LiveDebugger}&cid={cid}&service={service}
+confidence: 95
+reasoning: Fresh 2026-09-12 14:17 UTC probe — 426 on non-upgrade (endpoint live). Prior 9+ cycles: zero-credential upgrade HTTP 101 + byte-identical CONNECT CBS100/190/200 + PROXY READY for demo cid=131727, foreign cid=2, nonexistent cid=999999999; no token validated at any observed layer. Only unverified hop: CBS-side binary live_debug frame payload binding.
+evidence_needed: operator-owned second tenant mints OWN-cid token, presents it in a live_debug frame for a FOREIGN cid, observes accept vs deny — byte-diff of accepted frame set.
+verify_steps: AUTH_HELPED: WS-upgrade cid={own}&service=100, send one live_debug/call frame, record acceptance; repeat with second owned cid; byte-diff. Own tenants only; no third-party streams.
+impact: cross-tenant live-debug/call-stream attach (voice/PII); HIGH CVSS 7.5+.
+testability: AUTH_HELPED
+[HYP] Cross-tenant voicenote deletion without customer_id hierarchy gate
+class: IDOR
+asset: www.applicationdesigner.de/extjs/voicenotes/delete.php
+confidence: 72
+reasoning: delete.php token-gated but returns identical "Sprachnotiz nicht gefunden oder keine Berechtigung" for customer_id 131727/2/999999/none — no tenant-scoped error path (details.php differentiates "Kundennummer nicht in der Hierarchie"). Record-level proof still blocked: demo index total=0 again this cycle (14th consecutive).
+evidence_needed: valid demo-tenant voice_note_id with customer_id=2 vs 131727 → success:true diff proves destructive cross-tenant IDOR.
+verify_steps: AUTH_HELPED: check.php → valid voice_note_id (index empty — HOLD), then delete.php with voice_note_id=<valid>&customer_id=2 vs 131727; diff. Mutating — HUMAN operator, own demo tenant only.
+impact: cross-tenant voicenote destruction (PII audio loss); HIGH CVSS ~8.1.
+testability: AUTH_HELPED
+[HYP] Cross-tenant raw voicenote audio download via un-scoped file UUID
+class: IDOR
+asset: www.applicationdesigner.de/extjs/voicenotes/download.php
+confidence: 70
+reasoning: token-as-query-param reaches file-lookup (404 for junk), VPN gate bypassed, no customer_id parameter exists; check/get proven credential-only byte-identical across cids. Missing: valid file UUID (demo index empty this cycle — 14th consecutive). details.php proves a log_id-hierarchy gate exists so same-file download may still be gated — 200 vs 404 discriminates.
+evidence_needed: valid demo-tenant file UUID → 200 audio (record status/Content-Type only); no cid param exists so no boundary test beyond UUID reachability.
+verify_steps: PASSIVE: check.php index → take file/UUID field (do not echo PII); GET download.php?file=<uuid>&token=<demo>; record status/Content-Type only.
+impact: cross-tenant voicenote audio PII exfil; HIGH, requires a known index UUID.
+testability: AUTH_HELPED
+
+STEP 4 — SELF-CRITIQUE:
+[PARKED] Cross-tenant voicenote deletion (72): demo index empty again (total=0) — no voice_note_id; destructive test needs HUMAN mutation approval; watch-armed.
+[PARKED] download.php raw audio (70): same UUID blocker; valid UUID absent every cycle since discovery (14th consecutive).
+[PARKED] check_mailserver.php SSRF (POST-only) and playback/get_agent_costs/get_agent_token (session/VPN-gated): excluded by method-rule / prior REJECTED gates.
+[FINAL] cbs-proxy WS BOLA (95) — transport-complete, byte-identical cross-tenant, live this cycle; sole open hop AUTH_HELPED frame binding; report-ready on demonstrated primitives.
+
+STEP 5 — NEXT ACTION:
+[NEXT] HUMAN: settle the two open hops with an owned-tenant session in one pass — (a) mint live-debug auth for OWN cid, present in a live_debug frame to wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={own}&service={own}, repeat cid={foreign}, record accept vs deny (frame binding); (b) voicenotes/delete.php?voice_note_id=<own-record>&customer_id=2 vs 131727 on own demo record (destructive scope). Own tenants/records only, never third-party data (program PII rule). Standing read-only check.php watch remains armed: first cycle with total>0 → immediately run download.php?file=<uuid> passive diff + surface the delete.php record-level test.
+
+STEP 6 — LEARNING:
+[LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: fresh 2026-09-12 14:17 UTC probe — success:true,total:0,max_id:0, credential-only cross-tenant gate, index empty (14th consecutive cycle — no UUID path).
+[LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 426 on non-upgrade — WS BOLA endpoint live, unchanged.
+[LEARN] UNCHANGED @ flexlist getFields/getDetails/getList · get_user_rights ciphertext · AIDesigner config.php/403-gate · help.js static credential · voicenotes details.php hierarchy gate · voicenotes get.php credential-only.
+[LEARN] REJECTED (unchanged) @ /api/callbuilder/ nginx 404 · live-manager.de rs param · wildcard-subdomain-enum · api.live-manager.de · playback/get_agent_costs/get_agent_token session gates · getCustomers token-scoped · playground.php static.
+
+STEP 7 — RISK:
+[RISK] questnet-gmbh: 78 — Driver cbs-proxy anonymous WS BOLA (95) live, transport-complete, report-ready; existing VALID HIGH records stand (broken-auth chain 7.5, voicenote metadata PII 7.5, help.js static credential 7.5). Delete/download record-level findings remain gate-verified but unproven solely due to empty demo index (14th consecutive cycle); no new surface; no destructive action, no PII echoed, no third-party data touched; ceiling unchanged at AUTH_HELPED.
