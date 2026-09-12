@@ -39,3 +39,9 @@
   - | Q4 Provable | **NO** | Requires AUTH_HELPED valid customer session |
   - | 1. CBS WS Proxy IDOR | **VALID** | 8.6 High | File |
   - | 2. auth.php + cbs-proxy chain | **VALID** | 9.1 Critical | File |
+
+- 4 lead(s) marked VALID at 2026-09-12 05:09:43 UTC
+  - **Verdict: VALID**
+  - **Verdict: VALID**
+  - | 1 | CBS Proxy WebSocket IDOR/BOLA | **VALID** | 8.6 |
+  - | 2 | Static credential token mint + voicenote PII leak | **VALID** | 7.5 |
