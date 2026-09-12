@@ -3014,3 +3014,28 @@ testability: AUTH_HELPED
 [LEARN] UNCHANGED @ flexlist getFields/getDetails/getList · get_user_rights ciphertext · AIDesigner config.php/403-gate · help.js static credential · voicenotes details.php hierarchy gate · voicenotes get.php credential-only.
 [LEARN] REJECTED (unchanged) @ /api/callbuilder/ nginx 404 · live-manager.de rs param · wildcard-subdomain-enum · api.live-manager.de · playback/get_agent_costs/get_agent_token session gates · getCustomers token-scoped · playground.php static.
 [RISK] questnet-gmbh: 78 — Driver cbs-proxy anonymous WS BOLA (95) live, transport-complete, report-ready; existing VALID HIGH records stand (broken-auth chain 7.5, voicenote metadata PII 7.5, help.js static credential 7.5). Delete/download record-level findings remain gate-verified but unproven solely due to empty demo index (14th consecutive cycle); no new surface; no destructive action, no PII echoed, no third-party data touched; ceiling unchanged at AUTH_HELPED.
+## 2026-09-12 17:17:54 UTC [target] (model bigpickle)
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin={LiveDemo|LiveDebugger}&cid={cid}&service={service}
+confidence: 95
+reasoning: 15+ cycles of zero-credential upgrade returning HTTP 101 + byte-identical CONNECT CBS100/190/200 + PROXY READY for demo cid=131727, foreign cid=2, and nonexistent cid=999999999; no token validated at proxy layer; fresh 426 on non-upgrade this cycle reconfirms liveness. Only unverified hop: CBS-side binary frame binding to token.
+evidence_needed: operator's second owned tenant mints OWN-cid live-debug token, presents in a live_debug frame for a FOREIGN cid, observes accept vs deny.
+verify_steps: AUTH_HELPED: WS-upgrade cid={ownA}&service=100 → send one live_debug frame; repeat WS-upgrade cid={ownB} swapping token→frame binding; byte-diff accepted frame set. Own tenants only, no third-party streams.
+impact: cross-tenant live-debug/call-stream attach (voice/PII); HIGH CVSS 7.5+.
+testability: AUTH_HELPED
+class: IDOR
+asset: www.applicationdesigner.de/extjs/voicenotes/delete.php
+confidence: 72
+reasoning: delete.php token-gated but returns identical "Sprachnotiz nicht gefunden oder keine Berechtigung" for customer_id 131727/2/999999/none — no tenant-scoped error path (details.php differentiates "Kundennummer nicht in der Hierarchie"). Record-level proof blocked: demo index total=0 15th consecutive cycle.
+evidence_needed: valid demo-tenant voice_note_id → delete with customer_id=2 vs 131727 → success:true diff proves destructive cross-tenant IDOR.
+verify_steps: AUTH_HELPED: check.php → valid voice_note_id (index empty — HOLD), then delete.php?voice_note_id=<valid>&customer_id=2 vs 131727; diff. Mutating — HUMAN operator, own demo tenant only.
+impact: cross-tenant voicenote destruction (PII audio loss); HIGH CVSS ~8.1.
+testability: AUTH_HELPED
+class: IDOR
+asset: www.applicationdesigner.de/extjs/voicenotes/download.php
+confidence: 70
+reasoning: token-as-query-param reaches file-lookup (404 for junk), VPN gate bypassed, no customer_id parameter; check/get proven credential-only byte-identical across cids. Missing: valid file UUID (demo index empty 15th consecutive). details.php proves a log_id-hierarchy gate exists so same-file download may still be gated — 200 vs 404 discriminates.
+evidence_needed: valid demo-tenant file UUID → 200 audio (record status/Content-Type only); no cid param exists so sole test is UUID reachability.
+verify_steps: PASSIVE: check.php index → file/UUID field (no PII echo); GET download.php?file=<uuid>&token=<demo>; record status/Content-Type only.
+impact: cross-tenant voicenote audio PII exfil; HIGH, requires a known index UUID.
+testability: AUTH_HELPED

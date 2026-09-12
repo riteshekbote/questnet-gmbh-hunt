@@ -1,10 +1,11 @@
-## 2026-09-12 14:19:59 UTC [target] (model nemotron3)
-[PRIO] wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100,9.50,attack_surface=10,business_value=10,tech_exposure=9,gate_ease=10,cloud_surface=8,freshness=10
-[PRIO] https://www.applicationdesigner.de/extjs/voicenotes/check.php,8.75,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=10,cloud_surface=7,freshness=10
-[PRIO] https://www.applicationdesigner.de/extjs/voicenotes/download.php,8.25,attack_surface=8,business_value=10,tech_exposure=7,gate_ease=9,cloud_surface=7,freshness=10
-[PRIO] https://www.applicationdesigner.de/extjs/voicenotes/delete.php,7.50,attack_surface=8,business_value=9,tech_exposure=7,gate_ease=9,cloud_surface=7,freshness=10
-[PRIO] https://www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php,7.00,attack_surface=8,business_value=7,tech_exposure=7,gate_ease=9,cloud_surface=6,freshness=9
-[PRIO] https://www.applicationdesigner.de/AIDesigner/backend/config.php,6.00,attack_surface=7,business_value=5,tech_exposure=6,gate_ease=10,cloud_surface=5,freshness=8
+## 2026-09-12 17:19:17 UTC [target] (model nemotron3)
+[CHANGED] www.applicationdesigner.de/playground.php: REJECTED MISCONFIG — static marketing page (8.9KB, no dynamic params/endpoints/tokens), named app entry dead-end
+[PRIO] wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100,8.90,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=10,cloud_surface=7,freshness=10
+[PRIO] https://www.applicationdesigner.de/extjs/voicenotes/check.php,8.90,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=10,cloud_surface=7,freshness=10
+[PRIO] https://www.applicationdesigner.de/extjs/voicenotes/download.php,8.60,attack_surface=8,business_value=10,tech_exposure=7,gate_ease=9,cloud_surface=7,freshness=10
+[PRIO] https://www.applicationdesigner.de/extjs/voicenotes/delete.php,8.35,attack_surface=8,business_value=9,tech_exposure=7,gate_ease=9,cloud_surface=7,freshness=10
+[PRIO] https://www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php,7.65,attack_surface=8,business_value=7,tech_exposure=7,gate_ease=9,cloud_surface=6,freshness=9
+[PRIO] https://www.applicationdesigner.de/AIDesigner/backend/config.php,6.75,attack_surface=7,business_value=5,tech_exposure=6,gate_ease=10,cloud_surface=5,freshness=8
 [HYP] Cross-tenant CBS WebSocket subscription via unauthenticated cid/service parameters
 class: IDOR
 asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
@@ -38,7 +39,6 @@ testability: PASSIVE (404 reachable); HUMAN_ONLY (valid UUID)
 [FINAL] 1. wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100 — Cross-tenant CBS WebSocket subscription (95) — transport-complete, driver finding
 [FINAL] 2. https://www.applicationdesigner.de/extjs/voicenotes/check.php — Cross-tenant voicenote metadata enumeration (90) — proven with valid token
 [FINAL] 3. https://www.applicationdesigner.de/extjs/voicenotes/download.php — Cross-tenant raw voicenote audio download (75) — gate bypassed, needs valid UUID
-[FINAL] 4. https://www.applicationdesigner.de/extjs/voicenotes/delete.php — Cross-tenant voicenote deletion (70) — token-only gate, needs valid log_id (mutating, HUMAN_ONLY)
 [NEXT] PROBE: GET https://www.applicationdesigner.de/extjs/voicenotes/check.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&customer_id=2 — re-confirm cross-tenant metadata index with valid public demo token (byte-identical success:true for foreign cid); do NOT reproduce PII
 [LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WS BOLA transport-complete unchanged — demo 131727 vs foreign 2 byte-identical CONNECT/READY, reconfirmed live (426 Upgrade Required)
 [LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: cross-tenant credential-only, NOT VPN-gated — unchanged; demo index empty this cycle
@@ -59,4 +59,5 @@ testability: PASSIVE (404 reachable); HUMAN_ONLY (valid UUID)
 [LEARN] REJECTED wildcard-subdomain-enum @ *.live-manager.de: 8632 hostnames, 0 dedicated endpoints — unchanged
 [LEARN] REJECTED api.live-manager.de: host non-resolving — unchanged
 [LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: no secrets-bearing anonymous siblings — unchanged
+[LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page (8.9KB, no dynamic params/endpoints/tokens) — named app entry dead-end, closes
 [RISK] questnet-gmbh: 78 — Driver finding (cbs-proxy BOLA transport-complete) remains VALID HIGH (CVSS 7.5) and VPN-independent. Voicenotes metadata IDOR re-confirmed NOT VPN-gated with valid token (HIGH). Auth.php mint now VPN-gated but credential still public in help.js. get_agent_token.php sole untested parallel BOLA candidate now REJECTED. Flexlist per-id endpoints NEW token-only gate with global ID space — cross-tenant read pending operator confirmation. AIDesigner config.php zero-auth LLM routing disclosure (MEDIUM/LOW). Surface frozen at 4 hosts. PoC for bug gate: cbs-proxy WS 101 with arbitrary cid/service sufficient for HIGH severity report.

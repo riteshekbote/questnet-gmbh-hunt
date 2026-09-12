@@ -527,3 +527,6 @@ www.live-manager.de
 - CHANGED www.applicationdesigner.de/playground.php: REJECTED MISCONFIG — static marketing page (8.9KB, no dynamic params/endpoints/tokens), named app entry dead-end
 
 ## 2026-09-12 14:20:08 UTC
+
+## 2026-09-12 17:19:29 UTC
+- CHANGED www.applicationdesigner.de/playground.php: REJECTED MISCONFIG — static marketing page (8.9KB, no dynamic params/endpoints/tokens), named app entry dead-end
