@@ -281,3 +281,8 @@
 - 2026-09-12 ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: fresh 2026-09-12 14:17 UTC probe — success:true,total:0,max_id:0, credential-only cross-tenant gate, index empty (14th consecutive cycle — no UUID path).
 - 2026-09-12 UNCHANGED @ flexlist getFields/getDetails/getList · get_user_rights ciphertext · AIDesigner config.php/403-gate · help.js static credential · voicenotes details.php hierarchy gate · voicenotes get.php credential-only.
 - 2026-09-12 REJECTED (unchanged) @ /api/callbuilder/ nginx 404 · live-manager.de rs param · wildcard-subdomain-enum · api.live-manager.de · playback/get_agent_costs/get_agent_token session gates · getCustomers token-scoped · playground.php static.
+- 2026-09-12 ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= param reflected unescaped into 200 text/html, no CSP/nosniff, zero-token — PASSIVE-proven 2026-09-12 21:40 UTC; execution pending operator render.
+- 2026-09-12 ACCEPTED IDOR @ voicenotes/check.php: 16th consecutive cycle success:true,total:0,max_id:0, credential-only cross-tenant gate, index empty — no UUID path available.
+- 2026-09-12 REJECTED MISCONFIG @ playback.php + get_agent_costs.php: session/VPN-gated ("unauthorized"/"No VPN detected"), byte-identical for all cids — earlier zero-token ACCEPTED entries corrected.
+- 2026-09-12 REJECTED MISCONFIG @ /api/callbuilder/: prefix root + /live byte-identical nginx 404 catch-all — no routed HTTP data-plane.
+- 2026-09-12 UNCHANGED @ flexlist getFields/getDetails/getList · get_user_rights ciphertext · AIDesigner config.php/403-gate · help.js static credential · voicenotes details.php hierarchy gate · auth.php VPN gate.

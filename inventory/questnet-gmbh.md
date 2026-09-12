@@ -536,3 +536,17 @@ www.live-manager.de
 - CHANGED Surface remains frozen at 4 live in-scope hosts since 2026-09-04 (cbs-proxy.api.live-manager.de, www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de) — no new hosts discovered
 
 ## 2026-09-12 21:44:40 UTC
+
+## 2026-09-12 23:26:31 UTC
+- NEW www.applicationdesigner.de/extjs/voicenotes/delete.php: token-gated (not VPN-gated) destructive endpoint; error "Sprachnotiz nicht gefunden oder keine Berechtigung" vs hierarchy-gated details.php — po
+- NEW www.applicationdesigner.de/extjs/voicenotes/get.php: cross-tenant credential-only data endpoint; identical `{"success":true,"data":[],"total":0}` for all cids; same gate as check.php (2026-09-11)
+- NEW www.applicationdesigner.de/extjs/voicenotes/download.php: with token-as-query-param reaches file-lookup (404); VPN gate bypassed; no customer_id scoping — cross-tenant download viable if valid UUID kn
+- NEW www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php: public static credential accepted, token-only gate, global autoincrement ID space 138–345 — cross-tenant read pending operator c
+- CHANGED www.applicationdesigner.de/extjs/livedebugger/auth.php: VPN gate persistent — returns `Not logged in` + `No VPN detected` with public static credential; anonymous mint BLOCKED (since 2026-09-07)
+- CHANGED www.applicationdesigner.de/extjs/voicenotes/check.php: re-confirmed NOT VPN-gated with valid public demo token — cross-tenant PII metadata index accessible (14+ consecutive cycles)
+- CHANGED cbs-proxy.api.live-manager.de: anonymous WS BOLA transport-complete unchanged — demo 131727 vs foreign 2 byte-identical CONNECT/READY, reconfirmed live (426 Upgrade Required) (14+ cycles)
+- CHANGED www.applicationdesigner.de/extjs/agent/get_agent_costs.php: REJECTED — session-gated ("No VPN detected"), identical response for all cids; earlier ACCEPTED MISCONFIG was wrong (2026-09-11)
+- CHANGED www.applicationdesigner.de/extjs/playback.php: REJECTED — session-gated ("unauthorized"), identical response for all cids; no zero-token audio generation surface exists (2026-09-11)
+- CHANGED www.applicationdesigner.de/api/callbuilder/: REJECTED MISCONFIG — nginx 404 catch-all (146B); no routed CallBuilder data-plane (2026-09-11)
+- CHANGED www.applicationdesigner.de/playground.php: REJECTED MISCONFIG — static marketing page (8.9KB, no dynamic params/endpoints/tokens) (2026-09-12)
+- CHANGED Surface frozen at 4 live in-scope hosts since 2026-09-04 — no new hosts discovered

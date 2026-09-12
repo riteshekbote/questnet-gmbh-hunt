@@ -1,4 +1,24 @@
-## 2026-09-12 21:44:31 UTC [target] (model nemotron3)
+## 2026-09-12 23:26:20 UTC [target] (model nemotron3)
+[NEW] www.applicationdesigner.de/extjs/voicenotes/delete.php: token-gated (not VPN-gated) destructive endpoint; error "Sprachnotiz nicht gefunden oder keine Berechtigung" vs hierarchy-gated details.php — potential cross-tenant deletion (2026-09-11)
+[NEW] www.applicationdesigner.de/extjs/voicenotes/get.php: cross-tenant credential-only data endpoint; identical `{"success":true,"data":[],"total":0}` for all cids; same gate as check.php (2026-09-11)
+[NEW] www.applicationdesigner.de/extjs/voicenotes/download.php: with token-as-query-param reaches file-lookup (404); VPN gate bypassed; no customer_id scoping — cross-tenant download viable if valid UUID known (2026-09-11)
+[NEW] www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php: public static credential accepted, token-only gate, global autoincrement ID space 138–345 — cross-tenant read pending operator confirmation (2026-09-09)
+[CHANGED] www.applicationdesigner.de/extjs/livedebugger/auth.php: VPN gate persistent — returns `Not logged in` + `No VPN detected` with public static credential; anonymous mint BLOCKED (since 2026-09-07)
+[CHANGED] www.applicationdesigner.de/extjs/voicenotes/check.php: re-confirmed NOT VPN-gated with valid public demo token — cross-tenant PII metadata index accessible (14+ consecutive cycles)
+[CHANGED] cbs-proxy.api.live-manager.de: anonymous WS BOLA transport-complete unchanged — demo 131727 vs foreign 2 byte-identical CONNECT/READY, reconfirmed live (426 Upgrade Required) (14+ cycles)
+[CHANGED] www.applicationdesigner.de/extjs/agent/get_agent_costs.php: REJECTED — session-gated ("No VPN detected"), identical response for all cids; earlier ACCEPTED MISCONFIG was wrong (2026-09-11)
+[CHANGED] www.applicationdesigner.de/extjs/playback.php: REJECTED — session-gated ("unauthorized"), identical response for all cids; no zero-token audio generation surface exists (2026-09-11)
+[CHANGED] www.applicationdesigner.de/api/callbuilder/: REJECTED MISCONFIG — nginx 404 catch-all (146B); no routed CallBuilder data-plane (2026-09-11)
+[CHANGED] www.applicationdesigner.de/playground.php: REJECTED MISCONFIG — static marketing page (8.9KB, no dynamic params/endpoints/tokens) (2026-09-12)
+[CHANGED] Surface frozen at 4 live in-scope hosts since 2026-09-04 — no new hosts discovered
+[PRIO] cbs-proxy.api.live-manager.de,9.45,attack_surface=10,business_value=10,tech_exposure=10,gate_ease=10,cloud_surface=9,freshness=9
+[PRIO] www.applicationdesigner.de/extjs/voicenotes/check.php,8.85,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=9,cloud_surface=8,freshness=9
+[PRIO] www.applicationdesigner.de/extjs/voicenotes/download.php,8.10,attack_surface=8,business_value=9,tech_exposure=7,gate_ease=8,cloud_surface=7,freshness=8
+[PRIO] www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php,7.30,attack_surface=8,business_value=7,tech_exposure=7,gate_ease=8,cloud_surface=6,freshness=7
+[PRIO] www.applicationdesigner.de/AIDesigner/backend/config.php,6.45,attack_surface=7,business_value=6,tech_exposure=8,gate_ease=10,cloud_surface=5,freshness=6
+[PRIO] www.applicationdesigner.de/extjs/voicenotes/delete.php,6.30,attack_surface=7,business_value=8,tech_exposure=6,gate_ease=7,cloud_surface=5,freshness=6
+[PRIO] www.applicationdesigner.de/extjs/get_user_rights.php,5.85,attack_surface=6,business_value=6,tech_exposure=7,gate_ease=9,cloud_surface=4,freshness=6
+[PRIO] www.live-manager.de,4.90,attack_surface=5,business_value=7,tech_exposure=4,gate_ease=4,cloud_surface=5,freshness=5
 [HYP] Cross-tenant CBS WebSocket subscription via unauthenticated cid/service parameters
 class: IDOR
 asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
@@ -53,4 +73,4 @@ testability: PASSIVE (404 reachable); HUMAN_ONLY (valid UUID)
 [LEARN] REJECTED api.live-manager.de: host non-resolving — unchanged
 [LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: no secrets-bearing anonymous siblings — unchanged
 [LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page (8.9KB, no dynamic params/endpoints/tokens) — named app entry dead-end, closes
-[RISK] questnet-gmbh: 78 — Driver finding (cbs-proxy BOLA transport-complete) remains VALID HIGH (CVSS 9.1) and VPN-independent. Voicenotes metadata IDOR re-confirmed NOT VPN-gated with valid token (HIGH, CVSS 7.5). Auth.php mint now VPN-gated but credential still public in help.js. get_agent_token.php sole untested parallel BOLA candidate now REJECTED. Flexlist per-id endpoints NEW token-only gate with global ID space — cross-tenant read pending operator confirmation. AIDesigner config.php zero-auth LLM routing disclosure (MEDIUM/LOW). Surface frozen at 4 hosts. PoC for bug gate: cbs-proxy WS 101 with arbitrary cid/service sufficient for HIGH severity report.
+[RISK] questnet-gmbh: 82 — Driver finding (cbs-proxy BOLA transport-complete) remains VALID HIGH (CVSS 9.1) and VPN-independent. Voicenotes metadata IDOR re-confirmed NOT VPN-gated with valid token (HIGH, CVSS 7.5). Auth.php mint now VPN-gated but credential still public in help.js. Flexlist per-id endpoints NEW token-only gate with global ID space — cross-tenant read pending operator confirmation. AIDesigner config.php zero-auth LLM routing disclosure (MEDIUM/LOW). Surface frozen at 4 hosts. PoC for bug gate: cbs-proxy WS 101 with arbitrary cid/service sufficient for HIGH severity report.
