@@ -18562,3 +18562,64 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 - [RISK] questnet-gmbh: 78 — Driver cbs-proxy anonymous WS BOLA (95) live/transport-complete/report-ready; existing VALID HIGH records stand (broken-auth chain 7.5, voicenote metadata PII 7.5, help.js static credential 7.5). Delete/download record-level findings remain gate-verified but unproven solely due to empty demo index (15th consecutive cycle); no new surface; no destructive action, no PII echoed, no third-party data touched; ceiling unchanged at AUTH_HELPED.
+===== ANALYST bigpickle 2026-09-12 19:30:54 UTC =====
+[0m
+> build · big-pickle
+[0m
+STEP 1 — DELTA
+- CHANGED cbs-proxy.api.live-manager.de: fresh 2026-09-12 14:17 probe returns 426 (endpoint live) — transport status unchanged, no new frame-level signal this cycle.
+- CHANGED voicenotes/check.php: index empty again (success:true,total:0,max_id:0) — 15th consecutive empty cycle; UUID path for download/delete still blocked.
+- CHANGED help/content.php: zero-token GET endpoint (confirmed in help.js 2026-09-10) still has NO clean byte-level probe on record; earlier "dead-end" label lacked a documented request — only genuinely unretired zero-token GET surface.
+- NO_DELTA on all other standing items (4 live hosts, flexlist, get_user_rights ciphertext, AIDesigner gating, rejected set unchanged).
+
+STEP 2 — PRIORITIZE
+- PRIO] cbs-proxy.api.live-manager.de,7.5,attack(8)/business(9)/gate_ease(9): zero-cred WS 101 + byte-identical CONNECT/READY for any cid; only untested hop is CBCS frame binding (AUTH_HELPED).
+- PRIO] www.applicationdesigner.de/help/content.php,5.2,freshness(8)/gate_ease(10)/tech_exposure(6): PHP 8.3 help-file fetcher, page string param, no token, never cleanly probed — traversal/file-include candidate.
+- PRIO] www.applicationdesigner.de/extjs/voicenotes/delete.php,4.8,business(8)/gate_ease(7): destructive token-gated endpoint, but record-level proof blocked by empty index.
+
+STEP 3 — HYPOTHESES
+[HYP] Cross-tenant CBS WS frame binding — accept/deny differs by presented token vs cid
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin={LiveDemo|LiveDebugger}&cid={cid}&service={service}
+confidence: 95
+reasoning: 15+ cycles: zero-credential upgrade returns HTTP 101 + byte-identical CONNECT CBS100/190/200 + PROXY READY for cid=131727, cid=2, cid=999999999; proxy validates no token/ownership at any observed layer; 426 on non-upgrade today confirms liveness; only unverified hop is backend acceptance of a token→foreign-cid binding.
+evidence_needed: operator's second owned tenant mints own-cid token, presents it in a live_debug frame for a FOREIGN cid and for own cid; byte-diff of accepted frame set.
+verify_steps: AUTH_HELPED: WS-upgrade cid={ownA}&service=100 → send one live_debug frame, record accept; repeat with cid={ownB} and swapped token→frame binding; byte-diff. Own tenants only.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH CVSS 7.5+.
+testability: AUTH_HELPED
+[HYP] Cross-tenant voicenote deletion without customer_id hierarchy gate
+class: IDOR
+asset: www.applicationdesigner.de/extjs/voicenotes/delete.php
+confidence: 72
+reasoning: delete.php is token-gated (not VPN-gated) but returns identical "Sprachnotiz nicht gefunden oder keine Berechtigung" for customer_id 131727/2/999999/absent — unlike hierarchy-gated details.php ("Kundennummer nicht in der Hierarchie"); record-level proof blocked: index total=0 (15th consecutive cycle).
+evidence_needed: valid demo-tenant voice_note_id → delete with customer_id=2 vs 131727; success:true diff proves destructive cross-tenant IDOR.
+verify_steps: AUTH_HELPED: check.php → valid voice_note_id (index empty — HOLD), then delete.php?voice_note_id=<valid>&customer_id=2 vs 131727; diff. Mutating — HUMAN operator, own demo tenant only.
+impact: cross-tenant voicenote destruction (PII audio loss) — HIGH CVSS ~8.1.
+testability: AUTH_HELPED
+[HYP] help/content.php page-param file include / path traversal
+class: MISCONFIG
+asset: www.applicationdesigner.de/help/content.php
+confidence: 42
+reasoning: help.js calls it with a page string and NO token (zero-token GET); app is PHP/8.3.21; no clean byte-level GET on record, so 404/200 shape for valid page and for ../-prefixed page is unmeasured — include-based fetchers commonly accept unvalidated paths.
+evidence_needed: GET page=Glossary → 200 (bytes+sha256); then GET page=../README → non-404 indicates raw path inclusion (record status only, do NOT echo body).
+verify_steps: PASSIVE: GET https://www.applicationdesigner.de/help/content.php?page=Glossary → record status/length/sha256; GET ...?page=../Glossary → record status/length only (no content echo).
+impact: arbitrary-help-file read → limited (help content MVC), LFI pivot to PHP source if confirmed — LOW–MED until widened.
+testability: PASSIVE
+
+STEP 4 — SELF-CRITIQUE
+- PARKED] help/content.php traversal (42): borderline; retires or promotes on one clean byte-level GET — kept below FINAL pending probe.
+- PARKED] download.php raw audio (70) + delete.php record test (72): UUID blocked by empty demo index (15th consecutive); watch-armed.
+- PARKED] check_mailserver.php SSRF (POST-only, method-rule), get_user_rights ciphertext (LOW cap), playback/get_agent_costs/get_agent_token (session/VPN-gated), /api/callbuilder/ (nginx 404), AIDesigner siblings, wildcard enum, rs param, getCustomers, playground.php — pre-rejected, unchanged.
+- FINAL] cbs-proxy WS BOLA (95): transport-complete, live today, sole open hop is AUTH_HELPED token→cid frame binding; report-ready on demonstrated primitives.
+
+STEP 5 — NEXT ACTION
+NEXT] PROBE: GET https://www.applicationdesigner.de/help/content.php?page=Glossary (record status/length/sha256; do not echo body), then GET ...?page=../Glossary (record status/length only) — sole clean-probe-able zero-token GET this cycle; retires or promotes the content.php hypothesis. Standing HUMAN test (owned-tenant WS frame-binding + own-record delete diff on cbs-proxy/delete.php) remains the driver-level blocker and is queued for operator.
+
+STEP 6 — LEARNING
+- LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 426 on non-upgrade at 14:17 — WS BOLA endpoint live, transport-complete byte-identical, unchanged.
+- LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: success:true,total:0,max_id:0 credential-only — index empty 15th consecutive cycle, no UUID path.
+- LEARN] ACCEPTED CONTROL @ flexlist getFields/getDetails/getList · get_user_rights ciphertext · AIDesigner config/403 · help.js static credential · voicenotes details.php hierarchy gate · get.php credential-only — unchanged.
+- LEARN] REJECTED @ playback/get_agent_costs/get_agent_token session gates · /api/callbuilder/ 404 · rs param · wildcard-subdomain-enum · api.live-manager.de · getCustomers · AIDesigner siblings · playground.php — unchanged.
+
+STEP 7 — RISK
+- RISK] questnet-gmbh: 78 — driver cbs-proxy anonymous WS BOLA (95) transport-complete and report-ready; standing VALID HIGHs hold (broken-auth chain 7.5, voicenote PII metadata 7.5, help.js static credential 7.5); delete/download record-level unproven solely due to empty demo index (15 cycles); no PII echoed, no destructive action, no third-party data; ceiling unchanged at AUTH_HELPED until operator settles token→cid frame binding.

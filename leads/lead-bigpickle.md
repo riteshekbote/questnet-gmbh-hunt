@@ -3039,3 +3039,31 @@ evidence_needed: valid demo-tenant file UUID → 200 audio (record status/Conten
 verify_steps: PASSIVE: check.php index → file/UUID field (no PII echo); GET download.php?file=<uuid>&token=<demo>; record status/Content-Type only.
 impact: cross-tenant voicenote audio PII exfil; HIGH, requires a known index UUID.
 testability: AUTH_HELPED
+## 2026-09-12 19:30:43 UTC [target] (model bigpickle)
+[HYP] Cross-tenant CBS WS frame binding — accept/deny differs by presented token vs cid
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin={LiveDemo|LiveDebugger}&cid={cid}&service={service}
+confidence: 95
+reasoning: 15+ cycles: zero-credential upgrade returns HTTP 101 + byte-identical CONNECT CBS100/190/200 + PROXY READY for cid=131727, cid=2, cid=999999999; proxy validates no token/ownership at any observed layer; 426 on non-upgrade today confirms liveness; only unverified hop is backend acceptance of a token→foreign-cid binding.
+evidence_needed: operator's second owned tenant mints own-cid token, presents it in a live_debug frame for a FOREIGN cid and for own cid; byte-diff of accepted frame set.
+verify_steps: AUTH_HELPED: WS-upgrade cid={ownA}&service=100 → send one live_debug frame, record accept; repeat with cid={ownB} and swapped token→frame binding; byte-diff. Own tenants only.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH CVSS 7.5+.
+testability: AUTH_HELPED
+[HYP] Cross-tenant voicenote deletion without customer_id hierarchy gate
+class: IDOR
+asset: www.applicationdesigner.de/extjs/voicenotes/delete.php
+confidence: 72
+reasoning: delete.php is token-gated (not VPN-gated) but returns identical "Sprachnotiz nicht gefunden oder keine Berechtigung" for customer_id 131727/2/999999/absent — unlike hierarchy-gated details.php ("Kundennummer nicht in der Hierarchie"); record-level proof blocked: index total=0 (15th consecutive cycle).
+evidence_needed: valid demo-tenant voice_note_id → delete with customer_id=2 vs 131727; success:true diff proves destructive cross-tenant IDOR.
+verify_steps: AUTH_HELPED: check.php → valid voice_note_id (index empty — HOLD), then delete.php?voice_note_id=<valid>&customer_id=2 vs 131727; diff. Mutating — HUMAN operator, own demo tenant only.
+impact: cross-tenant voicenote destruction (PII audio loss) — HIGH CVSS ~8.1.
+testability: AUTH_HELPED
+[HYP] help/content.php page-param file include / path traversal
+class: MISCONFIG
+asset: www.applicationdesigner.de/help/content.php
+confidence: 42
+reasoning: help.js calls it with a page string and NO token (zero-token GET); app is PHP/8.3.21; no clean byte-level GET on record, so 404/200 shape for valid page and for ../-prefixed page is unmeasured — include-based fetchers commonly accept unvalidated paths.
+evidence_needed: GET page=Glossary → 200 (bytes+sha256); then GET page=../README → non-404 indicates raw path inclusion (record status only, do NOT echo body).
+verify_steps: PASSIVE: GET https://www.applicationdesigner.de/help/content.php?page=Glossary → record status/length/sha256; GET ...?page=../Glossary → record status/length only (no content echo).
+impact: arbitrary-help-file read → limited (help content MVC), LFI pivot to PHP source if confirmed — LOW–MED until widened.
+testability: PASSIVE

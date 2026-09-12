@@ -447,7 +447,7 @@ verify_steps: N/A — confirm account.blob.core.windows.net is not a live Questn
 class: SECRET
 asset: questnet/freeswitch — src/mod/applications/mod_http_cache/conf/autoload_configs/http_cache.conf.xml:22
 confidence: 5
-reasoning: AKIAIOSFODNN7EXAMPLE and wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY are the well-known AWS documentation example keys. NOT real credentials.
+reasoning: AKIAIOSFOD_REDACTED and wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY are the well-known AWS documentation example keys. NOT real credentials.
 impact: NONE — known false positive
 verify_steps: N/A
 class: SECRET

@@ -1,6 +1,7 @@
-## 2026-09-12 17:19:17 UTC [target] (model nemotron3)
-[CHANGED] www.applicationdesigner.de/playground.php: REJECTED MISCONFIG — static marketing page (8.9KB, no dynamic params/endpoints/tokens), named app entry dead-end
-[PRIO] wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100,8.90,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=10,cloud_surface=7,freshness=10
+## 2026-09-12 19:29:45 UTC [target] (model nemotron3)
+[CHANGED] www.applicationdesigner.de/playground.php: REJECTED MISCONFIG — static marketing page (8.9KB, no dynamic params/endpoints/tokens), named app entry dead-end (2026-09-12)
+[CHANGED] Surface remains frozen at 4 live in-scope hosts since 2026-09-04 (cbs-proxy.api.live-manager.de, www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de) — no new hosts discovered
+[PRIO] wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100,9.55,attack_surface=10,business_value=10,tech_exposure=9,gate_ease=10,cloud_surface=8,freshness=10
 [PRIO] https://www.applicationdesigner.de/extjs/voicenotes/check.php,8.90,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=10,cloud_surface=7,freshness=10
 [PRIO] https://www.applicationdesigner.de/extjs/voicenotes/download.php,8.60,attack_surface=8,business_value=10,tech_exposure=7,gate_ease=9,cloud_surface=7,freshness=10
 [PRIO] https://www.applicationdesigner.de/extjs/voicenotes/delete.php,8.35,attack_surface=8,business_value=9,tech_exposure=7,gate_ease=9,cloud_surface=7,freshness=10
