@@ -357,3 +357,47 @@ TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
 TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
 ## REPOSCAN 2026-09-12 13:10:08 UTC
 TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-12 16:34:27 UTC
+class: MISCONFIG
+asset: questnet/freeswitch (v1.10-qn) — conf/insideout/autoload_configs/event_socket.conf.xml:3-6
+confidence: 85
+reasoning: |
+impact: HIGH — full FreeSWITCH control from any network-reachable client
+verify_steps: |
+class: OTHER
+asset: questnet/freeswitch (v1.10-qn) — conf/insideout/vars.xml:14
+confidence: 90
+reasoning: |
+impact: LOW — information disclosure aiding internal network reconnaissance
+verify_steps: |
+class: MISCONFIG
+asset: questnet/freeswitch (v1.10-qn) — conf/insideout/directory/default/*.xml (20+ entries: 1000-1019, brian)
+confidence: 80
+reasoning: |
+impact: MEDIUM — unauthorized SIP registration and toll fraud
+verify_steps: |
+class: MISCONFIG
+asset: questnet/freeswitch (v1.10-qn) — conf/rayo/autoload_configs/rayo.conf.xml:99,105,115
+confidence: 75
+reasoning: |
+impact: HIGH — call control via Rayo protocol with default credentials
+verify_steps: |
+class: MISCONFIG
+asset: questnet/freeswitch (v1.10-qn) — conf/vanilla/autoload_configs/{amqp,hiredis,easyroute,xml_rpc,smpp,switch}.conf.xml
+confidence: 50
+reasoning: |
+impact: MEDIUM — default credentials on auxiliary services if deployed
+verify_steps: |
+class: MISCONFIG
+asset: questnet/drachtio-freeswitch-modules — examples/config/default.json:5,10
+confidence: 30
+reasoning: |
+impact: LOW — default credentials in example config
+verify_steps: |
+class: MISCONFIG
+asset: questnet/NEventSocket/NEventSocket/InboundSocket.cs:42, questnet/free-socks/examples/connection-load.rs:19
+confidence: 10
+reasoning: |
+impact: INFORMATIONAL — library defaults, not deployed secrets
+verify_steps: N/A
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
