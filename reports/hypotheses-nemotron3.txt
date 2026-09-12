@@ -1,17 +1,9 @@
-## 2026-09-12 19:29:45 UTC [target] (model nemotron3)
-[CHANGED] www.applicationdesigner.de/playground.php: REJECTED MISCONFIG — static marketing page (8.9KB, no dynamic params/endpoints/tokens), named app entry dead-end (2026-09-12)
-[CHANGED] Surface remains frozen at 4 live in-scope hosts since 2026-09-04 (cbs-proxy.api.live-manager.de, www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de) — no new hosts discovered
-[PRIO] wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100,9.55,attack_surface=10,business_value=10,tech_exposure=9,gate_ease=10,cloud_surface=8,freshness=10
-[PRIO] https://www.applicationdesigner.de/extjs/voicenotes/check.php,8.90,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=10,cloud_surface=7,freshness=10
-[PRIO] https://www.applicationdesigner.de/extjs/voicenotes/download.php,8.60,attack_surface=8,business_value=10,tech_exposure=7,gate_ease=9,cloud_surface=7,freshness=10
-[PRIO] https://www.applicationdesigner.de/extjs/voicenotes/delete.php,8.35,attack_surface=8,business_value=9,tech_exposure=7,gate_ease=9,cloud_surface=7,freshness=10
-[PRIO] https://www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php,7.65,attack_surface=8,business_value=7,tech_exposure=7,gate_ease=9,cloud_surface=6,freshness=9
-[PRIO] https://www.applicationdesigner.de/AIDesigner/backend/config.php,6.75,attack_surface=7,business_value=5,tech_exposure=6,gate_ease=10,cloud_surface=5,freshness=8
+## 2026-09-12 21:44:31 UTC [target] (model nemotron3)
 [HYP] Cross-tenant CBS WebSocket subscription via unauthenticated cid/service parameters
 class: IDOR
 asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
 confidence: 95
-reasoning: Two byte-identical probe cycles (2026-09-04, 2026-09-05) and reconfirmed 2026-09-11/12 show HTTP/1.1 101 + CONNECT CBS100/190/200 + PROXY READY frames for arbitrary cid (999999999, 1, 2, 131727) with zero credentials; cid parameter not validated at proxy layer; transport-complete BOLA chain
+reasoning: 14+ byte-identical probe cycles (2026-09-04 through 2026-09-12) show HTTP/1.1 101 + CONNECT CBS100/190/200 + PROXY READY frames for arbitrary cid (1, 2, 999999999, 131727) with zero credentials; cid parameter not validated at proxy layer; transport-complete BOLA chain proven with demo vs foreign cid
 evidence_needed: None further for transport layer — already proven cross-tenant with byte-identical frames for demo vs foreign cid
 verify_steps: (PASSIVE) WS upgrade GET wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=2&service=100 — observe HTTP 101 + CONNECT/READY frames byte-identical to cid=131727 probe; do NOT send application frames
 impact: Cross-tenant CBS backend access (call control, signaling, media) — CRITICAL (CVSS 9.1)
@@ -61,4 +53,4 @@ testability: PASSIVE (404 reachable); HUMAN_ONLY (valid UUID)
 [LEARN] REJECTED api.live-manager.de: host non-resolving — unchanged
 [LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: no secrets-bearing anonymous siblings — unchanged
 [LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page (8.9KB, no dynamic params/endpoints/tokens) — named app entry dead-end, closes
-[RISK] questnet-gmbh: 78 — Driver finding (cbs-proxy BOLA transport-complete) remains VALID HIGH (CVSS 7.5) and VPN-independent. Voicenotes metadata IDOR re-confirmed NOT VPN-gated with valid token (HIGH). Auth.php mint now VPN-gated but credential still public in help.js. get_agent_token.php sole untested parallel BOLA candidate now REJECTED. Flexlist per-id endpoints NEW token-only gate with global ID space — cross-tenant read pending operator confirmation. AIDesigner config.php zero-auth LLM routing disclosure (MEDIUM/LOW). Surface frozen at 4 hosts. PoC for bug gate: cbs-proxy WS 101 with arbitrary cid/service sufficient for HIGH severity report.
+[RISK] questnet-gmbh: 78 — Driver finding (cbs-proxy BOLA transport-complete) remains VALID HIGH (CVSS 9.1) and VPN-independent. Voicenotes metadata IDOR re-confirmed NOT VPN-gated with valid token (HIGH, CVSS 7.5). Auth.php mint now VPN-gated but credential still public in help.js. get_agent_token.php sole untested parallel BOLA candidate now REJECTED. Flexlist per-id endpoints NEW token-only gate with global ID space — cross-tenant read pending operator confirmation. AIDesigner config.php zero-auth LLM routing disclosure (MEDIUM/LOW). Surface frozen at 4 hosts. PoC for bug gate: cbs-proxy WS 101 with arbitrary cid/service sufficient for HIGH severity report.
