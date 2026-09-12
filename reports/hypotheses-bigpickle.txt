@@ -1,9 +1,9 @@
-## 2026-09-12 06:31:20 UTC [target] (model bigpickle)
+## 2026-09-12 11:16:39 UTC [target] (model bigpickle)
 [HYP] CBS data-plane frame acceptance not tenant-bound (WS BOLA)
 class: IDOR
 asset: wss://cbs-proxy.api.live-manager.de/?origin={LiveDemo|LiveDebugger}&cid={cid}&service={service}
 confidence: 95
-reasoning: Fresh 2026-09-12 probe — 426 on non-upgrade (endpoint live). Prior 8+ cycles: zero-credential upgrade HTTP 101 + byte-identical CONNECT CBS100/190/200 + PROXY READY for demo cid=131727, foreign cid=2, nonexistent cid=999999999; no token validated at any observed layer. Only unverified hop: CBS-side binary live_debug frame payload binding.
+reasoning: This run: 426 on non-upgrade (live). Prior 8+ cycles: zero-credential upgrade HTTP 101 + byte-identical CONNECT CBS100/190/200 + PROXY READY for demo cid=131727, foreign cid=2, nonexistent 999999999; no token validated at any observed layer. Public static credential unchanged (sha256 8d2faac1…). Sole unverified hop: CBS-side binary live_debug frame binding.
 evidence_needed: operator-owned second tenant mints OWN-cid token, presents it in a live_debug frame for a FOREIGN cid, observes accept vs deny — byte-diff of accepted frame set.
 verify_steps: AUTH_HELPED: WS-upgrade cid={own}&service=100, send one live_debug/call frame, record acceptance; repeat with second owned cid; byte-diff. Own tenants only; no third-party streams.
 impact: cross-tenant live-debug/call-stream attach (voice/PII); HIGH CVSS 7.5+.
@@ -12,16 +12,16 @@ testability: AUTH_HELPED
 class: IDOR
 asset: www.applicationdesigner.de/extjs/voicenotes/delete.php
 confidence: 72
-reasoning: delete.php token-gated but returns identical "Sprachnotiz nicht gefunden oder keine Berechtigung" for customer_id 131727/2/999999/none — no tenant-scoped error path (details.php differentiates "Kundennummer nicht in der Hierarchie"). Record-level proof still blocked: demo index total=0 again this cycle (11+ consecutive).
+reasoning: delete.php token-gated but returns identical "Sprachnotiz nicht gefunden oder keine Berechtigung" for customer_id 131727/2/999999/none — no tenant-scoped error path (details.php differentiates "Kundennummer nicht in der Hierarchie"). Record-level proof blocked: demo index total=0 again this run (12th consecutive).
 evidence_needed: valid demo-tenant voice_note_id with customer_id=2 vs 131727 → success:true diff proves destructive cross-tenant IDOR.
-verify_steps: AUTH_HELPED: check.php → valid voice_note_id (index empty — HOLD), then delete.php?voice_note_id=<valid>&customer_id=2 vs 131727; diff. Mutating — HUMAN operator, own demo tenant only.
+verify_steps: AUTH_HELPED: check.php → valid voice_note_id (index empty — HOLD), then delete.php with voice_note_id=<valid>&customer_id=2 vs 131727; diff. Mutating — HUMAN operator, own demo tenant only.
 impact: cross-tenant voicenote destruction (PII audio loss); HIGH CVSS ~8.1.
 testability: AUTH_HELPED
 [HYP] Cross-tenant raw voicenote audio download via un-scoped file UUID
 class: IDOR
 asset: www.applicationdesigner.de/extjs/voicenotes/download.php
 confidence: 70
-reasoning: token-as-query-param reaches file-lookup (404 for junk), VPN gate bypassed, no customer_id parameter exists; check/get proven credential-only byte-identical across cids. Missing: valid file UUID (demo index empty this cycle). details.php proves a log_id-hierarchy gate exists so same-file download may still be gated — 200 vs 404 discriminates.
+reasoning: token-as-query-param reaches file-lookup (404 for junk), VPN gate bypassed, no customer_id parameter; check/get proven credential-only byte-identical across cids. Missing: valid file UUID (demo index empty this run). details.php proves a log_id-hierarchy gate exists so same-file download may still be gated — 200 vs 404 discriminates.
 evidence_needed: valid demo-tenant file UUID → 200 audio (record status/Content-Type only); no cid param exists so no boundary test beyond UUID reachability.
 verify_steps: PASSIVE: check.php index → take file/UUID field (do not echo PII); GET download.php?file=<uuid>&token=<demo>; record status/Content-Type only.
 impact: cross-tenant voicenote audio PII exfil; HIGH, requires a known index UUID.

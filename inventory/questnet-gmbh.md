@@ -522,3 +522,6 @@ www.live-manager.de
 - CHANGED cbs-proxy.api.live-manager.de: anonymous WS BOLA transport-complete unchanged — demo 131727 vs foreign 2 byte-identical CONNECT/READY, reconfirmed live (426 Upgrade Required) (2026-09-11)
 
 ## 2026-09-12 06:32:29 UTC
+
+## 2026-09-12 11:17:37 UTC
+- CHANGED www.applicationdesigner.de/playground.php: REJECTED MISCONFIG — static marketing page (8.9KB, no dynamic params/endpoints/tokens), named app entry dead-end

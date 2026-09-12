@@ -17849,3 +17849,80 @@ testability: AUTH_HELPED
 
 ## STEP 7 — RISK
 - [RISK] questnet-gmbh: 78 — Driver cbs-proxy anonymous WS BOLA (95) live, transport-complete, report-ready; existing VALID HIGH records stand (broken-auth chain 7.5, voicenote metadata PII 7.5, help.js static credential 7.5). Delete/download record-level findings remain gate-verified but unproven solely due to empty demo index (11+ consecutive empty cycles); no new surface; no destructive action, no PII echoed, no third-party data touched; ceiling unchanged at AUTH_HELPED.
+===== ANALYST bigpickle 2026-09-12 11:17:37 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mcurl -sS -m 20 -o /dev/null -w 'cbs-proxy: %{http_code} %{size_download}B\n' https://cbs-proxy.api.live-manager.de/
+cbs-proxy: 426 0B
+[0m
+[0m$ [0mcurl -sS -m 20 'https://www.applicationdesigner.de/extjs/voicenotes/check.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&customer_id=2' -w '\ncheck.php: %{http_code}\n'
+{"success":true,"total":0,"max_id":0}
+check.php: 200
+[0m
+[0m$ [0mcurl -sS -m 20 https://www.applicationdesigner.de/help.js -o /tmp/opencode/help.js && sha256sum /tmp/opencode/help.js && grep -o 'LIVE_DEMO_CUSTOMER_TOKEN[^,;]*' /tmp/opencode/help.js | head -c 300 && echo && grep -c 'playback.php\|get_agent_costs.php\|download.php\|delete.php' /tmp/opencode/help.js
+b56a5f1e61ee397168aedb6684512612ed34a9c1086ab324b64c59f41a049086  /tmp/opencode/help.js
+LIVE_DEMO_CUSTOMER_TOKEN='3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3'
+LIVE_DEMO_CUSTOMER_TOKEN
+
+1
+[0m
+[0m$ [0mprintf '3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3' | sha256sum
+8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf  -
+[0m
+STEP 1 — DELTA:
+- NO_DELTA: live probes this run — help.js static credential UNCHANGED (token sha256 8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf, file sha256 b56a5f1e…); endpoint map intact.
+- NO_DELTA: cbs-proxy.api.live-manager.de STILL LIVE — 426 on non-upgrade (0B).
+- NO_DELTA: voicenotes/check.php standing watch — success:true,total:0,max_id:0 (12th consecutive empty demo index; still no UUID path, no delete/download record proof).
+
+STEP 2 — PRIORITIZE:
+- [PRIO] wss://cbs-proxy.api.live-manager.de/?origin&cid&service, 7.4, axis=WS-BOLA transport-complete unbound cid/service (a8 b9 t8 g9 c1 f5)
+- [PRIO] www.applicationdesigner.de/extjs/voicenotes/*, 5.9, axis=credential-only cross-tenant metadata+audio surface (a7 b8 t4 g6 c1 f5)
+- [PRIO] www.applicationdesigner.de/extjs/flexlist/getFields|getDetails, 5.2, axis=token-only gate on global autoincrement id 138–345 (a7 b7 t3 g5 c1 f4)
+
+STEP 3 — HYPOTHESES:
+[HYP] CBS data-plane frame acceptance not tenant-bound (WS BOLA)
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin={LiveDemo|LiveDebugger}&cid={cid}&service={service}
+confidence: 95
+reasoning: This run: 426 on non-upgrade (live). Prior 8+ cycles: zero-credential upgrade HTTP 101 + byte-identical CONNECT CBS100/190/200 + PROXY READY for demo cid=131727, foreign cid=2, nonexistent 999999999; no token validated at any observed layer. Public static credential unchanged (sha256 8d2faac1…). Sole unverified hop: CBS-side binary live_debug frame binding.
+evidence_needed: operator-owned second tenant mints OWN-cid token, presents it in a live_debug frame for a FOREIGN cid, observes accept vs deny — byte-diff of accepted frame set.
+verify_steps: AUTH_HELPED: WS-upgrade cid={own}&service=100, send one live_debug/call frame, record acceptance; repeat with second owned cid; byte-diff. Own tenants only; no third-party streams.
+impact: cross-tenant live-debug/call-stream attach (voice/PII); HIGH CVSS 7.5+.
+testability: AUTH_HELPED
+[HYP] Cross-tenant voicenote deletion without customer_id hierarchy gate
+class: IDOR
+asset: www.applicationdesigner.de/extjs/voicenotes/delete.php
+confidence: 72
+reasoning: delete.php token-gated but returns identical "Sprachnotiz nicht gefunden oder keine Berechtigung" for customer_id 131727/2/999999/none — no tenant-scoped error path (details.php differentiates "Kundennummer nicht in der Hierarchie"). Record-level proof blocked: demo index total=0 again this run (12th consecutive).
+evidence_needed: valid demo-tenant voice_note_id with customer_id=2 vs 131727 → success:true diff proves destructive cross-tenant IDOR.
+verify_steps: AUTH_HELPED: check.php → valid voice_note_id (index empty — HOLD), then delete.php with voice_note_id=<valid>&customer_id=2 vs 131727; diff. Mutating — HUMAN operator, own demo tenant only.
+impact: cross-tenant voicenote destruction (PII audio loss); HIGH CVSS ~8.1.
+testability: AUTH_HELPED
+[HYP] Cross-tenant raw voicenote audio download via un-scoped file UUID
+class: IDOR
+asset: www.applicationdesigner.de/extjs/voicenotes/download.php
+confidence: 70
+reasoning: token-as-query-param reaches file-lookup (404 for junk), VPN gate bypassed, no customer_id parameter; check/get proven credential-only byte-identical across cids. Missing: valid file UUID (demo index empty this run). details.php proves a log_id-hierarchy gate exists so same-file download may still be gated — 200 vs 404 discriminates.
+evidence_needed: valid demo-tenant file UUID → 200 audio (record status/Content-Type only); no cid param exists so no boundary test beyond UUID reachability.
+verify_steps: PASSIVE: check.php index → take file/UUID field (do not echo PII); GET download.php?file=<uuid>&token=<demo>; record status/Content-Type only.
+impact: cross-tenant voicenote audio PII exfil; HIGH, requires a known index UUID.
+testability: AUTH_HELPED
+
+STEP 4 — SELF-CRITIQUE:
+- [PARKED] Cross-tenant voicenote deletion (72): demo index empty 12th consecutive run — no voice_note_id; destructive test needs HUMAN mutation approval; watch-armed.
+- [PARKED] download.php raw audio (70): same UUID blocker; valid UUID absent every cycle since discovery.
+- [PARKED] check_mailserver.php SSRF→169.254.169.254 (POST-only): excluded by read-only method rule; no session to authorize POST; remains operator-facing.
+- [FINAL] cbs-proxy WS BOLA (95): transport-complete, byte-identical cross-tenant, live this run (426); sole open hop AUTH_HELPED frame binding; report-ready on demonstrated primitives.
+
+STEP 5 — NEXT ACTION:
+- [NEXT] HUMAN: settle the two open hops with an owned-tenant session in one pass — (a) mint live-debug auth for OWN cid, present in a live_debug frame to wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={own}&service={own}, repeat cid={foreign}, record accept vs deny (frame binding); (b) voicenotes/delete.php?voice_note_id=<own-record>&customer_id=2 vs 131727 on own demo record (destructive scope). Own tenants/records only, never third-party data (program PII rule). Standing read-only check.php watch re-armed: first cycle with total>0 → immediately run download.php?file=<uuid> passive diff + surface the delete.php record-level test.
+
+STEP 6 — LEARNING:
+- [LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 426 live this run (2026-09-12) — WS BOLA endpoint unchanged.
+- [LEARN] ACCEPTED MISCONFIG @ help.js: static credential UNCHANGED (token sha256 8d2faac1…, file sha256 b56a5f1e…); playback/get_agent_costs/download/delete references still shipped.
+- [LEARN] ACCEPTED IDOR @ voicenotes/check.php: success:true,total:0,max_id:0 for cid=2 — index empty 12th consecutive cycle, no UUID path.
+- [LEARN] REJECTED (unchanged) @ /api/callbuilder/ nginx 404 · live-manager.de rs param · wildcard-subdomain-enum · api.live-manager.de · playback/get_agent_costs/get_agent_token session gates · AIDesigner sibling probe.
+
+STEP 7 — RISK:
+- [RISK] questnet-gmbh: 78 — Driver cbs-proxy anonymous WS BOLA (95) confirmed live this run and report-ready; existing VALID HIGH records stand (broken-auth chain 7.5, voicenote metadata PII 7.5, help.js static credential 7.5). Delete/download record-level findings remain gate-verified but unproven solely due to empty demo index (12th run). No new surface; no destructive action; no PII echoed; no third-party data touched; ceiling unchanged at AUTH_HELPED pending owned-tenant frame binding + record-level proof.
