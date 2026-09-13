@@ -307,3 +307,6 @@
 - 2026-09-13 REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: no secrets-bearing anonymous siblings — unchanged
 - 2026-09-13 REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page (8.9KB, no dynamic params/endpoints/tokens) — named app entry dead-end, closes
 - 2026-09-13 ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= param reflected unescaped into 200 text/html, no CSP/nosniff, zero-token — PASSIVE-proven 2026-09-12 21:40 UTC; execution pending operator render
+- 2026-09-13 REJECTED MISCONFIG @ dev.applicationdesigner.de: byte-identical 403 "internal" PHP app page on all paths — hard IP gate, no public path surface; closed.
+- 2026-09-13 ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: reflection re-confirmed this cycle (200/97B/text/html; page=index = real 1351B doc) — execution still pending operator render.
+- 2026-09-13 ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 426 on non-upgrade reconfirmed — driver unchanged.
