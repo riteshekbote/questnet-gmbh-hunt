@@ -3228,3 +3228,33 @@ impact: cross-tenant voicenote destruction (PII audio loss) — HIGH CVSS ~8.1.
 testability: AUTH_HELPED
 [NEXT] HUMAN: in one owned-tenant pass — (a) open in a browser `https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title='LM-XSS-POC'%3C/script%3E` and confirm title mutates (benign marker, no cookie exfil) → promote XSS to file-ready Medium; (b) own-cid mint → live_debug frame for own vs foreign cid → settle WS frame binding (driver, 95); (c) delete.php record-level test on own demo record (customer_id=2 vs 131727). Own tenants/records only; keep check.php index watch armed for a UUID path. Passive surface now exhausted — LFI closed, remaining unknowns are AUTH_HELPED/HUMAN_ONLY.
 [RISK] questnet-gmbh: 79 — Driver cbs-proxy anonymous WS BOLA (95) transport-complete and re-verified live this cycle (101+CBS100 frame); valid HIGH records stand (broken-auth chain 7.5, voicenote metadata PII 7.5, help.js static credential 7.5). XSS reflection on privileged origin re-confirmed live (Medium standalone; chain-upsides into session/VPN-gated endpoints). No destructive action, no PII echoed, no third-party data touched; probes were read-only HTTP/WS-upgrade only with no frames beyond the standard CONNECT/READY. LFI closed reduces open unknowns; record-level delete/download and frame-binding proof remain gated on operator own-tenant pass; research ceiling for the chain stays AUTH_HELPED.
+## 2026-09-13 06:48:33 UTC [target] (model bigpickle)
+[HYP] Cross-tenant CBS WS frame binding — accept/deny binds token to cid
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin={LiveDemo|LiveDebugger}&cid={cid}&service={service}
+confidence: 95
+reasoning: reconfirmed live this cycle (GET non-upgrade → 426, size=0 on both demo cid=2 — proxy layer never sees a credential at HTTP tier; prior cycles show 101 + byte-identical CONNECT CBS100/190/200 + READY for cid 131727/2/999999999 with zero token); no proxy-layer ownership check observed in 18+ cycles.
+evidence_needed: operator mints own-cid live-debug token, presents it for a foreign and own cid in a live_debug frame; byte-diff accepted frame set.
+verify_steps: AUTH_HELPED: WS-upgrade cid={ownA}&service=100 → one live_debug frame; repeat cid={ownB} with swapped token→frame binding; byte-diff. Own tenants only.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH CVSS 7.5+.
+testability: AUTH_HELPED
+[HYP] help/content.php reflected XSS — execution on privileged origin (login.php/ExtJS admin surface)
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page=<script>
+confidence: 85
+reasoning: reconfirmed this cycle — GET `?page=%3Cscript%3Ealert(1)%3C/script%3E` → 200 `Content-Type: text/html; charset=UTF-8`, 97B body echoing the param unescaped; no CSP/nosniff; zero-token; page=index serves real doc (~1.4KB) proving 200 is the live endpoint.
+evidence_needed: in-browser execution (benign `document.title` marker only); then assess session-ride into session/VPN-gated siblings (playback, get_agent_costs, get_agent_token, auth.php).
+verify_steps: PASSIVE (reflection captured); HUMAN: operator opens crafted URL in browser, confirms script executes.
+impact: arbitrary JS on www.applicationdesigner.de origin → session/cookie theft into admin/LiveDebugger; VPN-gate bypass via same-origin — MEDIUM–HIGH as chain.
+testability: PASSIVE
+[HYP] Cross-tenant voicenote deletion without customer_id hierarchy gate
+class: IDOR
+asset: www.applicationdesigner.de/extjs/voicenotes/delete.php
+confidence: 72
+reasoning: delete.php is token-gated but returns identical "Sprachnotiz nicht gefunden oder keine Berechtigung" for customer_id 131727/2/999999/absent — unlike hierarchy-gated details.php ("Kundennummer nicht in der Hierarchie"); record-level proof still blocked: check.php index total=0 (18th cycle).
+evidence_needed: valid demo-tenant voice_note_id → delete with customer_id=2 vs 131727; success:true diff proves destructive cross-tenant IDOR.
+verify_steps: AUTH_HELPED: check.php → valid voice_note_id (index empty — HOLD), then delete.php?voice_note_id=<valid>&customer_id=2 vs 131727; diff. Mutating — HUMAN operator, own demo tenant only.
+impact: cross-tenant voicenote destruction (PII audio loss) — HIGH CVSS ~8.1.
+testability: AUTH_HELPED
+[NEXT] HUMAN: in one owned-tenant pass — (a) open in a browser `https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title='LM-XSS-POC'%3C/script%3E` and confirm title mutates (benign marker, no cookie exfil) → file-ready Medium; (b) own-cid mint → live_debug frame for own vs foreign cid → settle WS frame binding (driver, 95); (c) delete.php record-level diff on own demo record (customer_id=2 vs 131727). Own tenants/records only. Passive surface exhausted — nothing probe-able remains; keep check.php index watch armed for a UUID path.
+[RISK] questnet-gmbh: 79 — Stream still stands on the transport-complete, live-reconfirmed cbs-proxy anonymous WS BOLA (95) plus valid HIGH records (broken-auth chain 7.5, voicenote metadata PII 7.5, help.js static credential 7.5). XSS reflection on the privileged origin is re-live (Medium standalone; chain-upside into session/VPN-gated endpoints if rendered). All probes this cycle read-only GET/HTTP-upgrade, ≤1 rps, no body echo beyond 97B reflection, no PII touched; record-level delete/download and frame-binding proof remain AUTH_HELPED on the operator pass; LFI closed out reduces open unknowns.

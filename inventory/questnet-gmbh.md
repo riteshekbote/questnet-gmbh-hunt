@@ -552,3 +552,15 @@ www.live-manager.de
 - CHANGED Surface frozen at 4 live in-scope hosts since 2026-09-04 — no new hosts discovered
 
 ## 2026-09-13 01:29:06 UTC
+
+## 2026-09-13 06:50:45 UTC
+- NEW www.applicationdesigner.de/help/content.php: XSS via `page=` param reflected unescaped into 200 text/html, no CSP/nosniff, zero-token — PASSIVE-proven 2026-09-12 21:40 UTC
+- NEW www.applicationdesigner.de/extjs/voicenotes/delete.php: token-gated (not VPN-gated) destructive endpoint; error "Sprachnotiz nicht gefunden oder keine Berechtigung" vs hierarchy-gated details.php — po
+- NEW www.applicationdesigner.de/extjs/voicenotes/get.php: cross-tenant credential-only data endpoint; identical `{"success":true,"data":[],"total":0}` for all cids
+- NEW www.applicationdesigner.de/extjs/voicenotes/download.php: with token-as-query-param reaches file-lookup (404); VPN gate bypassed; no customer_id scoping
+- NEW www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php: public static credential accepted, token-only gate, global autoincrement ID space 138–345
+- CHANGED www.applicationdesigner.de/extjs/livedebugger/auth.php: VPN gate persistent — anonymous mint BLOCKED (since 2026-09-07)
+- CHANGED www.applicationdesigner.de/extjs/agent/get_agent_costs.php: REJECTED — session-gated ("No VPN detected"), earlier ACCEPTED MISCONFIG corrected
+- CHANGED www.applicationdesigner.de/extjs/playback.php: REJECTED — session-gated ("unauthorized"), earlier ACCEPTED MISCONFIG corrected
+- CHANGED www.applicationdesigner.de/api/callbuilder/: REJECTED — nginx 404 catch-all (146B), no routed HTTP data-plane
+- CHANGED www.applicationdesigner.de/playground.php: REJECTED — static marketing page (8.9KB), dead-end
