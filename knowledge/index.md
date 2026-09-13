@@ -286,3 +286,24 @@
 - 2026-09-12 REJECTED MISCONFIG @ playback.php + get_agent_costs.php: session/VPN-gated ("unauthorized"/"No VPN detected"), byte-identical for all cids — earlier zero-token ACCEPTED entries corrected.
 - 2026-09-12 REJECTED MISCONFIG @ /api/callbuilder/: prefix root + /live byte-identical nginx 404 catch-all — no routed HTTP data-plane.
 - 2026-09-12 UNCHANGED @ flexlist getFields/getDetails/getList · get_user_rights ciphertext · AIDesigner config.php/403-gate · help.js static credential · voicenotes details.php hierarchy gate · auth.php VPN gate.
+- 2026-09-13 ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WS BOLA transport-complete unchanged — demo 131727 vs foreign 2 byte-identical CONNECT/READY, reconfirmed live (426 Upgrade Required)
+- 2026-09-13 ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: cross-tenant credential-only, NOT VPN-gated — unchanged; demo index empty this cycle
+- 2026-09-13 ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/get.php: cross-tenant credential-only data endpoint; identical success:true for all cids
+- 2026-09-13 ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/download.php: with token-as-query-param reaches file-lookup (404); VPN gate bypassed; no customer_id scoping
+- 2026-09-13 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/voicenotes/delete.php: token-gated (not VPN-gated) destructive endpoint; different error pattern than hierarchy-gated details.php — potential cross-tenant deletion
+- 2026-09-13 REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_costs.php: session-gated ("No VPN detected"), identical response for all cids; earlier ACCEPTED MISCONFIG was wrong
+- 2026-09-13 REJECTED IDOR @ www.applicationdesigner.de/extjs/playback.php: session-gated ("unauthorized"), identical response for all cids; no zero-token audio generation surface exists
+- 2026-09-13 REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_token.php: session-gated, byte-identical Zugriff verweigert for both cids — unchanged, closed
+- 2026-09-13 REJECTED MISCONFIG @ www.applicationdesigner.de/api/callbuilder/: prefix root + /live return byte-identical nginx 404 catch-all (146B) — no routed CallBuilder data-plane
+- 2026-09-13 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php: public static credential accepted, token-only gate, global autoincrement id space 138–345 — unchanged
+- 2026-09-13 ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/flexlist/getList.php: directory token-scoped, all customer_id=131727; global autoincrement id space 138–345 — unchanged
+- 2026-09-13 ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/voicenotes/details.php: per-record hierarchy-checked — unchanged
+- 2026-09-13 ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config.php: zero-auth LLM-routing JSON; dispatch gated — unchanged
+- 2026-09-13 ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/index.php?route=: 403 Invalid token — unchanged
+- 2026-09-13 REJECTED IDOR @ www.applicationdesigner.de/extjs/common/getCustomers.php: token-scoped — unchanged
+- 2026-09-13 REJECTED AUTH @ www.live-manager.de rs param: no anonymous open redirect — unchanged
+- 2026-09-13 REJECTED wildcard-subdomain-enum @ *.live-manager.de: 8632 hostnames, 0 dedicated endpoints — unchanged
+- 2026-09-13 REJECTED api.live-manager.de: host non-resolving — unchanged
+- 2026-09-13 REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: no secrets-bearing anonymous siblings — unchanged
+- 2026-09-13 REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page (8.9KB, no dynamic params/endpoints/tokens) — named app entry dead-end, closes
+- 2026-09-13 ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= param reflected unescaped into 200 text/html, no CSP/nosniff, zero-token — PASSIVE-proven 2026-09-12 21:40 UTC; execution pending operator render
