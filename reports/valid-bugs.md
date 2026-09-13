@@ -45,3 +45,9 @@
   - **Verdict: VALID**
   - | 1 | CBS Proxy WebSocket IDOR/BOLA | **VALID** | 8.6 |
   - | 2 | Static credential token mint + voicenote PII leak | **VALID** | 7.5 |
+
+- 4 lead(s) marked VALID at 2026-09-13 21:23:12 UTC
+  - | **Q4 Provable?** | **PARTIAL** — anonymous handshake + CONNECT/READY frames confirmed non-invasively; final frame-level binding requires AUTH_HELPED (valid operator session) |
+  - **Verdict: HOLD** — upgrade to VALID when AUTH_HELPED frame-binding test completes. Anonymous handshake proof is solid but the final "does the backend reject a mismatched cid in the live_debug frame" 
+  - **Verdict: VALID**
+  - **Verdict: HOLD** — needs a second valid tenant's flexlist_id to prove cross-tenant read. If that evidence surfaces, upgrade to VALID.
