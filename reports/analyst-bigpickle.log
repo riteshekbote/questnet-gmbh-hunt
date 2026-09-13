@@ -19727,3 +19727,82 @@ STEP 6 — LEARNING
 STEP 7 — RISK
 [RISK] questnet-gmbh: 79 — Standing HIGHs unchanged and re-verified: cbs-proxy anonymous WS BOLA transport-complete (95, 426 live), broken-auth chain + help.js static credential + voicenote credential-only PII index (7.5 records), XSS reflection on privileged origin re-confirmed live. All probes this cycle read-only GETs, <=1 rps, no body echo beyond the 97B reflection; /api/ routing investigated and closed (breadth reconciliation, no new surface). Remaining unknowns all AUTH_HELPED/HUMAN (frame binding, XSS exec, delete diff, /22 FreeSWITCH listeners, mailserver SSRF) — no pass conducted this cycle, research ceiling unchanged.
 ```
+===== ANALYST bigpickle 2026-09-13 19:14:48 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m✱ [0mGlob "**/*.{yml,yaml,md,txt}"[90m 100 matches[0m
+[0m
+[0m$ [0mcurl -s -o /dev/null -m 15 -w "cbs-proxy:%{http_code} %{content_type}\n" "https://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=2&service=100"; curl -s -k -o /dev/null -m 15 -w "lm-root:%{http_code} %{content_type}\n" "https://www.live-manager.de/"; curl -s -k -o /dev/null -m 15 -w "lm-default:%{http_code} %{content_type}\n" "https://www.live-manager.de/default.aspx"; curl -s -k -o /dev/null -m 15 -w "lm-api:%{http_code} %{content_type}\n" "https://www.live-manager.de/api/"
+cbs-proxy:426 
+lm-root:200 text/html; charset=utf-8
+lm-default:200 text/html; charset=utf-8
+lm-api:302
+[0m
+[0m$ [0mcurl -s -k -m 15 -D - -o /dev/null "https://www.live-manager.de/api/" | grep -i "^location\|^HTTP"; echo "---api/v1---"; curl -s -k -m 15 -D - -o /dev/null "https://www.live-manager.de/api/v1/" | grep -i "^location\|^HTTP"; echo "---api path with rs---"; curl -s -k -m 15 -D - -o /dev/null "https://www.live-manager.de/api/?rs=eyJ0ZXN0IjoiMSJ9" | grep -i "^location\|^HTTP"
+HTTP/1.1 302 Found
+Location: /?rs=L2FwaS8=
+---api/v1---
+HTTP/1.1 302 Found
+Location: /?rs=L2FwaS92MS8=
+---api path with rs---
+HTTP/1.1 302 Found
+Location: /?rs=L2FwaS8/cnM9ZXlKMFpYTjBJam9pTVNKOQ==
+[0m
+## STEP 1 — DELTA
+- NEW www.live-manager.de routing fingerprint: unknown GET paths (incl. /api/, /api/v1/) return 302 → `/?rs=L2FwaS8=` (base64 of requested path) — ASP.NET catch-all portal route; only root + default.aspx return 200; no HTTP API data-plane on the portal host (probed this cycle).
+- CHANGED cbs-proxy.api.live-manager.de: non-upgrade GET → 426 reconfirmed live this cycle (driver persists).
+- NO_DELTA on XSS reflection (reconfirmed prior cycle) and voicenotes index-empty (16+ cycles).
+
+## STEP 2 — PRIORITIZE
+- [PRIO] cbs-proxy.api.live-manager.de — 8.1 — 0.25·9 surface + 0.25·10 value + 0.15·10 tech(gate ease) + 0.15·8 gate + 0.10·8 cloud + 0.10·6 freshness
+- [PRIO] www.applicationdesigner.de/help/content.php — 6.6 — XSS on privileged origin, PASSIVE-proven, execution pending HUMAN
+- [PRIO] www.applicationdesigner.de/extjs/voicenotes/delete.php — 6.4 — destructive cross-tenant candidate, record-level diff AUTH_HELPED
+- [PRIO] www.live-manager.de — 4.4 — catch-all masks 404s (302 → /?rs=), only Login.aspx family 200; low attack_surface now bounded
+
+## STEP 3 — HYPOTHESES
+[HYP] Cross-tenant CBS WS frame binding — accept/deny binds minted token to cid
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
+confidence: 95
+reasoning: 426 on non-upgrade reconfirmed this cycle; 18+ cycles of 101 + byte-identical CONNECT CBS100/190/200 + READY for cid 131727/2/999999999 with zero token; no proxy-layer ownership check observed.
+evidence_needed: operator owns two tenants; mint own-cid live-debug token, present in live_debug frame bound to own vs foreign cid; byte-diff accepted frame set.
+verify_steps: AUTH_HELPED: WS-upgrade cid={ownA}&service=100 → one live_debug frame; repeat cid={ownB} swapped token→frame binding; byte-diff. Own tenants only.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH CVSS 7.5+.
+testability: AUTH_HELPED
+
+[HYP] help/content.php reflected XSS — script execution on privileged origin
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page=<script>
+confidence: 85
+reasoning: page= param reflected unescaped into 200 text/html, no CSP/nosniff, zero-token; page=index serves real ~1.4KB doc (live endpoint); no execution evidence yet.
+evidence_needed: in-browser execution (benign document.title marker); then same-origin session-ride into session/VPN-gated siblings.
+verify_steps: PASSIVE (reflection captured); HUMAN: operator opens crafted URL, confirms script runs.
+impact: arbitrary JS on www.applicationdesigner.de origin → session/cookie theft, VPN-gate bypass same-origin — MEDIUM–HIGH as chain.
+testability: PASSIVE
+
+[HYP] Cross-tenant voicenote deletion without customer_id hierarchy gate
+class: IDOR
+asset: www.applicationdesigner.de/extjs/voicenotes/delete.php
+confidence: 72
+reasoning: delete.php token-gated but returns identical "Sprachnotiz nicht gefunden oder keine Berechtigung" for cid 131727/2/999999/absent vs hierarchy-gated details.php ("Kundennummer nicht in der Hierarchie"); record-level proof blocked — check.php index total=0 (18th cycle).
+evidence_needed: valid demo-tenant voice_note_id → delete with customer_id=2 vs 131727; success:true diff proves destructive cross-tenant IDOR.
+verify_steps: AUTH_HELPED: check.php → valid voice_note_id (index empty — HOLD), then delete.php?voice_note_id=<valid>&customer_id=2 vs 131727 diff. Mutating — operator, own demo tenant only.
+impact: cross-tenant voicenote destruction (PII audio loss) — HIGH CVSS ~8.1.
+testability: AUTH_HELPED
+
+## STEP 4 — SELF-CRITIQUE
+- [PARKED] check_mailserver.php SMTP SSRF: POST-only, needs operator network + listener; identical auth-footprint to already-closed session-gated siblings; confidence 45 but zero testability this cycle.
+- [PARKED] flexlist cross-tenant read: needs second owned tenant; control at list level proves token-scope — no anonymous path.
+- [PARKED] www.live-manager.de as find asset: catch-all 302 → /?rs=base64(path) is a routing fingerprint only; anonymous open-redirect on rs already REJECTED; post-auth rs consumption needs operator creds — no standalone finding, emits as LEARN.
+- [FINAL] ranked: 1) WS frame binding (95, AUTH_HELPED) 2) help/content.php XSS (85, PASSIVE→HUMAN) 3) delete.php IDOR (72, AUTH_HELPED).
+
+## STEP 5 — NEXT ACTION
+[NEXT] HUMAN: one owned-tenant/operator pass, ordered: (a) browser-open `https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title='LM-XSS'%3C/script%3E`, confirm title mutates (benign, no exfil) → file XSS Medium; (b) own-cid mint → live_debug frame for own vs foreign cid → settle WS frame binding (driver, 95); (c) delete.php record-level diff on own demo record (customer_id=2 vs 131727, own record only); (d) POST-auth on www.live-manager.de: observe final redirect/code-path after login with crafted rs=base64(external URL) to validate decode-and-redirect handling; (e) from operator network, passive TCP-connect in-scope 185.158.96.0/22 for FreeSWITCH ESL 8021 / SIP 5060/5061 / Rayo 5222.
+
+## STEP 6 — LEARNING
+- [LEARN] REJECTED MISCONFIG @ www.live-manager.de: any unknown path (incl. /api/, /api/v1/) 302s to `/?rs=base64(path)` — catch-all portal route, no HTTP API data-plane; root + default.aspx are the only 200 routes; rs anonymous open-redirect stays REJECTED; portal path surface now bounded.
+- [LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: non-upgrade GET → 426 reconfirmed live this cycle — driver unchanged.
+
+## STEP 7 — RISK
+[RISK] questnet-gmbh: 79 — Standing valid HIGHs unchanged and live-reverified: cbs-proxy anonymous WS BOLA transport-complete (95, 426 this cycle), voicenote credential-only PII index, help.js static credential, XSS reflection on privileged origin. Portal host fingerprint closed (breadth −1, no new surface, no REJECTED-class re-litigation). All probes this cycle read-only GETs ≤1 rps, no body echo, no PII/mutating access. Remaining unknowns are all operator-owned (frame binding, XSS exec, delete diff, post-auth rs, /22 listeners); research ceiling unchanged until that pass.

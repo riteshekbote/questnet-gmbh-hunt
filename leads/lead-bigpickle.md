@@ -3294,3 +3294,33 @@ impact: internal port-scan primitive / metadata SSRF if SMTP relay path follows 
 testability: AUTH_HELPED
 [NEXT] HUMAN: from operator network open in a browser `https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title='LM-XSS'%3C/script%3E` and confirm title mutates (benign, no cookie exfil) → file XSS as Medium; then same owned-tenant pass: own-cid mint → live_debug frame for own vs foreign cid (frame binding, driver 95) and delete.php diff on an own demo record; also verify /22 FreeSWITCH ESL 8021 / SIP 5060/5061 / Rayo 5222 TCP-listen from operator network.
 [RISK] questnet-gmbh: 79 — Standing HIGHs unchanged and re-verified: cbs-proxy anonymous WS BOLA transport-complete (95, 426 live), broken-auth chain + help.js static credential + voicenote credential-only PII index (7.5 records), XSS reflection on privileged origin re-confirmed live. All probes this cycle read-only GETs, <=1 rps, no body echo beyond the 97B reflection; /api/ routing investigated and closed (breadth reconciliation, no new surface). Remaining unknowns all AUTH_HELPED/HUMAN (frame binding, XSS exec, delete diff, /22 FreeSWITCH listeners, mailserver SSRF) — no pass conducted this cycle, research ceiling unchanged.
+## 2026-09-13 19:01:03 UTC [target] (model bigpickle)
+[HYP] Cross-tenant CBS WS frame binding — accept/deny binds minted token to cid
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
+confidence: 95
+reasoning: 426 on non-upgrade reconfirmed this cycle; 18+ cycles of 101 + byte-identical CONNECT CBS100/190/200 + READY for cid 131727/2/999999999 with zero token; no proxy-layer ownership check observed.
+evidence_needed: operator owns two tenants; mint own-cid live-debug token, present in live_debug frame bound to own vs foreign cid; byte-diff accepted frame set.
+verify_steps: AUTH_HELPED: WS-upgrade cid={ownA}&service=100 → one live_debug frame; repeat cid={ownB} swapped token→frame binding; byte-diff. Own tenants only.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH CVSS 7.5+.
+testability: AUTH_HELPED
+[HYP] help/content.php reflected XSS — script execution on privileged origin
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page=<script>
+confidence: 85
+reasoning: page= param reflected unescaped into 200 text/html, no CSP/nosniff, zero-token; page=index serves real ~1.4KB doc (live endpoint); no execution evidence yet.
+evidence_needed: in-browser execution (benign document.title marker); then same-origin session-ride into session/VPN-gated siblings.
+verify_steps: PASSIVE (reflection captured); HUMAN: operator opens crafted URL, confirms script runs.
+impact: arbitrary JS on www.applicationdesigner.de origin → session/cookie theft, VPN-gate bypass same-origin — MEDIUM–HIGH as chain.
+testability: PASSIVE
+[HYP] Cross-tenant voicenote deletion without customer_id hierarchy gate
+class: IDOR
+asset: www.applicationdesigner.de/extjs/voicenotes/delete.php
+confidence: 72
+reasoning: delete.php token-gated but returns identical "Sprachnotiz nicht gefunden oder keine Berechtigung" for cid 131727/2/999999/absent vs hierarchy-gated details.php ("Kundennummer nicht in der Hierarchie"); record-level proof blocked — check.php index total=0 (18th cycle).
+evidence_needed: valid demo-tenant voice_note_id → delete with customer_id=2 vs 131727; success:true diff proves destructive cross-tenant IDOR.
+verify_steps: AUTH_HELPED: check.php → valid voice_note_id (index empty — HOLD), then delete.php?voice_note_id=<valid>&customer_id=2 vs 131727 diff. Mutating — operator, own demo tenant only.
+impact: cross-tenant voicenote destruction (PII audio loss) — HIGH CVSS ~8.1.
+testability: AUTH_HELPED
+[NEXT] HUMAN: one owned-tenant/operator pass, ordered: (a) browser-open `https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title='LM-XSS'%3C/script%3E`, confirm title mutates (benign, no exfil) → file XSS Medium; (b) own-cid mint → live_debug frame for own vs foreign cid → settle WS frame binding (driver, 95); (c) delete.php record-level diff on own demo record (customer_id=2 vs 131727, own record only); (d) POST-auth on www.live-manager.de: observe final redirect/code-path after login with crafted rs=base64(external URL) to validate decode-and-redirect handling; (e) from operator network, passive TCP-connect in-scope 185.158.96.0/22 for FreeSWITCH ESL 8021 / SIP 5060/5061 / Rayo 5222.
+[RISK] questnet-gmbh: 79 — Standing valid HIGHs unchanged and live-reverified: cbs-proxy anonymous WS BOLA transport-complete (95, 426 this cycle), voicenote credential-only PII index, help.js static credential, XSS reflection on privileged origin. Portal host fingerprint closed (breadth −1, no new surface, no REJECTED-class re-litigation). All probes this cycle read-only GETs ≤1 rps, no body echo, no PII/mutating access. Remaining unknowns are all operator-owned (frame binding, XSS exec, delete diff, post-auth rs, /22 listeners); research ceiling unchanged until that pass.

@@ -1,11 +1,9 @@
-## 2026-09-13 16:49:56 UTC [target] (model nemotron3)
-[PRIO] wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100, 9.5, attack_surface=10 business_value=10 tech_exposure=9 gate_ease=10 cloud_surface=8 freshness=9  
-[PRIO] www.applicationdesigner.de/extjs/voicenotes/check.php, 8.2, attack_surface=9 business_value=9 tech_exposure=7 gate_ease=9 cloud_surface=5 freshness=8  
-[PRIO] www.applicationdesigner.de/extjs/voicenotes/get.php|download.php|delete.php, 7.8, attack_surface=8 business_value=9 tech_exposure=8 gate_ease=9 cloud_surface=5 freshness=8  
-[PRIO] www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php, 7.0, attack_surface=8 business_value=7 tech_exposure=6 gate_ease=9 cloud_surface=4 freshness=7  
-[PRIO] www.applicationdesigner.de/help/content.php, 6.5, attack_surface=7 business_value=5 tech_exposure=8 gate_ease=10 cloud_surface=3 freshness=8  
-[PRIO] www.applicationdesigner.de/AIDesigner/backend/config.php, 5.5, attack_surface=6 business_value=6 tech_exposure=7 gate_ease=10 cloud_surface=7 freshness=6  
-[PRIO] www.applicationdesigner.de/help.js, 8.5, attack_surface=9 business_value=8 tech_exposure=9 gate_ease=10 cloud_surface=5 freshness=9  
+## 2026-09-13 19:14:38 UTC [target] (model nemotron3)
+[PRIO] wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100, 9.5, attack_surface=10 business_value=10 tech_exposure=10 gate_ease=10 cloud_surface=8 freshness=10  
+[PRIO] www.applicationdesigner.de/extjs/voicenotes/check.php|get.php|download.php, 8.3, attack_surface=9 business_value=9 tech_exposure=9 gate_ease=10 cloud_surface=5 freshness=9  
+[PRIO] www.applicationdesigner.de/help/content.php, 7.8, attack_surface=8 business_value=6 tech_exposure=8 gate_ease=10 cloud_surface=3 freshness=9  
+[PRIO] www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php, 6.5, attack_surface=7 business_value=7 tech_exposure=7 gate_ease=10 cloud_surface=5 freshness=6  
+[PRIO] www.applicationdesigner.de/AIDesigner/backend/config.php, 5.8, attack_surface=6 business_value=6 tech_exposure=7 gate_ease=10 cloud_surface=7 freshness=5  
 [HYP] Cross-tenant CBS WebSocket subscription via unauthenticated cid/service parameters
 class: IDOR
 asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
@@ -24,20 +22,20 @@ evidence_needed: Valid foreign voicenote UUID from HUMAN operator with second te
 verify_steps: (PASSIVE) GET https://www.applicationdesigner.de/extjs/voicenotes/check.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&customer_id=2 — observe success:true with identical structure to cid=131727; do NOT reproduce PII. (PASSIVE) GET https://www.applicationdesigner.de/extjs/voicenotes/get.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&customer_id=2 — observe identical success:true,total:0. (PASSIVE) GET https://www.applicationdesigner.de/extjs/voicenotes/download.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&file=<uuid> — observe 404 file-lookup reached (not auth error)
 impact: Anonymous disclosure of a real customer's call/voicemail metadata index (PII incl. phone numbers) via public JS credential; potential cross-tenant audio file download if valid UUID known — HIGH (CVSS 7.5)
 testability: PASSIVE (metadata); HUMAN_ONLY (audio download requires valid foreign UUID)
-[HYP] Cross-tenant flexlist data read via global autoincrement ID with token-only gate
-class: IDOR
-asset: https://www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php
-confidence: 55
-reasoning: Public static credential accepted (HTTP 200 success:true), reads resolve live per-id data (id 345 → 32 defs, 25 rows, body sha256 aba9094f0a615eab); gate is token-only, no customer_id in request; global autoincrement ID space 138–345 implies foreign rows exist in gaps; cross-tenant read NOT yet observed anonymous — requires HUMAN operator with second tenant to create flexlist and confirm read via global ID
-evidence_needed: Valid foreign flexlist_id from second owned tenant — without it, only same-tenant read is proven
-verify_steps: (HUMAN) operator with second tenant creates flexlist, provides ID; (PASSIVE) GET https://www.applicationdesigner.de/extjs/flexlist/getFields.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&id=<foreign-id> — observe if success:true with data vs empty/error
-impact: Cross-tenant business data read (flexlist definitions/rows) via public credential — MEDIUM/HIGH if proven
-testability: HUMAN_ONLY (needs operator with second tenant)
+[HYP] Reflected XSS via help content page parameter
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php
+confidence: 85
+reasoning: PASSIVE-proven 2026-09-12 21:40 UTC: page= parameter reflected unescaped into HTTP 200 text/html response (97B for non-existent page, 1351B for valid page=index); no CSP header, no X-Content-Type-Options: nosniff; zero-token access; execution context is help content viewer
+evidence_needed: Operator render in browser to confirm JS execution (e.g., `<script>document.title='LM-XSS'</script>`)
+verify_steps: (PASSIVE) GET https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E — confirm reflection in 200 text/html; (HUMAN) operator opens URL in browser to verify execution
+impact: XSS in help context — MEDIUM (CVSS 6.1); chainable with credential theft if help viewer runs in authenticated session context
+testability: PASSIVE (reflection); HUMAN_ONLY (execution)
+[PARKED] Cross-tenant flexlist data read via global autoincrement ID: confidence 55 but cross-tenant read NOT yet observed anonymous — requires HUMAN operator with second tenant to create flexlist and confirm anonymous read via global ID; without this, only same-tenant read is proven
 [PARKED] Cross-tenant voicenote deletion via delete.php token-only gate: confidence 70 but requires valid foreign log_id from HUMAN operator; deletion is mutating — program rules prohibit writes on live customer data; only error pattern observable passively
-[PARKED] Cross-tenant flexlist data read via global autoincrement ID: confidence 55 but cross-tenant read NOT yet observed — requires HUMAN operator with second tenant to create a flexlist and confirm anonymous read via global ID; without this, only same-tenant read is proven
-[PARKED] get_user_rights.php ciphertext stability/key recovery: body sha256 differs per cid and rotates per request; high-entropy base64 (~3230B) suggests encrypted/serialized payload. Severity capped LOW-MED until ciphertext stability or key demonstrated. Needs multiple requests per cid to test determinism
-[PARKED] XSS @ www.applicationdesigner.de/help/content.php: PASSIVE-proven reflection (2026-09-12) but execution requires operator render in browser; no CSP/nosniff, zero-token. Impact limited to help content context unless chained
 [PARKED] Cross-tenant raw voicenote audio download via download.php: confidence 75 but requires valid foreign UUID from HUMAN operator; only 404 reachable passively
+[PARKED] get_user_rights.php ciphertext stability/key recovery: body sha256 differs per cid and rotates per request; high-entropy base64 (~3230B) suggests encrypted/serialized payload. Severity capped LOW-MED until ciphertext stability or key demonstrated. Needs multiple requests per cid to test determinism
+[PARKED] auth.php VPN gate: anonymous mint BLOCKED since 2026-09-07; credential still public in help.js but chain broken at mint layer
 [FINAL] Survivors ranked:
 [NEXT] PROBE: GET https://www.applicationdesigner.de/extjs/voicenotes/check.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&customer_id=2 — re-confirm cross-tenant metadata index with valid public demo token (byte-identical success:true for foreign cid); do NOT reproduce PII
 [LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WS BOLA transport-complete unchanged — demo 131727 vs foreign 2 byte-identical CONNECT/READY, reconfirmed live (426 Upgrade Required)
@@ -62,4 +60,4 @@ testability: HUMAN_ONLY (needs operator with second tenant)
 [LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page (8.9KB, no dynamic params/endpoints/tokens) — named app entry dead-end, closes
 [LEARN] ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= param reflected unescaped into 200 text/html, no CSP/nosniff, zero-token — PASSIVE-proven 2026-09-12 21:40 UTC; execution pending operator render
 [LEARN] REJECTED MISCONFIG @ dev.applicationdesigner.de: byte-identical 403 "internal" PHP app page on all paths — hard IP gate, no public path surface; closed
-[RISK] questnet-gmbh: 82 — Driver finding (cbs-proxy BOLA transport-complete) remains VALID HIGH (CVSS 9.1) and VPN-independent. Voicenotes metadata IDOR re-confirmed NOT VPN-gated with valid token (HIGH, CVSS 7.5). Auth.php mint now VPN-gated but credential still public in help.js. Flexlist per-id endpoints NEW token-only gate with global ID space — cross-tenant read pending operator confirmation. AIDesigner config.php zero-auth LLM routing disclosure (MEDIUM/LOW). XSS at help/content.php PASSIVE-proven but execution requires operator render. Surface frozen at 4 hosts. PoC for bug gate: cbs-proxy WS 101 with arbitrary cid/service sufficient for HIGH severity report.
+[RISK] questnet-gmbh: 85 — Driver finding (cbs-proxy BOLA transport-complete) remains VALID HIGH (CVSS 9.1) and VPN-independent. Voicenotes metadata IDOR re-confirmed NOT VPN-gated with valid token (HIGH, CVSS 7.5). Auth.php mint now VPN-gated but credential still public in help.js. Flexlist per-id endpoints NEW token-only gate with global ID space — cross-tenant read pending operator confirmation. AIDesigner config.php zero-auth LLM routing disclosure (MEDIUM/LOW). XSS at help/content.php PASSIVE-proven but execution requires operator render. Surface frozen at 4 hosts. PoC for bug gate: cbs-proxy WS 101 with arbitrary cid/service sufficient for HIGH severity report.
