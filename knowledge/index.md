@@ -310,3 +310,4 @@
 - 2026-09-13 REJECTED MISCONFIG @ dev.applicationdesigner.de: byte-identical 403 "internal" PHP app page on all paths — hard IP gate, no public path surface; closed.
 - 2026-09-13 ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: reflection re-confirmed this cycle (200/97B/text/html; page=index = real 1351B doc) — execution still pending operator render.
 - 2026-09-13 ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 426 on non-upgrade reconfirmed — driver unchanged.
+- 2026-09-13 ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: cross-tenant credential-only, NOT VPN-gated — unchanged; demo index empty this cycle (16+ consecutive)

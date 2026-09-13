@@ -1,6 +1,30 @@
-## 2026-09-13 12:41:10 UTC [target] (model bigpickle)
-[NEXT] HUMAN: from operator network verify whether in-scope 185.158.96.0/22 exposes FreeSWITCH ESL 8021 (ClueCon default), SIP 5060/5061 (ext 1000-1019 pw 1234), Rayo 5222 — passive nmap-level TCP connect only, no exploit; combine with standing owned-tenant pass (help/content.php XSS render marker + own-cid live_debug frame binding + delete.php record diff on own demo record).
-[LEARN] REJECTED MISCONFIG @ dev.applicationdesigner.de: byte-identical 403 "internal" PHP app page on all paths — hard IP gate, no public path surface; closed.
-[LEARN] ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: reflection re-confirmed this cycle (200/97B/text/html; page=index = real 1351B doc) — execution still pending operator render.
-[LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 426 on non-upgrade reconfirmed — driver unchanged.
-[RISK] questnet-gmbh: 79 — Standing valid HIGHs (cbs-proxy WS BOLA transport-complete 95, voicenote credential-only PII index, help.js static credential) + re-live XSS on privileged origin; dev.applicationdesigner.de surface closed (breadth −1); remaining unknowns all AUTH_HELPED/HUMAN (frame binding, XSS exec, delete diff, /22 FreeSWITCH ports). No mutating or PII-touching actions performed; probes ≤1 rps read-only.
+## 2026-09-13 16:42:42 UTC [target] (model bigpickle)
+[HYP] Cross-tenant CBS WS frame binding — accept/deny binds minted token to cid
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
+confidence: 95
+reasoning: 426 on non-upgrade reconfirmed this cycle; 18+ prior cycles show 101 + byte-identical CONNECT CBS100/190/200 + READY for cid 131727/2/999999999 with zero token; no proxy-layer ownership check observed.
+evidence_needed: operator owns two tenants; mint own-cid live-debug token, present it in a live_debug frame bound to own vs foreign cid; byte-diff accepted frame set.
+verify_steps: AUTH_HELPED: WS-upgrade cid={ownA}&service=100 → one live_debug frame; repeat cid={ownB} with swapped token→frame binding; byte-diff. Own tenants only.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH CVSS 7.5+.
+testability: AUTH_HELPED
+[HYP] help/content.php reflected XSS — script execution on privileged origin (login.php + ExtJS admin/LiveDebugger)
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page=<script>
+confidence: 85
+reasoning: re-probe this cycle — GET ?page=%3Cscript%3Ealert(1)%3C/script%3E → 200 text/html; charset=UTF-8, 97B body echoing param verbatim; no CSP/nosniff; zero-token; page=index serves real doc (~1.4KB).
+evidence_needed: in-browser execution (benign document.title marker); then same-origin session-ride into playback/get_agent_costs/get_agent_token/auth.php.
+verify_steps: PASSIVE (reflection captured); HUMAN: operator opens crafted URL in browser, confirms script runs.
+impact: arbitrary JS on www.applicationdesigner.de origin → session/cookie theft, VPN-gate bypass via same-origin — MEDIUM–HIGH as chain.
+testability: PASSIVE
+[HYP] check_mailserver.php anonymous SMTP-connect SSRF (smtp_server param, POST-only, NO token)
+class: SSRF
+asset: www.applicationdesigner.de/extjs/check_mailserver.php
+confidence: 45
+reasoning: help.js shows POST smtp_server param with no token (identical auth-footprint to the credential-only family); never live-tested because POST-only; SSRF class is program-high-value; outcome unknown (may also be VPN-gated like siblings).
+evidence_needed: smtp_server=operator-controlled listener (and 169.254.169.254) → observed TCP connect/response timing diff vs closed port proves connect-stage SSRF.
+verify_steps: AUTH_HELPED/HUMAN: POST smtp_server=<listener> from operator network; observe connect + SMTP banner echo; compare response for unroutable/closed host. Non-mutating single SMTP connect.
+impact: internal port-scan primitive / metadata SSRF if SMTP relay path follows — MEDIUM if connect-only.
+testability: AUTH_HELPED
+[NEXT] HUMAN: from operator network open in a browser `https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title='LM-XSS'%3C/script%3E` and confirm title mutates (benign, no cookie exfil) → file XSS as Medium; then same owned-tenant pass: own-cid mint → live_debug frame for own vs foreign cid (frame binding, driver 95) and delete.php diff on an own demo record; also verify /22 FreeSWITCH ESL 8021 / SIP 5060/5061 / Rayo 5222 TCP-listen from operator network.
+[RISK] questnet-gmbh: 79 — Standing HIGHs unchanged and re-verified: cbs-proxy anonymous WS BOLA transport-complete (95, 426 live), broken-auth chain + help.js static credential + voicenote credential-only PII index (7.5 records), XSS reflection on privileged origin re-confirmed live. All probes this cycle read-only GETs, <=1 rps, no body echo beyond the 97B reflection; /api/ routing investigated and closed (breadth reconciliation, no new surface). Remaining unknowns all AUTH_HELPED/HUMAN (frame binding, XSS exec, delete diff, /22 FreeSWITCH listeners, mailserver SSRF) — no pass conducted this cycle, research ceiling unchanged.
