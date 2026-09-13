@@ -479,3 +479,12 @@ TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
 TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
 ## REPOSCAN 2026-09-13 21:19:09 UTC
 TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-13 23:14:15 UTC
+[HYP] No Source-Code Audit Targets — GitHub Org Not Configured
+class: OTHER
+asset: scope.yml → github_orgs
+confidence: 100
+reasoning: |
+impact: None — no source-code attack surface is available to audit.
+verify_steps: None required; this is a configuration-level fact, not a vulnerability.
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
