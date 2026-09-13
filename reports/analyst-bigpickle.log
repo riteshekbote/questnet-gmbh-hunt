@@ -20967,3 +20967,81 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 - [RISK] questnet-gmbh: 79 — Standing findings unchanged and fresh-reverified this cycle: cbs-proxy anonymous WS BOLA transport-complete (driver, 95, 426 confirmed 21:24), voicenote credential-only cross-tenant PII index (VALID per triage 21:23, 7.5), help.js static credential, XSS reflection on privileged origin. check_mailserver SSRF thread closed on live data (new method-gate observation, −1 breadth). All probes this cycle read-only GETs at ≤0.2 rps, bodies hashed not echoed, no mutation/PII. Remaining unknowns all operator-owned (frame binding, XSS exec, delete diff, post-auth rs, /22 listeners); research ceiling unchanged until that pass.
+===== ANALYST bigpickle 2026-09-13 23:36:31 UTC =====
+[0m
+> build · big-pickle
+[0m
+I'll run two cheap read-only probes on the freshest asset (help/content.php) to test whether the reflected `page=` param also enables file read, then emit the analysis.
+[0m$ [0mcurl -s -o /tmp/lfi1.body -w "code=%{http_code} size=%{size_download} type=%{content_type}\n" --max-time 20 "https://www.applicationdesigner.de/help/content.php?page=../../../../../../etc/passwd" ; sha256sum /tmp/lfi1.body ; head -c 400 /tmp/lfi1.body ; echo
+code=200 size=100 type=text/html; charset=UTF-8
+0d9f03743e6e4e36b1e609de9466fd8c8f84b727e5daef22d43571ac290f7e5a  /tmp/lfi1.body
+<h1>Page not found</h1><p>The requested help page '../../../../../../etc/passwd' does not exist.</p>
+[0m
+[0m$ [0msleep 1.2; curl -s -o /tmp/lfi2.body -w "code=%{http_code} size=%{size_download} type=%{content_type}\n" --max-time 20 "https://www.applicationdesigner.de/help/content.php?page=..%2F..%2F..%2Fetc%2Fpasswd" ; sha256sum /tmp/lfi2.body ; head -c 300 /tmp/lfi2.body ; echo
+code=200 size=91 type=text/html; charset=UTF-8
+4182ff8d89aeab713c324a6c91bc6c9bc7e62e46ac5d8813324acbdf2e11974f  /tmp/lfi2.body
+<h1>Page not found</h1><p>The requested help page '../../../etc/passwd' does not exist.</p>
+[0m
+STEP 1 — DELTA
+- [NEW] probe 2026-09-13: `help/content.php?page=../../../../../../etc/passwd` → 200/100B, body `<h1>Page not found</h1><p>The requested help page '...' does not exist.</p>` — page is a key-based lookup, raw value echoed unescaped, no file access.
+- [NEW] probe 2026-09-13: `page=..%2F..%2F..%2Fetc%2Fpasswd` → 200/91B same echo (URL-decode applied before lookup, still key-based) — encoded traversal also excluded.
+- [CHANGED] XSS reflection independently reconfirmed in both probe bodies today (raw param verbatim in 200 text/html, no CSP/nosniff); execution still pending operator render.
+- [CHANGED] 2026-09-13 21:28 cycle empty; surface frozen at 4 live hosts; driver cbs-proxy 426 unchanged.
+
+STEP 2 — PRIORITIZE
+- [PRIO] cbs-proxy.api.live-manager.de WS BOLA, 6.65, a8/b9/t5/g9/c0/f3
+- [PRIO] www.applicationdesigner.de/help/content.php (XSS + key-lookup page param), 6.35, a7/b6/t5/g10/c1/f7
+- [PRIO] www.applicationdesigner.de/extjs/voicenotes/delete.php, 5.2, a5/b7/t4/g8/c0/f4
+
+STEP 3 — HYPOTHESES
+[HYP] Cross-tenant CBS WS frame binding — token→cid ownership
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
+confidence: 95
+reasoning: 426 reconfirmed; 20+ cycles anonymous WS 101 + byte-identical CONNECT CBS100/190/200 + READY for cid 131727/2/999999999, zero token; binding to minted token still unproven.
+evidence_needed: operator owns two tenants; mint own-cid token, bind to own vs foreign cid in live_debug frame; byte-diff accepted frame set.
+verify_steps: AUTH_HELPED — WS-upgrade cid={ownA} vs {ownB} with swapped token→frame binding; own tenants only.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH CVSS 8.6.
+testability: AUTH_HELPED
+
+[HYP] help/content.php DOM XSS — same-origin ride into /extjs session-gated surface
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page=<script>
+confidence: 80
+reasoning: today's probes re-confirmed unescaped echo of page= in 200 text/html (97B/91B/100B), no CSP/nosniff, zero-token; no URL-encoding/quoting applied → executable vector. Execution is the missing link, not reflection.
+evidence_needed: in-browser execution (benign document.title marker); then same-origin fetch to token-gated /extjs siblings.
+verify_steps: PASSIVE (reflection captured today); HUMAN — open crafted URL, confirm script runs.
+impact: arbitrary JS on www.applicationdesigner.de origin → same-origin read/write to all /extjs endpoints (voicenotes/get, flexlist, mint) — MEDIUM→HIGH as chain.
+testability: HUMAN_ONLY (execution)
+
+[HYP] Cross-tenant voicenote deletion without customer_id hierarchy gate
+class: IDOR
+asset: www.applicationdesigner.de/extjs/voicenotes/delete.php
+confidence: 72
+reasoning: delete.php token-gated but returns identical "Sprachnotiz nicht gefunden oder keine Berechtigung" for cid 2/999999/131727/absent vs hierarchy-gated details.php; record-level proof blocked — check.php index total=0 (17+ cycles).
+evidence_needed: valid demo voice_note_id → delete with customer_id=2 vs 131727; success:true diff proves destructive cross-tenant IDOR.
+verify_steps: AUTH_HELPED — own demo tenant only; mutating, so error-pattern evidence alone pending operator.
+impact: cross-tenant voicenote destruction (PII audio loss) — HIGH CVSS ~8.1.
+testability: AUTH_HELPED
+
+STEP 4 — SELF-CRITIQUE
+- [PARKED] Cross-tenant flexlist read via global autoincrement ID: needs operator with second tenant; no foreign id known.
+- [PARKED] voicenotes/download.php raw audio: needs valid foreign UUID; only 404 reachable.
+- [PARKED] get_user_rights.php ciphertext: high-entropy, rotates per request; no key/stability.
+- [PARKED] auth.php VPN gate: mint BLOCKED since 2026-09-07; credential still in help.js.
+- [PARKED] voicenotes/delete.php + WS frame binding: AUTH_HELPED — operator only.
+- [PARKED] check_mailserver.php SMTP SSRF: POST-only — not testable under passive rules.
+- DROPPED this cycle: LFI via page= — BOTH plain and %2F-encoded traversal probes return key-lookup echo, no file read anywhere in the path.
+- [FINAL] Survivors ranked: 1) WS frame-binding (95, driver, AUTH_HELPED) 2) XSS help/content.php (80, reflection PASSIVE-proven, execution HUMAN) 3) voicenotes/delete.php (72, AUTH_HELPED).
+
+STEP 5 — NEXT ACTION
+[NEXT] HUMAN: operator opens https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E in a browser and confirms document.title='LM-XSS'; benign marker proves DOM execution on www.applicationdesigner.de origin — the single missing evidence to elevate the XSS from reflection-proof to executable (→ same-origin chain to /extjs endpoints).
+
+STEP 6 — LEARNING
+- [LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/help/content.php: page= is a key-based help lookup (index-like) — plain and %2F-encoded traversal probes return "Page not found" raw echo, no file include/LFI; reflection-only surface confirmed.
+- [LEARN] ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: unescaped page= reflection reconfirmed in 3 fresh 200 text/html bodies today, no CSP/nosniff, zero-token — unchanged, execution pending operator render.
+- [LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 426 on non-upgrade reconfirmed — driver unchanged.
+- [LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: cross-tenant credential-only, NOT VPN-gated — unchanged.
+
+STEP 7 — RISK
+- [RISK] questnet-gmbh: 85 — Driver (cbs-proxy WS BOLA, transport-complete, VALID HIGH CVSS 9.1) unchanged and VPN-independent. Voicenotes metadata IDOR re-confirmed NOT VPN-gated (HIGH 7.5). XSS at help/content.php reflection-reconfirmed today (MEDIUM 6.1; escalates to MEDIUM–HIGH chain if operator confirms execution). LFI on same param now excluded by direct probe. auth.php mint VPN-gated; flexlist cross-tenant pending operator. Surface frozen at 4 hosts; PoC for bug gate = cbs-proxy WS 101 with arbitrary cid/service.

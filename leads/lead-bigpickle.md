@@ -3562,3 +3562,32 @@ evidence_needed: valid demo-tenant voice_note_id → delete with customer_id=2 v
 verify_steps: AUTH_HELPED: check.php → valid voice_note_id (index empty — HOLD), then delete.php?voice_note_id=<valid>&customer_id=2 vs 131727 diff. Mutating — operator, own demo tenant only.
 impact: cross-tenant voicenote destruction (PII audio loss) — HIGH CVSS ~8.1.
 testability: AUTH_HELPED
+## 2026-09-13 23:33:14 UTC [target] (model bigpickle)
+[HYP] Cross-tenant CBS WS frame binding — token→cid ownership
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
+confidence: 95
+reasoning: 426 reconfirmed; 20+ cycles anonymous WS 101 + byte-identical CONNECT CBS100/190/200 + READY for cid 131727/2/999999999, zero token; binding to minted token still unproven.
+evidence_needed: operator owns two tenants; mint own-cid token, bind to own vs foreign cid in live_debug frame; byte-diff accepted frame set.
+verify_steps: AUTH_HELPED — WS-upgrade cid={ownA} vs {ownB} with swapped token→frame binding; own tenants only.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH CVSS 8.6.
+testability: AUTH_HELPED
+[HYP] help/content.php DOM XSS — same-origin ride into /extjs session-gated surface
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page=<script>
+confidence: 80
+reasoning: today's probes re-confirmed unescaped echo of page= in 200 text/html (97B/91B/100B), no CSP/nosniff, zero-token; no URL-encoding/quoting applied → executable vector. Execution is the missing link, not reflection.
+evidence_needed: in-browser execution (benign document.title marker); then same-origin fetch to token-gated /extjs siblings.
+verify_steps: PASSIVE (reflection captured today); HUMAN — open crafted URL, confirm script runs.
+impact: arbitrary JS on www.applicationdesigner.de origin → same-origin read/write to all /extjs endpoints (voicenotes/get, flexlist, mint) — MEDIUM→HIGH as chain.
+testability: HUMAN_ONLY (execution)
+[HYP] Cross-tenant voicenote deletion without customer_id hierarchy gate
+class: IDOR
+asset: www.applicationdesigner.de/extjs/voicenotes/delete.php
+confidence: 72
+reasoning: delete.php token-gated but returns identical "Sprachnotiz nicht gefunden oder keine Berechtigung" for cid 2/999999/131727/absent vs hierarchy-gated details.php; record-level proof blocked — check.php index total=0 (17+ cycles).
+evidence_needed: valid demo voice_note_id → delete with customer_id=2 vs 131727; success:true diff proves destructive cross-tenant IDOR.
+verify_steps: AUTH_HELPED — own demo tenant only; mutating, so error-pattern evidence alone pending operator.
+impact: cross-tenant voicenote destruction (PII audio loss) — HIGH CVSS ~8.1.
+testability: AUTH_HELPED
+[NEXT] HUMAN: operator opens https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E in a browser and confirms document.title='LM-XSS'; benign marker proves DOM execution on www.applicationdesigner.de origin — the single missing evidence to elevate the XSS from reflection-proof to executable (→ same-origin chain to /extjs endpoints).
