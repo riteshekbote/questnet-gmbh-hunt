@@ -333,3 +333,9 @@
 - 2026-09-14 REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page (8.9KB, no dynamic params/endpoints/tokens) — named app entry dead-end, closes
 - 2026-09-14 ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= param reflected unescaped into 200 text/html, no CSP/nosniff, zero-token — PASSIVE-proven 2026-09-12 21:40 UTC; execution pending operator render
 - 2026-09-14 REJECTED MISCONFIG @ dev.applicationdesigner.de: byte-identical 403 "internal" PHP app page on all paths — hard IP gate, no public path surface; closed
+- 2026-09-14 ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 21+ cycles anonymous WS 101 + byte-identical CONNECT/READY, transport-complete, driver finding — unchanged.
+- 2026-09-14 ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= reflected unescaped, no CSP/nosniff, zero-token, execution pending operator render — unchanged.
+- 2026-09-14 ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: public static credential + full endpoint map — unchanged.
+- 2026-09-14 ACCEPTED CONTROL @ voicenotes/details.php: per-record hierarchy-checked — unchanged.
+- 2026-09-14 REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page — closed.
+- 2026-09-14 REJECTED MISCONFIG @ dev.applicationdesigner.de: hard IP gate 403 — closed.

@@ -21174,3 +21174,101 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 [RISK] questnet-gmbh: 82 — Two triaged VALID HIGHs remain file-ready (cbs-proxy WS IDOR 8.6; static-credential mint + voicenote PII 7.5, both VPN-independent) and POC-phase PoC (anonymous 101 with arbitrary cid/service) is sufficient for the HIGH report. This cycle closes the last zero-token candidate (check_mailserver session-gated), so no new anonymous surface; XSS elevation via operator render is the single in-flight upside. Footer unchanged: surface frozen at 4 hosts; report filing awaiting program state.
+===== ANALYST bigpickle 2026-09-14 07:17:59 UTC =====
+[0m
+> build · big-pickle
+[0m
+## STEP 1 — DELTA
+
+NO_DELTA. Knowledge base 2026-09-14 entries are all "unchanged" markers; no new probes or discoveries since last analysis.
+
+---
+
+## STEP 2 — PRIORITIZE
+
+```
+[PRIO] cbs-proxy.api.live-manager.de,91,attack_surface=9,business_value=10,tech_exposure=9,gate_ease=10,cloud_surface=7,freshness=9
+[PRIO] www.applicationdesigner.de/help/content.php,82,attack_surface=8,business_value=8,tech_exposure=7,gate_ease=10,cloud_surface=3,freshness=7
+[PRIO] www.applicationdesigner.de/extjs/voicenotes/delete.php,68,attack_surface=6,business_value=8,tech_exposure=6,gate_ease=6,cloud_surface=3,freshness=5
+```
+
+---
+
+## STEP 3 — HYPOTHESES
+
+```
+[HYP] Cross-tenant CBS WS frame binding — token→cid ownership
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
+confidence: 95
+reasoning: 21+ cycles anonymous WS 101 + byte-identical CONNECT CBS100/190/200 + READY for demo cid=131727, foreign cid=2, synthetic cid=999999999 — zero token at proxy layer; triage 2026-09-13 marked BOLA VALID 8.6; frame binding to minted token still unproven.
+evidence_needed: operator owns two tenants; mint own-cid live-debug token, present in a live_debug frame bound to own vs foreign cid; byte-diff accepted frame sets.
+verify_steps: AUTH_HELPED — WS-upgrade cid={ownA} vs cid={ownB} with swapped minted token→cid binding; own tenants only.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH CVSS 8.6, CRITICAL 9.1 if token→cid binding unenforced.
+testability: AUTH_HELPED
+```
+
+```
+[HYP] help/content.php DOM XSS — same-origin ride into /extjs session-gated surface
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page=<script>...
+confidence: 85
+reasoning: page= param reflected unescaped into 200 text/html (97B/100B across probes), no CSP, no nosniff, zero-token; reflection re-confirmed 2026-09-13 12:58 UTC; execution is the sole missing link.
+evidence_needed: in-browser execution (benign document.title marker); then same-origin fetch to token-gated /extjs endpoints (voicenotes/get, flexlist, auth mint).
+verify_steps: HUMAN_ONLY — open crafted URL in browser, confirm document.title='LM-XSS'.
+impact: arbitrary JS on www.applicationdesigner.de origin → same-origin read/write to all /extjs endpoints — MEDIUM→HIGH as chain (session theft + PII access).
+testability: HUMAN_ONLY
+```
+
+```
+[HYP] Cross-tenant voicenote destruction — delete.php without customer_id hierarchy gate
+class: IDOR
+asset: www.applicationdesigner.de/extjs/voicenotes/delete.php
+confidence: 72
+reasoning: delete.php is token-gated (not hierarchy-gated like details.php); returns "Sprachnotiz nicht gefunden oder keine Berechtigung" for all cids including demo, but error message differs from hierarchy-gated details.php ("Kundennummer nicht in der Hierarchie") — suggests token-only gate without cid ownership check; cross-tenant proof blocked because check.php index is empty (17+ consecutive cycles, total=0).
+evidence_needed: valid demo voice_note_id from check.php index → delete with customer_id=2 vs 131727; success:true diff proves destructive cross-tenant IDOR.
+verify_steps: AUTH_HELPED — own demo tenant only; needs non-empty voicenote index; mutating, error-pattern evidence only.
+impact: cross-tenant voicenote destruction (PII audio loss) — HIGH CVSS ~8.1.
+testability: AUTH_HELPED
+```
+
+---
+
+## STEP 4 — SELF-CRITIQUE
+
+```
+[FINAL] 1. Cross-tenant CBS WS frame binding — confidence 95, transport-complete, driver finding
+[FINAL] 2. help/content.php DOM XSS — confidence 85, reflection proven, execution pending operator
+[FINAL] 3. Cross-tenant voicenote delete.php — confidence 72, gate pattern evidence, proof blocked by empty index
+```
+
+No hypotheses below threshold. All three have valid verify_steps and trace to context.
+
+---
+
+## STEP 5 — NEXT ACTION
+
+```
+[NEXT] HUMAN: operator opens https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E in a browser and confirms document.title='LM-XSS' — the single missing evidence to elevate reflection-proven XSS to executable and unlock same-origin chain to /extjs endpoints.
+```
+
+---
+
+## STEP 6 — LEARNING
+
+```
+[LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 21+ cycles anonymous WS 101 + byte-identical CONNECT/READY, transport-complete, driver finding — unchanged.
+[LEARN] ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= reflected unescaped, no CSP/nosniff, zero-token, execution pending operator render — unchanged.
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: public static credential + full endpoint map — unchanged.
+[LEARN] ACCEPTED CONTROL @ voicenotes/details.php: per-record hierarchy-checked — unchanged.
+[LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page — closed.
+[LEARN] REJECTED MISCONFIG @ dev.applicationdesigner.de: hard IP gate 403 — closed.
+```
+
+---
+
+## STEP 7 — RISK
+
+```
+[RISK] questnet-gmbh: 82 — Two triaged VALID HIGHs remain file-ready (cbs-proxy WS IDOR 8.6; static-credential mint + voicenote PII 7.5, both VPN-independent) and POC-phase PoC (anonymous 101 with arbitrary cid/service) is sufficient for the HIGH report. XSS elevation via operator render is the single in-flight upside. Surface frozen at 4 hosts since 2026-09-04; report filing awaiting program state confirmation.
+```

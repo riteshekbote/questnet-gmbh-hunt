@@ -600,3 +600,7 @@ www.live-manager.de
 - CHANGED www.applicationdesigner.de/extjs/voicenotes/download.php: with token-as-query-param reaches file-lookup (404); VPN gate bypassed; no customer_id scoping — cross-tenant download viable if valid UUID kn
 - CHANGED www.applicationdesigner.de/extjs/voicenotes/delete.php: token-gated (not VPN-gated) destructive endpoint; error "Sprachnotiz nicht gefunden oder keine Berechtigung" vs hierarchy-gated details.php — po
 - CHANGED dev.applicationdesigner.de: REJECTED — byte-identical 403 "internal" PHP app page on all paths, hard IP gate (2026-09-13)
+
+## 2026-09-14 07:17:59 UTC
+- NEW None — surface frozen at 4 live hosts since 2026-09-04; no new endpoints or hosts discovered in last cycle
+- CHANGED None — all accepted/rejected findings reconfirmed at 2026-09-14 with identical evidence
