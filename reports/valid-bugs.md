@@ -51,3 +51,20 @@
   - **Verdict: HOLD** — upgrade to VALID when AUTH_HELPED frame-binding test completes. Anonymous handshake proof is solid but the final "does the backend reject a mismatched cid in the live_debug frame" 
   - **Verdict: VALID**
   - **Verdict: HOLD** — needs a second valid tenant's flexlist_id to prove cross-tenant read. If that evidence surfaces, upgrade to VALID.
+
+- 15 lead(s) marked VALID at 2026-09-14 07:11:48 UTC
+  - **VERDICT: VALID**
+  - | Q7 | Reasonable triager? | **YES** — broken authentication allowing arbitrary tenant token minting is a clear valid bug |
+  - **VERDICT: VALID** (mitigated as of 2026-09-07, VPN gate deployed)
+  - | Q7 | Reasonable triager? | **YES** — anonymous access to real customer's call/voicemail metadata via public JS credential is clearly a valid finding |
+  - **VERDICT: VALID**
+  - **VERDICT: HOLD** — Valid as supporting context for Lead 1 (cbs-proxy) but insufficient standalone severity for a triager to accept it as a separate finding. Report as part of the chain.
+  - | Q4 | Provable non-invasively? | **NO** — requires valid customer session to test post-login redirect. No passive proof. |
+  - **VERDICT: HOLD** — Valid finding but POST-only requires active probing; report only if willing to demonstrate resource consumption.
+  - | Q7 | Reasonable triager? | **YES** — authorization data leakage via broken auth is a valid finding |
+  - **VERDICT: VALID**
+  - **VERDICT: HOLD** — Valid misconfiguration (public static credential grants data access) but cross-tenant impact unproven; HOLD pending operator confirmation of second tenant's ID.
+  - | 1 | cbs-proxy anonymous WS BOLA | **VALID** | 8.6 | High |
+  - | 2 | auth.php cross-tenant token mint | **VALID** (mitigated) | 8.1 | High |
+  - | 3 | voicenotes cross-tenant PII | **VALID** | 7.5 | High |
+  - | 11 | get_user_rights.php authz leak | **VALID** | 6.5 | Medium |
