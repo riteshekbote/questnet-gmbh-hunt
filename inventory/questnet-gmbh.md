@@ -593,3 +593,10 @@ www.live-manager.de
 - CHANGED www.applicationdesigner.de/api/callbuilder/: REJECTED — nginx 404 catch-all (146B), no routed HTTP data-plane (2026-09-11)
 - CHANGED www.applicationdesigner.de/playground.php: REJECTED — static marketing page (8.9KB), dead-end (2026-09-12)
 - CHANGED dev.applicationdesigner.de: REJECTED — byte-identical 403 "internal" PHP app page on all paths, hard IP gate (2026-09-13)
+
+## 2026-09-14 01:44:19 UTC
+- CHANGED www.applicationdesigner.de/help/content.php: XSS via `page=` param reflected unescaped into 200 text/html, no CSP/nosniff, zero-token — PASSIVE-proven 2026-09-12 21:40 UTC (first appearance in knowled
+- CHANGED www.applicationdesigner.de/extjs/voicenotes/get.php: cross-tenant credential-only data endpoint; identical `{"success":true,"data":[],"total":0}` for all cids — same gate pattern as check.php (first a
+- CHANGED www.applicationdesigner.de/extjs/voicenotes/download.php: with token-as-query-param reaches file-lookup (404); VPN gate bypassed; no customer_id scoping — cross-tenant download viable if valid UUID kn
+- CHANGED www.applicationdesigner.de/extjs/voicenotes/delete.php: token-gated (not VPN-gated) destructive endpoint; error "Sprachnotiz nicht gefunden oder keine Berechtigung" vs hierarchy-gated details.php — po
+- CHANGED dev.applicationdesigner.de: REJECTED — byte-identical 403 "internal" PHP app page on all paths, hard IP gate (2026-09-13)

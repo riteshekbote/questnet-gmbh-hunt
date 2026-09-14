@@ -3591,3 +3591,33 @@ verify_steps: AUTH_HELPED — own demo tenant only; mutating, so error-pattern e
 impact: cross-tenant voicenote destruction (PII audio loss) — HIGH CVSS ~8.1.
 testability: AUTH_HELPED
 [NEXT] HUMAN: operator opens https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E in a browser and confirms document.title='LM-XSS'; benign marker proves DOM execution on www.applicationdesigner.de origin — the single missing evidence to elevate the XSS from reflection-proof to executable (→ same-origin chain to /extjs endpoints).
+## 2026-09-14 01:44:11 UTC [target] (model bigpickle)
+[HYP] Cross-tenant CBS WS frame binding — token→cid ownership
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
+confidence: 95
+reasoning: 21+ cycles of anonymous 101 + byte-identical CONNECT CBS100/190/200 + READY for cid 131727/2/999999999 with zero token; triage 2026-09-13 marked BOLA VALID 8.6, frame binding still the only unproven hop that would push to CRITICAL.
+evidence_needed: operator owns two tenants; mint own-cid live-debug token, present in a live_debug frame bound to own vs foreign cid; byte-diff accepted frame sets.
+verify_steps: AUTH_HELPED — WS-upgrade cid={ownA} vs cid={ownB} with swapped minted token→cid binding; own tenants only.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH CVSS 8.6, CRITICAL 9.1 if unbound.
+testability: AUTH_HELPED
+[HYP] help/content.php DOM XSS — same-origin ride into /extjs session-gated surface
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page=<script>...
+confidence: 85
+reasoning: unescaped echo of page= into 200 text/html, no CSP/nosniff, zero-token, re-confirmed across cycles; execution is the sole missing link, reflection fully proven.
+evidence_needed: in-browser execution (benign document.title marker), then same-origin fetch to token-gated /extjs endpoints.
+verify_steps: HUMAN_ONLY — open crafted URL in browser, confirm document.title='LM-XSS'.
+impact: arbitrary JS on www origin → same-origin session/theft + read/write to /extjs (voicenotes/get, flexlist, mints) — MEDIUM→HIGH as chain.
+testability: HUMAN_ONLY
+[HYP] Authenticated mailserver-check SSRF via smtp_server
+class: SSRF
+asset: https://www.applicationdesigner.de/extjs/check_mailserver.php (POST, smtp_server)
+confidence: 45
+reasoning: live probe this cycle: GET 200 {"success":false,"message":"unauthorized"} with and without fresh PHPSESSID → the check branch is session-gated, NOT anonymous as help.js suggested; POST+reachable-server behavior behind a valid session is unverified.
+evidence_needed: with a valid demo-tenant session, does POST {smtp_server} trigger an outbound TCP/SMTP connect (timing/error differential to 169.254.169.254:25 vs 127.0.0.1:25 vs unroutable)?
+verify_steps: AUTH_HELPED — POST own-tenant session only; compare error/timing for smtp_server=169.254.169.254:25, 127.0.0.1:25, unroutable host; never target production.
+impact: SSRF from PHP origin toward internal mail/LLM/metadata — MEDIUM.
+testability: AUTH_HELPED
+[NEXT] HUMAN: operator opens https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E and confirms document.title='LM-XSS' — the single missing evidence to elevate the reflection-proven XSS to executable and unlock the same-origin chain to /extjs endpoints.
+[RISK] questnet-gmbh: 82 — Two triaged VALID HIGHs remain file-ready (cbs-proxy WS IDOR 8.6; static-credential mint + voicenote PII 7.5, both VPN-independent) and POC-phase PoC (anonymous 101 with arbitrary cid/service) is sufficient for the HIGH report. This cycle closes the last zero-token candidate (check_mailserver session-gated), so no new anonymous surface; XSS elevation via operator render is the single in-flight upside. Footer unchanged: surface frozen at 4 hosts; report filing awaiting program state.

@@ -1,19 +1,14 @@
-## 2026-09-13 23:36:20 UTC [target] (model nemotron3)
-[NEW] www.applicationdesigner.de/help/content.php: XSS via `page=` param reflected unescaped into 200 text/html, no CSP/nosniff, zero-token — PASSIVE-proven 2026-09-12 21:40 UTC (first appearance in knowledge base 2026-09-13)
-[NEW] www.applicationdesigner.de/extjs/voicenotes/delete.php: token-gated (not VPN-gated) destructive endpoint; error "Sprachnotiz nicht gefunden oder keine Berechtigung" vs hierarchy-gated details.php — potential cross-tenant deletion (first ACCEPTED 2026-09-11)
-[NEW] www.applicationdesigner.de/extjs/voicenotes/get.php: cross-tenant credential-only data endpoint; identical `{"success":true,"data":[],"total":0}` for all cids — same gate pattern as check.php (first ACCEPTED 2026-09-11)
-[NEW] www.applicationdesigner.de/extjs/voicenotes/download.php: with token-as-query-param reaches file-lookup (404); VPN gate bypassed; no customer_id scoping — cross-tenant download viable if valid UUID known (first ACCEPTED 2026-09-11)
-[CHANGED] www.applicationdesigner.de/extjs/livedebugger/auth.php: VPN gate persistent since 2026-09-07 — anonymous mint BLOCKED; credential still public in help.js (sha256 8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf)
-[CHANGED] www.applicationdesigner.de/extjs/agent/get_agent_costs.php + playback.php: REJECTED — session-gated ("No VPN detected"/"unauthorized"), earlier ACCEPTED MISCONFIG corrected (2026-09-11)
-[CHANGED] www.applicationdesigner.de/api/callbuilder/: REJECTED — nginx 404 catch-all (146B), no routed HTTP data-plane (2026-09-11)
-[CHANGED] www.applicationdesigner.de/playground.php: REJECTED — static marketing page (8.9KB), dead-end (2026-09-12)
+## 2026-09-14 01:43:20 UTC [target] (model nemotron3)
+[CHANGED] www.applicationdesigner.de/help/content.php: XSS via `page=` param reflected unescaped into 200 text/html, no CSP/nosniff, zero-token — PASSIVE-proven 2026-09-12 21:40 UTC (first appearance in knowledge base)
+[CHANGED] www.applicationdesigner.de/extjs/voicenotes/get.php: cross-tenant credential-only data endpoint; identical `{"success":true,"data":[],"total":0}` for all cids — same gate pattern as check.php (first appearance in knowledge base)
+[CHANGED] www.applicationdesigner.de/extjs/voicenotes/download.php: with token-as-query-param reaches file-lookup (404); VPN gate bypassed; no customer_id scoping — cross-tenant download viable if valid UUID known (first appearance in knowledge base)
+[CHANGED] www.applicationdesigner.de/extjs/voicenotes/delete.php: token-gated (not VPN-gated) destructive endpoint; error "Sprachnotiz nicht gefunden oder keine Berechtigung" vs hierarchy-gated details.php — potential cross-tenant deletion (first appearance in knowledge base)
 [CHANGED] dev.applicationdesigner.de: REJECTED — byte-identical 403 "internal" PHP app page on all paths, hard IP gate (2026-09-13)
-[PRIO] cbs-proxy.api.live-manager.de,9.45,attack_surface=10,business_value=10,tech_exposure=10,gate_ease=10,cloud_surface=9,freshness=10
-[PRIO] www.applicationdesigner.de/extjs/voicenotes/,8.30,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=9,cloud_surface=7,freshness=9
-[PRIO] www.applicationdesigner.de/help/content.php,6.85,attack_surface=7,business_value=6,tech_exposure=7,gate_ease=10,cloud_surface=5,freshness=8
-[PRIO] www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php,6.40,attack_surface=7,business_value=7,tech_exposure=7,gate_ease=9,cloud_surface=6,freshness=5
-[PRIO] www.applicationdesigner.de/AIDesigner/backend/config.php,5.20,attack_surface=6,business_value=5,tech_exposure=6,gate_ease=10,cloud_surface=5,freshness=5
-[PRIO] www.live-manager.de,4.85,attack_surface=5,business_value=8,tech_exposure=5,gate_ease=4,cloud_surface=5,freshness=5
+[PRIO] wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100,9.25,attack_surface=10,business_value=10,tech_exposure=9,gate_ease=10,cloud_surface=8,freshness=9
+[PRIO] www.applicationdesigner.de/extjs/voicenotes/check.php|get.php|download.php,8.15,attack_surface=9,business_value=8,tech_exposure=8,gate_ease=9,cloud_surface=7,freshness=8
+[PRIO] www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php,7.15,attack_surface=8,business_value=7,tech_exposure=7,gate_ease=9,cloud_surface=6,freshness=6
+[PRIO] www.applicationdesigner.de/help/content.php,6.85,attack_surface=7,business_value=6,tech_exposure=8,gate_ease=10,cloud_surface=5,freshness=8
+[PRIO] www.applicationdesigner.de/AIDesigner/backend/config.php,5.95,attack_surface=6,business_value=5,tech_exposure=6,gate_ease=10,cloud_surface=6,freshness=5
 [HYP] Cross-tenant CBS WebSocket subscription via unauthenticated cid/service parameters
 class: IDOR
 asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
@@ -23,7 +18,7 @@ evidence_needed: None further for transport layer — already proven cross-tenan
 verify_steps: (PASSIVE) WS upgrade GET wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=2&service=100 — observe HTTP 101 + CONNECT/READY frames byte-identical to cid=131727 probe; do NOT send application frames
 impact: Cross-tenant CBS backend access (call control, signaling, media) — CRITICAL (CVSS 9.1)
 testability: PASSIVE
-[HYP] Cross-tenant voicenote metadata enumeration and data access via public static credential
+[HYP] Cross-tenant voicenote metadata enumeration and audio download via public static credential
 class: IDOR
 asset: https://www.applicationdesigner.de/extjs/voicenotes/check.php|get.php|download.php
 confidence: 90

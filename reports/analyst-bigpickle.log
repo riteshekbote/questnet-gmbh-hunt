@@ -21045,3 +21045,132 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 - [RISK] questnet-gmbh: 85 — Driver (cbs-proxy WS BOLA, transport-complete, VALID HIGH CVSS 9.1) unchanged and VPN-independent. Voicenotes metadata IDOR re-confirmed NOT VPN-gated (HIGH 7.5). XSS at help/content.php reflection-reconfirmed today (MEDIUM 6.1; escalates to MEDIUM–HIGH chain if operator confirms execution). LFI on same param now excluded by direct probe. auth.php mint VPN-gated; flexlist cross-tenant pending operator. Surface frozen at 4 hosts; PoC for bug gate = cbs-proxy WS 101 with arbitrary cid/service.
+===== ANALYST bigpickle 2026-09-14 01:44:19 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la
+total 396
+drwxr-xr-x 12 runner runner   4096 Sep 14 01:40 .
+drwxr-xr-x  3 runner runner   4096 Sep 14 01:40 ..
+drwxr-xr-x  7 runner runner   4096 Sep 14 01:40 .git
+drwxr-xr-x  3 runner runner   4096 Sep 14 01:40 .github
+-rw-r--r--  1 runner runner   1609 Sep 14 01:40 README.md
+-rw-r--r--  1 runner runner     32 Sep 14 01:40 analyst-out.txt
+-rw-r--r--  1 runner runner 158648 Sep 14 01:40 analyst-prompt.txt
+-rw-r--r--  1 runner runner 154928 Sep 14 01:40 ctx.txt
+drwxr-xr-x  2 runner runner   4096 Sep 14 01:40 inventory
+drwxr-xr-x  2 runner runner   4096 Sep 14 01:40 knowledge
+drwxr-xr-x  2 runner runner   4096 Sep 14 01:40 leads
+-rw-r--r--  1 runner runner   2262 Sep 14 01:40 probe-results.md
+drwxr-xr-x  2 runner runner   4096 Sep 14 01:40 recon-notes
+drwxr-xr-x  2 runner runner   4096 Sep 14 01:40 reports
+drwxr-xr-x  2 runner runner   4096 Sep 14 01:40 reposcan-raw
+-rw-r--r--  1 runner runner   3133 Sep 14 01:40 scope.yml
+drwxr-xr-x  2 runner runner   4096 Sep 14 01:40 scripts
+-rw-r--r--  1 runner runner     33 Sep 14 01:40 state_bigpickle.json
+-rw-r--r--  1 runner runner     33 Sep 14 01:40 state_laguna.json
+-rw-r--r--  1 runner runner     33 Sep 14 01:40 state_ling3.json
+-rw-r--r--  1 runner runner     33 Sep 14 01:40 state_longcat.json
+-rw-r--r--  1 runner runner     33 Sep 14 01:40 state_mimo.json
+-rw-r--r--  1 runner runner     33 Sep 14 01:40 state_nemotron3.json
+drwxr-xr-x  2 runner runner   4096 Sep 14 01:40 triage
+[0m
+[0m✱ [0mGlob "**/*.md"[90m 93 matches[0m
+[0m→ [0mRead scope.yml
+[0m→ [0mRead state_bigpickle.json
+[0m→ [0mRead probe-results.md
+[0m→ [0mRead leads/lead-bigpickle.md
+[0m→ [0mRead reports/valid-bugs.md
+[0m→ [0mRead reports/hypotheses.md
+[0m→ [0mRead triage/run-2026-09-13-23-29.md
+[0m
+[0m$ [0mcurl -sS -o /tmp/opencode/cms_get.body -D /tmp/opencode/cms_get.hdr --max-time 20 "https://www.applicationdesigner.de/extjs/check_mailserver.php" ; echo "---HEADERS---"; cat /tmp/opencode/cms_get.hdr; echo "---BODY(bytes)---"; wc -c < /tmp/opencode/cms_get.body; echo "---BODY---"; head -c 800 /tmp/opencode/cms_get.body
+---HEADERS---
+HTTP/1.1 200 OK
+Server: nginx/1.30.0
+Date: Mon, 14 Sep 2026 01:42:49 GMT
+Content-Type: text/html; charset=UTF-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+X-Powered-By: PHP/8.3.21
+Set-Cookie: PHPSESSID=1f940d676270e6dec55127a56009a00f; path=/; secure; HttpOnly; SameSite=None; Partitioned
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate
+Pragma: no-cache
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: POST
+Access-Control-Allow-Headers: Content-Type
+X-Accel-Buffering: no
+Cache-Control: no-cache, no-store, must-revalidate
+
+---BODY(bytes)---
+42
+---BODY---
+{"success":false,"message":"unauthorized"}
+[0m
+[0m$ [0msleep 1; curl -sS -o /tmp/opencode/cms_get2.body -D /tmp/opencode/cms_get2.hdr --max-time 20 -b "PHPSESSID=1f940d676270e6dec55127a56009a00f" "https://www.applicationdesigner.de/extjs/check_mailserver.php"; echo "---HDR---"; grep -E "HTTP/|Content-Type" /tmp/opencode/cms_get2.hdr; echo "---BODY---"; head -c 400 /tmp/opencode/cms_get2.body
+---HDR---
+HTTP/1.1 200 OK
+Content-Type: text/html; charset=UTF-8
+Access-Control-Allow-Headers: Content-Type
+---BODY---
+{"success":false,"message":"unauthorized"}
+[0m
+STEP 1 — DELTA
+- [NEW] extjs/check_mailserver.php first live probe (2026-09-14 01:42Z): GET → HTTP/1.1 200 `{"success":false,"message":"unauthorized"}` (42B text/html), byte-same when replaying the freshly-issued PHPSESSID; nginx/1.30.0 + PHP/8.3.21, GET not method-blocked. Corrects the help.js-derived "POST-only, NO token, SSRF candidate" — the mailcheck branch is session-gated, not zero-token/anonymous.
+- [NO_DELTA] Surface frozen at 4 hosts; cbs-proxy 426/101 (21+ cycles); voicenotes index empty (17+ cycles); help/content.php XSS reflection re-confirmed; all other ACCEPTED/REJECTED entries unchanged.
+
+STEP 2 — PRIORITIZE
+- [PRIO] wss://cbs-proxy.api.live-manager.de,6.60,a=8,b=9,t=3,g=10,c=1,f=3
+- [PRIO] www.applicationdesigner.de/help/content.php,5.95,a=5,b=8,t=4,g=10,c=0,f=6
+- [PRIO] www.applicationdesigner.de/extjs/check_mailserver.php,4.50,a=4,b=4,t=5,g=1,c=6,f=10
+
+STEP 3 — HYPOTHESES
+[HYP] Cross-tenant CBS WS frame binding — token→cid ownership
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
+confidence: 95
+reasoning: 21+ cycles of anonymous 101 + byte-identical CONNECT CBS100/190/200 + READY for cid 131727/2/999999999 with zero token; triage 2026-09-13 marked BOLA VALID 8.6, frame binding still the only unproven hop that would push to CRITICAL.
+evidence_needed: operator owns two tenants; mint own-cid live-debug token, present in a live_debug frame bound to own vs foreign cid; byte-diff accepted frame sets.
+verify_steps: AUTH_HELPED — WS-upgrade cid={ownA} vs cid={ownB} with swapped minted token→cid binding; own tenants only.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH CVSS 8.6, CRITICAL 9.1 if unbound.
+testability: AUTH_HELPED
+
+[HYP] help/content.php DOM XSS — same-origin ride into /extjs session-gated surface
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page=<script>...
+confidence: 85
+reasoning: unescaped echo of page= into 200 text/html, no CSP/nosniff, zero-token, re-confirmed across cycles; execution is the sole missing link, reflection fully proven.
+evidence_needed: in-browser execution (benign document.title marker), then same-origin fetch to token-gated /extjs endpoints.
+verify_steps: HUMAN_ONLY — open crafted URL in browser, confirm document.title='LM-XSS'.
+impact: arbitrary JS on www origin → same-origin session/theft + read/write to /extjs (voicenotes/get, flexlist, mints) — MEDIUM→HIGH as chain.
+testability: HUMAN_ONLY
+
+[HYP] Authenticated mailserver-check SSRF via smtp_server
+class: SSRF
+asset: https://www.applicationdesigner.de/extjs/check_mailserver.php (POST, smtp_server)
+confidence: 45
+reasoning: live probe this cycle: GET 200 {"success":false,"message":"unauthorized"} with and without fresh PHPSESSID → the check branch is session-gated, NOT anonymous as help.js suggested; POST+reachable-server behavior behind a valid session is unverified.
+evidence_needed: with a valid demo-tenant session, does POST {smtp_server} trigger an outbound TCP/SMTP connect (timing/error differential to 169.254.169.254:25 vs 127.0.0.1:25 vs unroutable)?
+verify_steps: AUTH_HELPED — POST own-tenant session only; compare error/timing for smtp_server=169.254.169.254:25, 127.0.0.1:25, unroutable host; never target production.
+impact: SSRF from PHP origin toward internal mail/LLM/metadata — MEDIUM.
+testability: AUTH_HELPED
+
+STEP 4 — SELF-CRITIQUE
+- [PARKED] cbs-proxy frame-binding: transport-complete; final hop requires two owned tenants (operator); further anonymous re-probes add zero evidence.
+- [PARKED] voicenotes delete.php cross-tenant: blocked by empty demo index (17+ cycles, no valid voice_note_id); flexlist cross-tenant likewise needs an operator second tenant.
+- [FINAL] 1) help/content.php XSS (85, execution pending — only unblocked path), 2) cbs-proxy binding (95, AUTH_HELPED), 3) check_mailserver SSRF (45, AUTH_HELPED; anonymous half now rejected by probe).
+
+STEP 5 — NEXT ACTION
+[NEXT] HUMAN: operator opens https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E and confirms document.title='LM-XSS' — the single missing evidence to elevate the reflection-proven XSS to executable and unlock the same-origin chain to /extjs endpoints.
+
+STEP 6 — LEARNING
+- [LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/extjs/check_mailserver.php: zero-token anonymous SSRF half closed — first live probe returns 200 "unauthorized" with/without fresh PHPSESSID; session-gated, GET not method-blocked; corrects prior help.js-derived "POST-only, NO token" entry.
+- [LEARN] ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: reflection unchanged (200/97–112B text/html, no CSP/nosniff); execution still pending operator render.
+- [LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 426 on non-upgrade / 101 + byte-identical frames reconfirmed — 21+ cycles, unchanged.
+- [LEARN] UNCHANGED @ voicenotes check.php/get.php empty index · flexlist gates · get_user_rights ciphertext · AIDesigner config/403 · auth.php VPN gate · help.js static credential (sha256 8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf).
+- [LEARN] REJECTED (unchanged) @ /api/callbuilder nginx 404 · live-manager.de rs param · wildcard-subdomain-enum · api.live-manager.de non-resolving · dev.applicationdesigner.de · playground.php · playback/get_agent_costs/get_agent_token session gates.
+
+STEP 7 — RISK
+[RISK] questnet-gmbh: 82 — Two triaged VALID HIGHs remain file-ready (cbs-proxy WS IDOR 8.6; static-credential mint + voicenote PII 7.5, both VPN-independent) and POC-phase PoC (anonymous 101 with arbitrary cid/service) is sufficient for the HIGH report. This cycle closes the last zero-token candidate (check_mailserver session-gated), so no new anonymous surface; XSS elevation via operator render is the single in-flight upside. Footer unchanged: surface frozen at 4 hosts; report filing awaiting program state.
