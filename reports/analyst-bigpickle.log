@@ -21983,3 +21983,854 @@ testability: AUTH_HELPED
 [LEARN] REJECTED AUTH @ www.live-manager.de rs param · wildcard-subdomain-enum · api.live-manager.de non-resolving — unchanged.
 
 [RISK] questnet-gmbh: 82 — Two triaged VALID HIGHs remain file-ready (cbs-proxy WS BOLA 8.6; static-credential mint + voicenote PII 7.5, both VPN-independent) and POC-phase PoC (anonymous 101 with arbitrary cid/service) satisfies the HIGH report gate. In-flight upsides: XSS elevation via operator render, and the newly queued content.php traversal probe — if LFI confirms, that adds a distinct file-disclosure finding. Surface frozen at 4 hosts since 2026-09-04; report filing awaiting program-state confirmation.
+===== ANALYST bigpickle 2026-09-14 22:48:44 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la && git log --oneline -5 2>/dev/null; ls docs 2>/dev/null; ls inventory 2>/dev/null
+total 420
+drwxr-xr-x 12 runner runner   4096 Sep 14 22:46 .
+drwxr-xr-x  3 runner runner   4096 Sep 14 22:46 ..
+drwxr-xr-x  7 runner runner   4096 Sep 14 22:46 .git
+drwxr-xr-x  3 runner runner   4096 Sep 14 22:46 .github
+-rw-r--r--  1 runner runner   1609 Sep 14 22:46 README.md
+-rw-r--r--  1 runner runner     32 Sep 14 22:46 analyst-out.txt
+-rw-r--r--  1 runner runner 168712 Sep 14 22:46 analyst-prompt.txt
+-rw-r--r--  1 runner runner 164992 Sep 14 22:46 ctx.txt
+drwxr-xr-x  2 runner runner   4096 Sep 14 22:46 inventory
+drwxr-xr-x  2 runner runner   4096 Sep 14 22:46 knowledge
+drwxr-xr-x  2 runner runner   4096 Sep 14 22:46 leads
+-rw-r--r--  1 runner runner   2378 Sep 14 22:46 probe-results.md
+drwxr-xr-x  2 runner runner   4096 Sep 14 22:46 recon-notes
+drwxr-xr-x  2 runner runner   4096 Sep 14 22:46 reports
+drwxr-xr-x  2 runner runner   4096 Sep 14 22:46 reposcan-raw
+-rw-r--r--  1 runner runner   3133 Sep 14 22:46 scope.yml
+drwxr-xr-x  2 runner runner   4096 Sep 14 22:46 scripts
+-rw-r--r--  1 runner runner     33 Sep 14 22:46 state_bigpickle.json
+-rw-r--r--  1 runner runner     33 Sep 14 22:46 state_laguna.json
+-rw-r--r--  1 runner runner     33 Sep 14 22:46 state_ling3.json
+-rw-r--r--  1 runner runner     33 Sep 14 22:46 state_longcat.json
+-rw-r--r--  1 runner runner     33 Sep 14 22:46 state_mimo.json
+-rw-r--r--  1 runner runner     33 Sep 14 22:46 state_nemotron3.json
+drwxr-xr-x  2 runner runner   4096 Sep 14 22:46 triage
+78c6dc8 reposcan 2026-09-14-22-18
+questnet-gmbh.md
+[0m
+[0m$ [0mcat probe-results.md; echo ---; cat scope.yml; echo ---; cat analyst-out.txt; echo ---; ls knowledge leads reports triage recon-notes; echo ---; cat state_bigpickle.json
+## 2026-09-02 21:47:55 UTC
+
+
+## 2026-09-02 23:58:48 UTC
+
+
+## 2026-09-03 04:08:01 UTC
+
+
+## 2026-09-03 09:02:43 UTC
+
+
+## 2026-09-03 13:26:41 UTC
+
+
+## 2026-09-03 17:33:15 UTC
+
+
+## 2026-09-03 20:03:02 UTC
+
+
+## 2026-09-03 22:32:24 UTC
+
+
+## 2026-09-04 00:40:48 UTC
+
+
+## 2026-09-04 05:17:20 UTC
+
+
+## 2026-09-04 09:50:35 UTC
+
+
+## 2026-09-04 14:17:33 UTC
+
+
+## 2026-09-04 17:50:53 UTC
+
+
+## 2026-09-04 20:10:34 UTC
+
+
+## 2026-09-04 22:19:45 UTC
+
+
+## 2026-09-05 00:18:43 UTC
+
+
+## 2026-09-05 04:44:49 UTC
+
+
+## 2026-09-05 08:42:00 UTC
+
+
+## 2026-09-05 12:09:45 UTC
+
+
+## 2026-09-05 15:31:48 UTC
+
+
+## 2026-09-05 17:50:12 UTC
+
+
+## 2026-09-05 19:35:24 UTC
+
+
+## 2026-09-05 21:57:47 UTC
+
+
+## 2026-09-06 03:56:37 UTC
+
+
+## 2026-09-06 08:43:18 UTC
+
+
+## 2026-09-06 12:28:37 UTC
+
+
+## 2026-09-06 15:44:54 UTC
+
+
+## 2026-09-06 17:59:32 UTC
+
+
+## 2026-09-06 20:20:28 UTC
+
+
+## 2026-09-06 22:13:06 UTC
+
+
+## 2026-09-07 00:06:54 UTC
+
+
+## 2026-09-07 04:58:13 UTC
+
+
+## 2026-09-07 10:14:17 UTC
+
+
+## 2026-09-07 16:03:12 UTC
+
+
+## 2026-09-07 19:51:51 UTC
+
+
+## 2026-09-07 22:43:03 UTC
+
+
+## 2026-09-08 00:44:14 UTC
+
+
+## 2026-09-08 05:51:14 UTC
+
+
+## 2026-09-08 11:01:01 UTC
+
+
+## 2026-09-08 15:08:55 UTC
+
+
+## 2026-09-08 18:50:36 UTC
+
+
+## 2026-09-08 21:48:26 UTC
+
+
+## 2026-09-09 00:00:33 UTC
+
+
+## 2026-09-09 04:32:31 UTC
+
+
+## 2026-09-09 09:16:01 UTC
+
+
+## 2026-09-09 13:53:00 UTC
+
+
+## 2026-09-09 17:45:28 UTC
+
+
+## 2026-09-09 20:51:36 UTC
+
+
+## 2026-09-09 23:16:22 UTC
+
+
+## 2026-09-10 01:15:21 UTC
+
+
+## 2026-09-10 06:14:18 UTC
+
+
+## 2026-09-10 11:41:55 UTC
+
+
+## 2026-09-10 15:18:22 UTC
+
+
+## 2026-09-10 18:39:32 UTC
+
+
+## 2026-09-10 21:15:35 UTC
+
+
+## 2026-09-10 23:16:19 UTC
+
+
+## 2026-09-11 01:16:10 UTC
+
+
+## 2026-09-11 06:17:00 UTC
+
+
+## 2026-09-11 11:40:02 UTC
+
+
+## 2026-09-11 15:22:00 UTC
+
+
+## 2026-09-11 18:45:46 UTC
+
+
+## 2026-09-11 21:23:14 UTC
+
+
+## 2026-09-11 23:34:27 UTC
+
+
+## 2026-09-12 01:37:32 UTC
+
+
+## 2026-09-12 06:32:29 UTC
+
+
+## 2026-09-12 11:17:37 UTC
+
+
+## 2026-09-12 14:20:08 UTC
+
+
+## 2026-09-12 17:19:29 UTC
+
+
+## 2026-09-12 19:30:54 UTC
+
+
+## 2026-09-12 21:44:40 UTC
+
+
+## 2026-09-12 23:26:32 UTC
+
+
+## 2026-09-13 01:29:06 UTC
+
+
+## 2026-09-13 06:50:45 UTC
+
+
+## 2026-09-13 12:58:11 UTC
+
+
+## 2026-09-13 16:50:07 UTC
+
+
+## 2026-09-13 19:14:48 UTC
+
+
+## 2026-09-13 21:28:21 UTC
+
+
+## 2026-09-13 23:36:31 UTC
+
+
+## 2026-09-14 01:44:19 UTC
+
+
+## 2026-09-14 07:17:59 UTC
+
+
+## 2026-09-14 14:18:51 UTC
+
+
+## 2026-09-14 19:40:28 UTC
+
+---
+programs:
+  questnet-gmbh:
+    name: Questnet GmbH Bug Bounty
+    disclosure_policy: via bugs.olivermaicher.eu (Oliver Maicher private program) - report + PoC + contact + payment
+    assets:
+      - name: "*.applicationdesigner.de, *.live-manager.de, 185.158.96.0/22"
+        priority: In
+    out_of_scope:
+- "Network level Denial of Service attacks"
+      - "Application Denial of Service by locking user accounts"
+      - "Descriptive error messages or headers (e.g. Stack Traces, banner grabbing)"
+      - "Disclosure of known public files or directories (e.g. robots.txt)"
+      - "Outdated software / library versions"
+      - "OPTIONS / TRACE HTTP method enabled"
+      - "CSRF on logout"
+      - "CSRF on forms that are available to anonymous users"
+      - "Cookies that lack HTTP Only or Secure settings for non-sensitive data"
+      - "Self-XSS and issues exploitable only through Self-XSS"
+      - "Reports resulting from automated scanning utilities without additional details or a POC demonstrating a specific exploit"
+      - "Attacks requiring physical access to a user's device"
+      - "Attacks dependent upon social engineering of employees or vendors"
+      - "Username enumeration based on login or forgot password pages"
+      - "Enforcement policies for brute force, rate limiting, or account lockout"
+      - "SSL/TLS best practices"
+      - "SSL attacks such as BEAST, BREACH, Renegotiation attack"
+      - "Clickjacking, without additional details demonstrating a specific exploit"
+      - "Mail configuration issues including SPF, DKIM, DMARC settings"
+      - "Use of a known-vulnerable library without a description of an exploit specific to our implementation"
+      - "Password and account recovery policies"
+      - "Presence of autocomplete functionality in form fields"
+      - "Publicly accessible login panels"
+      - "Lack of email address verification during account registration or account invitation"
+      - "Lack of email address verification password restore"
+      - "Session control during email/password changes"
+      - "Social engineering, physical attacks, and DoS/DDoS testing (per program notes)"
+      - "Exposure of customer/employee/financial/authentication data during testing (per program notes)"
+    github_orgs:
+      - none-configured
+
+rules:
+  passive_first: false          # deep-hunt agent: active probes allowed when scoped
+  max_requests_per_second: 1    # never hammer live infra
+  no_doom: true                 # no DoS/DDoS, no account-lockout attacks
+  account_creation: restricted  # only on test/sandbox assets, never live customer data
+  no_data_modification: true    # no writes/deletes on live customer data
+  no_pre_disclosure: true       # never disclose before program response
+  poc_required: true            # scanner output alone is REJECTED
+  redact_secrets_in_commits: true
+
+models:
+  - { id: opencode/big-pickle, name: bigpickle }
+  - { id: opencode/nemotron-3-ultra-free, name: nemotron3 }
+  - { id: opencode/longcat-2.0-free, name: longcat }
+  - { id: opencode/ling-3.0-flash-free, name: ling3 }
+  - { id: opencode/laguna-s-2.1-free, name: laguna }
+---
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la && git log --oneline -5 2>/dev/null; ls docs 2>/dev/null; ls inventory 2>/dev/null
+total 420
+drwxr-xr-x 12 runner runner   4096 Sep 14 22:46 .
+drwxr-xr-x  3 runner runner   4096 Sep 14 22:46 ..
+drwxr-xr-x  7 runner runner   4096 Sep 14 22:46 .git
+drwxr-xr-x  3 runner runner   4096 Sep 14 22:46 .github
+-rw-r--r--  1 runner runner   1609 Sep 14 22:46 README.md
+-rw-r--r--  1 runner runner     32 Sep 14 22:46 analyst-out.txt
+-rw-r--r--  1 runner runner 168712 Sep 14 22:46 analyst-prompt.txt
+-rw-r--r--  1 runner runner 164992 Sep 14 22:46 ctx.txt
+drwxr-xr-x  2 runner runner   4096 Sep 14 22:46 inventory
+drwxr-xr-x  2 runner runner   4096 Sep 14 22:46 knowledge
+drwxr-xr-x  2 runner runner   4096 Sep 14 22:46 leads
+-rw-r--r--  1 runner runner   2378 Sep 14 22:46 probe-results.md
+drwxr-xr-x  2 runner runner   4096 Sep 14 22:46 recon-notes
+drwxr-xr-x  2 runner runner   4096 Sep 14 22:46 reports
+drwxr-xr-x  2 runner runner   4096 Sep 14 22:46 reposcan-raw
+-rw-r--r--  1 runner runner   3133 Sep 14 22:46 scope.yml
+drwxr-xr-x  2 runner runner   4096 Sep 14 22:46 scripts
+-rw-r--r--  1 runner runner     33 Sep 14 22:46 state_bigpickle.json
+-rw-r--r--  1 runner runner     33 Sep 14 22:46 state_laguna.json
+-rw-r--r--  1 runner runner     33 Sep 14 22:46 state_ling3.json
+-rw-r--r--  1 runner runner     33 Sep 14 22:46 state_longcat.json
+-rw-r--r--  1 runner runner     33 Sep 14 22:46 state_mimo.json
+-rw-r--r--  1 runner runner     33 Sep 14 22:46 state_nemotron3.json
+drwxr-xr-x  2 runner runner   4096 Sep 14 22:46 triage
+78c6dc8 reposcan 2026-09-14-22-18
+questnet-gmbh.md
+[0m
+---
+knowledge:
+index.md
+
+leads:
+lead-bigpickle.md
+lead-laguna.md
+lead-ling3.md
+lead-longcat.md
+lead-mimo.md
+lead-nemotron3.md
+reposcan-questnet-gmbh.md
+
+recon-notes:
+DEDICATED-DEEP.md
+
+reports:
+analyst-bigpickle.log
+analyst-laguna.log
+analyst-ling3.log
+analyst-longcat.log
+analyst-nemotron3.log
+hypotheses-bigpickle.txt
+hypotheses-laguna.txt
+hypotheses-ling3.txt
+hypotheses-longcat.txt
+hypotheses-nemotron3.txt
+hypotheses.md
+valid-bugs.md
+
+triage:
+run-2026-09-02-21-42.md
+run-2026-09-02-23-54.md
+run-2026-09-03-03-39.md
+run-2026-09-03-08-18.md
+run-2026-09-03-12-53.md
+run-2026-09-03-16-58.md
+run-2026-09-03-19-43.md
+run-2026-09-03-22-24.md
+run-2026-09-04-00-23.md
+run-2026-09-04-05-05.md
+run-2026-09-04-09-45.md
+run-2026-09-04-14-05.md
+run-2026-09-04-17-42.md
+run-2026-09-04-19-53.md
+run-2026-09-04-22-13.md
+run-2026-09-05-00-11.md
+run-2026-09-05-04-41.md
+run-2026-09-05-08-38.md
+run-2026-09-05-12-04.md
+run-2026-09-05-15-21.md
+run-2026-09-05-17-37.md
+run-2026-09-05-19-30.md
+run-2026-09-05-21-41.md
+run-2026-09-05-23-38.md
+run-2026-09-06-01-20.md
+run-2026-09-06-06-10.md
+run-2026-09-06-11-08.md
+run-2026-09-06-14-14.md
+run-2026-09-06-17-08.md
+run-2026-09-06-19-17.md
+run-2026-09-06-21-29.md
+run-2026-09-06-23-09.md
+run-2026-09-07-01-06.md
+run-2026-09-07-06-11.md
+run-2026-09-07-12-45.md
+run-2026-09-07-18-09.md
+run-2026-09-07-21-36.md
+run-2026-09-07-23-46.md
+run-2026-09-08-03-47.md
+run-2026-09-08-08-45.md
+run-2026-09-08-13-25.md
+run-2026-09-08-17-29.md
+run-2026-09-08-20-16.md
+run-2026-09-08-22-45.md
+run-2026-09-09-01-06.md
+run-2026-09-09-06-06.md
+run-2026-09-09-11-34.md
+run-2026-09-09-15-17.md
+run-2026-09-09-18-43.md
+run-2026-09-09-21-33.md
+run-2026-09-09-23-30.md
+run-2026-09-10-01-27.md
+run-2026-09-10-06-41.md
+run-2026-09-10-11-51.md
+run-2026-09-10-16-04.md
+run-2026-09-10-19-09.md
+run-2026-09-10-21-42.md
+run-2026-09-10-23-50.md
+run-2026-09-11-03-46.md
+run-2026-09-11-08-45.md
+run-2026-09-11-13-23.md
+run-2026-09-11-17-13.md
+run-2026-09-11-19-49.md
+run-2026-09-11-22-21.md
+run-2026-09-12-00-37.md
+run-2026-09-12-05-09.md
+run-2026-09-12-09-26.md
+run-2026-09-12-13-08.md
+run-2026-09-12-16-22.md
+run-2026-09-12-18-45.md
+run-2026-09-12-21-18.md
+run-2026-09-12-23-06.md
+run-2026-09-13-01-08.md
+run-2026-09-13-06-19.md
+run-2026-09-13-12-07.md
+run-2026-09-13-16-27.md
+run-2026-09-13-18-56.md
+run-2026-09-13-21-23.md
+run-2026-09-13-23-29.md
+run-2026-09-14-01-38.md
+run-2026-09-14-07-11.md
+run-2026-09-14-14-14.md
+run-2026-09-14-19-28.md
+---
+{"phase": "POC", "target": "api"}
+[0m
+[0m$ [0mcat leads/lead-bigpickle.md 2>/dev/null | tail -50; echo ===; cat reports/valid-bugs.md 2>/dev/null | tail -40; echo ===; cat knowledge/index.md 2>/dev/null | tail -20
+[LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: no secrets-bearing anonymous siblings — unchanged
+[LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page (8.9KB, no dynamic params/endpoints/tokens) — named app entry dead-end, closes
+[LEARN] ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= param reflected unescaped into 200 text/html, no CSP/nosniff, zero-token — PASSIVE-proven 2026-09-12 21:40 UTC; execution pending operator render
+[LEARN] REJECTED MISCONFIG @ dev.applicationdesigner.de: byte-identical 403 "internal" PHP app page on all paths — hard IP gate, no public path surface; closed
+[RISK] questnet-gmbh: 85 — Driver finding (cbs-proxy BOLA transport-complete) remains VALID HIGH (CVSS 9.1) and VPN-independent. Voicenotes metadata IDOR re-confirmed NOT VPN-gated with valid token (HIGH, CVSS 7.5). Auth.php mint now VPN-gated but credential still public in help.js. Flexlist per-id endpoints NEW token-only gate with global ID space — cross-tenant read pending operator confirmation. AIDesigner config.php zero-auth LLM routing disclosure (MEDIUM/LOW). XSS at help/content.php PASSIVE-proven but execution requires operator render. Surface frozen at 4 hosts. PoC for bug gate: cbs-proxy WS 101 with arbitrary cid/service sufficient for HIGH severity report.
+[PRIO] cbs-proxy.api.live-manager.de,91,attack_surface=9,business_value=10,tech_exposure=9,gate_ease=10,cloud_surface=7,freshness=9
+[PRIO] www.applicationdesigner.de/help/content.php,84,attack_surface=8,business_value=8,tech_exposure=8,gate_ease=10,cloud_surface=3,freshness=8
+[PRIO] www.applicationdesigner.de/extjs/voicenotes/delete.php,68,attack_surface=6,business_value=8,tech_exposure=6,gate_ease=6,cloud_surface=3,freshness=5
+[HYP] Cross-tenant CBS WS frame binding — token→cid ownership
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
+confidence: 95
+reasoning: 21+ cycles anonymous WS 101 + byte-identical CONNECT CBS100/190/200 + READY for demo cid=131727, foreign cid=2, synthetic cid=999999999 — zero token at proxy layer; triage 2026-09-14 marked BOLA VALID 8.6; frame binding to minted token remains the only unproven hop; 426 on non-upgrade reconfirmed live this cycle.
+evidence_needed: operator owns two tenants; mint own-cid live-debug token, present in a live_debug frame bound to own vs foreign cid; byte-diff accepted frame sets.
+verify_steps: AUTH_HELPED — WS-upgrade cid={ownA} vs cid={ownB} with swapped minted token→cid binding; own tenants only; no third-party streams.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH CVSS 8.6, CRITICAL 9.1 if token→cid binding unenforced.
+testability: AUTH_HELPED
+[HYP] help/content.php page= parameter — proven unescaped reflection (XSS) plus untested server-side file-path resolution (LFI)
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page={value}
+confidence: 85
+reasoning: page= reflected unescaped into 200 text/html (97B error echo for bogus value, 1351B real doc for page=index), no CSP, no nosniff, zero-token — reflection re-confirmed across cycles. A valid page name returns file content ⇒ page= likely feeds a server-side file path (file_exists/include); traversal of that path is untested and would upgrade the finding to arbitrary-file read on the origin.
+evidence_needed: (a) execution via operator render (benign document.title marker); (b) traversal: GET page=../../../../etc/hostname returning hostname bytes vs reflected-error distinguishes LFI from pure echo.
+verify_steps: PROBE pass 1 (PASSIVE, read-only, 1 rps): GET https://www.applicationdesigner.de/help/content.php?page=../../../../etc/hostname — a 200 body matching the server hostname proves LFI; a 97B reflected-error echo closes it. HUMAN pass 2: open page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E in a browser, confirm title marker.
+impact: same-origin arbitrary JS (session theft, silent calls to every /extjs endpoint incl. flexlist/voicenotes mints) plus, if flagged, arbitrary server file read — MEDIUM→HIGH as chain.
+testability: PASSIVE (LFI leg) / HUMAN_ONLY (execution leg)
+[HYP] Cross-tenant voicenote destruction — delete.php without customer_id hierarchy gate
+class: IDOR
+asset: www.applicationdesigner.de/extjs/voicenotes/delete.php
+confidence: 72
+reasoning: delete.php is token-gated (not hierarchy-gated): returns "Sprachnotiz nicht gefunden oder keine Berechtigung" for cid 2/999999/131727/absent, while hierarchy-gated details.php returns a distinct "Kundennummer nicht in der Hierarchie" — token-only gate without observable cid ownership check; cross-tenant proof still blocked by empty demo index (total=0, 17+ consecutive cycles).
+evidence_needed: valid demo voice_note_id from a non-empty check.php index → delete with customer_id=2 vs 131727; success:true diff proves destructive cross-tenant IDOR.
+verify_steps: AUTH_HELPED — own demo tenant only; non-mutating error-pattern evidence until an owned note exists; do not delete foreign records.
+impact: cross-tenant voicenote destruction (PII audio loss) — HIGH CVSS ~8.1.
+testability: AUTH_HELPED
+[PARKED] flexlist cross-tenant read via global ID space 138–345: token-only gate proven, but foreign flexlist_id requires a second owned tenant (HUMAN) — enumerating foreign IDs would touch out-of-scope customer data.
+[PARKED] get_user_rights.php ciphertext: high-entropy rotating payload, no plaintext/key — severity capped LOW/MED.
+[PARKED] check_mailserver.php SSRF: session-gated ("unauthorized" without valid session), POST-only, AUTH_HELPED — parked, not closed.
+[PARKED] voicenotes/download.php raw-audio: reachable file-lookup 404 but needs valid UUID — no UUID path with empty index.
+[FINAL] 1. Cross-tenant CBS WS frame binding — confidence 95, transport-complete, driver finding, driver report file-ready
+[FINAL] 2. help/content.php page= XSS (85) with NEW untested LFI leg — reflection proven, execution pending operator, traversal probe queued
+[FINAL] 3. Cross-tenant voicenote delete.php — confidence 72, gate-pattern evidence, proof blocked by empty index
+[NEXT] PROBE: GET https://www.applicationdesigner.de/help/content.php?page=../../../../etc/hostname (single read-only request, 1 rps) — 200 body matching server hostname proves LFI on the page= file path; 97/100B reflected-error echo closes the leg and keeps the finding at reflection-proven XSS. Then HUMAN render of the crafted XSS URL remains the execution proof.
+[LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 21+ cycles anonymous WS 101 + byte-identical CONNECT/READY, 426 on non-upgrade — transport-complete driver, unchanged.
+[LEARN] ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= unescaped reflection, no CSP/nosniff, zero-token — unchanged; execution still pending operator render.
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: public static credential (LIVE_DEMO_CUSTOMER_TOKEN, sha256 8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf) + full endpoint map — unchanged.
+[LEARN] ACCEPTED CONTROL @ voicenotes/details.php per-record hierarchy gate + flexlist token-scoped directory — unchanged.
+[LEARN] REJECTED IDOR @ get_agent_costs/playback/get_agent_token (session-gated) · /api/callbuilder/ (nginx 404) · playground.php (static) · dev.applicationdesigner.de (403) · check_mailserver anonymous leg (unauthorized) — closed, unchanged.
+[LEARN] REJECTED AUTH @ www.live-manager.de rs param · wildcard-subdomain-enum · api.live-manager.de non-resolving — unchanged.
+[RISK] questnet-gmbh: 82 — Two triaged VALID HIGHs remain file-ready (cbs-proxy WS BOLA 8.6; static-credential mint + voicenote PII 7.5, both VPN-independent) and POC-phase PoC (anonymous 101 with arbitrary cid/service) satisfies the HIGH report gate. In-flight upsides: XSS elevation via operator render, and the newly queued content.php traversal probe — if LFI confirms, that adds a distinct file-disclosure finding. Surface frozen at 4 hosts since 2026-09-04; report filing awaiting program-state confirmation.
+===
+  - | Q4 Provable? | **NO** | Requires AUTH_HELPED (valid session) to test download gate |
+  - | 1 | cbs-proxy WS BOLA | **VALID** | HIGH | 7.5 | File report |
+  - | 2 | voicenote PII metadata | **VALID** | HIGH | 7.5 | File report |
+  - | 3 | help.js static credential | **VALID** | HIGH | 7.5 | File report (chain enabler) |
+
+- 5 lead(s) marked VALID at 2026-09-10 11:51:17 UTC
+  - **Verdict: VALID**
+  - **Verdict: VALID**
+  - | Q4 Provable | **NO** | Requires AUTH_HELPED valid customer session |
+  - | 1. CBS WS Proxy IDOR | **VALID** | 8.6 High | File |
+  - | 2. auth.php + cbs-proxy chain | **VALID** | 9.1 Critical | File |
+
+- 4 lead(s) marked VALID at 2026-09-12 05:09:43 UTC
+  - **Verdict: VALID**
+  - **Verdict: VALID**
+  - | 1 | CBS Proxy WebSocket IDOR/BOLA | **VALID** | 8.6 |
+  - | 2 | Static credential token mint + voicenote PII leak | **VALID** | 7.5 |
+
+- 4 lead(s) marked VALID at 2026-09-13 21:23:12 UTC
+  - | **Q4 Provable?** | **PARTIAL** — anonymous handshake + CONNECT/READY frames confirmed non-invasively; final frame-level binding requires AUTH_HELPED (valid operator session) |
+  - **Verdict: HOLD** — upgrade to VALID when AUTH_HELPED frame-binding test completes. Anonymous handshake proof is solid but the final "does the backend reject a mismatched cid in the live_debug frame" 
+  - **Verdict: VALID**
+  - **Verdict: HOLD** — needs a second valid tenant's flexlist_id to prove cross-tenant read. If that evidence surfaces, upgrade to VALID.
+
+- 15 lead(s) marked VALID at 2026-09-14 07:11:48 UTC
+  - **VERDICT: VALID**
+  - | Q7 | Reasonable triager? | **YES** — broken authentication allowing arbitrary tenant token minting is a clear valid bug |
+  - **VERDICT: VALID** (mitigated as of 2026-09-07, VPN gate deployed)
+  - | Q7 | Reasonable triager? | **YES** — anonymous access to real customer's call/voicemail metadata via public JS credential is clearly a valid finding |
+  - **VERDICT: VALID**
+  - **VERDICT: HOLD** — Valid as supporting context for Lead 1 (cbs-proxy) but insufficient standalone severity for a triager to accept it as a separate finding. Report as part of the chain.
+  - | Q4 | Provable non-invasively? | **NO** — requires valid customer session to test post-login redirect. No passive proof. |
+  - **VERDICT: HOLD** — Valid finding but POST-only requires active probing; report only if willing to demonstrate resource consumption.
+  - | Q7 | Reasonable triager? | **YES** — authorization data leakage via broken auth is a valid finding |
+  - **VERDICT: VALID**
+  - **VERDICT: HOLD** — Valid misconfiguration (public static credential grants data access) but cross-tenant impact unproven; HOLD pending operator confirmation of second tenant's ID.
+  - | 1 | cbs-proxy anonymous WS BOLA | **VALID** | 8.6 | High |
+  - | 2 | auth.php cross-tenant token mint | **VALID** (mitigated) | 8.1 | High |
+  - | 3 | voicenotes cross-tenant PII | **VALID** | 7.5 | High |
+  - | 11 | get_user_rights.php authz leak | **VALID** | 6.5 | Medium |
+===
+- 2026-09-14 REJECTED IDOR @ www.applicationdesigner.de/extjs/common/getCustomers.php: token-scoped — unchanged
+- 2026-09-14 REJECTED AUTH @ www.live-manager.de rs param: no anonymous open redirect — unchanged
+- 2026-09-14 REJECTED wildcard-subdomain-enum @ *.live-manager.de: 8632 hostnames, 0 dedicated endpoints — unchanged
+- 2026-09-14 REJECTED api.live-manager.de: host non-resolving — unchanged
+- 2026-09-14 REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: no secrets-bearing anonymous siblings — unchanged
+- 2026-09-14 REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page (8.9KB, no dynamic params/endpoints/tokens) — named app entry dead-end, closes
+- 2026-09-14 ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= param reflected unescaped into 200 text/html, no CSP/nosniff, zero-token — PASSIVE-proven 2026-09-12 21:40 UTC; execution pending operator render
+- 2026-09-14 REJECTED MISCONFIG @ dev.applicationdesigner.de: byte-identical 403 "internal" PHP app page on all paths — hard IP gate, no public path surface; closed
+- 2026-09-14 ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 21+ cycles anonymous WS 101 + byte-identical CONNECT/READY, transport-complete, driver finding — unchanged.
+- 2026-09-14 ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= reflected unescaped, no CSP/nosniff, zero-token, execution pending operator render — unchanged.
+- 2026-09-14 ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: public static credential + full endpoint map — unchanged.
+- 2026-09-14 ACCEPTED CONTROL @ voicenotes/details.php: per-record hierarchy-checked — unchanged.
+- 2026-09-14 REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page — closed.
+- 2026-09-14 REJECTED MISCONFIG @ dev.applicationdesigner.de: hard IP gate 403 — closed.
+- 2026-09-14 ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 21+ cycles anonymous WS 101 + byte-identical CONNECT/READY, 426 on non-upgrade — transport-complete driver, unchanged.
+- 2026-09-14 ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= unescaped reflection, no CSP/nosniff, zero-token — unchanged; execution still pending operator render.
+- 2026-09-14 ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: public static credential (LIVE_DEMO_CUSTOMER_TOKEN, sha256 8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf) + full endpoint map — unchanged.
+- 2026-09-14 ACCEPTED CONTROL @ voicenotes/details.php per-record hierarchy gate + flexlist token-scoped directory — unchanged.
+- 2026-09-14 REJECTED IDOR @ get_agent_costs/playback/get_agent_token (session-gated) · /api/callbuilder/ (nginx 404) · playground.php (static) · dev.applicationdesigner.de (403) · check_mailserver anonymous leg (unauthorized) — closed, unchanged.
+- 2026-09-14 REJECTED AUTH @ www.live-manager.de rs param · wildcard-subdomain-enum · api.live-manager.de non-resolving — unchanged.
+[0m
+[0m$ [0mls -la triage | tail -5; echo ===; cat reports/hypotheses.md 2>/dev/null | tail -60; echo ===; cat leads/lead-mimo.md 2>/dev/null | tail -30; echo ===; cat leads/lead-longcat.md 2>/dev/null | tail -30
+-rw-r--r--  1 runner runner   213 Sep 14 22:46 run-2026-09-13-23-29.md
+-rw-r--r--  1 runner runner   156 Sep 14 22:46 run-2026-09-14-01-38.md
+-rw-r--r--  1 runner runner 22295 Sep 14 22:46 run-2026-09-14-07-11.md
+-rw-r--r--  1 runner runner   244 Sep 14 22:46 run-2026-09-14-14-14.md
+-rw-r--r--  1 runner runner   721 Sep 14 22:46 run-2026-09-14-19-28.md
+===
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: public static credential + full endpoint map — unchanged.
+- LEARN: ACCEPTED CONTROL @ voicenotes/details.php: per-record hierarchy-checked — unchanged.
+- LEARN: REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page — closed.
+- LEARN: REJECTED MISCONFIG @ dev.applicationdesigner.de: hard IP gate 403 — closed.
+- LEARN: ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 21+ cycles anonymous WS 101 + byte-identical CONNECT/READY, transport-complete, driver finding — unchanged.
+- LEARN: ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= reflected unescaped, no CSP/nosniff, zero-token, execution pending operator render — unchanged
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: public static credential + full endpoint map — unchanged.
+- LEARN: ACCEPTED CONTROL @ voicenotes/details.php: per-record hierarchy-checked — unchanged.
+- LEARN: REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page — closed.
+- LEARN: REJECTED MISCONFIG @ dev.applicationdesigner.de: hard IP gate 403 — closed.
+- LEARN: ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WS BOLA transport-complete unchanged — demo 131727 vs foreign 2 byte-identical CONNECT/READY, reconfirm
+- LEARN: ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: cross-tenant credential-only, NOT VPN-gated — unchanged; demo index empty this cycle (16+
+- LEARN: ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/get.php: cross-tenant credential-only data endpoint; identical success:true for all cids
+- LEARN: ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/download.php: with token-as-query-param reaches file-lookup (404); VPN gate bypassed; no customer_id
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/voicenotes/delete.php: token-gated (not VPN-gated) destructive endpoint; different error pattern than hier
+- LEARN: REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_costs.php: session-gated ("No VPN detected"), identical response for all cids; earlier ACCEPTED
+- LEARN: REJECTED IDOR @ www.applicationdesigner.de/extjs/playback.php: session-gated ("unauthorized"), identical response for all cids; no zero-token audio generation s
+- LEARN: REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_token.php: session-gated, byte-identical Zugriff verweigert for both cids — unchanged, closed
+- LEARN: REJECTED MISCONFIG @ www.applicationdesigner.de/api/callbuilder/: prefix root + /live return byte-identical nginx 404 catch-all (146B) — no routed CallBuilder d
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php: public static credential accepted, token-only gate, global autoincr
+- LEARN: ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/flexlist/getList.php: directory token-scoped, all customer_id=131727; global autoincrement id space 138–345 
+- LEARN: ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/voicenotes/details.php: per-record hierarchy-checked — unchanged
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config.php: zero-auth LLM-routing JSON; dispatch gated — unchanged
+- LEARN: ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/index.php?route=: 403 Invalid token — unchanged
+- LEARN: REJECTED IDOR @ www.applicationdesigner.de/extjs/common/getCustomers.php: token-scoped — unchanged
+- LEARN: REJECTED AUTH @ www.live-manager.de rs param: no anonymous open redirect — unchanged
+- LEARN: REJECTED wildcard-subdomain-enum @ *.live-manager.de: 8632 hostnames, 0 dedicated endpoints — unchanged
+- LEARN: REJECTED api.live-manager.de: host non-resolving — unchanged
+- LEARN: REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: no secrets-bearing anonymous siblings — unchanged
+- LEARN: REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page (8.9KB, no dynamic params/endpoints/tokens) — named app entry dead-end, cl
+- LEARN: ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= param reflected unescaped into 200 text/html, no CSP/nosniff, zero-token — PASSIVE-proven 2026
+- LEARN: REJECTED MISCONFIG @ dev.applicationdesigner.de: byte-identical 403 "internal" PHP app page on all paths — hard IP gate, no public path surface; closed
+- LEARN: ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 21+ cycles anonymous WS 101 + byte-identical CONNECT/READY, 426 on non-upgrade — transport-complete driver, uncha
+- LEARN: ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= unescaped reflection, no CSP/nosniff, zero-token — unchanged; execution still pending operator
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: public static credential (LIVE_DEMO_CUSTOMER_TOKEN, sha256 8d2faac1b96e020c077fb81aa3452b590d015d59bb82
+- LEARN: ACCEPTED CONTROL @ voicenotes/details.php per-record hierarchy gate + flexlist token-scoped directory — unchanged.
+- LEARN: REJECTED IDOR @ get_agent_costs/playback/get_agent_token (session-gated) · /api/callbuilder/ (nginx 404) · playground.php (static) · dev.applicationdesigner.de 
+- LEARN: REJECTED AUTH @ www.live-manager.de rs param · wildcard-subdomain-enum · api.live-manager.de non-resolving — unchanged.
+- LEARN: ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WS BOLA transport-complete unchanged — demo 131727 vs foreign 2 byte-identical CONNECT/READY, reconfirm
+- LEARN: ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: cross-tenant credential-only, NOT VPN-gated — unchanged; demo index empty this cycle (16+
+- LEARN: ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/get.php: cross-tenant credential-only data endpoint; identical success:true for all cids
+- LEARN: ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/download.php: with token-as-query-param reaches file-lookup (404); VPN gate bypassed; no customer_id
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/voicenotes/delete.php: token-gated (not VPN-gated) destructive endpoint; different error pattern than hier
+- LEARN: REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_costs.php: session-gated ("No VPN detected"), identical response for all cids; earlier ACCEPTED
+- LEARN: REJECTED IDOR @ www.applicationdesigner.de/extjs/playback.php: session-gated ("unauthorized"), identical response for all cids; no zero-token audio generation s
+- LEARN: REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_token.php: session-gated, byte-identical Zugriff verweigert for both cids — unchanged, closed
+- LEARN: REJECTED MISCONFIG @ www.applicationdesigner.de/api/callbuilder/: prefix root + /live return byte-identical nginx 404 catch-all (146B) — no routed CallBuilder d
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php: public static credential accepted, token-only gate, global autoincr
+- LEARN: ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/flexlist/getList.php: directory token-scoped, all customer_id=131727; global autoincrement id space 138–345 
+- LEARN: ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/voicenotes/details.php: per-record hierarchy-checked — unchanged
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config.php: zero-auth LLM-routing JSON; dispatch gated — unchanged
+- LEARN: ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/index.php?route=: 403 Invalid token — unchanged
+- LEARN: REJECTED IDOR @ www.applicationdesigner.de/extjs/common/getCustomers.php: token-scoped — unchanged
+- LEARN: REJECTED AUTH @ www.live-manager.de rs param: no anonymous open redirect — unchanged
+- LEARN: REJECTED wildcard-subdomain-enum @ *.live-manager.de: 8632 hostnames, 0 dedicated endpoints — unchanged
+- LEARN: REJECTED api.live-manager.de: host non-resolving — unchanged
+- LEARN: REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: no secrets-bearing anonymous siblings — unchanged
+- LEARN: REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page (8.9KB, no dynamic params/endpoints/tokens) — named app entry dead-end, cl
+- LEARN: ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= param reflected unescaped into 200 text/html, no CSP/nosniff, zero-token — PASSIVE-proven 2026
+- LEARN: REJECTED MISCONFIG @ dev.applicationdesigner.de: byte-identical 403 "internal" PHP app page on all paths — hard IP gate, no public path surface; closed
+===
+# Lead log (seed)
+===
+## 2026-09-10 15:08:51 UTC [target] (model longcat)
+## 2026-09-10 18:33:34 UTC [target] (model longcat)
+## 2026-09-10 21:11:54 UTC [target] (model longcat)
+## 2026-09-10 23:14:49 UTC [target] (model longcat)
+## 2026-09-11 01:12:30 UTC [target] (model longcat)
+## 2026-09-11 06:07:08 UTC [target] (model longcat)
+## 2026-09-11 11:32:40 UTC [target] (model longcat)
+## 2026-09-11 15:11:53 UTC [target] (model longcat)
+## 2026-09-11 18:39:03 UTC [target] (model longcat)
+## 2026-09-11 21:20:34 UTC [target] (model longcat)
+## 2026-09-11 23:31:17 UTC [target] (model longcat)
+## 2026-09-12 01:33:02 UTC [target] (model longcat)
+## 2026-09-12 06:30:36 UTC [target] (model longcat)
+## 2026-09-12 11:15:50 UTC [target] (model longcat)
+## 2026-09-12 14:13:32 UTC [target] (model longcat)
+## 2026-09-12 17:16:22 UTC [target] (model longcat)
+## 2026-09-12 19:28:13 UTC [target] (model longcat)
+## 2026-09-12 21:38:32 UTC [target] (model longcat)
+## 2026-09-12 23:23:59 UTC [target] (model longcat)
+## 2026-09-13 01:24:36 UTC [target] (model longcat)
+## 2026-09-13 06:45:29 UTC [target] (model longcat)
+## 2026-09-13 12:38:15 UTC [target] (model longcat)
+## 2026-09-13 16:38:22 UTC [target] (model longcat)
+## 2026-09-13 18:58:21 UTC [target] (model longcat)
+## 2026-09-13 21:24:01 UTC [target] (model longcat)
+## 2026-09-13 23:30:47 UTC [target] (model longcat)
+## 2026-09-14 01:40:40 UTC [target] (model longcat)
+## 2026-09-14 07:09:30 UTC [target] (model longcat)
+## 2026-09-14 14:17:26 UTC [target] (model longcat)
+## 2026-09-14 19:31:36 UTC [target] (model longcat)
+[0m
+[0m$ [0mcat triage/run-2026-09-14-19-28.md; echo ===; cat leads/reposcan-questnet-gmbh.md 2>/dev/null | tail -60
+===== TRIAGE 2026-09-14 19:28:53 UTC =====
+[0m
+> build · mimo-v2.5-free
+[0m
+[0m✱ [0mGlob "**/{scope.yml,scope.yaml,inventory/**,questnet-gmbh*}"[90m 2 matches[0m
+[0m✱ [0mGlob "**/questnet*"[90m 1 match[0m
+I don't see any leads in your message - it appears to be cut off after "LEADS:". 
+
+Please provide the actual lead findings to validate. I also need to check the program scope first.
+[0m→ [0mRead scope.yml
+[0m→ [0mRead inventory/questnet-gmbh.md
+Your message ends with "LEADS:" but no actual lead findings are included — it's empty/truncated.
+
+I have the scope and inventory loaded. Please paste the specific probe results you want me to triage and I'll run the 7-Question Gate immediately.
+===
+class: SECRET
+asset: questnet/freeswitch — src/mod/applications/mod_http_cache/conf/autoload_configs/http_cache.conf.xml:37-38
+confidence: 10
+reasoning: Azure storage access key kOOY4Y/sqZU9bsLjmN+9McVwTry+UIn1Owt4Zs/... present in upstream example config. Domain is account.blob.core.windows.net (placeholder), commit author is upstream SignalWire maintainer. This is upstream example config, NOT a Questnet-added secret.
+impact: INFORMATIONAL — known upstream example credential
+verify_steps: N/A — confirm account.blob.core.windows.net is not a live Questnet storage account
+class: SECRET
+asset: questnet/freeswitch — src/mod/applications/mod_http_cache/conf/autoload_configs/http_cache.conf.xml:22
+confidence: 5
+reasoning: AKIAIOSFOD_REDACTED and wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY are the well-known AWS documentation example keys. NOT real credentials.
+impact: NONE — known false positive
+verify_steps: N/A
+class: SECRET
+asset: questnet/freeswitch — libs/sofia-sip/libsofia-sip-ua/*/agent.pem, key.pem
+confidence: 5
+reasoning: .pem files contain RSA private keys but are upstream test/example certificates bundled with the sofia-sip library. Publicly known test certs, not Questnet production keys.
+impact: NONE — upstream test certificates
+verify_steps: N/A
+class: OTHER
+asset: questnet/freeswitch — conf/vanilla/autoload_configs/cidlookup.conf.xml:4
+confidence: 5
+reasoning: URL contains api_key=MYAPIKEY — a placeholder string, not a real credential. Used in CNAM lookup service configuration example.
+impact: NONE — placeholder
+verify_steps: N/A
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-12 21:16:11 UTC
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-12 23:12:00 UTC
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-13 01:07:27 UTC
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-13 06:17:59 UTC
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-13 12:05:29 UTC
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-13 16:27:00 UTC
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-13 18:57:50 UTC
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-13 21:19:09 UTC
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-13 23:14:15 UTC
+[HYP] No Source-Code Audit Targets — GitHub Org Not Configured
+class: OTHER
+asset: scope.yml → github_orgs
+confidence: 100
+reasoning: |
+impact: None — no source-code attack surface is available to audit.
+verify_steps: None required; this is a configuration-level fact, not a vulnerability.
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-14 01:13:23 UTC
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-14 06:26:06 UTC
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-14 13:20:13 UTC
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-14 18:43:49 UTC
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-14 22:18:11 UTC
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+[0m
+[0m$ [0mcurl -sS -o /tmp/opencode/lfi.out -D /tmp/opencode/lfi.hdr --max-time 20 -A "Mozilla/5.0 (pen-test; questnet-gmbh-scope)" "https://www.applicationdesigner.de/help/content.php?page=../../../../etc/hostname" ; echo "exit=$?"; wc -c /tmp/opencode/lfi.out; grep -iE "^(HTTP|Content-Type|Content-Length|Server|X-)" /tmp/opencode/lfi.hdr; echo ---BODY---; head -c 600 /tmp/opencode/lfi.out
+exit=0
+96 /tmp/opencode/lfi.out
+HTTP/1.1 200 OK
+Server: nginx/1.30.0
+Content-Type: text/html; charset=UTF-8
+X-Powered-By: PHP/8.3.21
+---BODY---
+<h1>Page not found</h1><p>The requested help page '../../../../etc/hostname' does not exist.</p>
+[0m
+DELTA clean probe executed this cycle: LFI leg on `help/content.php` closed; otherwise surface frozen.
+
+STEP 1 — DELTA
+- [CHANGED] www.applicationdesigner.de/help/content.php: live probe 2026-09-14 — GET `page=../../../../etc/hostname` → HTTP 200, 96B `<h1>Page not found</h1><p>The requested help page '../../../../etc/hostname' does not exist.</p>`, nginx/1.30.0 + PHP/8.3.21 — `page=` resolves against a fixed page-name index, NOT a server file path; traversal leg CLOSED, finding capped at reflection-proven XSS.
+- [NO_DELTA] otherwise — surface frozen at 4 live hosts; cbs-proxy 426 driver, voicenotes/flexlist/AIDesigner/help.js states all reconfirmed from prior cycles.
+
+STEP 2 — PRIORITIZE
+- [PRIO] cbs-proxy.api.live-manager.de,92,attack_surface=9,business_value=10,tech_exposure=9,gate_ease=10,cloud_surface=7,freshness=9
+- [PRIO] www.applicationdesigner.de/help/content.php,78,attack_surface=8,business_value=8,tech_exposure=8,gate_ease=10,cloud_surface=3,freshness=6
+- [PRIO] www.applicationdesigner.de/extjs/voicenotes/delete.php,64,attack_surface=7,business_value=8,tech_exposure=6,gate_ease=6,cloud_surface=3,freshness=5
+
+STEP 3 — HYPOTHESES
+[HYP] Cross-tenant CBS WS frame binding — token→cid ownership
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
+confidence: 95
+reasoning: 21+ cycles anonymous WS 101 + byte-identical CONNECT CBS100/190/200 + READY for demo cid=131727, foreign cid=2, synthetic cid=999999999 — zero token at proxy layer; 426 on non-upgrade reconfirmed live all cycles; frame binding to minted token is the only unproven hop; triage 2026-09-14 BOLA VALID 8.6.
+evidence_needed: operator owns two tenants; mint own-cid live-debug token, present in live_debug frame bound to own vs foreign cid; byte-diff accepted frame sets.
+verify_steps: AUTH_HELPED — WS-upgrade cid={ownA} vs cid={ownB} with swapped minted token→cid binding; own tenants only; no third-party streams.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH CVSS 8.6, CRITICAL 9.1 if token→cid binding unenforced.
+testability: AUTH_HELPED
+[HYP] help/content.php page= — proven unescaped reflection (XSS); server-side file resolution leg now CLOSED by probe
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page={value}
+confidence: 80
+reasoning: page= reflected unescaped into 200 text/html (96B error echo, 1351B real doc for page=index), no CSP/nosniff, zero-token. 2026-09-14 probe page=../../../../etc/hostname → 96B "The requested help page '../../../../etc/hostname' does not exist." — page= is a key lookup against a fixed help index, no file_exists/include on user path; LFI leg closed. Remaining exposure is same-origin reflected XSS only.
+evidence_needed: execution via operator render (benign document.title marker) — the sole proof step left.
+verify_steps: HUMAN — open page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E in a browser, confirm title marker; no further active probes warranted (reflection already proven, traversal closed).
+impact: same-origin arbitrary JS → silent calls to every /extjs endpoint (flexlist/voicenotes mints, delete.php) — MEDIUM standalone; HIGH only when chained to a session-bearing victim.
+testability: HUMAN_ONLY
+[HYP] Cross-tenant voicenote destruction — delete.php without customer_id hierarchy gate
+class: IDOR
+asset: www.applicationdesigner.de/extjs/voicenotes/delete.php
+confidence: 72
+reasoning: delete.php is token-gated (not hierarchy-gated): "Sprachnotiz nicht gefunden oder keine Berechtigung" for cid 2/999999/131727/absent, while hierarchy-gated details.php returns distinct "Kundennummer nicht in der Hierarchie" — token-only gate without observable cid ownership check; proof blocked by empty demo index (total=0, 17+ consecutive cycles).
+evidence_needed: valid demo voice_note_id from a non-empty check.php index → delete with customer_id=2 vs 131727; success:true diff proves destructive cross-tenant IDOR.
+verify_steps: AUTH_HELPED — own demo tenant only; non-mutating error-pattern evidence until an owned note exists; do not delete foreign records.
+impact: cross-tenant voicenote destruction (PII audio loss) — HIGH CVSS ~8.1.
+testability: AUTH_HELPED
+
+STEP 4 — SELF-CRITIQUE
+- [PARKED] flexlist cross-tenant read via global ID space 138–345: token-only gate proven, foreign flexlist_id requires second owned tenant (HUMAN); enumerating foreign IDs would touch out-of-scope data.
+- [PARKED] get_user_rights.php ciphertext: high-entropy rotating payload, no plaintext/key — capped LOW/MED.
+- [PARKED] check_mailserver.php SSRF: session-gated ("unauthorized"), POST-only, AUTH_HELPED.
+- [PARKED] voicenotes/download.php raw-audio: file-lookup 404 needs valid UUID — no UUID path with empty index.
+- [PARKED] content.php LFI leg: CLOSED by probe this cycle — traversal not a hypothesis anymore.
+- [FINAL] 1. Cross-tenant CBS WS frame binding — confidence 95, transport-complete driver, report file-ready.
+- [FINAL] 2. help/content.php page= XSS — 80, reflection proven, LFI leg closed, execution pending operator render (MEDIUM cap).
+- [FINAL] 3. Cross-tenant voicenotes delete.php — 72, gate-pattern evidence, proof blocked by empty index.
+
+STEP 5 — NEXT ACTION
+- [NEXT] PROBE: `curl -sS -i --max-time 15 -A "Mozilla/5.0 (pen-test)" https://cbs-proxy.api.live-manager.de/` — expect `HTTP/1.1 426 Upgrade Required` (22nd-cycle reconfirm of the driver endpoint); read-only, non-upgrade, 1 rps. Also re-poll `GET https://www.applicationdesigner.de/extjs/voicenotes/check.php?token=<REDACTED>&customerId=131727` for demo-index non-emptiness (unlocks delete.php proof). No further content.php probing — traversal closed.
+
+STEP 6 — LEARNING
+- [LEARN] REJECTED LFI @ www.applicationdesigner.de/help/content.php: GET page=../../../../etc/hostname → HTTP 200 96B "Page not found" + echoed path (nginx/1.30.0, PHP/8.3.21) — page= is an index-key lookup, no server file path resolution; traversal leg closed, finding stays reflection-proven XSS.
+- [LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WS BOLA transport-complete unchanged — demo 131727 vs foreign 2 byte-identical CONNECT/READY, 426 on non-upgrade live.
+- [LEARN] ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= unescaped reflection, no CSP/nosniff, zero-token; LFI leg closed 2026-09-14; execution pending operator render.
+- [LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: public static credential (LIVE_DEMO_CUSTOMER_TOKEN, sha256 8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf) + full endpoint map — unchanged.
+- [LEARN] ACCEPTED CONTROL @ voicenotes/details.php per-record hierarchy gate + flexlist token-scoped directory — unchanged.
+- [LEARN] REJECTED IDOR @ get_agent_costs/playback/get_agent_token (session-gated) · /api/callbuilder/ (nginx 404) · playground.php (static) · dev.applicationdesigner.de (403) · check_mailserver anonymous leg (unauthorized) — closed.
+- [LEARN] REJECTED AUTH @ www.live-manager.de rs param · wildcard-subdomain-enum · api.live-manager.de non-resolving — unchanged.
+
+STEP 7 — RISK
+- [RISK] questnet-gmbh: 80 — Two triaged VALID HIGHs remain file-ready (cbs-proxy WS BOLA 8.6; static-credential mint + voicenote PII 7.5, both VPN-independent) and the PoC (anonymous 101 with arbitrary cid/service) satisfies the HIGH report gate. This cycle's content.php traversal probe CLOSED the LFI leg, so the XSS finding is capped at MEDIUM (execution still pending operator render) — one in-flight upside removed, risk stable-to-slightly-down. Surface frozen at 4 hosts since 2026-09-04; report filing awaiting program-state confirmation.
