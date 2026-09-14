@@ -1801,3 +1801,37 @@
 - LEARN: REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page (8.9KB, no dynamic params/endpoints/tokens) — named app entry dead-end, cl
 - LEARN: ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= param reflected unescaped into 200 text/html, no CSP/nosniff, zero-token — PASSIVE-proven 2026
 - LEARN: REJECTED MISCONFIG @ dev.applicationdesigner.de: byte-identical 403 "internal" PHP app page on all paths — hard IP gate, no public path surface; closed
+
+## RANKED HYPOTHESES 2026-09-14 14:18:51 UTC
+- [95] wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100: Cross-tenant CBS WS frame binding — token→cid ownership (from art/lead_bigpickle.txt)
+- [85] https://www.applicationdesigner.de/help/content.php: Reflected XSS via help content page parameter (from art/lead_nemotron3.txt)
+- NEXT(hypotheses-bigpickle.txt): HUMAN: operator opens https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E in a browser and confirms do
+- NEXT(hypotheses-nemotron3.txt): PROBE: GET https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E — confirm unescaped reflection in 200 t
+- LEARN: ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 21+ cycles anonymous WS 101 + byte-identical CONNECT/READY, transport-complete, driver finding — unchanged.
+- LEARN: ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= reflected unescaped, no CSP/nosniff, zero-token, execution pending operator render — unchanged
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: public static credential + full endpoint map — unchanged.
+- LEARN: ACCEPTED CONTROL @ voicenotes/details.php: per-record hierarchy-checked — unchanged.
+- LEARN: REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page — closed.
+- LEARN: REJECTED MISCONFIG @ dev.applicationdesigner.de: hard IP gate 403 — closed.
+- LEARN: ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: anonymous WS BOLA transport-complete unchanged — demo 131727 vs foreign 2 byte-identical CONNECT/READY, reconfirm
+- LEARN: ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: cross-tenant credential-only, NOT VPN-gated — unchanged; demo index empty this cycle (16+
+- LEARN: ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/get.php: cross-tenant credential-only data endpoint; identical success:true for all cids
+- LEARN: ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/download.php: with token-as-query-param reaches file-lookup (404); VPN gate bypassed; no customer_id
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/voicenotes/delete.php: token-gated (not VPN-gated) destructive endpoint; different error pattern than hier
+- LEARN: REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_costs.php: session-gated ("No VPN detected"), identical response for all cids; earlier ACCEPTED
+- LEARN: REJECTED IDOR @ www.applicationdesigner.de/extjs/playback.php: session-gated ("unauthorized"), identical response for all cids; no zero-token audio generation s
+- LEARN: REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_token.php: session-gated, byte-identical Zugriff verweigert for both cids — unchanged, closed
+- LEARN: REJECTED MISCONFIG @ www.applicationdesigner.de/api/callbuilder/: prefix root + /live return byte-identical nginx 404 catch-all (146B) — no routed CallBuilder d
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php: public static credential accepted, token-only gate, global autoincr
+- LEARN: ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/flexlist/getList.php: directory token-scoped, all customer_id=131727; global autoincrement id space 138–345 
+- LEARN: ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/voicenotes/details.php: per-record hierarchy-checked — unchanged
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config.php: zero-auth LLM-routing JSON; dispatch gated — unchanged
+- LEARN: ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/index.php?route=: 403 Invalid token — unchanged
+- LEARN: REJECTED IDOR @ www.applicationdesigner.de/extjs/common/getCustomers.php: token-scoped — unchanged
+- LEARN: REJECTED AUTH @ www.live-manager.de rs param: no anonymous open redirect — unchanged
+- LEARN: REJECTED wildcard-subdomain-enum @ *.live-manager.de: 8632 hostnames, 0 dedicated endpoints — unchanged
+- LEARN: REJECTED api.live-manager.de: host non-resolving — unchanged
+- LEARN: REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: no secrets-bearing anonymous siblings — unchanged
+- LEARN: REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page (8.9KB, no dynamic params/endpoints/tokens) — named app entry dead-end, cl
+- LEARN: ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= param reflected unescaped into 200 text/html, no CSP/nosniff, zero-token — PASSIVE-proven 2026
+- LEARN: REJECTED MISCONFIG @ dev.applicationdesigner.de: byte-identical 403 "internal" PHP app page on all paths — hard IP gate, no public path surface; closed
