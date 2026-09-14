@@ -339,3 +339,9 @@
 - 2026-09-14 ACCEPTED CONTROL @ voicenotes/details.php: per-record hierarchy-checked — unchanged.
 - 2026-09-14 REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page — closed.
 - 2026-09-14 REJECTED MISCONFIG @ dev.applicationdesigner.de: hard IP gate 403 — closed.
+- 2026-09-14 ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 21+ cycles anonymous WS 101 + byte-identical CONNECT/READY, 426 on non-upgrade — transport-complete driver, unchanged.
+- 2026-09-14 ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= unescaped reflection, no CSP/nosniff, zero-token — unchanged; execution still pending operator render.
+- 2026-09-14 ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: public static credential (LIVE_DEMO_CUSTOMER_TOKEN, sha256 8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf) + full endpoint map — unchanged.
+- 2026-09-14 ACCEPTED CONTROL @ voicenotes/details.php per-record hierarchy gate + flexlist token-scoped directory — unchanged.
+- 2026-09-14 REJECTED IDOR @ get_agent_costs/playback/get_agent_token (session-gated) · /api/callbuilder/ (nginx 404) · playground.php (static) · dev.applicationdesigner.de (403) · check_mailserver anonymous leg (unauthorized) — closed, unchanged.
+- 2026-09-14 REJECTED AUTH @ www.live-manager.de rs param · wildcard-subdomain-enum · api.live-manager.de non-resolving — unchanged.
