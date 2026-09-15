@@ -500,3 +500,47 @@ TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
 TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
 ## REPOSCAN 2026-09-15 00:43:36 UTC
 TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-15 06:04:08 UTC
+[HYP] FreeSWITCH Event Socket default "ClueCon" password, bound 0.0.0.0, ACL disabled
+class: MISCONFIG
+asset: questnet/freeswitch (v1.10-qn) — conf/insideout/autoload_configs/event_socket.conf.xml:3-6
+confidence: 85
+reasoning: The `insideout` profile is Questnet-customized (proven by hardcoded internal IP 192.168.86.254 in vars.xml:14). It configures ESL with `listen-ip=0.0.0.0`, `password=ClueCon` (well-known FreeSWITCH default), and `apply-inbound-acl` is commented out. ESL control socket (port 8021) exposed to all interfaces with no ACL. Any network-reachable client can authenticate and issue arbitrary FreeSWITCH API commands. The vanilla profile (also included by active freeswitch.xml) similarly binds `::` with password=ClueCon and ACL commented out.
+impact: HIGH — full FreeSWITCH control (originate calls, bridge, record, shutdown) from any network-reachable client
+verify_steps: 1) nmap -sV 185.158.96.0/22 -p 8021 2) fs_cli -H <target> -P ClueCon 3) issue `status` to confirm 4) check bugs.olivermaicher.eu or *.live-manager.de for port 8021
+[HYP] Hardcoded internal RFC1918 IP 192.168.86.254 in FreeSWITCH config
+class: OTHER
+asset: questnet/freeswitch (v1.10-qn) — conf/insideout/vars.xml:14
+confidence: 90
+reasoning: vars.xml contains `<X-PRE-PROCESS cmd="set" data="internal_ip_v4=192.168.86.254"/>`. Specific non-default private IP (not 192.168.1.1) committed to a public repo, revealing Questnet's internal network topology. The only human modification in the insideout profile — this is an actual deployment address, not a placeholder.
+impact: LOW — information disclosure aiding internal network reconnaissance
+verify_steps: 1) Verify IP is not routable from internet 2) Could correlate with other internal details
+[HYP] Default SIP directory passwords "1234" across all FreeSWITCH extensions
+class: MISCONFIG
+asset: questnet/freeswitch (v1.10-qn) — conf/insideout/directory/default/*.xml (20+ entries: 1000-1019, brian)
+confidence: 80
+reasoning: All 20+ SIP user entries in the insideout directory use `password="1234"` and `vm-password=<extension_number>`. Vanilla profile uses `$${default_password}` which resolves to "1234". If deployed, any SIP client can register as any extension using the trivially known default and make toll-fraud calls.
+impact: MEDIUM — unauthorized SIP registration and toll fraud
+verify_steps: 1) SIP REGISTER with ext 1000-1019 + password 1234 against in-scope SIP endpoint 2) Check SIP ports 5060/5061 on *.live-manager.de or 185.158.96.0/22
+[HYP] Rayo XMPP shared-secret "ClueCon" and user "usera" password "1" with empty ACL
+class: MISCONFIG
+asset: questnet/freeswitch (v1.10-qn) — conf/rayo/autoload_configs/rayo.conf.xml:99,105,115
+confidence: 75
+reasoning: Rayo XMPP server configured with `shared-secret="ClueCon"` (line 99), authorized user `name="usera" password="1"` (line 115), and listener on port 5222 with `acl=""` (empty ACL, line 105). Allows unauthenticated XMPP connections to control calls via Rayo protocol using trivially known default credentials.
+impact: HIGH — call control via Rayo protocol with default credentials
+verify_steps: 1) Check if port 5222 is open on any in-scope host 2) XMPP connection with usera/ClueCon 3) Attempt to create/monitor calls via Rayo
+[HYP] Default service credentials across FreeSWITCH vanilla configs (AMQP, Redis, SMTP, DB, XML-RPC, SMPP)
+class: MISCONFIG
+asset: questnet/freeswitch (v1.10-qn) — conf/vanilla/autoload_configs/{amqp,hiredis,switch,xml_rpc,easyroute,smpp}.conf.xml
+confidence: 50
+reasoning: Vanilla profile (included by active freeswitch.xml) contains: AMQP password "guest" (amqp.conf.xml:9,17,51,74), Redis password "redis" (hiredis.conf.xml:7,13), SMTP password "mypassword" (switch.conf.xml:119), XML-RPC user "freeswitch"/pass "works" (xml_rpc.conf.xml:7-8), DB password "password" (easyroute.conf.xml:5), SMPP password "password" (smpp.conf.xml:10). All upstream FreeSWITCH defaults. Risk depends on whether these services are actually deployed.
+impact: MEDIUM — default credentials on auxiliary services if deployed
+verify_steps: 1) Check AMQP (5672), Redis (6379), XML-RPC ports on in-scope hosts 2) Attempt default credential auth
+[HYP] Drachtio-freeswitch-modules example config with default secrets "cymru" and "ClueCon"
+class: MISCONFIG
+asset: questnet/drachtio-freeswitch-modules — examples/config/default.json:5,10
+confidence: 30
+reasoning: Example config contains `"secret": "cymru"` for drachtio server and `"secret": "ClueCon"` for FreeSWITCH ESL. Well-known defaults; if deployed without modification, drachtio server accessible with default secret.
+impact: LOW — default credentials in example config
+verify_steps: 1) Check if drachtio (port 9022) is exposed on any in-scope host 2) Attempt connection with default "cymru" secret
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
