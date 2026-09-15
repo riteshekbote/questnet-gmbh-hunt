@@ -4097,3 +4097,197 @@ impact: post-login open redirect → OAuth/credential theft → ATO if honored v
 testability: AUTH_HELPED
 [NEXT] HUMAN: operator renders `https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E` in a scoped browser and confirms the title marker — the sole outstanding proof step on the passive-proven XSS; all other open items require operator two-tenant (frame binding) or a paid session (rs post-login), and the anonymous probe surface at 4 hosts is now fully exhausted.
 [RISK] questnet-gmbh: 80 — elmah upside removed (falsified), leaving only HUMAN_ONLY XSS render and AUTH_HELPED frame-binding as potential adds; breadth exhausted at 4 hosts with zero new surface. Two triaged VALID HIGHs remain file-ready (cbs-proxy WS BOLA 8.6; voicenote PII 7.5, VPN-independent) and the anonymous PoC (101 + byte-identical frames) satisfies the HIGH report gate; risk driver is now filing latency on program-state confirmation (auth.php already partially mitigated 2026-09-07, so delay erodes value), nudging 81→80.
+## 2026-09-15 11:57:33 UTC [target] (model bigpickle)
+[NEW] cbs-proxy.api.live-manager.de: WebSocket proxy (Ratchet/0.4.4) to backend CBS systems, IP 185.158.98.53 (in-scope /22), discovered via AppDesigner help.js; not in inventory.
+[CHANGED] applicationdesigner.de/www.applicationdesigner.de confirmed live (PHP/8.3.21, login.php/playground.php/docs.php ExtJS 7.8 app); prior recon reported "Live HTTP: 0".
+[CHANGED] live-manager.de/www.live-manager.de confirmed live (IIS 8.5 / ASP.NET 4.0, Login.aspx customer portal + base64 rs return-url).
+[CHANGED] dev.applicationdesigner.de live but 403 internal-only page; dev/staging/test/portal/account.live-manager.de do not serve HTTP.
+[PRIO] cbs-proxy.api.live-manager.de,8.4,gate_ease=10(unauth WS)+cloud_surface+bd_fresh
+[PRIO] www.live-manager.de,6.0,business_value(customer portal)+auth flow
+[PRIO] www.applicationdesigner.de,5.2,tech_exposure(ExtJS+WS+AI/upload)
+[HYP] Unauthenticated / unauth-token CBS WebSocket proxy allows arbitrary customer_id cross-tenant subscription
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de?origin=LiveDemo|LiveDebugger&cid={customer_id}&service={service_number}
+confidence: 65
+reasoning: help.js builds the WS URL with client-side placeholders (cid=a.context.customerId, service=service_number) and passes origin=LiveDemo/LiveDebugger. Anonymous WS upgrade succeeded with zero credentials, emitting proxy CONNECT frames to CBS100/CBS190/CBS200 then READY. No token/Authorization was required or validated in the observed handshake, so whether cid scoping is enforced server-side is unverified.
+evidence_needed: confirm proxy enforces an authenticated session token tied to the claimed cid, and that requesting a foreign cid is denied; without that, cross-tenant live call/debug stream subscription is possible.
+verify_steps: (passive-first) WS upgrade to wss://cbs-proxy.api.live-manager.de?origin=LiveDemo&cid=1&service=<test> and observe CONNECT/READY frame set; compare a probe with a clearly foreign/unowned cid and note whether READY/data is still returned. Do NOT subscribe to live customer call data.
+impact: cross-tenant exposure of customer business-system call streams / live debugging (PII/voice data) — High if unauthenticated actor can enumerate cid.
+testability: PASSIVE (handshake reachable anonymously; auth-scoping confirmation requires valid session = AUTH_HELPED/HUMAN)
+[HYP] LiveManager rs (base64 return-url) post-login open-redirect -> OAuth/session chain
+class: AUTH
+asset: https://www.live-manager.de/?rs=<base64>& (Login.aspx flow)
+confidence: 40
+reasoning: every unauthenticated subpath 302 -> /?rs=<base64-of-requested-path>; the decoded target is carried to a return-URL parameter. GET does not reflect the value, so a direct anonymous open redirect is not present. Post-login redirect target validation is unverified.
+evidence_needed: log in and observe whether the decoded rs target is honored verbatim for the post-auth redirect; a schema-less/external value reaching a Location header or JS redirect = open redirect.
+verify_steps: (passive-first, AUTH needed) after obtaining a session, GET /?rs=<base64 of an attacker-controlled external URL> and follow the login; inspect the resulting redirect Location / JS navigation for reflection.
+impact: open redirect enabling OAuth code/credential theft and ATO — Medium/High if redirects to attacker domain.
+testability: AUTH_HELPED (needs a valid customer session + Human to confirm)
+[HYP] AppDesigner playground/docs ExtJS help app proxies to internal CBS endpoints; exposed auth-less backend discovery
+class: MISCONFIG
+asset: https://www.applicationdesigner.de/docs.php (ExtJS help.js) and help.json/resources.help
+confidence: 42
+reasoning: the ExtJS help app (Sencha Cmd, app uuid 3342eca3-...) ships help.js containing live backend host wss://cbs-proxy.api.live-manager.de and an internal Proxy/Endpoint model. The documented help manifest (help.json) and resources (resources.help/) are publicly served, which can enumerate internal host/proxy names beyond the already-confirmed one.
+evidence_needed: whether further unauth endpoints/hosts are listed in the served ExtJS app and whether any expose data or allow on-behalf-of calls.
+verify_steps: GET /help.json, /resources.help/*, and the app JS to list proxy/endpoint URLs (read-only); cross-reference found hostnames against scope before any further probe.
+impact: surface/asset discovery and potential unauthorized internal call relay — Medium.
+testability: PASSIVE (read-only asset enumeration)
+[FINAL] cbs-proxy IDOR (65) — strongest: confirmed anonymous WS handshake to in-scope host reaching backend CBS servers; highest value class.
+[FINAL] LiveManager rs open-redirect (40) — plausible but needs session; parked above threshold but AUTH-gated.
+[PARKED] AppDesigner ExtJS endpoint enumeration (42): valid but lower impact; kept only as supporting for cbs-proxy chain.
+[NEXT] PROBE: WS-upgrade GET to wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=1&service=<observable-test> with explicit Upgrade/Sec-WebSocket headers (no auth) to confirm the READY frame set and whether cid/service are validated pre-connect or merely forward-connected; ~1 req, read-only handshake, no data subscription.
+[HYP] Cross-tenant CBS WS frame binding — token→cid ownership
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
+confidence: 95
+reasoning: 21+ cycles anonymous 101 + byte-identical CONNECT CBS100/190/200 + READY for demo cid=131727, foreign cid=2, synthetic 999999999; 426 on non-upgrade reconfirmed this cycle's baseline; zero token at proxy layer; triaged VALID BOLA 8.6. Sole unproven hop = backend binding of minted token→cid inside live_debug frame.
+evidence_needed: operator-owned two-tenant frame-bound test — mint own-cid token, present bound to own vs foreign cid, byte-diff accepted frame sets.
+verify_steps: AUTH_HELPED — own tenants only; never third-party streams.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH 8.6; CRITICAL 9.1 if binding unenforced.
+testability: AUTH_HELPED
+[HYP] Same-origin reflected XSS at help content app — execution pending operator render
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page={value}
+confidence: 80
+reasoning: page= reflected unescaped into 200 text/html (96B error echo; 1351B real doc for page=index), no CSP/nosniff, zero-token; LFI leg closed 2026-09-14 (key lookup, no include). Reflection proven; only browser-side execution outstanding.
+evidence_needed: benign document.title marker render by operator-owned browser.
+verify_steps: HUMAN — open `page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E`, confirm title marker; no further active probes warranted.
+impact: same-origin arbitrary JS reaching every /extjs endpoint incl. token-only mints and delete.php — MEDIUM standalone, chained HIGH on session-bearing victim.
+testability: HUMAN_ONLY
+[HYP] Post-login rs return-url handling — external/schema-less redirect target honored verbatim
+class: AUTH
+asset: https://www.live-manager.de/?rs={base64}
+confidence: 40
+reasoning: elmah/trace sweep closed the last anonymous surface on this host; all unauthenticated paths 302 → /?rs=<base64-of-path> and GET / is the only 200. Anonymous open-redirect already REJECTED (value not reflected); the only unexamined behavior is whether the decoded rs target is validated after authentication.
+evidence_needed: complete a login flow with rs=<base64 of attacker URL> and observe final redirect Location / JS navigation.
+verify_steps: AUTH_HELPED — GET /?rs=aHR0cHM6Ly9ldmlsLmNvbQ== through login; inspect final redirect. Session required.
+impact: post-login open redirect → OAuth/credential theft → ATO if honored verbatim — HIGH chained.
+testability: AUTH_HELPED
+[NEXT] HUMAN: operator renders `https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E` in a scoped browser and confirms the title marker — the sole outstanding proof step on the passive-proven XSS; all other open items require operator two-tenant (frame binding) or a paid session (rs post-login), and the anonymous probe surface at 4 hosts is now fully exhausted.
+[RISK] questnet-gmbh: 80 — elmah upside removed (falsified), leaving only HUMAN_ONLY XSS render and AUTH_HELPED frame-binding as potential adds; breadth exhausted at 4 hosts with zero new surface. Two triaged VALID HIGHs remain file-ready (cbs-proxy WS BOLA 8.6; voicenote PII 7.5, VPN-independent) and the anonymous PoC (101 + byte-identical frames) satisfies the HIGH report gate; risk driver is now filing latency on program-state confirmation (auth.php already partially mitigated 2026-09-07, so delay erodes value), nudging 81→80.
+[PARKED] Cross-tenant flexlist data read via global autoincrement ID: confidence 55 but cross-tenant read NOT yet observed anonymous — requires HUMAN operator with second tenant to create flexlist and confirm anonymous read via global ID; without this, only same-tenant read is proven
+[PARKED] Cross-tenant voicenote deletion via delete.php token-only gate: confidence 70 but requires valid foreign log_id from HUMAN operator; deletion is mutating — program rules prohibit writes on live customer data; only error pattern observable passively
+[PARKED] Cross-tenant raw voicenote audio download via download.php: confidence 75 but requires valid foreign UUID from HUMAN operator; only 404 reachable passively
+[PARKED] get_user_rights.php ciphertext stability/key recovery: body sha256 differs per cid and rotates per request; high-entropy base64 (~3230B) suggests encrypted/serialized payload. Severity capped LOW-MED until ciphertext stability or key demonstrated. Needs multiple requests per cid to test determinism
+[PARKED] auth.php VPN gate: anonymous mint BLOCKED since 2026-09-07; credential still public in help.js but chain broken at mint layer
+[FINAL] Survivors ranked:
+[NEXT] PROBE: GET https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E — confirm unescaped reflection in 200 text/html response (PASSIVE, read-only, 1 rps)
+[LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 21+ cycles anonymous WS 101 + byte-identical CONNECT/READY, 426 on non-upgrade — transport-complete driver, unchanged
+[LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: cross-tenant credential-only, NOT VPN-gated — unchanged; demo index empty this cycle (16+ consecutive)
+[LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/get.php: cross-tenant credential-only data endpoint; identical success:true for all cids
+[LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/download.php: with token-as-query-param reaches file-lookup (404); VPN gate bypassed; no customer_id scoping
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/voicenotes/delete.php: token-gated (not VPN-gated) destructive endpoint; different error pattern than hierarchy-gated details.php — potential cross-tenant deletion
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_costs.php: session-gated ("No VPN detected"), identical response for all cids; earlier ACCEPTED MISCONFIG was wrong
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/playback.php: session-gated ("unauthorized"), identical response for all cids; no zero-token audio generation surface exists
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_token.php: session-gated, byte-identical Zugriff verweigert for both cids — unchanged, closed
+[LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/api/callbuilder/: prefix root + /live return byte-identical nginx 404 catch-all (146B) — no routed CallBuilder data-plane
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php: public static credential accepted, token-only gate, global autoincrement id space 138–345 — unchanged
+[LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/flexlist/getList.php: directory token-scoped, all customer_id=131727; global autoincrement id space 138–345 — unchanged
+[LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/voicenotes/details.php: per-record hierarchy-checked — unchanged
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config.php: zero-auth LLM-routing JSON; dispatch gated — unchanged
+[LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/index.php?route=: 403 Invalid token — unchanged
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/common/getCustomers.php: token-scoped — unchanged
+[LEARN] REJECTED AUTH @ www.live-manager.de rs param: no anonymous open redirect — unchanged
+[LEARN] REJECTED wildcard-subdomain-enum @ *.live-manager.de: 8632 hostnames, 0 dedicated endpoints — unchanged
+[LEARN] REJECTED api.live-manager.de: host non-resolving — unchanged
+[LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: no secrets-bearing anonymous siblings — unchanged
+[LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page (8.9KB, no dynamic params/endpoints/tokens) — named app entry dead-end, closes
+[LEARN] ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= param reflected unescaped into 200 text/html, no CSP/nosniff, zero-token — PASSIVE-proven 2026-09-12 21:40 UTC; execution pending operator render
+[LEARN] REJECTED MISCONFIG @ dev.applicationdesigner.de: byte-identical 403 "internal" PHP app page on all paths — hard IP gate, no public path surface; closed
+[RISK] questnet-gmbh: 85 — Driver finding (cbs-proxy BOLA transport-complete) remains VALID HIGH (CVSS 9.1) and VPN-independent. Voicenotes metadata IDOR re-confirmed NOT VPN-gated with valid token (HIGH, CVSS 7.5). Auth.php mint now VPN-gated but credential still public in help.js. Flexlist per-id endpoints NEW token-only gate with global ID space — cross-tenant read pending operator confirmation. AIDesigner config.php zero-auth LLM routing disclosure (MEDIUM/LOW). XSS at help/content.php PASSIVE-proven but execution requires operator render. Surface frozen at 4 hosts. PoC for bug gate: cbs-proxy WS 101 with arbitrary cid/service sufficient for HIGH severity report.
+[FINAL] Survivors ranked:
+[NEXT] PROBE: GET https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E — confirm unescaped reflection in 200 text/html response (PASSIVE, read-only, 1 rps)
+[LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 21+ cycles anonymous WS 101 + byte-identical CONNECT/READY, 426 on non-upgrade — transport-complete driver, unchanged
+[LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: cross-tenant credential-only, NOT VPN-gated — unchanged; demo index empty this cycle (16+ consecutive)
+[LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/get.php: cross-tenant credential-only data endpoint; identical success:true for all cids
+[LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/download.php: with token-as-query-param reaches file-lookup (404); VPN gate bypassed; no customer_id scoping
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/voicenotes/delete.php: token-gated (not VPN-gated) destructive endpoint; different error pattern than hierarchy-gated details.php — potential cross-tenant deletion
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_costs.php: session-gated ("No VPN detected"), identical response for all cids; earlier ACCEPTED MISCONFIG was wrong
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/playback.php: session-gated ("unauthorized"), identical response for all cids; no zero-token audio generation surface exists
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_token.php: session-gated, byte-identical Zugriff verweigert for both cids — unchanged, closed
+[LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/api/callbuilder/: prefix root + /live return byte-identical nginx 404 catch-all (146B) — no routed CallBuilder data-plane
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php: public static credential accepted, token-only gate, global autoincrement id space 138–345 — unchanged
+[LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/flexlist/getList.php: directory token-scoped, all customer_id=131727; global autoincrement id space 138–345 — unchanged
+[LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/voicenotes/details.php: per-record hierarchy-checked — unchanged
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config.php: zero-auth LLM-routing JSON; dispatch gated — unchanged
+[LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/index.php?route=: 403 Invalid token — unchanged
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/common/getCustomers.php: token-scoped — unchanged
+[LEARN] REJECTED AUTH @ www.live-manager.de rs param: no anonymous open redirect — unchanged
+[LEARN] REJECTED wildcard-subdomain-enum @ *.live-manager.de: 8632 hostnames, 0 dedicated endpoints — unchanged
+[LEARN] REJECTED api.live-manager.de: host non-resolving — unchanged
+[LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: no secrets-bearing anonymous siblings — unchanged
+[LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page (8.9KB, no dynamic params/endpoints/tokens) — named app entry dead-end, closes
+[LEARN] ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= param reflected unescaped into 200 text/html, no CSP/nosniff, zero-token — PASSIVE-proven 2026-09-12 21:40 UTC; execution pending operator render
+[LEARN] REJECTED MISCONFIG @ dev.applicationdesigner.de: byte-identical 403 "internal" PHP app page on all paths — hard IP gate, no public path surface; closed
+[RISK] questnet-gmbh: 85 — Driver finding (cbs-proxy BOLA transport-complete) remains VALID HIGH (CVSS 9.1) and VPN-independent. Voicenotes metadata IDOR re-confirmed NOT VPN-gated with valid token (HIGH, CVSS 7.5). Auth.php mint now VPN-gated but credential still public in help.js. Flexlist per-id endpoints NEW token-only gate with global ID space — cross-tenant read pending operator confirmation. AIDesigner config.php zero-auth LLM routing disclosure (MEDIUM/LOW). XSS at help/content.php PASSIVE-proven but execution requires operator render. Surface frozen at 4 hosts. PoC for bug gate: cbs-proxy WS 101 with arbitrary cid/service sufficient for HIGH severity report.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH 8.6; CRITICAL 9.1 if binding unenforced.
+testability: AUTH_HELPED
+[HYP] Same-origin reflected XSS at help content app — execution pending operator render
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page={value}
+confidence: 80
+reasoning: page= reflected unescaped into 200 text/html (96B error echo; 1351B real doc for page=index), no CSP/nosniff, zero-token; LFI leg closed 2026-09-14 (key lookup, no include). Reflection proven; only browser-side execution outstanding.
+evidence_needed: benign document.title marker render by operator-owned browser.
+verify_steps: HUMAN — open `page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E`, confirm title marker; no further active probes warranted.
+impact: same-origin arbitrary JS reaching every /extjs endpoint incl. token-only mints and delete.php — MEDIUM standalone, chained HIGH on session-bearing victim.
+testability: HUMAN_ONLY
+[HYP] Post-login rs return-url handling — external/schema-less redirect target honored verbatim
+class: AUTH
+asset: https://www.live-manager.de/?rs={base64}
+confidence: 40
+reasoning: elmah/trace sweep closed the last anonymous surface on this host; all unauthenticated paths 302 → /?rs=<base64-of-path> and GET / is the only 200. Anonymous open-redirect already REJECTED (value not reflected); the only unexamined behavior is whether the decoded rs target is validated after authentication.
+evidence_needed: complete a login flow with rs=<base64 of attacker URL> and observe final redirect Location / JS navigation.
+verify_steps: AUTH_HELPED — GET /?rs=aHR0cHM6Ly9ldmlsLmNvbQ== through login; inspect final redirect. Session required.
+impact: post-login open redirect → OAuth/credential theft → ATO if honored verbatim — HIGH chained.
+testability: AUTH_HELPED
+[NEXT] HUMAN: operator renders `https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E` in a scoped browser and confirms the title marker — the sole outstanding proof step on the passive-proven XSS; all other open items require operator two-tenant (frame binding) or a paid session (rs post-login), and the anonymous probe surface at 4 hosts is now fully exhausted.
+[RISK] questnet-gmbh: 80 — elmah upside removed (falsified), leaving only HUMAN_ONLY XSS render and AUTH_HELPED frame-binding as potential adds; breadth exhausted at 4 hosts with zero new surface. Two triaged VALID HIGHs remain file-ready (cbs-proxy WS BOLA 8.6; voicenote PII 7.5, VPN-independent) and the anonymous PoC (101 + byte-identical frames) satisfies the HIGH report gate; risk driver is now filing latency on program-state confirmation (auth.php already partially mitigated 2026-09-07, so delay erodes value), nudging 81→80.
+[HYP] Same-origin reflected XSS at help content app — execution pending operator render
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page={value}
+confidence: 80
+reasoning: page= reflected unescaped into 200 text/html (96B error echo; 1351B real doc for page=index), no CSP/nosniff, zero-token; LFI leg closed 2026-09-14 (key lookup, no include). Reflection proven; only browser-side execution outstanding.
+evidence_needed: benign document.title marker render by operator-owned browser.
+verify_steps: HUMAN — open `page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E`, confirm title marker; no further active probes warranted.
+impact: same-origin arbitrary JS reaching every /extjs endpoint incl. token-only mints and delete.php — MEDIUM standalone, chained HIGH on session-bearing victim.
+testability: HUMAN_ONLY
+[HYP] Post-login rs return-url handling — external/schema-less redirect target honored verbatim
+class: AUTH
+asset: https://www.live-manager.de/?rs={base64}
+confidence: 40
+reasoning: elmah/trace sweep closed the last anonymous surface on this host; all unauthenticated paths 302 → /?rs=<base64-of-path> and GET / is the only 200. Anonymous open-redirect already REJECTED (value not reflected); the only unexamined behavior is whether the decoded rs target is validated after authentication.
+evidence_needed: complete a login flow with rs=<base64 of attacker URL> and observe final redirect Location / JS navigation.
+verify_steps: AUTH_HELPED — GET /?rs=aHR0cHM6Ly9ldmlsLmNvbQ== through login; inspect final redirect. Session required.
+impact: post-login open redirect → OAuth/credential theft → ATO if honored verbatim — HIGH chained.
+testability: AUTH_HELPED
+[NEXT] HUMAN: operator renders `https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E` in a scoped browser and confirms the title marker — the sole outstanding proof step on the passive-proven XSS; all other open items require operator two-tenant (frame binding) or a paid session (rs post-login), and the anonymous probe surface at 4 hosts is now fully exhausted.
+[RISK] questnet-gmbh: 80 — elmah upside removed (falsified), leaving only HUMAN_ONLY XSS render and AUTH_HELPED frame-binding as potential adds; breadth exhausted at 4 hosts with zero new surface. Two triaged VALID HIGHs remain file-ready (cbs-proxy WS BOLA 8.6; voicenote PII 7.5, VPN-independent) and the anonymous PoC (101 + byte-identical frames) satisfies the HIGH report gate; risk driver is now filing latency on program-state confirmation (auth.php already partially mitigated 2026-09-07, so delay erodes value), nudging 81→80.
+[HYP] Cross-tenant CBS WS frame binding — token→cid ownership
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
+confidence: 95
+reasoning: 21+ cycles anonymous 101 + byte-identical CONNECT CBS100/190/200 + READY for demo 131727, foreign 2, synthetic 999999999; 426 on non-upgrade; zero token at proxy; triaged VALID BOLA 8.6/9.1. Sole unproven hop = backend binds minted token→cid inside live_debug frame.
+evidence_needed: operator two-tenant frame test — own-cid minted token bound to own vs foreign cid; byte-diff accepted frame sets.
+verify_steps: AUTH_HELPED — own tenants only; never third-party streams; one bound frame set per cid.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH 8.6, CRITICAL 9.1 if binding unenforced.
+testability: AUTH_HELPED
+[HYP] Same-origin reflected XSS at help content app — execution pending operator render
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page={value}
+confidence: 80
+reasoning: page= reflected unescaped into 200 text/html (96B error echo), no CSP/nosniff, zero-token, key-lookup LFI leg closed (no include). Reflection rivalently proven; only browser-side execution outstanding.
+evidence_needed: benign document.title marker render by operator-owned browser.
+verify_steps: HUMAN — open `page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E`, confirm title marker; no further active probes warranted.
+impact: same-origin arbitrary JS reaches every /extjs endpoint incl. token-only gates and delete.php — MEDIUM standalone, chained HIGH on session-bearing victim.
+testability: HUMAN_ONLY
+[HYP] Post-login rs return-url handling — external/schema-less target honored verbatim
+class: AUTH
+asset: https://www.live-manager.de/?rs={base64}
+confidence: 40
+reasoning: all unauthenticated paths 302 → /?rs=<b64-path>; GET / sole 200; elmah/trace falsified; rs value NOT reflected anonymously. Only unexamined behavior is post-auth validation of the decoded target.
+evidence_needed: login flow with rs=<b64 of attacker URL> → inspect final redirect Location / JS navigation.
+verify_steps: AUTH_HELPED — GET /?rs=aHR0cHM6Ly9ldmlsLmNvbQ== through login; session required; no third-party traffic.
+impact: post-login open redirect → OAuth/credential theft → ATO if honored verbatim — HIGH chained.
+testability: AUTH_HELPED
+[NEXT] HUMAN: operator renders `https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E` in a scoped browser and confirms the title marker — sole outstanding proof step on the passive-proven XSS; remaining items (frame binding, rs post-login) require operator two-tenant or a paid session, and the anonymous probe surface at 4 hosts is fully enumerated.
+[RISK] questnet-gmbh: 80 — elmah upside locked out (falsified), leaving only HUMAN_ONLY XSS render plus AUTH_HELPED frame-binding as possible adds; breadth exhausted at 4 hosts with zero new surface for the 5th consecutive window. Two triaged VALID HIGHs stay file-ready (cbs-proxy WS BOLA 8.6; voicenote PII 7.5, VPN-independent) and the anonymous PoC (101 + byte-identical frames) clears the HIGH report gate. Driver is now filing latency on program-state confirmation (auth.php partially mitigated 2026-09-07; each cycle erodes residual value), so risk holds at 80 rather than decaying further; no new anonymous upside identified this cycle.
