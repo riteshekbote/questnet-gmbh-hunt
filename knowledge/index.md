@@ -367,3 +367,7 @@
 - 2026-09-15 REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page (8.9KB, no dynamic params/endpoints/tokens) — named app entry dead-end, closes
 - 2026-09-15 ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= param reflected unescaped into 200 text/html, no CSP/nosniff, zero-token — PASSIVE-proven 2026-09-12 21:40 UTC; execution pending operator render
 - 2026-09-15 REJECTED MISCONFIG @ dev.applicationdesigner.de: byte-identical 403 "internal" PHP app page on all paths — hard IP gate, no public path surface; closed
+- 2026-09-15 REJECTED MISCONFIG @ www.applicationdesigner.de/docs.php: 48KB static ExtJS shell whose sole function is loading the already-accepted help.js/help.json (200, text/html); no independent anonymous surface, closes the last "named app entry" — subsumed by the accepted help.js MISCONFIG (2026-09-15).
+- 2026-09-15 ACCEPTED CONTROL @ 185.158.96.51 + 185.158.98.53: only /22 IPs with observed services (IIS portal / Ratchet WS); the /22 non-HTTP space is un-scanned — HUMAN_ONLY upside, unchanged (2026-09-15).
+- 2026-09-15 REJECTED IDOR @ cbs-proxy frame binding anonymous vari: unchanged — 22nd cycle byte-identical 101/CONNECT/READY, 426 on non-upgrade; nothing new observable anonymously (2026-09-15).
+- 2026-09-15 ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: reflection re-confirmed passive; execution still pending operator render (2026-09-15).
