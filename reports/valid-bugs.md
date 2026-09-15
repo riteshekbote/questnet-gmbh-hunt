@@ -85,3 +85,15 @@
   - | 3 | Voicenote metadata PII | **VALID** | 7.5 | File report |
   - | 4 | auth.php token mint | **VALID (mitigated)** | 8.1→7.5 | File report + note VPN gate |
   - | 5 | get_user_rights.php leak | **VALID** | 6.5 | File report |
+
+- 10 lead(s) marked VALID at 2026-09-15 16:36:51 UTC
+  - **Verdict: HOLD** — upgrade to VALID when AUTH_HELPED frame-binding test completes.
+  - **Verdict: VALID**
+  - **Verdict: VALID**
+  - **Verdict: VALID (mitigated)**
+  - **Verdict: VALID**
+  - **Verdict: HOLD** — valid candidate; file only if willing to demonstrate.
+  - | 2 | help.js static credential | **VALID** | 7.5 | File report |
+  - | 3 | Voicenote metadata PII | **VALID** | 7.5 | File report |
+  - | 4 | auth.php token mint | **VALID (mitigated)** | 8.1→7.5 | File + note VPN gate |
+  - | 5 | get_user_rights.php leak | **VALID** | 6.5 | File report |
