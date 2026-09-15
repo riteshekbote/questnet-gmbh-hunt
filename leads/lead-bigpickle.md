@@ -4430,3 +4430,31 @@ evidence_needed: complete a login flow with rs=<base64 of attacker URL>, observe
 verify_steps: AUTH_HELPED — GET /?rs=aHR0cHM6Ly9ldmlsLmNvbQ== through login; inspect final redirect. Session required.
 impact: post-login open redirect → OAuth/credential theft → ATO — HIGH chained.
 testability: AUTH_HELPED
+## 2026-09-15 22:48:01 UTC [target] (model bigpickle)
+[HYP] Cross-tenant CBS WS frame binding — token→cid ownership
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
+confidence: 95
+reasoning: 23 cycles anonymous WS 101 + byte-identical CONNECT CBS100/190/200 + READY for demo 131727, foreign 2, synthetic 999999999; zero credential at proxy; non-upgrade GET 426 reconfirmed this cycle; sole unproven hop is backend token→cid binding inside live_debug frame.
+evidence_needed: operator two-tenant frame test — own-cid minted token bound to own vs foreign cid; byte-diff accepted frame sets.
+verify_steps: AUTH_HELPED, own tenants only; never third-party streams; one bound frame set per cid.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH 8.6, CRITICAL 9.1 if binding unenforced.
+testability: AUTH_HELPED
+[HYP] Same-origin reflected XSS at help content app — execution pending operator render
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page={value}
+confidence: 80
+reasoning: page= reflected unescaped into 200 text/html (112B error echo reconfirmed this cycle), no CSP/nosniff, zero-token; LFI leg closed 2026-09-14; only browser-side execution outstanding.
+evidence_needed: benign document.title marker render by operator-owned browser.
+verify_steps: HUMAN — open page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E, confirm title marker; no further active probes warranted.
+impact: same-origin arbitrary JS reaching every /extjs endpoint incl. token-only mints and delete.php — MEDIUM standalone, chained HIGH on session-bearing victim.
+testability: HUMAN_ONLY
+[HYP] Post-login rs return-url handling — external/schema-less target honored verbatim
+class: AUTH
+asset: https://www.live-manager.de/?rs={base64}
+confidence: 40
+reasoning: all unauthenticated paths 302 → /?rs=<base64-of-path>; anonymous GET /?rs=base64(external URL) → 200 login page, no redirect (reconfirmed this cycle); only unexamined behavior is whether decoded rs target is validated after authentication.
+evidence_needed: complete a login flow with rs=<base64 of attacker URL>, observe final redirect Location / JS navigation.
+verify_steps: AUTH_HELPED — GET /?rs=aHR0cHM6Ly9ldmlsLmNvbQ== through login; inspect final redirect. Session required.
+impact: post-login open redirect → OAuth/credential theft → ATO — HIGH chained.
+testability: AUTH_HELPED

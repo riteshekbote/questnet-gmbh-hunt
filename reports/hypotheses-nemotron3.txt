@@ -1,9 +1,11 @@
-## 2026-09-15 19:58:26 UTC [target] (model nemotron3)
-[PRIO] wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100,9.10,attack_surface=10,business_value=10,tech_exposure=9,gate_ease=10,cloud_surface=8,freshness=9
-[PRIO] https://www.applicationdesigner.de/extjs/voicenotes/download.php,7.50,attack_surface=8,business_value=8,tech_exposure=7,gate_ease=8,cloud_surface=5,freshness=9
-[PRIO] https://www.applicationdesigner.de/extjs/voicenotes/check.php,7.50,attack_surface=8,business_value=8,tech_exposure=7,gate_ease=8,cloud_surface=5,freshness=9
-[PRIO] https://www.applicationdesigner.de/help/content.php?page={value},6.80,attack_surface=7,business_value=6,tech_exposure=8,gate_ease=10,cloud_surface=4,freshness=8
-[PRIO] https://www.applicationdesigner.de/extjs/flexlist/getFields.php,5.50,attack_surface=7,business_value=6,tech_exposure=6,gate_ease=8,cloud_surface=5,freshness=5
+## 2026-09-15 23:01:06 UTC [target] (model nemotron3)
+[PRIO] wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100,9.55,attack_surface=10,business_value=10,tech_exposure=9,gate_ease=10,cloud_surface=8,freshness=10
+[PRIO] https://www.applicationdesigner.de/extjs/voicenotes/download.php,8.15,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=9,cloud_surface=6,freshness=9
+[PRIO] https://www.applicationdesigner.de/extjs/voicenotes/check.php,7.85,attack_surface=8,business_value=8,tech_exposure=7,gate_ease=8,cloud_surface=5,freshness=9
+[PRIO] https://www.applicationdesigner.de/help/content.php?page={value},7.15,attack_surface=7,business_value=7,tech_exposure=9,gate_ease=10,cloud_surface=4,freshness=8
+[PRIO] https://www.applicationdesigner.de/extjs/flexlist/getFields.php,6.40,attack_surface=7,business_value=7,tech_exposure=6,gate_ease=8,cloud_surface=5,freshness=5
+[PRIO] https://www.applicationdesigner.de/extjs/voicenotes/delete.php,6.25,attack_surface=6,business_value=8,tech_exposure=7,gate_ease=8,cloud_surface=5,freshness=5
+[PRIO] https://www.applicationdesigner.de/AIDesigner/backend/config.php,5.35,attack_surface=5,business_value=5,tech_exposure=6,gate_ease=10,cloud_surface=4,freshness=5
 [HYP] Cross-tenant CBS WebSocket frame binding via client-supplied cid/service
 class: IDOR
 asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
@@ -13,15 +15,6 @@ evidence_needed: Operator with second tenant to send/receive CBS frames and conf
 verify_steps: (PASSIVE) WS-upgrade GET wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=131727&service=100 → observe HTTP 101 + CONNECT CBS100/190/200 + READY; (PASSIVE) WS-upgrade GET wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=2&service=100 → observe byte-identical frame sequence; (HUMAN) operator with second tenant confirms cross-tenant frame delivery
 impact: Cross-tenant BOLA at transport layer — attacker controls cid/service to bind to arbitrary tenant CBS backend; full CBS protocol access (call control, recording, agent state) — CRITICAL (CVSS 9.1)
 testability: PASSIVE (transport proven); HUMAN_ONLY (frame-binding ownership check)
-[HYP] Reflected XSS via help content page parameter
-class: XSS
-asset: https://www.applicationdesigner.de/help/content.php
-confidence: 85
-reasoning: PASSIVE-proven 2026-09-12 21:40 UTC: page= parameter reflected unescaped into HTTP 200 text/html response (97B for non-existent page, 1351B for valid page=index); no CSP header, no X-Content-Type-Options: nosniff; zero-token access; execution context is help content viewer
-evidence_needed: Operator render in browser to confirm JS execution (e.g., `<script>document.title='LM-XSS'</script>`)
-verify_steps: (PASSIVE) GET https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E — confirm reflection in 200 text/html; (HUMAN) operator opens URL in browser to verify execution
-impact: XSS in help context — MEDIUM (CVSS 6.1); chainable with credential theft if help viewer runs in authenticated session context
-testability: PASSIVE (reflection); HUMAN_ONLY (execution)
 [HYP] Cross-tenant voicenote raw audio download via token-as-query-param
 class: IDOR
 asset: https://www.applicationdesigner.de/extjs/voicenotes/download.php
@@ -31,6 +24,15 @@ evidence_needed: Valid foreign voicenote UUID from HUMAN operator with second te
 verify_steps: (PASSIVE) GET https://www.applicationdesigner.de/extjs/voicenotes/download.php?file=<valid-uuid>&token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3 — observe file-lookup (404 or binary audio); (HUMAN) operator with second tenant creates voicenote, notes UUID, confirms anonymous download with public token
 impact: Cross-tenant PII audio exfiltration via public credential — HIGH (CVSS 7.5); chainable with check.php/get.php metadata index
 testability: PASSIVE (gate proven, 404 reachable); HUMAN_ONLY (cross-tenant data read requires operator with second tenant)
+[HYP] Reflected XSS via help content page parameter
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php
+confidence: 85
+reasoning: PASSIVE-proven 2026-09-12 21:40 UTC: page= parameter reflected unescaped into HTTP 200 text/html response (97B for non-existent page, 1351B for valid page=index); no CSP header, no X-Content-Type-Options: nosniff; zero-token access; execution context is help content viewer
+evidence_needed: Operator render in browser to confirm JS execution (e.g., `<script>document.title='LM-XSS'</script>`)
+verify_steps: (PASSIVE) GET https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E — confirm reflection in 200 text/html; (HUMAN) operator opens URL in browser to verify execution
+impact: XSS in help context — MEDIUM (CVSS 6.1); chainable with credential theft if help viewer runs in authenticated session context
+testability: PASSIVE (reflection); HUMAN_ONLY (execution)
 [PARKED] Cross-tenant flexlist data read via global autoincrement ID: confidence 55 but cross-tenant read NOT observed anonymous — requires HUMAN operator with second tenant to create flexlist and confirm anonymous read via global ID; without this, only same-tenant read is proven
 [PARKED] Cross-tenant voicenote deletion via delete.php token-only gate: confidence 70 but requires valid foreign log_id from HUMAN operator; deletion is mutating — program rules prohibit writes on live customer data; only error pattern observable passively
 [PARKED] get_user_rights.php ciphertext stability/key recovery: body sha256 differs per cid and rotates per request; high-entropy base64 (~3230B) suggests encrypted/serialized payload; severity capped LOW-MED until ciphertext stability or key demonstrated
@@ -59,4 +61,5 @@ testability: PASSIVE (gate proven, 404 reachable); HUMAN_ONLY (cross-tenant data
 [LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page (8.9KB, no dynamic params/endpoints/tokens) — named app entry dead-end, closes
 [LEARN] ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= param reflected unescaped into 200 text/html, no CSP/nosniff, zero-token — PASSIVE-proven 2026-09-12 21:40 UTC; execution pending operator render
 [LEARN] REJECTED MISCONFIG @ dev.applicationdesigner.de: byte-identical 403 "internal" PHP app page on all paths — hard IP gate, no public path surface; closed
+[LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/docs.php: 48KB static ExtJS shell loading help.js/help.json — subsumed by accepted help.js MISCONFIG
 [RISK] questnet-gmbh: 85 — Driver finding (cbs-proxy BOLA transport-complete) remains VALID HIGH (CVSS 9.1) and VPN-independent. Voicenotes metadata IDOR re-confirmed NOT VPN-gated with valid token (HIGH, CVSS 7.5). Auth.php mint now VPN-gated but credential still public in help.js. Flexlist per-id endpoints NEW token-only gate with global ID space — cross-tenant read pending operator confirmation. AIDesigner config.php zero-auth LLM routing disclosure (MEDIUM/LOW). XSS at help/content.php PASSIVE-proven but execution requires operator render. Surface frozen at 4 hosts. PoC for bug gate: cbs-proxy WS 101 with arbitrary cid/service sufficient for HIGH severity report.

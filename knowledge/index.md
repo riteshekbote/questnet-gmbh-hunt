@@ -371,3 +371,4 @@
 - 2026-09-15 ACCEPTED CONTROL @ 185.158.96.51 + 185.158.98.53: only /22 IPs with observed services (IIS portal / Ratchet WS); the /22 non-HTTP space is un-scanned — HUMAN_ONLY upside, unchanged (2026-09-15).
 - 2026-09-15 REJECTED IDOR @ cbs-proxy frame binding anonymous vari: unchanged — 22nd cycle byte-identical 101/CONNECT/READY, 426 on non-upgrade; nothing new observable anonymously (2026-09-15).
 - 2026-09-15 ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: reflection re-confirmed passive; execution still pending operator render (2026-09-15).
+- 2026-09-15 REJECTED MISCONFIG @ www.applicationdesigner.de/docs.php: 48KB static ExtJS shell loading help.js/help.json — subsumed by accepted help.js MISCONFIG
