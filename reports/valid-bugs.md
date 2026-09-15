@@ -68,3 +68,20 @@
   - | 2 | auth.php cross-tenant token mint | **VALID** (mitigated) | 8.1 | High |
   - | 3 | voicenotes cross-tenant PII | **VALID** | 7.5 | High |
   - | 11 | get_user_rights.php authz leak | **VALID** | 6.5 | Medium |
+
+- 15 lead(s) marked VALID at 2026-09-15 11:55:37 UTC
+  - | Q4 Provable | **PARTIAL** — anonymous handshake + CONNECT/READY frames confirmed non-invasively; final frame-level binding requires AUTH_HELPED (valid operator session) |
+  - **Verdict: HOLD** — Upgrade to VALID when AUTH_HELPED frame-binding test completes. Anonymous handshake proof is solid; the sole remaining question is whether the CBS backend rejects a live_debug pack
+  - | Q7 Reasonable triager | **YES** — broken authentication via exposed credential is a clear valid finding |
+  - **Verdict: VALID**
+  - **Verdict: VALID**
+  - **Verdict: VALID (mitigated)**
+  - **Verdict: VALID**
+  - | Q2 Reachable | **NO** — anonymous GET /?rs= does NOT redirect externally; 302→/?rs= with no reflection; post-login behavior unverifiable without valid customer session |
+  - | Q7 Reasonable triager | **NO** — needs second valid tenant's flexlist_id to prove cross-tenant read |
+  - **Verdict: HOLD** — upgrade to VALID when operator confirms a second tenant's flexlist_id exists in the global id space
+  - **Verdict: HOLD** — valid candidate but requires active POST to confirm; file only if willing to demonstrate
+  - | 2 | help.js static credential | **VALID** | 7.5 | File report |
+  - | 3 | Voicenote metadata PII | **VALID** | 7.5 | File report |
+  - | 4 | auth.php token mint | **VALID (mitigated)** | 8.1→7.5 | File report + note VPN gate |
+  - | 5 | get_user_rights.php leak | **VALID** | 6.5 | File report |
