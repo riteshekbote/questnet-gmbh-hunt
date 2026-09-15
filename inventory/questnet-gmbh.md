@@ -610,3 +610,14 @@ www.live-manager.de
 ## 2026-09-14 19:40:28 UTC
 
 ## 2026-09-14 22:48:44 UTC
+
+## 2026-09-15 01:20:15 UTC
+- CHANGED Surface remains frozen at 4 live in-scope hosts since 2026-09-04 (cbs-proxy.api.live-manager.de, www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de) — no new hosts or endpoint
+- CHANGED All accepted/rejected findings reconfirmed at 2026-09-14 with identical evidence — zero delta on vulnerability states
+- CHANGED XSS at www.applicationdesigner.de/help/content.php: page= reflection unescaped, no CSP/nosniff, zero-token — PASSIVE-proven 2026-09-12; execution still pending operator render (unchanged)
+- CHANGED cbs-proxy.api.live-manager.de: 21+ consecutive cycles anonymous WS 101 + byte-identical CONNECT/READY frames for demo cid=131727 vs foreign cid=2; 426 on non-upgrade — transport-complete BOLA driver u
+- CHANGED voicenotes/check.php: 16+ consecutive cycles success:true,total:0,max_id:0, credential-only cross-tenant gate, index empty — no UUID path available (unchanged)
+- CHANGED auth.php VPN gate persistent since 2026-09-07 — anonymous mint BLOCKED; credential still public in help.js (sha256 8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf)
+- CHANGED flexlist/getFields.php|getDetails.php: public static credential accepted, token-only gate, global autoincrement ID space 138–345 — cross-tenant read pending operator confirmation (unchanged)
+- CHANGED AIDesigner backend/config.php: zero-auth LLM-routing JSON; dispatch gated — unchanged
+- CHANGED /api/callbuilder/ nginx 404 catch-all, playback.php/get_agent_costs.php session-gated, playground.php static, dev.applicationdesigner.de 403 IP gate — all REJECTED/CLOSED unchanged

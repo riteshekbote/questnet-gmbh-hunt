@@ -4037,3 +4037,33 @@ evidence_needed: valid demo voice_note_id from a non-empty check.php index → d
 verify_steps: AUTH_HELPED — own demo tenant only; non-mutating error-pattern evidence until an owned note exists; do not delete foreign records.
 impact: cross-tenant voicenote destruction (PII audio loss) — HIGH CVSS ~8.1.
 testability: AUTH_HELPED
+## 2026-09-15 01:20:06 UTC [target] (model bigpickle)
+[HYP] ASP.NET error-tier / diagnostic surface on the least-probed live host
+class: MISCONFIG
+asset: https://www.live-manager.de/elmah.axd
+confidence: 35
+reasoning: www.live-manager.de is confirmed live IIS 8.5 / ASP.NET 4.0 (customer Login.aspx portal) but has never had an ASP.NET-level anomaly sweep; ELMAH and trace.axd are drop-in NuGet artifacts commonly left enabled on small-hoster portals and would expose stack traces, SQL and request metadata anonymously; the only existing app-behavior data point is the base64 rs redirect parameter (rejected as open-redirect).
+evidence_needed: HTTP 200 text/html ELMAH dashboard or a 200 trace table vs a byte-identical 404/302 baseline for the other known app paths.
+verify_steps: GET https://www.live-manager.de/elmah.axd; GET https://www.live-manager.de/trace.axd — each read-only, ~1 rps, diff status/body against GET / baseline (302 → Login.aspx). 404/302-on-all = close; 200-with-dashboard = finding.
+impact: anonymous disclosure of application error detail / request metadata (SQL, paths, stack) — LOW/MEDIUM misconfig; would also enrich chain targeting.
+testability: PASSIVE
+[HYP] Same-origin reflected XSS at the help app, execution pending operator render
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page={value}
+confidence: 80
+reasoning: page= reflected unescaped into 200 text/html (96B error echo for free-form value; 1351B real doc for page=index), no CSP/nosniff header, zero-token; LFI leg closed 2026-09-14 (key lookup, no include). Reflection is proven; only browser-side execution is outstanding.
+evidence_needed: benign document.title marker render by an operator-owned browser.
+verify_steps: HUMAN — open `page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E`, confirm title marker; no further active probes warranted.
+impact: same-origin arbitrary JS reaching every /extjs endpoint incl. token-only mints and delete.php — MEDIUM standalone, chained HIGH on a session-bearing victim.
+testability: HUMAN_ONLY
+[HYP] Cross-tenant CBS WS frame binding — token→cid ownership
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
+confidence: 95
+reasoning: 21+ cycles anonymous 101 + byte-identical CONNECT CBS100/190/200 + READY for demo cid=131727, foreign cid=2, synthetic 999999999; 426 on non-upgrade; zero token at proxy layer; triaged VALID BOLA 8.6. Sole unproven hop = backend binding of minted token→cid inside live_debug frame.
+evidence_needed: operator-owned two-tenant frame-bound test.
+verify_steps: AUTH_HELPED — mint own-cid live-debug token, present bound to own vs foreign cid over two owned tenants; never third-party streams.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH 8.6; CRITICAL 9.1 if binding unenforced.
+testability: AUTH_HELPED
+[NEXT] PROBE: GET https://www.live-manager.de/elmah.axd (then GET https://www.live-manager.de/trace.axd if elmah not 200 with dashboard) — 2 read-only GETs @1rps; verdict: 200 text/html ELMAH dashboard or trace table = new MISCONFIG finding; byte-identical 404/302 vs known app paths = close surface. Opens the only unexplored live host that is currently hypothesis-dead.
+[RISK] questnet-gmbh: 81 — Two triaged VALID HIGHs remain file-ready (cbs-proxy WS BOLA 8.6; static-credential mint + voicenote PII 7.5, both VPN-independent) and the anonymous PoC (101 + byte-identical frames) satisfies the HIGH report gate; POC phase complete. In-flight upside shrank this cycle: content.php LFI leg closed, leaving only HUMAN_ONLY XSS elevation and AUTH_HELPED frame-binding as potential adds, and breadth is exhausted at 4 hosts. Report filing still gated on program-state confirmation; risk nudged 82→81 for the removed LFI surplus.

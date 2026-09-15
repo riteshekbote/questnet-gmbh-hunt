@@ -4519,3 +4519,73 @@ testability: PASSIVE (reflection); HUMAN_ONLY (execution)
 [LEARN] ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= param reflected unescaped into 200 text/html, no CSP/nosniff, zero-token — PASSIVE-proven 2026-09-12 21:40 UTC; execution pending operator render
 [LEARN] REJECTED MISCONFIG @ dev.applicationdesigner.de: byte-identical 403 "internal" PHP app page on all paths — hard IP gate, no public path surface; closed
 [RISK] questnet-gmbh: 85 — Driver finding (cbs-proxy BOLA transport-complete) remains VALID HIGH (CVSS 9.1) and VPN-independent. Voicenotes metadata IDOR re-confirmed NOT VPN-gated with valid token (HIGH, CVSS 7.5). Auth.php mint now VPN-gated but credential still public in help.js. Flexlist per-id endpoints NEW token-only gate with global ID space — cross-tenant read pending operator confirmation. AIDesigner config.php zero-auth LLM routing disclosure (MEDIUM/LOW). XSS at help/content.php PASSIVE-proven but execution requires operator render. Surface frozen at 4 hosts. PoC for bug gate: cbs-proxy WS 101 with arbitrary cid/service sufficient for HIGH severity report.
+## 2026-09-15 01:19:37 UTC [target] (model nemotron3)
+[CHANGED] Surface remains frozen at 4 live in-scope hosts since 2026-09-04 (cbs-proxy.api.live-manager.de, www.live-manager.de, www.applicationdesigner.de, dev.applicationdesigner.de) — no new hosts or endpoints discovered in last cycle (2026-09-14 22:48 UTC)
+[CHANGED] All accepted/rejected findings reconfirmed at 2026-09-14 with identical evidence — zero delta on vulnerability states
+[CHANGED] XSS at www.applicationdesigner.de/help/content.php: page= reflection unescaped, no CSP/nosniff, zero-token — PASSIVE-proven 2026-09-12; execution still pending operator render (unchanged)
+[CHANGED] cbs-proxy.api.live-manager.de: 21+ consecutive cycles anonymous WS 101 + byte-identical CONNECT/READY frames for demo cid=131727 vs foreign cid=2; 426 on non-upgrade — transport-complete BOLA driver unchanged
+[CHANGED] voicenotes/check.php: 16+ consecutive cycles success:true,total:0,max_id:0, credential-only cross-tenant gate, index empty — no UUID path available (unchanged)
+[CHANGED] auth.php VPN gate persistent since 2026-09-07 — anonymous mint BLOCKED; credential still public in help.js (sha256 8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf)
+[CHANGED] flexlist/getFields.php|getDetails.php: public static credential accepted, token-only gate, global autoincrement ID space 138–345 — cross-tenant read pending operator confirmation (unchanged)
+[CHANGED] AIDesigner backend/config.php: zero-auth LLM-routing JSON; dispatch gated — unchanged
+[CHANGED] /api/callbuilder/ nginx 404 catch-all, playback.php/get_agent_costs.php session-gated, playground.php static, dev.applicationdesigner.de 403 IP gate — all REJECTED/CLOSED unchanged
+[PRIO] www.applicationdesigner.de/help/content.php,7.15,attack_surface=8,business_value=7,tech_exposure=8,gate_ease=10,cloud_surface=5,freshness=8
+[PRIO] www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php,7.15,attack_surface=8,business_value=7,tech_exposure=7,gate_ease=9,cloud_surface=6,freshness=6
+[PRIO] www.applicationdesigner.de/AIDesigner/backend/config.php,5.95,attack_surface=6,business_value=5,tech_exposure=6,gate_ease=10,cloud_surface=6,freshness=5
+[HYP] Reflected XSS via help content page parameter
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php
+confidence: 85
+reasoning: PASSIVE-proven 2026-09-12 21:40 UTC: page= parameter reflected unescaped into HTTP 200 text/html response (97B for non-existent page, 1351B for valid page=index); no CSP header, no X-Content-Type-Options: nosniff; zero-token access; execution context is help content viewer
+evidence_needed: Operator render in browser to confirm JS execution (e.g., `<script>document.title='LM-XSS'</script>`)
+verify_steps: (PASSIVE) GET https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E — confirm reflection in 200 text/html; (HUMAN) operator opens URL in browser to verify execution
+impact: XSS in help context — MEDIUM (CVSS 6.1); chainable with credential theft if help viewer runs in authenticated session context
+testability: PASSIVE (reflection); HUMAN_ONLY (execution)
+[HYP] Cross-tenant flexlist data read via global autoincrement ID space
+class: IDOR
+asset: https://www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php
+confidence: 55
+reasoning: Public static credential accepted (HTTP 200 success:true), reads resolve live per-id data (id 345 → 32 field defs, 25 detail rows, body sha256 aba9094f0a615eab); gate is token-only with no customer_id in request; global autoincrement ID space 138–345 implies foreign tenant rows exist in gaps; getList.php directory is token-scoped to demo tenant (customer_id=131727 only) but per-id endpoints lack ownership check
+evidence_needed: Valid foreign flexlist_id from HUMAN operator with second tenant to prove cross-tenant read via global ID
+verify_steps: (PASSIVE) GET https://www.applicationdesigner.de/extjs/flexlist/getFields.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&id=345 — observe success:true with 32 defs; (HUMAN) operator with second tenant creates flexlist, notes ID, confirms anonymous read via getFields.php/getDetails.php with public token
+impact: Cross-tenant read of flexlist schema and data (business logic configuration, potentially PII) via public credential — HIGH (CVSS 7.5) if proven
+testability: PASSIVE (same-tenant read confirmed); HUMAN_ONLY (cross-tenant requires operator with second tenant)
+[HYP] Zero-auth LLM routing disclosure via AIDesigner backend config
+class: MISCONFIG
+asset: https://www.applicationdesigner.de/AIDesigner/backend/config.php
+confidence: 70
+reasoning: Anonymous HTTP 200 zero-auth JSON exposes internal LLM routing (ollama.codermatrix.de/v1, 6 providers, model→system-prompt map); no API keys observed; dispatch gated by session+VPN-minted agent token (config.php is read-only info leak); prompt files 403-gated; config files carry zero secrets
+evidence_needed: None further for config.php — already proven anonymous 200 with routing table
+verify_steps: (PASSIVE) GET https://www.applicationdesigner.de/AIDesigner/backend/config.php — observe HTTP 200 JSON with providers[], models[], prompts{}; confirm no keys/secrets in response
+impact: Internal AI architecture disclosure (provider endpoints, model mappings, system prompts) — LOW-MEDIUM (CVSS 4.3); aids reconnaissance for SSRF or prompt injection chains
+testability: PASSIVE
+[PARKED] Cross-tenant flexlist data read via global autoincrement ID: confidence 55 but cross-tenant read NOT yet observed anonymous — requires HUMAN operator with second tenant to create flexlist and confirm anonymous read via global ID; without this, only same-tenant read is proven
+[PARKED] Cross-tenant voicenote deletion via delete.php token-only gate: confidence 70 but requires valid foreign log_id from HUMAN operator; deletion is mutating — program rules prohibit writes on live customer data; only error pattern observable passively
+[PARKED] Cross-tenant raw voicenote audio download via download.php: confidence 75 but requires valid foreign UUID from HUMAN operator; only 404 reachable passively
+[PARKED] get_user_rights.php ciphertext stability/key recovery: body sha256 differs per cid and rotates per request; high-entropy base64 (~3230B) suggests encrypted/serialized payload. Severity capped LOW-MED until ciphertext stability or key demonstrated. Needs multiple requests per cid to test determinism
+[PARKED] auth.php VPN gate: anonymous mint BLOCKED since 2026-09-07; credential still public in help.js but chain broken at mint layer
+[FINAL] Survivors ranked:
+[NEXT] PROBE: GET https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E — confirm unescaped reflection in 200 text/html response (PASSIVE, read-only, 1 rps)
+[LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 21+ cycles anonymous WS 101 + byte-identical CONNECT/READY, 426 on non-upgrade — transport-complete driver, unchanged
+[LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: cross-tenant credential-only, NOT VPN-gated — unchanged; demo index empty this cycle (16+ consecutive)
+[LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/get.php: cross-tenant credential-only data endpoint; identical success:true for all cids
+[LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/download.php: with token-as-query-param reaches file-lookup (404); VPN gate bypassed; no customer_id scoping
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/voicenotes/delete.php: token-gated (not VPN-gated) destructive endpoint; different error pattern than hierarchy-gated details.php — potential cross-tenant deletion
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_costs.php: session-gated ("No VPN detected"), identical response for all cids; earlier ACCEPTED MISCONFIG was wrong
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/playback.php: session-gated ("unauthorized"), identical response for all cids; no zero-token audio generation surface exists
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_token.php: session-gated, byte-identical Zugriff verweigert for both cids — unchanged, closed
+[LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/api/callbuilder/: prefix root + /live return byte-identical nginx 404 catch-all (146B) — no routed CallBuilder data-plane
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php: public static credential accepted, token-only gate, global autoincrement id space 138–345 — unchanged
+[LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/flexlist/getList.php: directory token-scoped, all customer_id=131727; global autoincrement id space 138–345 — unchanged
+[LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/voicenotes/details.php: per-record hierarchy-checked — unchanged
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config.php: zero-auth LLM-routing JSON; dispatch gated — unchanged
+[LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/index.php?route=: 403 Invalid token — unchanged
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/common/getCustomers.php: token-scoped — unchanged
+[LEARN] REJECTED AUTH @ www.live-manager.de rs param: no anonymous open redirect — unchanged
+[LEARN] REJECTED wildcard-subdomain-enum @ *.live-manager.de: 8632 hostnames, 0 dedicated endpoints — unchanged
+[LEARN] REJECTED api.live-manager.de: host non-resolving — unchanged
+[LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: no secrets-bearing anonymous siblings — unchanged
+[LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page (8.9KB, no dynamic params/endpoints/tokens) — named app entry dead-end, closes
+[LEARN] ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= param reflected unescaped into 200 text/html, no CSP/nosniff, zero-token — PASSIVE-proven 2026-09-12 21:40 UTC; execution pending operator render
+[LEARN] REJECTED MISCONFIG @ dev.applicationdesigner.de: byte-identical 403 "internal" PHP app page on all paths — hard IP gate, no public path surface; closed
+[RISK] questnet-gmbh: 85 — Driver finding (cbs-proxy BOLA transport-complete) remains VALID HIGH (CVSS 9.1) and VPN-independent. Voicenotes metadata IDOR re-confirmed NOT VPN-gated with valid token (HIGH, CVSS 7.5). Auth.php mint now VPN-gated but credential still public in help.js. Flexlist per-id endpoints NEW token-only gate with global ID space — cross-tenant read pending operator confirmation. AIDesigner config.php zero-auth LLM routing disclosure (MEDIUM/LOW). XSS at help/content.php PASSIVE-proven but execution requires operator render. Surface frozen at 4 hosts. PoC for bug gate: cbs-proxy WS 101 with arbitrary cid/service sufficient for HIGH severity report.
