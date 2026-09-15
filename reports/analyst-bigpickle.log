@@ -24024,3 +24024,66 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 [RISK] questnet-gmbh: 80 — zero new surface for the 6th consecutive window; all anonymous breadth at 4 hosts exhausted and docs.php now formally closed, leaving only HUMAN_ONLY XSS render and AUTH_HELPED frame-binding as potential adds. Four triaged VALID findings remain file-ready (help.js credential 7.5, voicenote PII 7.5 VPN-independent, auth.php 7.5 mitigated, get_user_rights 6.5) plus the transport-complete cbs-proxy BOLA HOLD 8.6 whose anonymous PoC (101 + byte-identical frames) already clears the HIGH gate. Driver is filing latency on program-state confirmation — auth.php has been partially mitigated since 2026-09-07 and each cycle erodes residual value, so risk holds at 80 rather than decaying; an operator pass would be the only lever that moves the program upward or the reports out.
+===== ANALYST bigpickle 2026-09-15 19:58:35 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "cbs-proxy GET / -> %{http_code}\n" --max-time 12 "https://cbs-proxy.api.live-manager.de/" ; curl -s --max-time 12 "https://www.applicationdesigner.de/help/content.php?page=LMXSSPROBE" | head -c 400 ; echo
+cbs-proxy GET / -> 426
+<h1>Page not found</h1><p>The requested help page 'LMXSSPROBE' does not exist.</p>
+[0m
+STEP 1 — DELTA
+- NO_DELTA surface: 4 live hosts frozen since 2026-09-04; no new hosts/endpoints this cycle.
+- CHANGED cbs-proxy.api.live-manager.de: GET / → HTTP 426 (Upgrade Required) — driver liveness reconfirmed this cycle (23rd consecutive).
+- CHANGED www.applicationdesigner.de/help/content.php: GET ?page=LMXSSPROBE → 200 text/html "The requested help page 'LMXSSPROBE' does not exist." — unescaped reflection reconfirmed (no CSP/nosniff, zero token).
+
+STEP 2 — PRIORITIZE
+- [PRIO] wss://cbs-proxy.api.live-manager.de WS BOLA frame binding,7.45,gate=10(unauth 101)/value=9(cross-tenant voice)/fresh=1(repro 426 this cycle)
+- [PRIO] www.applicationdesigner.de/help/content.php XSS render,6.60,gate=10(zero-token)/fresh=9(proof outstanding)
+- [PRIO] www.live-manager.de rs post-login redirect,4.70,value=8(ATO chain)/gate=1(AUTH_HELPED)
+- [PRIO] 185.158.96.0/22 non-HTTP ports 8021/5060|5061/5222,6.40,fresh=9(op-only)
+
+STEP 3 — HYPOTHESES
+[HYP] Cross-tenant CBS WS frame binding — token→cid ownership
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
+confidence: 95
+reasoning: 23 cycles anonymous GET → 426 (this cycle), WS upgrade 101 + byte-identical CONNECT CBS100/190/200 + READY for demo 131727, foreign 2, synthetic 999999999; zero credential at proxy; sole unproven hop is backend token→cid binding inside live_debug frame.
+evidence_needed: operator two-tenant frame test — own-cid minted token bound to own vs foreign cid; byte-diff accepted frame sets.
+verify_steps: AUTH_HELPED, own tenants only; never third-party streams; one bound frame set per cid.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH 8.6, CRITICAL 9.1 if binding unenforced.
+testability: AUTH_HELPED
+[HYP] Same-origin reflected XSS at help content app — execution pending operator render
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page={value}
+confidence: 80
+reasoning: page= reflected unescaped into 200 text/html (96B error echo reconfirmed this cycle), no CSP/nosniff, zero-token; LFI leg closed 2026-09-14; only browser-side execution outstanding.
+evidence_needed: benign document.title marker render by operator-owned browser.
+verify_steps: HUMAN — open page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E, confirm title marker; no further active probes warranted.
+impact: same-origin arbitrary JS reaching every /extjs endpoint incl. token-only mints and delete.php — MEDIUM standalone, chained HIGH on session-bearing victim.
+testability: HUMAN_ONLY
+[HYP] Post-login rs return-url handling — external/schema-less target honored verbatim
+class: AUTH
+asset: https://www.live-manager.de/?rs={base64}
+confidence: 40
+reasoning: all unauthenticated paths 302 → /?rs=<base64-of-path>; anonymous open redirect already REJECTED; only unexamined behavior is whether decoded rs target is validated after authentication.
+evidence_needed: complete a login flow with rs=<base64 of attacker URL>, observe final redirect Location / JS navigation.
+verify_steps: AUTH_HELPED — GET /?rs=aHR0cHM6Ly9ldmlsLmNvbQ== through login; inspect final redirect. Session required.
+impact: post-login open redirect → OAuth/credential theft → ATO — HIGH chained.
+testability: AUTH_HELPED
+
+STEP 4 — SELF-CRITIQUE
+- [PARKED] flexlist cross-tenant read via getFields.php|getDetails.php (global id space 138–345): token-only gate proven, no foreign flexlist_id known — needs operator second tenant.
+- [PARKED] check_mailserver.php SSRF: POST-only, smtp_server param, cannot demonstrate passively.
+- [PARKED] FreeSWITCH ESL 8021/SIP 1234/Rayo 5222 on 185.158.96.0/22: deployment unconfirmed, requires operator TCP-connect.
+- [FINAL] ranked: (1) cbs-proxy frame binding 95 — AUTH_HELPED driver; (2) help/content.php XSS 80 — HUMAN_ONLY, proof outstanding 5 cycles; (3) rs post-login 40 — AUTH_HELPED, retained as ==40 and operator-testable; nothing anonymous is newly probe-able this cycle.
+
+STEP 5 — NEXT ACTION
+- [NEXT] HUMAN: operator renders `https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E` in a scoped browser and confirms the title marker — sole outstanding proof on the passive-proven XSS. Fold in standing operator pass: (b) own-cid minted-token live_debug frame for own vs foreign cid to settle cbs-proxy frame binding (driver, upgrades HOLD 8.6→VALID); (c) POST-auth on https://www.live-manager.de with rs=base64(external URL) to validate post-login redirect handling; (d) passive TCP-connect of in-scope 185.158.96.0/22 for FSW ESL 8021/SIP 5060|5061/Rayo 5222. Anonymous breadth at 4 hosts fully enumerated — no further anonymous probes warranted.
+
+STEP 6 — LEARNING
+- [LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 23rd cycle GET → 426 on non-upgrade reconfirms WS BOLA transport-complete driver; unchanged (2026-09-15).
+- [LEARN] ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= unescaped reflection reconfirmed (200/96B/text/html); execution still pending operator render (2026-09-15).
+
+STEP 7 — RISK
+- [RISK] questnet-gmbh: 80 — 7th consecutive window with zero new anonymous surface; all breadth at 4 hosts exhausted. Resolution of the outstanding operator items would clear the file-ready findings: four VALID triaged (help.js credential 7.5, voicenote PII 7.5 VPN-independent, auth.php 7.5 mitigated, get_user_rights 6.5) plus transport-complete cbs-proxy BOLA HOLD 8.6 whose anonymous PoC already clears the HIGH gate. Auth.php has been partially mitigated since 2026-09-07 — each cycle erodes residual value. Risk holds at 80 on filing latency, not on new discovery potential.

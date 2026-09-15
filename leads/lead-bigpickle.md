@@ -4402,3 +4402,31 @@ testability: AUTH_HELPED
 [LEARN] REJECTED IDOR @ cbs-proxy frame binding anonymous vari: unchanged — 22nd cycle byte-identical 101/CONNECT/READY, 426 on non-upgrade; nothing new observable anonymously (2026-09-15).
 [LEARN] ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: reflection re-confirmed passive; execution still pending operator render (2026-09-15).
 [RISK] questnet-gmbh: 80 — zero new surface for the 6th consecutive window; all anonymous breadth at 4 hosts exhausted and docs.php now formally closed, leaving only HUMAN_ONLY XSS render and AUTH_HELPED frame-binding as potential adds. Four triaged VALID findings remain file-ready (help.js credential 7.5, voicenote PII 7.5 VPN-independent, auth.php 7.5 mitigated, get_user_rights 6.5) plus the transport-complete cbs-proxy BOLA HOLD 8.6 whose anonymous PoC (101 + byte-identical frames) already clears the HIGH gate. Driver is filing latency on program-state confirmation — auth.php has been partially mitigated since 2026-09-07 and each cycle erodes residual value, so risk holds at 80 rather than decaying; an operator pass would be the only lever that moves the program upward or the reports out.
+## 2026-09-15 19:51:45 UTC [target] (model bigpickle)
+[HYP] Cross-tenant CBS WS frame binding — token→cid ownership
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
+confidence: 95
+reasoning: 23 cycles anonymous GET → 426 (this cycle), WS upgrade 101 + byte-identical CONNECT CBS100/190/200 + READY for demo 131727, foreign 2, synthetic 999999999; zero credential at proxy; sole unproven hop is backend token→cid binding inside live_debug frame.
+evidence_needed: operator two-tenant frame test — own-cid minted token bound to own vs foreign cid; byte-diff accepted frame sets.
+verify_steps: AUTH_HELPED, own tenants only; never third-party streams; one bound frame set per cid.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH 8.6, CRITICAL 9.1 if binding unenforced.
+testability: AUTH_HELPED
+[HYP] Same-origin reflected XSS at help content app — execution pending operator render
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page={value}
+confidence: 80
+reasoning: page= reflected unescaped into 200 text/html (96B error echo reconfirmed this cycle), no CSP/nosniff, zero-token; LFI leg closed 2026-09-14; only browser-side execution outstanding.
+evidence_needed: benign document.title marker render by operator-owned browser.
+verify_steps: HUMAN — open page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E, confirm title marker; no further active probes warranted.
+impact: same-origin arbitrary JS reaching every /extjs endpoint incl. token-only mints and delete.php — MEDIUM standalone, chained HIGH on session-bearing victim.
+testability: HUMAN_ONLY
+[HYP] Post-login rs return-url handling — external/schema-less target honored verbatim
+class: AUTH
+asset: https://www.live-manager.de/?rs={base64}
+confidence: 40
+reasoning: all unauthenticated paths 302 → /?rs=<base64-of-path>; anonymous open redirect already REJECTED; only unexamined behavior is whether decoded rs target is validated after authentication.
+evidence_needed: complete a login flow with rs=<base64 of attacker URL>, observe final redirect Location / JS navigation.
+verify_steps: AUTH_HELPED — GET /?rs=aHR0cHM6Ly9ldmlsLmNvbQ== through login; inspect final redirect. Session required.
+impact: post-login open redirect → OAuth/credential theft → ATO — HIGH chained.
+testability: AUTH_HELPED

@@ -1,9 +1,8 @@
-## 2026-09-15 16:42:17 UTC [target] (model nemotron3)
-[PRIO] https://www.applicationdesigner.de/help/content.php,7.15,attack_surface=8,business_value=7,tech_exposure=8,gate_ease=10,cloud_surface=5,freshness=8
-[PRIO] https://www.applicationdesigner.de/AIDesigner/backend/config.php,5.95,attack_surface=6,business_value=5,tech_exposure=6,gate_ease=10,cloud_surface=6,freshness=5
-[PRIO] https://www.applicationdesigner.de/extjs/voicenotes/download.php,5.80,attack_surface=7,business_value=8,tech_exposure=6,gate_ease=8,cloud_surface=5,freshness=6
+## 2026-09-15 19:58:26 UTC [target] (model nemotron3)
 [PRIO] wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100,9.10,attack_surface=10,business_value=10,tech_exposure=9,gate_ease=10,cloud_surface=8,freshness=9
+[PRIO] https://www.applicationdesigner.de/extjs/voicenotes/download.php,7.50,attack_surface=8,business_value=8,tech_exposure=7,gate_ease=8,cloud_surface=5,freshness=9
 [PRIO] https://www.applicationdesigner.de/extjs/voicenotes/check.php,7.50,attack_surface=8,business_value=8,tech_exposure=7,gate_ease=8,cloud_surface=5,freshness=9
+[PRIO] https://www.applicationdesigner.de/help/content.php?page={value},6.80,attack_surface=7,business_value=6,tech_exposure=8,gate_ease=10,cloud_surface=4,freshness=8
 [PRIO] https://www.applicationdesigner.de/extjs/flexlist/getFields.php,5.50,attack_surface=7,business_value=6,tech_exposure=6,gate_ease=8,cloud_surface=5,freshness=5
 [HYP] Cross-tenant CBS WebSocket frame binding via client-supplied cid/service
 class: IDOR
