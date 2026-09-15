@@ -621,3 +621,5 @@ www.live-manager.de
 - CHANGED flexlist/getFields.php|getDetails.php: public static credential accepted, token-only gate, global autoincrement ID space 138–345 — cross-tenant read pending operator confirmation (unchanged)
 - CHANGED AIDesigner backend/config.php: zero-auth LLM-routing JSON; dispatch gated — unchanged
 - CHANGED /api/callbuilder/ nginx 404 catch-all, playback.php/get_agent_costs.php session-gated, playground.php static, dev.applicationdesigner.de 403 IP gate — all REJECTED/CLOSED unchanged
+
+## 2026-09-15 06:24:11 UTC
