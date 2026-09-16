@@ -2156,3 +2156,6 @@
 - LEARN: ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= param reflected unescaped into 200 text/html, no CSP/nosniff, zero-token — PASSIVE-proven 2026
 - LEARN: REJECTED MISCONFIG @ dev.applicationdesigner.de: byte-identical 403 "internal" PHP app page on all paths — hard IP gate, no public path surface; closed
 - LEARN: REJECTED MISCONFIG @ www.applicationdesigner.de/docs.php: 48KB static ExtJS shell loading help.js/help.json — subsumed by accepted help.js MISCONFIG
+
+## RANKED HYPOTHESES 2026-09-16 01:17:15 UTC
+- [95] wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100: Cross-tenant CBS WS frame binding — token→cid ownership (from art/lead_bigpickle.txt)
