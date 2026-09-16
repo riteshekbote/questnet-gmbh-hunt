@@ -372,3 +372,26 @@
 - 2026-09-15 REJECTED IDOR @ cbs-proxy frame binding anonymous vari: unchanged — 22nd cycle byte-identical 101/CONNECT/READY, 426 on non-upgrade; nothing new observable anonymously (2026-09-15).
 - 2026-09-15 ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: reflection re-confirmed passive; execution still pending operator render (2026-09-15).
 - 2026-09-15 REJECTED MISCONFIG @ www.applicationdesigner.de/docs.php: 48KB static ExtJS shell loading help.js/help.json — subsumed by accepted help.js MISCONFIG
+- 2026-09-16 ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 22 cycles anonymous WS 101 + byte-identical CONNECT/READY, 426 on non-upgrade — transport-complete driver, unchanged
+- 2026-09-16 ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: cross-tenant credential-only, NOT VPN-gated — unchanged; demo index empty this cycle (17+ consecutive)
+- 2026-09-16 ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/get.php: cross-tenant credential-only data endpoint; identical success:true for all cids
+- 2026-09-16 ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/download.php: with token-as-query-param reaches file-lookup (404); VPN gate bypassed; no customer_id scoping
+- 2026-09-16 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/voicenotes/delete.php: token-gated (not VPN-gated) destructive endpoint; different error pattern than hierarchy-gated details.php — potential cross-tenant deletion
+- 2026-09-16 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php: public static credential accepted, token-only gate, global autoincrement id space 138–345 — unchanged
+- 2026-09-16 ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/flexlist/getList.php: directory token-scoped, all customer_id=131727; global autoincrement id space 138–345 — unchanged
+- 2026-09-16 ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/voicenotes/details.php: per-record hierarchy-checked — unchanged
+- 2026-09-16 ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config.php: zero-auth LLM-routing JSON; dispatch gated — unchanged
+- 2026-09-16 ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/index.php?route=: 403 Invalid token — unchanged
+- 2026-09-16 REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_costs.php: session-gated ("No VPN detected"), identical response for all cids; earlier ACCEPTED MISCONFIG was wrong
+- 2026-09-16 REJECTED IDOR @ www.applicationdesigner.de/extjs/playback.php: session-gated ("unauthorized"), identical response for all cids; no zero-token audio generation surface exists
+- 2026-09-16 REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_token.php: session-gated, byte-identical Zugriff verweigert for both cids — unchanged, closed
+- 2026-09-16 REJECTED MISCONFIG @ www.applicationdesigner.de/api/callbuilder/: prefix root + /live return byte-identical nginx 404 catch-all (146B) — no routed CallBuilder data-plane
+- 2026-09-16 REJECTED IDOR @ www.applicationdesigner.de/extjs/common/getCustomers.php: token-scoped — unchanged
+- 2026-09-16 REJECTED AUTH @ www.live-manager.de rs param: no anonymous open redirect — unchanged
+- 2026-09-16 REJECTED wildcard-subdomain-enum @ *.live-manager.de: 8632 hostnames, 0 dedicated endpoints — unchanged
+- 2026-09-16 REJECTED api.live-manager.de: host non-resolving — unchanged
+- 2026-09-16 REJECTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/: no secrets-bearing anonymous siblings — unchanged
+- 2026-09-16 REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page (8.9KB, no dynamic params/endpoints/tokens) — named app entry dead-end, closes
+- 2026-09-16 ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= param reflected unescaped into 200 text/html, no CSP/nosniff, zero-token — PASSIVE-proven 2026-09-12 21:40 UTC; execution pending operator render
+- 2026-09-16 REJECTED MISCONFIG @ dev.applicationdesigner.de: byte-identical 403 "internal" PHP app page on all paths — hard IP gate, no public path surface; closed
+- 2026-09-16 REJECTED MISCONFIG @ www.applicationdesigner.de/docs.php: 48KB static ExtJS shell loading help.js/help.json — subsumed by accepted help.js MISCONFIG
