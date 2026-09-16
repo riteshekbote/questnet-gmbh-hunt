@@ -2250,3 +2250,7 @@
 
 ## RANKED HYPOTHESES 2026-09-16 20:03:07 UTC
 - [95] wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100: Cross-tenant CBS WS frame binding — token→cid ownership (from art/lead_bigpickle.txt)
+
+## RANKED HYPOTHESES 2026-09-16 22:48:32 UTC
+- [95] wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100: Cross-tenant CBS WS frame binding — token→cid ownership (from art/lead_bigpickle.txt)
+- NEXT(hypotheses-bigpickle.txt): PROBE: GET https://www.applicationdesigner.de/help.js — canonical endpoint-map refresh; diff against recorded route set (LiveDebugger/auth, voicenotes/check|get

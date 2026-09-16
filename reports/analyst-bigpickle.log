@@ -25049,3 +25049,63 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 - [RISK] questnet-gmbh: 72 — CBS WS transport-complete BOLA (CVSS 8.6–9.1 if frame binding unenforced) remains dominant driver, live 24 cycles; XSS execution pending human adds chained HIGH upside; voicenote leg capped by 19 empty index cycles; flexlist closed; www.live-manager.de ASP.NET swing added zero surface; score capped pending two-tenant frame test or XSS POC.
+===== ANALYST bigpickle 2026-09-16 22:48:32 UTC =====
+[0m
+> build · big-pickle
+[0m
+STEP 1 — DELTA
+- NO_DELTA: surface frozen at 4 live hosts since 2026-09-04; all accepted/rejected findings byte-identical reconfirmed at 2026-09-16 20:03 UTC (CBS WS 23rd cycle 426, voicenotes check.php 19th empty, flexlist ownership gate proven, XSS pending render). No new host/endpoint/param observed in last cycle.
+
+STEP 2 — PRIORITIZE
+- [PRIO] cbs-proxy.api.live-manager.de,7.2,ws_noauth_cidctl: a=9 b=10 t=5 g=10 c=0 f=2 — driver finding, sole unproven hop is frame-level token→cid binding; needs AUTH_HELPED.
+- [PRIO] www.applicationdesigner.de/extjs/voicenotes/download.php,6.3,idor_uuid: a=7 b=9 t=4 g=9 c=0 f=3 — token-only gate (public static credential sha256 8d2faac1…), no customer_id scoping; blocked on empty index.
+- [PRIO] www.applicationdesigner.de/help/content.php,6.0,xss_sameorigin: a=6 b=8 t=4 g=10 c=0 f=4 — reflected unescaped, zero-token, no CSP/nosniff; execution human-blocked.
+
+STEP 3 — HYPOTHESES
+[HYP] Cross-tenant CBS WS frame binding — token→cid ownership
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
+confidence: 95
+reasoning: 23rd cycle — non-upgrade GET 426 0B, upgrade 101 + byte-identical CONNECT/READY for demo 131727, foreign 2, synthetic 999999999 with zero token; proxy binds no identity at handshake; only unproven hop is backend token→cid binding inside live_debug frames.
+evidence_needed: operator two-tenant frame test — token minted for own cid, frames sent against own vs foreign cid, byte-diff accepted state.
+verify_steps: AUTH_HELPED — one bound frame set per owned cid; compare accepted vs rejected.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH 8.6, CRITICAL 9.1 if binding unenforced.
+testability: AUTH_HELPED
+[HYP] Voicenote raw-file download cross-tenant — no customer_id scoping in download path
+class: IDOR
+asset: https://www.applicationdesigner.de/extjs/voicenotes/download.php?file={uuid}
+confidence: 48
+reasoning: download.php reaches file-lookup with token-as-query-param (404); VPN gate bypassed; no customer_id in URL (help.js: file=encodeURIComponent); sibling details.php is hierarchy-gated, narrowing surface to raw download; check.php index empty 19 consecutive cycles → zero UUID oracle.
+evidence_needed: a valid voicenote UUID (max_id>0 in check.php) resolving to file bytes anonymously.
+verify_steps: PASSIVE — standing poll check.php for max_id>0; if non-empty, HEAD download.php?file=<uuid>.
+impact: cross-tenant audio/PII file download — HIGH if UUID ever obtained.
+testability: PASSIVE
+[HYP] Same-origin reflected XSS at help content app
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page={value}
+confidence: 80
+reasoning: page= reflected unescaped into 200 text/html, no CSP/nosniff, zero-token, PASSIVE-proven 2026-09-12; same-origin context reaches all /extjs endpoints incl. delete.php and credential-carrying legs.
+evidence_needed: benign document.title marker render by operator browser.
+verify_steps: HUMAN — open page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E; no further active probes warranted.
+impact: same-origin arbitrary JS → full /extjs API incl. delete — MEDIUM standalone, HIGH chained.
+testability: HUMAN_ONLY
+
+STEP 4 — SELF-CRITIQUE
+- [PARKED] Post-login rs return-url handling: confidence 40, requires authenticated session (AUTH_HELPED) unavailable — parked.
+- [PARKED] /22 non-HTTP space (185.158.96.0/22): services seen only on .96.51 and .98.53; remainder un-scanned — network scan not passive, HUMAN_ONLY — parked, out of automated reach.
+- [PARKED] check.php UUID poll: 19 empty cycles, standing passive poll folded into voicenote HYP verify_steps — not a separate action.
+- [FINAL] 1. Cross-tenant CBS WS frame binding (95, AUTH_HELPED) — driver, highest impact.
+- [FINAL] 2. Same-origin reflected XSS (80, HUMAN_ONLY) — high chained impact, blocked on render.
+- [FINAL] 3. Voicenote download UUID leg (48, PASSIVE) — blocked on empty index.
+
+STEP 5 — NEXT ACTION
+[NEXT] PROBE: GET https://www.applicationdesigner.de/help.js — canonical endpoint-map refresh; diff against recorded route set (LiveDebugger/auth, voicenotes/check|get|details|download|delete, flexlist/getList|getFields|getDetails, callbuilder prefix, AIDesigner router) for newly deployed routes/params and re-confirm static credential (sha256 8d2faac1…). Freshness axis: check.php poll is 19 empty cycles and yields nothing new; help.js is the single automated source that can surface a novel endpoint and re-open the chain. PASSIVE, no token required.
+
+STEP 6 — LEARNING
+- [LEARN] REJECTED (CONTROL) IDOR @ www.applicationdesigner.de/extjs/flexlist/: per-id ownership gate proven — getFields/getDetails with public demo credential (sha256 8d2faac1…) resolve ONLY demo row id=345 (17173B, body sha256 aba9094f0a615eab, byte-identical); ids 0/1/150/175/200/250/300 → identical 26B `{"success":true,"data":[]}` / 49B `{"success":false,"message":"Unauthorized access"}`; prior "token-only, no ownership check" MISCONFIG narrowed; cross-tenant read not observed across global id space 0–345; id=200 pending probe closed.
+- [LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: 19th consecutive cycle success:true,total:0,max_id:0 byte-identical (37B sha256 090b03ceb0dfc8b8) for demo cid=131727 and foreign cid=2 — cross-tenant credential-only gate persistent; index empty, no UUID oracle.
+- [LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: non-upgrade GET → HTTP 426 0B reconfirmed — driver liveness 24th cycle, unchanged.
+- [LEARN] ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: reflection unchanged — PASSIVE-proven 2026-09-12, execution pending operator render.
+
+STEP 7 — RISK
+[RISK] questnet-gmbh: 72 — CBS WS transport-complete BOLA (CVSS 8.6–9.1 if frame binding unenforced) remains dominant driver, live 24th cycle; XSS execution pending human adds chained HIGH upside; voicenote metadata cross-tenant confirmed but 19 empty cycles cap that leg at UUID-blocked; flexlist leg fully closed (per-id ownership gate) removes prior partial upside; possible new surface hinges on help.js route refresh (STEP 5). Score capped pending two-tenant frame test, XSS POC, or fresh endpoint.
