@@ -2222,3 +2222,28 @@
 - LEARN: ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= param reflected unescaped into 200 text/html, no CSP/nosniff, zero-token — PASSIVE-proven 2026
 - LEARN: REJECTED MISCONFIG @ dev.applicationdesigner.de: byte-identical 403 "internal" PHP app page on all paths — hard IP gate, no public path surface; closed
 - LEARN: REJECTED MISCONFIG @ www.applicationdesigner.de/docs.php: 48KB static ExtJS shell loading help.js/help.json — subsumed by accepted help.js MISCONFIG
+
+## RANKED HYPOTHESES 2026-09-16 16:37:36 UTC
+- [95] wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100: Cross-tenant CBS WebSocket frame binding via client-supplied cid/service (from art/lead_nemotron3.txt)
+- [95] wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100: Cross-tenant CBS WS frame binding — token→cid ownership (from art/lead_bigpickle.txt)
+- NEXT(hypotheses-bigpickle.txt): PROBE: GET https://www.applicationdesigner.de/extjs/voicenotes/check.php?customer_id=131727&token=LIVE_DEMO_CUSTOMER_TOKEN (sha256 8d2faac1b96e020c077fb81aa3452
+- NEXT(hypotheses-nemotron3.txt): PROBE: GET https://www.applicationdesigner.de/extjs/flexlist/getFields.php?flexlist_id=200&token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d
+- LEARN: REJECTED (CONTROL) IDOR @ www.applicationdesigner.de/extjs/flexlist/: per-id ownership gate proven — getFields/getDetails with public demo credential resolve ON
+- LEARN: ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: 18th consecutive cycle success:true,total:0,max_id:0 byte-identical (37B sha256 090b03ceb
+- LEARN: ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: non-upgrade GET → HTTP 426 0B reconfirmed — driver liveness 23rd cycle, unchanged.
+- LEARN: ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: unchanged — PASSIVE-proven 2026-09-12, execution pending operator render.
+- LEARN: ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 22nd consecutive cycle anonymous WS 101 + byte-identical CONNECT/READY, 426 on non-upgrade — transport-complete d
+- LEARN: ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: cross-tenant credential-only, NOT VPN-gated, 17+ cycles, index empty — unchanged
+- LEARN: ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/download.php: with token-as-query-param reaches file-lookup (404); VPN gate bypassed; no customer_id
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php: public static credential accepted, token-only gate, global autoincr
+- LEARN: ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/flexlist/getList.php: directory token-scoped, all customer_id=131727; global autoincrement id space 138–345 
+- LEARN: ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/voicenotes/details.php: per-record hierarchy-checked — unchanged
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config.php: zero-auth LLM-routing JSON; dispatch gated — unchanged
+- LEARN: ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/index.php?route=: 403 Invalid token — unchanged
+- LEARN: REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_costs.php: session-gated ("No VPN detected"), identical response for all cids — closed
+- LEARN: REJECTED IDOR @ www.applicationdesigner.de/extjs/playback.php: session-gated ("unauthorized"), identical response for all cids — closed
+- LEARN: REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_token.php: session-gated, byte-identical Zugriff verweigert — closed
+- LEARN: REJECTED MISCONFIG @ www.applicationdesigner.de/api/callbuilder/: nginx 404 catch-all — closed
+- LEARN: REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page — closed
+- LEARN: REJECTED MISCONFIG @ dev.applicationdesigner.de: hard IP gate 403 — closed
+- LEARN: ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= reflected unescaped, no CSP/nosniff, zero-token — PASSIVE-proven; execution pending operator r
