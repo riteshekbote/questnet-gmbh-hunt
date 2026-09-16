@@ -654,3 +654,5 @@ www.live-manager.de
 - CHANGED flexlist hypothesis DEMOTED: id-space is tenant-scoped per-id, not token-only — earlier ACCEPTED MISCONFIG ("token-only gate, no ownership check") narrowed to token+row-ownership; cross-tenant read no
 - CHANGED voicenotes/check.php: 18th consecutive cycle `{"success":true,"total":0,"max_id":0}` byte-identical 37B (sha256 090b03ceb0dfc8b8) for demo cid=131727 and foreign cid=2 — index still empty.
 - CHANGED cbs-proxy.api.live-manager.de: non-upgrade GET → HTTP 426 0B reconfirmed — driver live, 23rd cycle.
+
+## 2026-09-16 20:03:07 UTC

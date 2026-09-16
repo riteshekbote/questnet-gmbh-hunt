@@ -2247,3 +2247,6 @@
 - LEARN: REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page — closed
 - LEARN: REJECTED MISCONFIG @ dev.applicationdesigner.de: hard IP gate 403 — closed
 - LEARN: ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= reflected unescaped, no CSP/nosniff, zero-token — PASSIVE-proven; execution pending operator r
+
+## RANKED HYPOTHESES 2026-09-16 20:03:07 UTC
+- [95] wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100: Cross-tenant CBS WS frame binding — token→cid ownership (from art/lead_bigpickle.txt)

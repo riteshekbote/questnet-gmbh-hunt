@@ -1,47 +1,28 @@
-## 2026-09-16 16:35:16 UTC [target] (model bigpickle)
-[NEW] flexlist per-id ownership gate PROVEN: getDetails with LIVE_DEMO_CUSTOMER_TOKEN (sha256 8d2faac1…) resolves ONLY demo row id=345 (17173B success:true, 25 rows, body sha256 aba9094f0a615eab — byte-identical to 2026-09-09); ids 0/1/150/175/200/250/300 → byte-identical 49B `{"success":false,"message":"Unauthorized access"}`; getFields same span → byte-identical 26B `{"success":true,"data":[]}`; pending id=200 cross-tenant probe RESOLVED (no foreign read).
-[CHANGED] flexlist hypothesis DEMOTED: id-space is tenant-scoped per-id, not token-only — earlier ACCEPTED MISCONFIG ("token-only gate, no ownership check") narrowed to token+row-ownership; cross-tenant read not observed across probed span 0–345.
-[CHANGED] voicenotes/check.php: 18th consecutive cycle `{"success":true,"total":0,"max_id":0}` byte-identical 37B (sha256 090b03ceb0dfc8b8) for demo cid=131727 and foreign cid=2 — index still empty.
-[CHANGED] cbs-proxy.api.live-manager.de: non-upgrade GET → HTTP 426 0B reconfirmed — driver live, 23rd cycle.
-[PRIO] cbs-proxy.api.live-manager.de,8.6,attack=10 business=9 tech=8 gate=10 cloud=10 fresh=1
-[PRIO] voicenotes/check.php,7.4,attack=8 business=8 tech=5 gate=10 cloud=10 fresh=1
-[PRIO] help/content.php,6.6,attack=7 business=5 tech=6 gate=10 cloud=10 fresh=2
+## 2026-09-16 19:43:10 UTC [target] (model bigpickle)
 [HYP] Cross-tenant CBS WS frame binding — token→cid ownership
 class: IDOR
 asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
 confidence: 95
-reasoning: 23rd cycle — non-upgrade GET 426 (reconfirmed 2026-09-16), upgrade 101 + Sec-WebSocket-Accept; proxy accepts client-supplied cid/service with zero credential; byte-identical CONNECT/READY for demo 131727, foreign 2, synthetic 999999999; sole unproven hop is backend token→cid binding inside live_debug frames.
+reasoning: 24th cycle — non-upgrade GET 426 0B (2026-09-16), upgrade 101 + byte-identical CONNECT/READY for demo 131727, foreign 2, synthetic 999999999 with zero token; proxy binds nothing at handshake; sole unproven hop is backend token→cid binding inside live_debug frames.
 evidence_needed: operator two-tenant frame test — own-cid minted token bound to own vs foreign cid.
-verify_steps: AUTH_HELPED — own tenants only; one bound frame set per cid; byte-diff accepted frames.
+verify_steps: AUTH_HELPED — one bound frame set per cid; byte-diff accepted frames.
 impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH 8.6, CRITICAL 9.1 if binding unenforced.
 testability: AUTH_HELPED
-[HYP] Same-origin reflected XSS at help content app — execution pending operator render
-class: XSS
-asset: https://www.applicationdesigner.de/help/content.php?page={value}
-confidence: 80
-reasoning: page= reflected unescaped into 200 text/html, no CSP/nosniff, zero-token — passive re-confirmed prior cycles; same-origin context reaches every /extjs endpoint incl. delete.php; only browser-side execution outstanding.
-evidence_needed: benign document.title marker render by operator-owned browser.
-verify_steps: HUMAN — open page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E; no further active probes warranted.
-impact: same-origin arbitrary JS → full /extjs API incl. delete — MEDIUM standalone, HIGH chained.
-testability: HUMAN_ONLY
 [HYP] Voicenote raw-file download cross-tenant — no customer_id scoping in download path
 class: IDOR
 asset: https://www.applicationdesigner.de/extjs/voicenotes/download.php?file={uuid}
-confidence: 55
-reasoning: download.php reaches file-lookup with token-as-query-param (404); VPN gate bypassed by token; no customer_id in URL (help.js: file=encodeURIComponent); details.php proves sibling per-record hierarchy gate, narrowing surface to raw download; check.php index empty 18 cycles → no UUID oracle yet.
+confidence: 48
+reasoning: download.php reaches file-lookup with token-as-query-param (404); VPN gate bypassed; no customer_id in URL (help.js: file=encodeURIComponent); sibling details.php is hierarchy-gated, narrowing surface to raw download; check.php index empty 19 consecutive cycles → zero UUID oracle.
 evidence_needed: a valid voicenote UUID (max_id>0 in check.php) resolving to file bytes anonymously.
-verify_steps: PASSIVE — poll check.php for max_id>0; if non-empty, HEAD download.php?file=<uuid>.
-impact: cross-tenant audio/PII file download — HIGH if UUID obtained.
+verify_steps: PASSIVE — standing poll check.php for max_id>0; if non-empty, HEAD download.php?file=<uuid>.
+impact: cross-tenant audio/PII file download — HIGH if UUID ever obtained.
 testability: PASSIVE
-[PARKED] flexlist/id=200 cross-tenant read: confidence dropped by probe — per-id ownership gate demonstrated across 0–345, REJECTED (was partial).
-[PARKED] Post-login rs return-url handling: confidence 40 at threshold, requires authenticated session (AUTH_HELPED) not available — parked.
-[PARKED] Same-origin XSS at help/content.php: 80 but testability=HUMAN_ONLY — no automated next action; holds pending operator render.
-[FINAL] 1. Cross-tenant CBS WS frame binding (95, AUTH_HELPED) — driver finding, highest impact
-[FINAL] 2. Same-origin reflected XSS (80, HUMAN_ONLY) — high chained impact, blocked
-[FINAL] 3. Voicenote download UUID leg (55, PASSIVE) — blocked on empty index
-[NEXT] PROBE: GET https://www.applicationdesigner.de/extjs/voicenotes/check.php?customer_id=131727&token=LIVE_DEMO_CUSTOMER_TOKEN (sha256 8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf) — standing poll for nonzero max_id; a non-empty demo index yields authoritative UUIDs to test vn/download.php file-lookup leg and re-open the voicenote cross-tenant download path. Low-yield (18 consecutive empty), but the sole automated unlock for FINAL #3.
-[LEARN] REJECTED (CONTROL) IDOR @ www.applicationdesigner.de/extjs/flexlist/: per-id ownership gate proven — getFields/getDetails with public demo credential resolve ONLY demo row id=345 (17173B, sha256 aba9094f0a615eab, byte-identical to 2026-09-09); ids 0/1/150/175/200/250/300 → identical 26B `{"success":true,"data":[]}` / 49B `{"success":false,"message":"Unauthorized access"}`; prior "token-only/no ownership check" MISCONFIG narrowed; cross-tenant read not observed across global id space 0–345 (pending id=200 probe now closed).
-[LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: 18th consecutive cycle success:true,total:0,max_id:0 byte-identical (37B sha256 090b03ceb0dfc8b8) for demo cid=131727 and foreign cid=2 — cross-tenant credential-only gate persistent; index empty.
-[LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: non-upgrade GET → HTTP 426 0B reconfirmed — driver liveness 23rd cycle, unchanged.
-[LEARN] ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: unchanged — PASSIVE-proven 2026-09-12, execution pending operator render.
-[RISK] questnet-gmbh: 72 — CBS WS transport-complete BOLA (CVSS 8.6–9.1 if frame binding unenforced) remains dominant driver; XSS execution pending human adds chained HIGH upside; voicenote metadata cross-tenant confirmed but 18 empty cycles cap that leg; flexlist leg fully closed this cycle (per-id ownership gate) removes prior partial upside; score capped pending two-tenant frame test or XSS POC.
+[HYP] Same-origin reflected XSS at help content app
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page={value}
+confidence: 80
+reasoning: page= reflected unescaped into 200 text/html, no CSP/nosniff, zero-token, PASSIVE-proven 2026-09-12; same-origin gift reaches all /extjs endpoints incl. delete.php and get_agent_costs-style no-token legs.
+evidence_needed: benign document.title marker render by operator browser.
+verify_steps: HUMAN — open page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E; no further active probes warranted.
+impact: same-origin arbitrary JS → full /extjs API incl. delete — MEDIUM standalone, HIGH chained.
+testability: HUMAN_ONLY

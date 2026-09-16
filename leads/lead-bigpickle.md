@@ -4632,3 +4632,31 @@ testability: PASSIVE
 [LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: non-upgrade GET → HTTP 426 0B reconfirmed — driver liveness 23rd cycle, unchanged.
 [LEARN] ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: unchanged — PASSIVE-proven 2026-09-12, execution pending operator render.
 [RISK] questnet-gmbh: 72 — CBS WS transport-complete BOLA (CVSS 8.6–9.1 if frame binding unenforced) remains dominant driver; XSS execution pending human adds chained HIGH upside; voicenote metadata cross-tenant confirmed but 18 empty cycles cap that leg; flexlist leg fully closed this cycle (per-id ownership gate) removes prior partial upside; score capped pending two-tenant frame test or XSS POC.
+## 2026-09-16 19:43:10 UTC [target] (model bigpickle)
+[HYP] Cross-tenant CBS WS frame binding — token→cid ownership
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
+confidence: 95
+reasoning: 24th cycle — non-upgrade GET 426 0B (2026-09-16), upgrade 101 + byte-identical CONNECT/READY for demo 131727, foreign 2, synthetic 999999999 with zero token; proxy binds nothing at handshake; sole unproven hop is backend token→cid binding inside live_debug frames.
+evidence_needed: operator two-tenant frame test — own-cid minted token bound to own vs foreign cid.
+verify_steps: AUTH_HELPED — one bound frame set per cid; byte-diff accepted frames.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH 8.6, CRITICAL 9.1 if binding unenforced.
+testability: AUTH_HELPED
+[HYP] Voicenote raw-file download cross-tenant — no customer_id scoping in download path
+class: IDOR
+asset: https://www.applicationdesigner.de/extjs/voicenotes/download.php?file={uuid}
+confidence: 48
+reasoning: download.php reaches file-lookup with token-as-query-param (404); VPN gate bypassed; no customer_id in URL (help.js: file=encodeURIComponent); sibling details.php is hierarchy-gated, narrowing surface to raw download; check.php index empty 19 consecutive cycles → zero UUID oracle.
+evidence_needed: a valid voicenote UUID (max_id>0 in check.php) resolving to file bytes anonymously.
+verify_steps: PASSIVE — standing poll check.php for max_id>0; if non-empty, HEAD download.php?file=<uuid>.
+impact: cross-tenant audio/PII file download — HIGH if UUID ever obtained.
+testability: PASSIVE
+[HYP] Same-origin reflected XSS at help content app
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page={value}
+confidence: 80
+reasoning: page= reflected unescaped into 200 text/html, no CSP/nosniff, zero-token, PASSIVE-proven 2026-09-12; same-origin gift reaches all /extjs endpoints incl. delete.php and get_agent_costs-style no-token legs.
+evidence_needed: benign document.title marker render by operator browser.
+verify_steps: HUMAN — open page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E; no further active probes warranted.
+impact: same-origin arbitrary JS → full /extjs API incl. delete — MEDIUM standalone, HIGH chained.
+testability: HUMAN_ONLY
