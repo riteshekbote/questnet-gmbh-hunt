@@ -646,3 +646,5 @@ www.live-manager.de
 - CHANGED XSS @ www.applicationdesigner.de/help/content.php: PASSIVE reflection confirmed 2026-09-16 — `<script>` payload reflected unescaped in 200 text/html, no CSP/nosniff, zero-token
 - CHANGED CBS proxy @ cbs-proxy.api.live-manager.de: 22nd consecutive cycle HTTP 101 + byte-identical CONNECT/READY for cid=131727 and cid=2 — transport-complete BOLA driver unchanged
 - CHANGED Voicenotes @ www.applicationdesigner.de/extjs/voicenotes/check.php: 17th consecutive cycle success:true,total:0,max_id:0 byte-identical for demo/foreign cid — credential-only cross-tenant gate, index 
+
+## 2026-09-16 11:52:09 UTC

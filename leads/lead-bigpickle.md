@@ -4541,3 +4541,47 @@ evidence_needed: complete a login flow with rs=<base64 attacker URL>, observe fi
 verify_steps: AUTH_HELPED — GET /?rs=aHR0cHM6Ly9ldmlsLmNvbQ== then authenticate; inspect final hop. Session required.
 impact: post-login open redirect → OAuth/credential theft → ATO — HIGH chained.
 testability: AUTH_HELPED
+## 2026-09-16 11:49:28 UTC [target] (model bigpickle)
+[PRIO] cbs-proxy.api.live-manager.de,8.5,attack=10 business=9 cloud=10
+[PRIO] voicenotes/check.php,7.5,attack=8 business=8 cloud=10
+[PRIO] help/content.php,6.6,attack=7 business=5 cloud=10
+[HYP] Cross-tenant CBS WS frame binding — token→cid ownership
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
+confidence: 95
+reasoning: 22nd consecutive cycle — anonymous WS upgrade HTTP 101 + Sec-WebSocket-Accept, non-upgrade GET 426 (reconfirmed 2026-09-16 06:11 UTC); proxy accepts client-supplied cid/service with zero credential; byte-identical CONNECT CBS100/190/200 + READY frames for demo cid=131727, foreign cid=2, synthetic cid=999999999; sole unproven hop is backend token→cid binding inside live_debug frames.
+evidence_needed: operator two-tenant frame test — own-cid minted token bound to own vs foreign cid; byte-diff accepted frame sets.
+verify_steps: AUTH_HELPED — own tenants only; never third-party streams; one bound frame set per cid.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH 8.6, CRITICAL 9.1 if binding unenforced.
+testability: AUTH_HELPED
+[HYP] Same-origin reflected XSS at help content app — execution pending operator render
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page={value}
+confidence: 80
+reasoning: page= reflected unescaped into 200 text/html, no CSP/nosniff, zero-token — passive re-confirmed 2026-09-16 06:11 UTC (marker round-trip); LFI leg closed 2026-09-14; same-origin context reaches every /extjs endpoint incl. token-only mints and delete.php; only browser-side execution outstanding.
+evidence_needed: benign document.title marker render by operator-owned browser.
+verify_steps: HUMAN — open page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E, confirm title marker; no further active probes warranted.
+impact: same-origin arbitrary JS → full /extjs API access incl. delete + token mints — MEDIUM standalone, HIGH chained on session-bearing victim.
+testability: HUMAN_ONLY
+[HYP] Post-login rs return-url handling — external/schema-less target honored verbatim
+class: AUTH
+asset: https://www.live-manager.de/?rs={base64}
+confidence: 40
+reasoning: all unauthenticated paths 302 → /?rs=<base64-of-path>; anonymous GET /?rs=base64(external URL) → 200 login page, no redirect (reconfirmed prior cycles); only unexamined behavior is decoded-rs validation after authentication (IIS 8.5 Login.aspx).
+evidence_needed: complete a login flow with rs=<base64 of attacker URL>, observe final redirect Location / JS navigation.
+verify_steps: AUTH_HELPED — GET /?rs=aHR0cHM6Ly9ldmlsLmNvbQ== through login; inspect final redirect. Session required.
+impact: post-login open redirect → OAuth/credential theft → ATO — HIGH chained.
+testability: AUTH_HELPED
+[PARKED] Same-origin reflected XSS at help content app: confidence 80 but testability=HUMAN_ONLY — no automated next action possible; remains on hold pending operator browser render.
+[PARKED] Post-login rs return-url handling: confidence 40, below 50 threshold; requires authenticated session not available; parked until AUTH_HELPED probe becomes possible.
+[FINAL] 1. Cross-tenant CBS WS frame binding (95, AUTH_HELPED) — driver finding, highest impact
+[FINAL] 2. Same-origin reflected XSS (80, HUMAN_ONLY) — high chained impact but blocked
+[FINAL] 3. Post-login rs handling (40, AUTH_HELPED) — low confidence, parked
+[NEXT] PROBE: GET https://www.applicationdesigner.de/extjs/flexlist/getFields.php?flexlist_id=200&token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3 — test id=200 within known global autoincrement space (138–345); if success:true + field definitions returned, cross-tenant flexlist data read confirmed; if empty/error, flexlist IDOR remains unprovable without second-tenant operator.
+[LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 22nd consecutive cycle anonymous WS 101 + byte-identical CONNECT/READY, 426 on non-upgrade — transport-complete driver, unchanged
+[LEARN] ACCEPTED IDOR @ voicenotes/check.php: cross-tenant credential-only, NOT VPN-gated, 17+ cycles, index empty — unchanged
+[LEARN] ACCEPTED XSS @ help/content.php: page= reflected unescaped, no CSP/nosniff, zero-token — execution pending operator render, unchanged
+[LEARN] REJECTED (partial) IDOR @ flexlist/: cross-tenant NOT observed anonymous — no foreign flexlist_id known; pending probe id=200
+[LEARN] REJECTED MISCONFIG @ /api/callbuilder/: nginx 404 catch-all — closed, unchanged
+[LEARN] REJECTED IDOR @ get_agent_costs/playback/get_agent_token: session-gated — closed, unchanged
+[RISK] questnet-gmbh: 72 — CBS WS transport-complete BOLA (CVSS 8.6–9.1 if frame binding unenforced) is the dominant driver; XSS execution pending human adds chained HIGH upside; voicenote metadata cross-tenant confirmed but empty index caps immediate damage; overall score capped pending two-tenant frame test or XSS POC.

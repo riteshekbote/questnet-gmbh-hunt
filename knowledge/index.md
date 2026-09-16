@@ -395,3 +395,9 @@
 - 2026-09-16 ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= param reflected unescaped into 200 text/html, no CSP/nosniff, zero-token — PASSIVE-proven 2026-09-12 21:40 UTC; execution pending operator render
 - 2026-09-16 REJECTED MISCONFIG @ dev.applicationdesigner.de: byte-identical 403 "internal" PHP app page on all paths — hard IP gate, no public path surface; closed
 - 2026-09-16 REJECTED MISCONFIG @ www.applicationdesigner.de/docs.php: 48KB static ExtJS shell loading help.js/help.json — subsumed by accepted help.js MISCONFIG
+- 2026-09-16 ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 22nd consecutive cycle anonymous WS 101 + byte-identical CONNECT/READY, 426 on non-upgrade — transport-complete driver, unchanged
+- 2026-09-16 ACCEPTED IDOR @ voicenotes/check.php: cross-tenant credential-only, NOT VPN-gated, 17+ cycles, index empty — unchanged
+- 2026-09-16 ACCEPTED XSS @ help/content.php: page= reflected unescaped, no CSP/nosniff, zero-token — execution pending operator render, unchanged
+- 2026-09-16 REJECTED (partial) IDOR @ flexlist/: cross-tenant NOT observed anonymous — no foreign flexlist_id known; pending probe id=200
+- 2026-09-16 REJECTED MISCONFIG @ /api/callbuilder/: nginx 404 catch-all — closed, unchanged
+- 2026-09-16 REJECTED IDOR @ get_agent_costs/playback/get_agent_token: session-gated — closed, unchanged
