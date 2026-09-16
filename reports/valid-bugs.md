@@ -97,3 +97,11 @@
   - | 3 | Voicenote metadata PII | **VALID** | 7.5 | File report |
   - | 4 | auth.php token mint | **VALID (mitigated)** | 8.1→7.5 | File + note VPN gate |
   - | 5 | get_user_rights.php leak | **VALID** | 6.5 | File report |
+
+- 6 lead(s) marked VALID at 2026-09-16 11:49:42 UTC
+  - | Q7 Reasonable triager | **YES** — Transport-complete BOLA with anonymous handshake is a valid finding |
+  - **Verdict: VALID — LOW/MEDIUM (MISCONFIG)** — Serve as supporting evidence for Leads 3/4. Report as part of the chain, not standalone.
+  - **Verdict: VALID — HIGH**
+  - | Q7 Reasonable triager | **NO** — Untested and likely resource abuse not a valid finding |
+  - | 2 | help.js static credential | **VALID** | LOW/MED | Supporting evidence for 3 |
+  - | 3 | voicenote PII cross-tenant | **VALID** | **HIGH** | **File report** |
