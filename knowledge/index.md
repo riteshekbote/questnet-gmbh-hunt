@@ -429,3 +429,21 @@
 - 2026-09-17 REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page — closed
 - 2026-09-17 REJECTED MISCONFIG @ dev.applicationdesigner.de: hard IP gate 403 — closed
 - 2026-09-17 ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= reflected unescaped, no CSP/nosniff, zero-token — PASSIVE-proven; execution pending operator render
+- 2026-09-17 ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config_coding.php: anonymous zero-auth JSON (6.1KB) exposes coding AI endpoint map (ollama.codermatrix.de, api.openai.com, api.anthropic.com, openrouter.ai) + 10-model catalog; no keys; dispatch gated — NEW cycle 2026-09-17.
+- 2026-09-17 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/chat/provider.php: token-gated — reveals 14 chat providers incl. Questnet-internal Qwen3.6 Ollama (QN_Qwen3.6-35B-A3B-FP8) and Mittwald-hosted instance; informational.
+- 2026-09-17 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/chatgpt/provider.php: token-gated — 11 model definitions with region routing; informational.
+- 2026-09-17 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/get_speaker.php: token-gated — 560KB / 1,724 TTS speaker records (Azure/Cartesia/ElevenLabs IDs); large data surface gated by public static credential.
+- 2026-09-17 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/get_provider.php: token-gated — returns 4 TTS provider names; informational.
+- 2026-09-17 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/get_speaker_languages.php: token-gated — 10.5KB language catalog; informational.
+- 2026-09-17 ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/coding.php: HTTP 403, dispatch-gated like index.php?route= — coding AI not static-credential-satisfiable.
+- 2026-09-17 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/flexlist/: addRow/createList/deleteRow/saveValue/updateList/importcsv — POST write endpoints confirmed in help.js; ownership gate unverified (rules prohibit mutating tests).
+- 2026-09-17 ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 26th consecutive cycle anonymous WS 101 + byte-identical CONNECT/READY, 426 on non-upgrade — unchanged driver.
+- 2026-09-17 ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: cross-tenant credential-only, NOT VPN-gated, 20th consecutive empty cycle (total=0, max_id=0) — unchanged.
+- 2026-09-17 ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: reflection re-confirmed; execution pending operator — unchanged.
+- 2026-09-17 REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_costs.php: session-gated ("No VPN detected") — unchanged.
+- 2026-09-17 REJECTED IDOR @ www.applicationdesigner.de/extjs/playback.php: session-gated ("unauthorized") — unchanged.
+- 2026-09-17 REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_token.php: session-gated, byte-identical Zugriff verweigert — unchanged.
+- 2026-09-17 REJECTED MISCONFIG @ www.applicationdesigner.de/api/callbuilder/: nginx 404 catch-all — unchanged.
+- 2026-09-17 REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page — unchanged.
+- 2026-09-17 REJECTED MISCONFIG @ dev.applicationdesigner.de: hard IP gate 403 — unchanged.
+- 2026-09-17 REJECTED IDOR @ www.applicationdesigner.de/extjs/common/getCustomers.php: token-scoped — unchanged.

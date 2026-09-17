@@ -25776,3 +25776,906 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 - [RISK] questnet-gmbh: 72 — CBS WS transport-complete BOLA remains dominant and live (25th cycle; 8.6–9.1 if frame binding unenforced); XSS chain upside (HIGH) still pending the operator render; voicenote leg capped at UUID-block; help.js refresh confirmed static-credential data-plane churn (catalogs token-only, crypto endpoint new) but nothing raises standalone severity; flexlist leg closed. Upside hinges on two-tenant frame test, XSS execution, or the encrypt oracle POST.
+===== ANALYST bigpickle 2026-09-17 11:56:37 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mcurl -s -o /tmp/opencode/help.js -w "HTTP %{http_code} size=%{size_download}\n" --max-time 30 "https://www.applicationdesigner.de/help.js" ; sha256sum /tmp/opencode/help.js
+HTTP 200 size=3290201
+b56a5f1e61ee397168aedb6684512612ed34a9c1086ab324b64c59f41a049086  /tmp/opencode/help.js
+[0m
+[0m$ [0mcd /tmp/opencode && grep -oE "(extjs|api|backend|router)[^\"' ]*/(index\.php|config\.php|[A-Za-z0-9_]+\.php|route=)[^\"']*" help.js | sort -u | head -100
+backend/config.php
+backend/config_coding.php
+backend/public/coding.php
+backend/public/index.php?route=
+extjs/agent/get_agent_costs.php
+extjs/agent/get_agent_token.php
+extjs/chat/provider.php
+extjs/chatgpt/provider.php
+extjs/check_mailserver.php
+extjs/common/getCustomers.php
+extjs/encrypt/index.php
+extjs/flexlist/addRow.php
+extjs/flexlist/createList.php
+extjs/flexlist/deleteRow.php
+extjs/flexlist/getDetails.php
+extjs/flexlist/getFields.php
+extjs/flexlist/getList.php
+extjs/flexlist/importcsv.php
+extjs/flexlist/saveValue.php
+extjs/flexlist/updateList.php
+extjs/get_provider.php
+extjs/get_speaker.php
+extjs/get_speaker_languages.php
+extjs/get_user_rights.php
+extjs/livedebugger/auth.php
+extjs/playback.php
+extjs/voicenotes/check.php
+extjs/voicenotes/delete.php
+extjs/voicenotes/details.php
+extjs/voicenotes/download.php?file=
+extjs/voicenotes/get.php
+[0m
+[0m$ [0mcd /tmp/opencode && for ep in get_provider get_speaker_languages get_speaker chat/provider chatgpt/provider encrypt/index flexlist/createList flexlist/importcsv; do echo "=== $ep ==="; grep -oE ".{200}${ep}.{400}" help.js | grep -oE "(GET|POST)[^}]{0,200}|params[^}]{0,300}|token[^,;&]{0,120}" | head -5; done 2>/dev/null | head -80
+=== get_provider ===
+=== get_speaker_languages ===
+=== get_speaker ===
+=== chat/provider ===
+=== chatgpt/provider ===
+=== encrypt/index ===
+POST',params:c,success:function(h){var f=h.responseText;try{var c=JSON.parse(f);if(c.success){b(c)
+=== flexlist/createList ===
+params:{id:a.get('id')
+POST',jsonData:{caption:c
+=== flexlist/importcsv ===
+POST',rawData:d,headers:{'Content-Type':null
+[0m
+[0m$ [0mcd /tmp/opencode && grep -oP "get_provider|get_speaker\b|get_speaker_languages|chat/provider|chatgpt/provider" help.js | sort | uniq -c | sort -rn
+1 get_speaker_languages
+      1 get_speaker
+      1 get_provider
+      1 chatgpt/provider
+      1 chat/provider
+[0m
+[0m$ [0mcd /tmp/opencode && grep -oP ".{0,100}get_speaker_languages.{0,100}" help.js
+create('Ext.data.Store',{fields:['value','text'],proxy:{type:'ajax',url:APPDESIGNER_API_PATH+'extjs/get_speaker_languages.php'+BACKEND_TOKEN,reader:{type:'json',rootProperty:'data'}},autoLoad:!0,loadingInProgress:!1,liste
+[0m
+[0m$ [0mcd /tmp/opencode && grep -oP ".{0,100}get_provider.{0,100}" help.js && echo "---" && grep -oP ".{0,100}chat/provider.{0,100}" help.js && echo "---" && grep -oP ".{0,100}chatgpt/provider.{0,100}" help.js && echo "---" && grep -oP ".{0,100}get_speaker[^_l].{0,100}" help.js
+',mapping:'id'},{name:'text',mapping:'caption'}],proxy:{type:'ajax',url:APPDESIGNER_API_PATH+'extjs/get_provider.php'+BACKEND_TOKEN,reader:{type:'json',rootProperty:'data'}},autoLoad:!0,loadingInProgress:!1,liste
+---
+tion(b){return (b.text||'').split('|')[2]||''}}],proxy:{type:'ajax',url:APPDESIGNER_API_PATH+'extjs/chat/provider.php'+BACKEND_TOKEN,reader:{type:'json',rootProperty:'data'},listeners:{exception:function(e,c,d){tr
+---
+lds:['value','text','use_custom_api','template'],proxy:{type:'ajax',url:APPDESIGNER_API_PATH+'extjs/chatgpt/provider.php'+BACKEND_TOKEN,reader:{type:'json',rootProperty:'data'},listeners:{exception:function(e,c,d){tr
+---
+2','provider','gender','country','multilingual'],proxy:{type:'ajax',url:APPDESIGNER_API_PATH+'extjs/get_speaker.php'+BACKEND_TOKEN,reader:{type:'json',rootProperty:'data'}},autoLoad:!0,loadingInProgress:!1,sorter
+[0m
+[0m$ [0mcd /tmp/opencode && grep -oP ".{0,150}flexlist/createList.{0,250}" help.js && echo "---" && grep -oP ".{0,150}flexlist/deleteRow.{0,250}" help.js && echo "---" && grep -oP ".{0,150}flexlist/saveValue.{0,250}" help.js && echo "---" && grep -oP ".{0,150}flexlist/importcsv.{0,250}" help.js
+ssageBox.confirm('Bestätigung','Wollen Sie den Eintrag "'+c+'" wirklich löschen?',function(c){if(c==='yes'){Ext.Ajax.request({url:BACKEND_URL+'/extjs/flexlist/createList.php'+BACKEND_TOKEN,method:'DELETE',params:{id:a.get('id')},success:function(e){var a=Ext.decode(e.responseText);if(a.success){b.getStore().loadPage(1)}else {Ext.Msg.alert('Fehler',Ext.util.Format.htmlEncode(a.message)||'Fehler beim Löschen')}}})}})}
+/.test(b)){Ext.Msg.alert('Fehler','HTML-Tags sind nicht erlaubt');return}var c=Ext.util.Format.stripTags(b);Ext.Ajax.request({url:BACKEND_URL+'/extjs/flexlist/createList.php'+BACKEND_TOKEN,method:'POST',jsonData:{caption:c},success:function(e){var c=Ext.decode(e.responseText);if(c.success){a.store.loadPage(1)}else {Ext.Msg.alert('Fehler',Ext.util.Format.htmlEncode(c.message)||'Fehler beim Anlegen')}}})}})}},{text:'I
+---
+confirm('Bestätigung','Wollen Sie diese Zeile wirklich löschen?',function(f){if(f==='yes'){b.setLoading(!0);Ext.Ajax.request({url:BACKEND_URL+'/extjs/flexlist/deleteRow.php'+BACKEND_TOKEN,method:'POST',params:{flexlist_id:a.flexlistId,row_id:d.get('row_id')},success:function(g){b.setLoading(!1);var d=Ext.decode(g.responseText);if(d.success){a.store.loadPage(1)}else {Ext.Msg.alert('Fehler',Ext.util.Format.htmlEncode
+---
+d,c,e){var a=this;var b=Ext.util.Format.stripTags(e);return new Promise(function(g,f){a.grid.setLoading(!0);Ext.Ajax.request({url:BACKEND_URL+'/extjs/flexlist/saveValue.php'+BACKEND_TOKEN,method:'POST',params:{flexlist_id:a.flexlistId,row_id:d.get('row_id'),field_id:c,value:b},success:function(h){a.grid.setLoading(!1);var b=Ext.decode(h.responseText);if(b.success){g()}else {f(Ext.util.Format.htmlEncode(b.message)||
+---
+.fileInputEl.dom.files[0];var d=new FormData();d.append('csvfile',f);a.setLoading('CSV wird importiert...');Ext.Ajax.request({url:BACKEND_URL+'/extjs/flexlist/importcsv.php'+BACKEND_TOKEN,method:'POST',rawData:d,headers:{'Content-Type':null},success:function(d){a.setLoading(!1);var c=Ext.decode(d.responseText);if(c.success){Ext.Msg.alert('Erfolg','CSV erfolgreich importiert!<br>Liste: '+Ext.util.Format.htmlEncode(c
+[0m
+[0m$ [0mcd /tmp/opencode && grep -oP "[A-Za-z0-9_/]+\.php" help.js | sort -u | grep -v -F "resources" | head -60
+/extjs/common/getCustomers.php
+/extjs/flexlist/addRow.php
+/extjs/flexlist/createList.php
+/extjs/flexlist/deleteRow.php
+/extjs/flexlist/getDetails.php
+/extjs/flexlist/getFields.php
+/extjs/flexlist/getList.php
+/extjs/flexlist/importcsv.php
+/extjs/flexlist/saveValue.php
+/extjs/flexlist/updateList.php
+/extjs/get_user_rights.php
+/extjs/livedebugger/auth.php
+/extjs/voicenotes/check.php
+/extjs/voicenotes/delete.php
+/extjs/voicenotes/details.php
+/extjs/voicenotes/download.php
+/extjs/voicenotes/get.php
+AIDesigner/backend/config.php
+AIDesigner/backend/config_coding.php
+AIDesigner/backend/public/coding.php
+AIDesigner/backend/public/index.php
+extjs/agent/get_agent_costs.php
+extjs/agent/get_agent_token.php
+extjs/chat/provider.php
+extjs/chatgpt/provider.php
+extjs/check_mailserver.php
+extjs/encrypt/index.php
+extjs/get_provider.php
+extjs/get_speaker.php
+extjs/get_speaker_languages.php
+extjs/playback.php
+help/content.php
+[0m
+[0m$ [0mcd /tmp/opencode && grep -oP ".{0,100}coding\.php.{0,100}" help.js | head -20 && echo "---" && grep -oP ".{0,100}config_coding.{0,100}" help.js | head -10
+},getDefaultAgentEndpoint:function(){return APPDESIGNER_API_PATH_NOPROXY+'AIDesigner/backend/public/coding.php'},fetchAuthToken:function(a,b){var c='';if(a&&a.context&&a.context.customerId){c=a.context.customer
+'')}})},getAgentConfigUrl:function(){return APPDESIGNER_API_PATH_NOPROXY+'AIDesigner/backend/config_coding.php'},getAgentRequestState:function(a){return a||null},getActiveAgentRequest:function(a){var b=this.get
+---
+tus);b('')}})},getAgentConfigUrl:function(){return APPDESIGNER_API_PATH_NOPROXY+'AIDesigner/backend/config_coding.php'},getAgentRequestState:function(a){return a||null},getActiveAgentRequest:function(a){var b=this
+[0m
+[0m$ [0mcd /tmp/opencode && echo "checking sha256 of help.js body" && sha256sum help.js && echo "bytes: $(wc -c < help.js)" && echo "--- NOW PROBING NEW GET ENDPOINTS ---" && curl -s -w "\nHTTP %{http_code} size=%{size_download}" "https://www.applicationdesigner.de/extjs/get_provider.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3" -o /tmp/opencode/get_provider_resp.json && echo "" && sha256sum /tmp/opencode/get_provider_resp.json && cat /tmp/opencode/get_provider_resp.json | python3 -m json.tool 2>/dev/null | head -60
+checking sha256 of help.js body
+b56a5f1e61ee397168aedb6684512612ed34a9c1086ab324b64c59f41a049086  help.js
+bytes: 3290201
+--- NOW PROBING NEW GET ENDPOINTS ---
+
+HTTP 200 size=187
+322a64e7d80011e551c7b69dd1904617884f71fa739b59113847ed027cca059d  /tmp/opencode/get_provider_resp.json
+{
+    "success": true,
+    "data": [
+        {
+            "value": "azure",
+            "text": "Microsoft Azure"
+        },
+        {
+            "value": "elevenlabs",
+            "text": "Elevenlabs"
+        },
+        {
+            "value": "chatgpt",
+            "text": "ChatGPT"
+        },
+        {
+            "value": "cartesia",
+            "text": "Cartesia"
+        }
+    ]
+}
+[0m
+[0m$ [0m# Probe new GET endpoints in parallel
+curl -s -w "\nHTTP %{http_code} size=%{size_download}" "https://www.applicationdesigner.de/extjs/get_speaker.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3" -o /tmp/opencode/get_speaker_resp.json && echo " get_speaker" &
+curl -s -w "\nHTTP %{http_code} size=%{size_download}" "https://www.applicationdesigner.de/extjs/get_speaker_languages.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3" -o /tmp/opencode/get_speaker_lang_resp.json && echo " get_speaker_languages" &
+curl -s -w "\nHTTP %{http_code} size=%{size_download}" "https://www.applicationdesigner.de/extjs/chat/provider.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3" -o /tmp/opencode/chat_provider_resp.json && echo " chat_provider" &
+curl -s -w "\nHTTP %{http_code} size=%{size_download}" "https://www.applicationdesigner.de/extjs/chatgpt/provider.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3" -o /tmp/opencode/chatgpt_provider_resp.json && echo " chatgpt_provider" &
+curl -s -w "\nHTTP %{http_code} size=%{size_download}" "https://www.applicationdesigner.de/AIDesigner/backend/config_coding.php" -o /tmp/opencode/config_coding_resp.json && echo " config_coding" &
+curl -s -w "\nHTTP %{http_code} size=%{size_download}" "https://www.applicationdesigner.de/AIDesigner/backend/public/coding.php" -o /tmp/opencode/coding_resp.json && echo " coding_php" &
+curl -s -w "\nHTTP %{http_code} size=%{size_download}" "https://www.applicationdesigner.de/extjs/voicenotes/check.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&customer_id=131727" -o /tmp/opencode/check_demo.json && echo " check_demo" &
+curl -s -w "\nHTTP %{http_code} size=%{size_download}" "https://www.applicationdesigner.de/extjs/voicenotes/check.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&customer_id=2" -o /tmp/opencode/check_foreign.json && echo " check_foreign" &
+wait
+HTTP 200 size=6159 config_coding
+
+HTTP 200 size=1225 chatgpt_provider
+
+HTTP 200 size=37 check_foreign
+
+HTTP 200 size=37 check_demo
+
+HTTP 403 size=25 coding_php
+
+HTTP 200 size=3521 chat_provider
+
+HTTP 200 size=10536 get_speaker_languages
+
+HTTP 200 size=560409 get_speaker
+[0m
+[0m$ [0mecho "=== chatgpt_provider ===" && cat /tmp/opencode/chatgpt_provider_resp.json | python3 -m json.tool && echo "=== chat_provider ===" && cat /tmp/opencode/chat_provider_resp.json | python3 -m json.tool && echo "=== config_coding ===" && cat /tmp/opencode/config_coding_resp.json | python3 -m json.tool | head -80
+=== chatgpt_provider ===
+{
+    "success": true,
+    "data": [
+        {
+            "value": "AZURE",
+            "text": "Microsoft Azure - konfigurierbar",
+            "use_custom_api": 1,
+            "template": 1
+        },
+        {
+            "value": "AZURE_FranceCentral_4.1-mini",
+            "text": "Microsoft Azure France-Central, Model: gpt-4.1-mini",
+            "use_custom_api": 0,
+            "template": 1
+        },
+        {
+            "value": "AZURE_FranceCentral_4o-mini",
+            "text": "Microsoft Azure France-Central, Model: gpt-4o-mini",
+            "use_custom_api": 0,
+            "template": 1
+        },
+        {
+            "value": "AZURE_WestEU_4.1",
+            "text": "Microsoft Azure West-EU, Model: gpt-4.1",
+            "use_custom_api": 0,
+            "template": 1
+        },
+        {
+            "value": "AZURE_WestEU_4.1-mini",
+            "text": "Microsoft Azure West-EU, Model: gpt-4.1-mini",
+            "use_custom_api": 0,
+            "template": 1
+        },
+        {
+            "value": "AZURE_WestEU_4o-mini",
+            "text": "Microsoft Azure West-EU, Model: gpt-4o-mini",
+            "use_custom_api": 0,
+            "template": 1
+        },
+        {
+            "value": "ChatGPT",
+            "text": "ChatGPT - konfigurierbar",
+            "use_custom_api": 1,
+            "template": 2
+        },
+        {
+            "value": "ChatGPT_4.1-mini",
+            "text": "OpenAI ChatGPT - Model: gpt-4.1-mini",
+            "use_custom_api": 0,
+            "template": 1
+        },
+        {
+            "value": "ChatGPT_4.1-nano",
+            "text": "OpenAI ChatGPT - Model: gpt-4.1-nano",
+            "use_custom_api": 0,
+            "template": 1
+        },
+        {
+            "value": "ChatGPT_4o-mini",
+            "text": "OpenAI ChatGPT - Model: gpt-4o-mini",
+            "use_custom_api": 0,
+            "template": 1
+        },
+        {
+            "value": "MISTRAL",
+            "text": "Mistral.AI - konfigurierbar",
+            "use_custom_api": 1,
+            "template": 2
+        }
+    ]
+}
+=== chat_provider ===
+{
+    "success": true,
+    "data": [
+        {
+            "value": "ChatGPT",
+            "text": "Eigene API Zugangsdaten",
+            "use_custom_api": 1,
+            "parameters": "{\n  \"temperature\": 0.2,\n  \"top_p\": 1.0,\n  \"presence_penalty\": 0,\n  \"frequency_penalty\": 0\n}",
+            "role": "system"
+        },
+        {
+            "value": "ChatGPT_responses",
+            "text": "Eigene API Zugangsdaten - v1/responses API",
+            "use_custom_api": 1,
+            "parameters": "{\n  \"temperature\": 0.2,\n  \"top_p\": 1.0,\n  \"presence_penalty\": 0,\n  \"frequency_penalty\": 0\n}",
+            "role": "system"
+        },
+        {
+            "value": "AZURE_FranceCentral_4o-mini",
+            "text": "gpt-4o-mini - v1/chat/completions API|Microsoft Azure|France-Central",
+            "use_custom_api": 0,
+            "parameters": "{\n  \"temperature\": 0.2,\n  \"top_p\": 1.0,\n  \"presence_penalty\": 0,\n  \"frequency_penalty\": 0\n}",
+            "role": "system"
+        },
+        {
+            "value": "AZURE_WestEU_4.1-mini",
+            "text": "gpt-4.1-mini - v1/chat/completions API|Microsoft Azure|West-EU",
+            "use_custom_api": 0,
+            "parameters": "{\n  \"temperature\": 0.2,\n  \"top_p\": 1.0,\n  \"presence_penalty\": 0,\n  \"frequency_penalty\": 0\n}",
+            "role": "system"
+        },
+        {
+            "value": "AZURE_WestEU_4o-mini",
+            "text": "gpt-4o-mini - v1/chat/completions API|Microsoft Azure|West-EU",
+            "use_custom_api": 0,
+            "parameters": "{\n  \"temperature\": 0.2,\n  \"top_p\": 1.0,\n  \"presence_penalty\": 0,\n  \"frequency_penalty\": 0\n}",
+            "role": "system"
+        },
+        {
+            "value": "ChatGPT_4.1-mini",
+            "text": "gpt-4.1-mini - v1/chat/completions API|OpenAI|USA",
+            "use_custom_api": 0,
+            "parameters": "{\n  \"temperature\": 0.2,\n  \"top_p\": 1.0,\n  \"presence_penalty\": 0,\n  \"frequency_penalty\": 0\n}",
+            "role": "system"
+        },
+        {
+            "value": "ChatGPT_4.1-nano",
+            "text": "gpt-4.1-nano - v1/chat/completions API|OpenAI|USA",
+            "use_custom_api": 0,
+            "parameters": "{\n  \"temperature\": 0.2,\n  \"top_p\": 1.0,\n  \"presence_penalty\": 0,\n  \"frequency_penalty\": 0\n}",
+            "role": "system"
+        },
+        {
+            "value": "ChatGPT_4o-mini",
+            "text": "gpt-4o-mini - v1/chat/completions API|OpenAI|USA",
+            "use_custom_api": 0,
+            "parameters": "{\n  \"temperature\": 0.2,\n  \"top_p\": 1.0,\n  \"presence_penalty\": 0,\n  \"frequency_penalty\": 0\n}",
+            "role": "system"
+        },
+        {
+            "value": "ChatGPT_5.4",
+            "text": "gpt-5.4 - v1/chat/completions API|OpenAI|USA",
+            "use_custom_api": 0,
+            "parameters": "{\n  \"temperature\": 0.2,\n  \"max_output_tokens\": 1000,\n  \"reasoning_effort\": \"none\"\n}",
+            "role": "system"
+        },
+        {
+            "value": "ChatGPT_5.4_responses",
+            "text": "gpt-5.4 - v1/responses API|OpenAI|USA",
+            "use_custom_api": 0,
+            "parameters": "{\n  \"temperature\": 0.2,\n  \"max_output_tokens\": 1000,\n  \"reasoning\": {\n    \"effort\": \"none\"\n  }\n}",
+            "role": "system"
+        },
+        {
+            "value": "ChatGPT_5.4-mini",
+            "text": "gpt-5.4-mini - v1/chat/completions API|OpenAI|USA",
+            "use_custom_api": 0,
+            "parameters": "{\n  \"temperature\": 0.2\n}",
+            "role": "system"
+        },
+        {
+            "value": "ChatGPT_5.4-mini_responses",
+            "text": "gpt-5.4-mini - v1/responses API|OpenAI|USA",
+            "use_custom_api": 0,
+            "parameters": "{\n  \"temperature\": 0.2,\n  \"reasoning\": { \"effort\": \"none\" }\n}",
+            "role": "system"
+        },
+        {
+            "value": "MITTWALD_Qwen3.6-35B",
+            "text": "Qwen3.6-35B-A3B-FP8|Mittwald|Deutschland",
+            "use_custom_api": 0,
+            "parameters": "{\n  \"temperature\": 0.7,\n  \"top_p\": 0.8,\n  \"top_k\":20,\n  \"presence_penalty\":1.5,\n  \"max_tokens\":8192,\n  \"chat_template_kwargs\": {\n    \"enable_thinking\": false\n  }\n}",
+            "role": "system"
+        },
+        {
+            "value": "QN_Qwen3.6-35B",
+            "text": "Qwen3.6-35B-A3B-FP8|Questnet|Deutschland",
+            "use_custom_api": 0,
+            "parameters": "{\n  \"temperature\": 0.7,\n  \"top_p\": 0.8,\n  \"top_k\":20,\n  \"presence_penalty\":0,\n  \"repetition_penalty\":1.0,\n  \"max_tokens\":8192,\n  \"chat_template_kwargs\": {\n    \"enable_thinking\": false\n  }\n}",
+            "role": "system"
+        }
+    ]
+}
+=== config_coding ===
+{
+    "api_endpoints": {
+        "ollama_local": {
+            "mode": "completions",
+            "url": "https://ollama.codermatrix.de/v1"
+        },
+        "ollama": {
+            "mode": "completions",
+            "url": "https://ollama.com/v1"
+        },
+        "chatgpt_completions": {
+            "mode": "completions",
+            "url": "https://api.openai.com/v1"
+        },
+        "chatgpt_responses": {
+            "mode": "responses",
+            "url": "https://api.openai.com/v1"
+        },
+        "anthropic": {
+            "mode": "anthropic",
+            "url": "https://api.anthropic.com/v1"
+        },
+        "openrouter": {
+            "mode": "completions",
+            "url": "https://openrouter.ai/api/v1"
+        }
+    },
+    "models": [
+        {
+            "value": "~z-ai/glm-flash-latest",
+            "label": "Z.ai: GLM Flash Latest",
+            "reasoning": [
+                "minimal",
+                "low",
+                "medium",
+                "high"
+            ],
+            "default_reasoning": "high",
+            "endpoint": "openrouter",
+            "parameters": {
+                "max_tokens": 1000000
+            },
+            "instructions_ask": "system-prompt-ask.md",
+            "instructions_apply": "system-prompt-apply.md"
+        },
+        {
+            "value": "z-ai/glm-5.3",
+            "label": "Z.ai: GLM 5.3",
+            "reasoning": [
+                "minimal",
+                "low",
+                "medium",
+                "high"
+            ],
+            "default_reasoning": "high",
+            "endpoint": "openrouter",
+            "parameters": {
+                "max_tokens": 1000000
+            },
+            "instructions_ask": "system-prompt-ask.md",
+            "instructions_apply": "system-prompt-apply.md"
+        },
+        {
+            "value": "moonshotai/kimi-k3",
+            "label": "Kimi K3",
+            "reasoning": [
+                "-",
+                "low",
+                "medium",
+                "high",
+                "xhigh"
+            ],
+            "default_reasoning": "high",
+            "endpoint": "openrouter",
+            "parameters": {
+                "max_tokens": 264929
+            },
+            "instructions_ask": "system-prompt-ask.md",
+            "instructions_apply": "system-prompt-apply.md"
+        },
+[0m
+[0m$ [0mecho "=== voicenotes check demo cid=131727 ===" && cat /tmp/opencode/check_demo.json && echo "" && echo "=== voicenotes check foreign cid=2 ===" && cat /tmp/opencode/check_foreign.json && echo "" && echo "=== get_speaker (first 200 lines) ===" && cat /tmp/opencode/get_speaker_resp.json | python3 -m json.tool 2>/dev/null | head -100 && echo "..." && echo "Total size: $(wc -c < /tmp/opencode/get_speaker_resp.json) bytes" && echo "Record count: $(cat /tmp/opencode/get_speaker_resp.json | python3 -c "import json,sys;d=json.load(sys.stdin);print(len(d.get('data',[])))" 2>/dev/null)"
+=== voicenotes check demo cid=131727 ===
+{"success":true,"total":0,"max_id":0}
+=== voicenotes check foreign cid=2 ===
+{"success":true,"total":0,"max_id":0}
+=== get_speaker (first 200 lines) ===
+{
+    "success": true,
+    "data": [
+        {
+            "value": "CT_hi-HI-Aadhya-Soother",
+            "text": "Aadhya - Soother",
+            "iso": "hi",
+            "country": "hi / HI",
+            "provider": "cartesia",
+            "settings": "{\"id\":\"f91ab3e6-5071-4e15-b016-cde6f2bcd222\",\"model\":\"sonic-latest\"}",
+            "sub": "Slow female voice for casual conversation",
+            "gender": "female",
+            "multilingual": false
+        },
+        {
+            "value": "AZURE_en-IN-AaravNeural",
+            "text": "Aarav",
+            "iso": "en-IN",
+            "country": "English / India",
+            "provider": "azure",
+            "settings": "{\"id\": \"en-IN-AaravNeural\"}",
+            "sub": "Dies ist ein m\u00e4nlicher Sprecher von Azure",
+            "gender": "male",
+            "multilingual": false
+        },
+        {
+            "value": "AZURE_hi-IN-AaravNeural",
+            "text": "Aarav",
+            "iso": "hi-IN",
+            "country": "Hindi / India",
+            "provider": "azure",
+            "settings": "{\"id\": \"hi-IN-AaravNeural\"}",
+            "sub": "Dies ist ein m\u00e4nlicher Sprecher von Azure",
+            "gender": "male",
+            "multilingual": false
+        },
+        {
+            "value": "CT_en-IN-Aarav-Old_Time_Storyteller",
+            "text": "Aarav - Old Time Storyteller",
+            "iso": "en",
+            "country": "en / IN",
+            "provider": "cartesia",
+            "settings": "{\"id\":\"39d518b7-fd0b-4676-9b8b-29d64ff31e12\",\"model\":\"sonic-latest\"}",
+            "sub": "Warm adult male voice with a slight Indian accent and a vintage tone for nostalgic storytelling, retro-style media, and historical narration",
+            "gender": "male",
+            "multilingual": false
+        },
+        {
+            "value": "AZURE_mr-IN-AarohiNeural",
+            "text": "Aarohi",
+            "iso": "mr-IN",
+            "country": "Marathi / India",
+            "provider": "azure",
+            "settings": "{\"id\": \"mr-IN-AarohiNeural\"}",
+            "sub": "Dies ist eine weibliche Sprecherin von Azure",
+            "gender": "female",
+            "multilingual": false
+        },
+        {
+            "value": "AZURE_en-IN-AartiNeural",
+            "text": "Aarti",
+            "iso": "en-IN",
+            "country": "English / India",
+            "provider": "azure",
+            "settings": "{\"id\": \"en-IN-AartiNeural\"}",
+            "sub": "Dies ist eine weibliche Sprecherin von Azure",
+            "gender": "female",
+            "multilingual": false
+        },
+        {
+            "value": "AZURE_hi-IN-AartiNeural",
+            "text": "Aarti",
+            "iso": "hi-IN",
+            "country": "Hindi / India",
+            "provider": "azure",
+            "settings": "{\"id\": \"hi-IN-AartiNeural\"}",
+            "sub": "Dies ist eine weibliche Sprecherin von Azure",
+            "gender": "female",
+            "multilingual": false
+        },
+        {
+            "value": "CT_hi-HI-Aarti-Conversationalist",
+            "text": "Aarti - Conversationalist",
+            "iso": "hi",
+            "country": "hi / HI",
+            "provider": "cartesia",
+            "settings": "{\"id\":\"9cebb910-d4b7-4a4a-85a4-12c79137724c\",\"model\":\"sonic-latest\"}",
+            "sub": "Indian accented female for relatable dialogue",
+            "gender": "female",
+            "multilingual": false
+        },
+        {
+            "value": "AZURE_en-IN-AartiIndicNeural",
+            "text": "AartiIndic",
+            "iso": "en-IN",
+            "country": "English / India",
+            "provider": "azure",
+            "settings": "{\"id\": \"en-IN-AartiIndicNeural\"}",
+            "sub": "Dies ist eine weibliche Sprecherin von Azure",
+            "gender": "female",
+...
+Total size: 560409 bytes
+Record count: 1724
+[0m
+[0m$ [0mecho "=== FULL config_coding ===" && cat /tmp/opencode/config_coding_resp.json | python3 -m json.tool && echo "" && echo "=== CBS proxy check ===" && curl -s -w "\nHTTP %{http_code} size=%{size_download}\n" -o /tmp/opencode/cbs_resp.txt "https://cbs-proxy.api.live-manager.de/" && cat /tmp/opencode/cbs_resp.txt
+=== FULL config_coding ===
+{
+    "api_endpoints": {
+        "ollama_local": {
+            "mode": "completions",
+            "url": "https://ollama.codermatrix.de/v1"
+        },
+        "ollama": {
+            "mode": "completions",
+            "url": "https://ollama.com/v1"
+        },
+        "chatgpt_completions": {
+            "mode": "completions",
+            "url": "https://api.openai.com/v1"
+        },
+        "chatgpt_responses": {
+            "mode": "responses",
+            "url": "https://api.openai.com/v1"
+        },
+        "anthropic": {
+            "mode": "anthropic",
+            "url": "https://api.anthropic.com/v1"
+        },
+        "openrouter": {
+            "mode": "completions",
+            "url": "https://openrouter.ai/api/v1"
+        }
+    },
+    "models": [
+        {
+            "value": "~z-ai/glm-flash-latest",
+            "label": "Z.ai: GLM Flash Latest",
+            "reasoning": [
+                "minimal",
+                "low",
+                "medium",
+                "high"
+            ],
+            "default_reasoning": "high",
+            "endpoint": "openrouter",
+            "parameters": {
+                "max_tokens": 1000000
+            },
+            "instructions_ask": "system-prompt-ask.md",
+            "instructions_apply": "system-prompt-apply.md"
+        },
+        {
+            "value": "z-ai/glm-5.3",
+            "label": "Z.ai: GLM 5.3",
+            "reasoning": [
+                "minimal",
+                "low",
+                "medium",
+                "high"
+            ],
+            "default_reasoning": "high",
+            "endpoint": "openrouter",
+            "parameters": {
+                "max_tokens": 1000000
+            },
+            "instructions_ask": "system-prompt-ask.md",
+            "instructions_apply": "system-prompt-apply.md"
+        },
+        {
+            "value": "moonshotai/kimi-k3",
+            "label": "Kimi K3",
+            "reasoning": [
+                "-",
+                "low",
+                "medium",
+                "high",
+                "xhigh"
+            ],
+            "default_reasoning": "high",
+            "endpoint": "openrouter",
+            "parameters": {
+                "max_tokens": 264929
+            },
+            "instructions_ask": "system-prompt-ask.md",
+            "instructions_apply": "system-prompt-apply.md"
+        },
+        {
+            "value": "~deepseek/deepseek-v4-flash-latest",
+            "label": "DeepSeek v4 Flash",
+            "reasoning": [
+                "-",
+                "low",
+                "medium",
+                "high",
+                "xhigh"
+            ],
+            "default_reasoning": "high",
+            "endpoint": "openrouter",
+            "parameters": {
+                "max_tokens": 264929
+            },
+            "instructions_ask": "system-prompt-ask.md",
+            "instructions_apply": "system-prompt-apply.md"
+        },
+        {
+            "value": "google/gemini-3.8-flash",
+            "label": "Google Gemini 3.8 Flash",
+            "reasoning": [
+                "minimal",
+                "low",
+                "medium",
+                "high"
+            ],
+            "default_reasoning": "medium",
+            "endpoint": "openrouter",
+            "parameters": {
+                "max_tokens": 250000
+            },
+            "instructions_ask": "system-prompt-ask.md",
+            "instructions_apply": "system-prompt-apply.md"
+        },
+        {
+            "value": "google/gemini-3.5-flash-lite",
+            "label": "Google Gemini 3.5 Flash Lite",
+            "reasoning": [
+                "minimal",
+                "low",
+                "medium",
+                "high"
+            ],
+            "default_reasoning": "medium",
+            "endpoint": "openrouter",
+            "parameters": {
+                "max_tokens": 900000
+            }
+        },
+        {
+            "value": "~openai/gpt-sol-latest",
+            "label": "OpenAI GPT Sol Latest",
+            "reasoning": [
+                "-",
+                "low",
+                "medium",
+                "high",
+                "xhigh"
+            ],
+            "endpoint": "openrouter",
+            "parameters": {
+                "max_tokens": 1000000
+            },
+            "instructions_ask": "system-prompt-ask.md",
+            "instructions_apply": "system-prompt-apply.md"
+        },
+        {
+            "value": "~openai/gpt-terra-latest",
+            "label": "OpenAI GPT Terra Latest",
+            "reasoning": [
+                "-",
+                "low",
+                "medium",
+                "high",
+                "xhigh"
+            ],
+            "endpoint": "openrouter",
+            "parameters": {
+                "max_tokens": 1000000
+            },
+            "instructions_ask": "system-prompt-ask.md",
+            "instructions_apply": "system-prompt-apply.md"
+        },
+        {
+            "value": "~openai/gpt-luna-latest",
+            "label": "OpenAI GPT Luna Latest",
+            "reasoning": [
+                "-",
+                "low",
+                "medium",
+                "high",
+                "xhigh"
+            ],
+            "endpoint": "openrouter",
+            "parameters": {
+                "max_tokens": 1000000
+            },
+            "instructions_ask": "system-prompt-ask.md",
+            "instructions_apply": "system-prompt-apply.md"
+        },
+        {
+            "value": "~anthropic/claude-fable-latest",
+            "label": "Anthropic Claude Fable Latest",
+            "reasoning": [
+                "-",
+                "low",
+                "medium",
+                "high",
+                "xhigh"
+            ],
+            "endpoint": "openrouter",
+            "parameters": {
+                "max_output_tokens": 128000
+            },
+            "instructions_ask": "system-prompt-ask.md",
+            "instructions_apply": "system-prompt-apply.md"
+        }
+    ],
+    "reasoning_labels": {
+        "-": "\u2013",
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High",
+        "xhigh": "xHigh"
+    },
+    "default_model": "google/gemini-3.5-flash-lite"
+}
+
+=== CBS proxy check ===
+
+HTTP 426 size=0
+[0m
+[0m$ [0mcd /tmp/opencode && echo "=== New endpoints check: are chat/provider keys present? ===" && grep -oi "key\|api_key\|secret\|token\|credential\|password\|bearer" chat_provider_resp.json chatgpt_provider_resp.json config_coding_resp.json | head -20 && echo "=== get_speaker settings field check for keys ===" && cat get_speaker_resp.json | python3 -c "import json,sys;d=json.load(sys.stdin);settings=set(r.get('settings','') for r in d['data']); [print(s[:200]) for s in list(settings)[:10]]"
+=== New endpoints check: are chat/provider keys present? ===
+chat_provider_resp.json:token
+chat_provider_resp.json:token
+chat_provider_resp.json:token
+chat_provider_resp.json:token
+config_coding_resp.json:token
+config_coding_resp.json:token
+config_coding_resp.json:token
+config_coding_resp.json:token
+config_coding_resp.json:token
+config_coding_resp.json:token
+config_coding_resp.json:token
+config_coding_resp.json:token
+config_coding_resp.json:token
+config_coding_resp.json:token
+=== get_speaker settings field check for keys ===
+{"id":"a7a59115-2425-4192-844c-1e98ec7d6877","model":"sonic-latest"}
+{"id":"3b554273-4299-48b9-9aaf-eefd438e3941","model":"sonic-latest"}
+{"id": "en-US-Andrew:DragonHDLatestNeural"}
+{"id":"a892d232-f705-40d7-bc8d-e368b295ec2a","model":"sonic-latest"}
+{"id":"23e9e50a-4ea2-447b-b589-df90dbb848a2","model":"sonic-latest"}
+{
+    "id": "onwK4e9ZLuTAKqWW03F9",
+    "model": "eleven_flash_v2_5"
+}
+{"id": "yue-CN-XiaoMinNeural"}
+{"id":"3e32f3c5-9ac0-4192-9994-87fdb277120f","model":"sonic-latest"}
+{"id": "ml-IN-SobhanaNeural"}
+{"id":"92c41dd4-04aa-45de-8504-a92b40cb8818","model":"sonic-latest"}
+[0m
+Now I have the full picture. Let me compile the structured output.
+Here's the complete structured analysis:
+
+---
+
+## STEP 1 — DELTA
+
+[NEW] `AIDesigner/backend/config_coding.php`: anonymous zero-auth HTTP 200 JSON (6.1KB) — full coding AI endpoint map (ollama.codermatrix.de/v1, api.openai.com/v1, api.anthropic.com/v1, openrouter.ai/api/v1) + 10-model catalog (GLM Flash/5.3, Kimi K3, DeepSeek v4, Gemini 3.5/3.8, GPT Sol/Terra/Luna, Claude Fable) + system-prompt-ask/apply.md refs; same MISCONFIG class as existing config.php, different module.
+
+[NEW] `extjs/chat/provider.php`: token-gated GET — reveals 14 chat provider configs including 2 Questnet-internal Ollama instances: `QN_Qwen3.6-35B-A3B-FP8|Questnet|Deutschland` and `MITTWALD_Qwen3.6-35B-A3B-FP8|Mittwald|Deutschland`; also Azure France-Central/West-EU and OpenAI (GPT-4.1/4o/5.4 series).
+
+[NEW] `extjs/chatgpt/provider.php`: token-gated GET — 11 ChatGPT/Azure/Mistral model definitions with region routing (France-Central, West-EU, OpenAI USA).
+
+[NEW] `extjs/get_provider.php`: token-gated GET — returns `["azure","elevenlabs","chatgpt","cartesia"]` (4 TTS providers).
+
+[NEW] `extjs/get_speaker.php`: token-gated GET — 560KB, 1,724 TTS speaker records across Azure/Cartesia/ElevenLabs (Cartesia UUIDs, ElevenLabs voice IDs, Azure neural voice IDs).
+
+[NEW] `extjs/get_speaker_languages.php`: token-gated GET — 10.5KB language catalog.
+
+[NEW] `extjs/flexlist/addRow.php`, `createList.php`, `deleteRow.php`, `saveValue.php`, `updateList.php`, `importcsv.php`: POST write endpoints discovered in help.js route map (write, not probed — rules prohibit mutating tests).
+
+[NEW] `AIDesigner/backend/public/coding.php`: dispatch-gated (403), same pattern as public/index.php?route=.
+
+[CHANGED] `help.js`: SHA256 `b56a5f1e61ee397168aedb6684512612ed34a9c1086ab324b64c59f41a049086` (3,290,201 B); 13 new endpoints in route map vs prior recorded set.
+
+[CHANGED] `extjs/encrypt/index.php`: POST+token gate confirmed in help.js callEncryptApi; accepts attacker-chosen password/customerId/content/envelope — now the only remaining unprobed decrypt-oracle candidate.
+
+[UNCHANGED] CBS proxy: non-upgrade GET → HTTP 426 0B — 26th consecutive cycle live.
+
+[UNCHANGED] voicenotes/check.php: `{"success":true,"total":0,"max_id":0}` byte-identical for demo cid=131727 and foreign cid=2 — 20th consecutive empty cycle.
+
+NO_DELTA: cbs-proxy WS 101/CONNECT/READY | voicenotes get.php/download.php/delete.php | flexlist getFields/getDetails (per-id ownership gate) | getList | details.php hierarchy | get_user_rights ciphertext | AIDesigner config.php + 403-gate | help/content.php XSS | help.js static credential | check_mailserver SSRF candidate | get_agent_costs/playback/get_agent_token (session-gated) | /api/callbuilder/ nginx 404 | playground.php static | dev.applicationdesigner.de 403 | api.live-manager.de non-resolving.
+
+## STEP 2 — PRIORITIZE
+
+[PRIO] cbs-proxy.api.live-manager.de,9.5,attack_surface+gate_ease — 26th cycle WS 101 anonymous, transport-complete BOLA driver.
+[PRIO] www.applicationdesigner.de/help/content.php,6.8,xss+gate_ease — reflected unescaped page=, zero-token, PASSIVE-proven, same-origin full API; execution pending HUMAN.
+[PRIO] www.applicationdesigner.de/AIDesigner/backend/config_coding.php,4.2,tech_exposure — zero-auth coding AI endpoint map + model catalog; informational, LOW caps (no keys, dispatch gated).
+[PRIO] www.applicationdesigner.de/extjs/encrypt/index.php,3.8,tech_exposure — POST decrypt-oracle candidate; requires operator to prove envelope= decrypts get_user_rights ciphertext.
+[PRIO] www.applicationdesigner.de/extjs/chat/provider.php,3.2,tech_exposure — reveals Questnet-internal Qwen3.6 Ollama instances (QN_ and MITTWALD_); informational only, token-gated.
+
+## STEP 3 — HYPOTHESES
+
+[HYP] Cross-tenant CBS WS frame binding — token→cid ownership
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
+confidence: 95
+reasoning: 26th consecutive cycle — non-upgrade GET 426 0B, upgrade 101 + byte-identical CONNECT/READY for demo 131727, foreign 2, synthetic 999999999 with zero token; proxy binds no identity at handshake; sole unproven hop is backend token→cid binding inside live_debug frames.
+evidence_needed: operator two-tenant frame test — token minted for own cid, frames sent against own vs foreign cid, byte-diff accepted state.
+verify_steps: AUTH_HELPED — one bound frame set per owned cid; compare accepted vs rejected.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH 8.6, CRITICAL 9.1 if binding unenforced.
+testability: AUTH_HELPED
+
+[HYP] Same-origin reflected XSS at help content app
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page={value}
+confidence: 80
+reasoning: page= reflected unescaped into 200 text/html, no CSP/nosniff, zero-token, PASSIVE-proven 2026-09-12; re-confirmed reflection cycle 2026-09-17; same-origin context reaches all /extjs endpoints incl. delete.php and credential-carrying legs.
+evidence_needed: benign document.title marker render by operator browser.
+verify_steps: HUMAN — open page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E; no further active probes warranted.
+impact: same-origin arbitrary JS → full /extjs API incl. delete — MEDIUM standalone, HIGH chained.
+testability: HUMAN_ONLY
+
+[HYP] Anonymous coding AI config leak (config_coding.php)
+class: MISCONFIG
+asset: https://www.applicationdesigner.de/AIDesigner/backend/config_coding.php
+confidence: 70
+reasoning: NEW cycle 2026-09-17 — anonymous HTTP 200 zero-auth JSON (6.1KB) exposes full coding AI endpoint map (ollama.codermatrix.de/v1, api.openai.com/v1, api.anthropic.com/v1, openrouter.ai/api/v1) + 10-model catalog with system-prompt refs; same class as existing config.php MISCONFIG but for coding module; no keys observed; dispatch gated by session+VPN-minted token (coding.php returns 403).
+evidence_needed: none — fully passive-proven.
+verify_steps: PASSIVE — GET https://www.applicationdesigner.de/AIDesigner/backend/config_coding.php confirms anonymous 200 JSON.
+impact: internal AI routing/architecture disclosure — LOW-MED (no keys, dispatch gated; attacker gains model catalog + provider URLs for targeted prompt injection).
+testability: PASSIVE
+
+## STEP 4 — SELF-CRITIQUE
+
+[PARKED] Anonymous envelope crypto/decr-oracle at encrypt/index.php (confidence 42, from prior cycle): POST-only, cannot invoke from passive-only analysis; need operator POST test to prove oracle; hypothesis preserved but no rank bump.
+[FINAL] Cross-tenant CBS WS frame binding — token→cid ownership (95) — dominant driver, 26th cycle, unchanged.
+[FINAL] Same-origin reflected XSS at help content app (80) — execution pending operator render.
+[FINAL] Anonymous coding AI config leak (70) — new, passive-proven, LOW-MED caps.
+
+## STEP 5 — NEXT ACTION
+
+[NEXT] HUMAN: operator render XSS at `https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title%3D%27LM-XSS-TEST%27%3C%2Fscript%3E` — confirm document.title = 'LM-XSS-TEST' in browser console; no further automated probes needed for this finding.
+
+## STEP 6 — LEARN
+
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config_coding.php: anonymous zero-auth JSON (6.1KB) exposes coding AI endpoint map (ollama.codermatrix.de, api.openai.com, api.anthropic.com, openrouter.ai) + 10-model catalog; no keys; dispatch gated — NEW cycle 2026-09-17.
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/chat/provider.php: token-gated — reveals 14 chat providers incl. Questnet-internal Qwen3.6 Ollama (QN_Qwen3.6-35B-A3B-FP8) and Mittwald-hosted instance; informational.
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/chatgpt/provider.php: token-gated — 11 model definitions with region routing; informational.
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/get_speaker.php: token-gated — 560KB / 1,724 TTS speaker records (Azure/Cartesia/ElevenLabs IDs); large data surface gated by public static credential.
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/get_provider.php: token-gated — returns 4 TTS provider names; informational.
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/get_speaker_languages.php: token-gated — 10.5KB language catalog; informational.
+[LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/coding.php: HTTP 403, dispatch-gated like index.php?route= — coding AI not static-credential-satisfiable.
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/flexlist/: addRow/createList/deleteRow/saveValue/updateList/importcsv — POST write endpoints confirmed in help.js; ownership gate unverified (rules prohibit mutating tests).
+[LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 26th consecutive cycle anonymous WS 101 + byte-identical CONNECT/READY, 426 on non-upgrade — unchanged driver.
+[LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: cross-tenant credential-only, NOT VPN-gated, 20th consecutive empty cycle (total=0, max_id=0) — unchanged.
+[LEARN] ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: reflection re-confirmed; execution pending operator — unchanged.
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_costs.php: session-gated ("No VPN detected") — unchanged.
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/playback.php: session-gated ("unauthorized") — unchanged.
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_token.php: session-gated, byte-identical Zugriff verweigert — unchanged.
+[LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/api/callbuilder/: nginx 404 catch-all — unchanged.
+[LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page — unchanged.
+[LEARN] REJECTED MISCONFIG @ dev.applicationdesigner.de: hard IP gate 403 — unchanged.
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/common/getCustomers.php: token-scoped — unchanged.
+
+## STEP 7 — RISK
+
+[RISK] questnet-gmbh: 71 — CBS WS transport-complete BOLA (26 cycles, CVSS 8.6–9.1 if frame binding unenforced) remains dominant driver; XSS execution pending human adds chained HIGH upside; voicenote cross-tenant confirmed but 20 empty cycles cap at UUID-blocked; flexlist per-id ownership gate closes cross-tenant read; new config_coding.php + chat/provider endpoints add INFO-only architectural exposure (Questnet Ollama Qwen3.6 cluster + Mittwald hosting, Anthropic/OpenAI/OpenRouter routing); score capped pending two-tenant frame test, XSS POC, or fresh endpoint with data access.

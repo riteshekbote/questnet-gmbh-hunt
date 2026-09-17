@@ -1,4 +1,4 @@
-## 2026-09-17 06:13:03 UTC [target] (model nemotron3)
+## 2026-09-17 11:53:58 UTC [target] (model nemotron3)
 [NEW] Flexlist per-id ownership gate PROVEN: getDetails with LIVE_DEMO_CUSTOMER_TOKEN resolves ONLY demo row id=345 (17173B, sha256 aba9094f0a615eab, byte-identical to 2026-09-09); ids 0/1/150/175/200/250/300 → identical 26B/49B empty/unauthorized responses — earlier "token-only gate" MISCONFIG narrowed to token+row-ownership; cross-tenant read NOT observed across global id space 0–345.
 [NEW] Voicenotes/check.php: 18th consecutive cycle success:true,total:0,max_id:0 byte-identical (37B sha256 090b03ceb0dfc8b8) for demo cid=131727 and foreign cid=2 — index empty, no UUID path.
 [NEW] cbs-proxy.api.live-manager.de: non-upgrade GET → HTTP 426 0B reconfirmed — driver live, 23rd cycle.

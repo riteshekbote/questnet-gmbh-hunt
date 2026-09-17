@@ -667,3 +667,20 @@ www.live-manager.de
 - NEW cbs-proxy.api.live-manager.de: non-upgrade GET → HTTP 426 0B reconfirmed — driver live, 23rd cycle.
 - CHANGED XSS @ www.applicationdesigner.de/help/content.php: PASSIVE reflection confirmed — `<script>` payload reflected unescaped in 200 text/html, no CSP/nosniff, zero-token; execution pending operator render
 - CHANGED Surface frozen at 4 live in-scope hosts since 2026-09-04 — no new hosts/endpoints discovered.
+
+## 2026-09-17 11:56:37 UTC
+- NEW `AIDesigner/backend/config_coding.php`: anonymous zero-auth HTTP 200 JSON (6.1KB) — full coding AI endpoint map (ollama.codermatrix.de/v1, api.openai.com/v1, api.anthropic.com/v1, openrouter.ai/api/v1
+- NEW `extjs/chat/provider.php`: token-gated GET — reveals 14 chat provider configs including 2 Questnet-internal Ollama instances: `QN_Qwen3.6-35B-A3B-FP8|Questnet|Deutschland` and `MITTWALD_Qwen3.6-35B-A3
+- NEW `extjs/chatgpt/provider.php`: token-gated GET — 11 ChatGPT/Azure/Mistral model definitions with region routing (France-Central, West-EU, OpenAI USA).
+- NEW `extjs/get_provider.php`: token-gated GET — returns `["azure","elevenlabs","chatgpt","cartesia"]` (4 TTS providers).
+- NEW `extjs/get_speaker.php`: token-gated GET — 560KB, 1,724 TTS speaker records across Azure/Cartesia/ElevenLabs (Cartesia UUIDs, ElevenLabs voice IDs, Azure neural voice IDs).
+- NEW `extjs/get_speaker_languages.php`: token-gated GET — 10.5KB language catalog.
+- NEW `extjs/flexlist/addRow.php`, `createList.php`, `deleteRow.php`, `saveValue.php`, `updateList.php`, `importcsv.php`: POST write endpoints discovered in help.js route map (write, not probed — rules proh
+- NEW `AIDesigner/backend/public/coding.php`: dispatch-gated (403), same pattern as public/index.php?route=.
+- CHANGED `help.js`: SHA256 `b56a5f1e61ee397168aedb6684512612ed34a9c1086ab324b64c59f41a049086` (3,290,201 B); 13 new endpoints in route map vs prior recorded set.
+- CHANGED `extjs/encrypt/index.php`: POST+token gate confirmed in help.js callEncryptApi; accepts attacker-chosen password/customerId/content/envelope — now the only remaining unprobed decrypt-oracle candidate.
+- NEW Flexlist per-id ownership gate PROVEN: getDetails with LIVE_DEMO_CUSTOMER_TOKEN resolves ONLY demo row id=345 (17173B, sha256 aba9094f0a615eab, byte-identical to 2026-09-09); ids 0/1/150/175/200/250/3
+- NEW Voicenotes/check.php: 18th consecutive cycle success:true,total:0,max_id:0 byte-identical (37B sha256 090b03ceb0dfc8b8) for demo cid=131727 and foreign cid=2 — index empty, no UUID path.
+- NEW cbs-proxy.api.live-manager.de: non-upgrade GET → HTTP 426 0B reconfirmed — driver live, 23rd cycle.
+- CHANGED XSS @ www.applicationdesigner.de/help/content.php: PASSIVE reflection confirmed — `<script>` payload reflected unescaped in 200 text/html, no CSP/nosniff, zero-token; execution pending operator render
+- CHANGED Surface frozen at 4 live in-scope hosts since 2026-09-04 — no new hosts/endpoints discovered.
