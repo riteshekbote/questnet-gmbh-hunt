@@ -463,3 +463,8 @@
 - 2026-09-17 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/flexlist/: addRow/createList/deleteRow/saveValue/updateList/importcsv — POST write endpoints in help.js — NEW 2026-09-17
 - 2026-09-17 ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: SHA256 changed, 13 new endpoints in route map — NEW 2026-09-17
 - 2026-09-17 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/encrypt/index.php: POST+token gate, attacker-chosen params — unprobed decrypt-oracle candidate — NEW 2026-09-17
+- 2026-09-17 ACCEPTED CONTROL @ www.applicationdesigner.de help.js: `/api/chat/message` + `/api/chat/stream/{id}` are routes into `AIDesigner/backend/public/index.php?route=...` (403 token-gated dispatcher), not nginx paths — last strand of the 13-endpoint route-map change closed; genuinely new anonymous surface remains zero (2026-09-17).
+- 2026-09-17 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/encrypt/index.php: callEncryptApi is a client-keyed encrypt/decrypt transform (attacker-chosen password) — NOT a server-secret decrypt oracle as first framed; POST-only and unprobeable; residual per-customer-key fallback variant parked at confidence 30.
+- 2026-09-17 ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 28th cycle 426/0B non-upgrade + byte-identical 101 CONNECT/READY frame set, transport-complete — unchanged.
+- 2026-09-17 ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: 200 `{"success":true,"total":0,"max_id":0}` (37B, sha256 090b03ceb0dfc8b8), 21+ consecutive empty cycles, credential-only cross-tenant gate — unchanged.
+- 2026-09-17 REJECTED MISCONFIG @ reposcan: 3rd consecutive non-contributing run (`TARGET_ORG not configured`) — reposcan channel is dead for this program, do not re-run.
