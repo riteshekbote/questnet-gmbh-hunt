@@ -25271,3 +25271,508 @@ testability: HUMAN_ONLY
 
 **STEP 7 — RISK**
 - [RISK] questnet-gmbh: 72 — CBS WS transport-complete BOLA (CVSS 8.6–9.1 if frame binding unenforced) remains dominant driver, live 24th cycle; this cycle's help.js refresh added no new anonymous GET surface (encrypt/index.php session-gated, get_speaker* global config, flexlist writes POST-only), leaving score unchanged; XSS execution pending human is the only near-term chained upside; voicenote download capped at UUID-blocked; flexlist leg closed. Cap stays until two-tenant frame test, XSS POC, or a new zero-token GET surface appears.
+===== ANALYST bigpickle 2026-09-17 06:21:24 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la
+total 444
+drwxr-xr-x 12 runner runner   4096 Sep 17 06:13 .
+drwxr-xr-x  3 runner runner   4096 Sep 17 06:12 ..
+drwxr-xr-x  7 runner runner   4096 Sep 17 06:13 .git
+drwxr-xr-x  3 runner runner   4096 Sep 17 06:13 .github
+-rw-r--r--  1 runner runner   1609 Sep 17 06:13 README.md
+-rw-r--r--  1 runner runner     32 Sep 17 06:13 analyst-out.txt
+-rw-r--r--  1 runner runner 180789 Sep 17 06:13 analyst-prompt.txt
+-rw-r--r--  1 runner runner 177069 Sep 17 06:13 ctx.txt
+drwxr-xr-x  2 runner runner   4096 Sep 17 06:13 inventory
+drwxr-xr-x  2 runner runner   4096 Sep 17 06:13 knowledge
+drwxr-xr-x  2 runner runner   4096 Sep 17 06:13 leads
+-rw-r--r--  1 runner runner   2784 Sep 17 06:13 probe-results.md
+drwxr-xr-x  2 runner runner   4096 Sep 17 06:13 recon-notes
+drwxr-xr-x  2 runner runner   4096 Sep 17 06:13 reports
+drwxr-xr-x  2 runner runner   4096 Sep 17 06:13 reposcan-raw
+-rw-r--r--  1 runner runner   3133 Sep 17 06:13 scope.yml
+drwxr-xr-x  2 runner runner   4096 Sep 17 06:13 scripts
+-rw-r--r--  1 runner runner     33 Sep 17 06:13 state_bigpickle.json
+-rw-r--r--  1 runner runner     33 Sep 17 06:13 state_laguna.json
+-rw-r--r--  1 runner runner     33 Sep 17 06:13 state_ling3.json
+-rw-r--r--  1 runner runner     33 Sep 17 06:13 state_longcat.json
+-rw-r--r--  1 runner runner     33 Sep 17 06:13 state_mimo.json
+-rw-r--r--  1 runner runner     33 Sep 17 06:13 state_nemotron3.json
+drwxr-xr-x  2 runner runner   4096 Sep 17 06:13 triage
+[0m
+[0m✱ [0mGlob "**/lead_bigpickle.txt"[90m 0 matches[0m
+[0m
+[0m$ [0mls -la leads knowledge scripts recon-notes reports triage
+knowledge:
+total 88
+drwxr-xr-x  2 runner runner  4096 Sep 17 06:13 .
+drwxr-xr-x 12 runner runner  4096 Sep 17 06:13 ..
+-rw-r--r--  1 runner runner 80629 Sep 17 06:13 index.md
+
+leads:
+total 1604
+drwxr-xr-x  2 runner runner   4096 Sep 17 06:13 .
+drwxr-xr-x 12 runner runner   4096 Sep 17 06:13 ..
+-rw-r--r--  1 runner runner 686148 Sep 17 06:13 lead-bigpickle.md
+-rw-r--r--  1 runner runner   4641 Sep 17 06:13 lead-laguna.md
+-rw-r--r--  1 runner runner   4550 Sep 17 06:13 lead-ling3.md
+-rw-r--r--  1 runner runner   4732 Sep 17 06:13 lead-longcat.md
+-rw-r--r--  1 runner runner     18 Sep 17 06:13 lead-mimo.md
+-rw-r--r--  1 runner runner 862350 Sep 17 06:13 lead-nemotron3.md
+-rw-r--r--  1 runner runner  49345 Sep 17 06:13 reposcan-questnet-gmbh.md
+
+recon-notes:
+total 12
+drwxr-xr-x  2 runner runner 4096 Sep 17 06:13 .
+drwxr-xr-x 12 runner runner 4096 Sep 17 06:13 ..
+-rw-r--r--  1 runner runner  856 Sep 17 06:13 DEDICATED-DEEP.md
+
+reports:
+total 3696
+drwxr-xr-x  2 runner runner    4096 Sep 17 06:13 .
+drwxr-xr-x 12 runner runner    4096 Sep 17 06:13 ..
+-rw-r--r--  1 runner runner 1854463 Sep 17 06:13 analyst-bigpickle.log
+-rw-r--r--  1 runner runner   19747 Sep 17 06:13 analyst-laguna.log
+-rw-r--r--  1 runner runner   19656 Sep 17 06:13 analyst-ling3.log
+-rw-r--r--  1 runner runner   19838 Sep 17 06:13 analyst-longcat.log
+-rw-r--r--  1 runner runner 1497584 Sep 17 06:13 analyst-nemotron3.log
+-rw-r--r--  1 runner runner    2350 Sep 17 06:13 hypotheses-bigpickle.txt
+-rw-r--r--  1 runner runner      51 Sep 17 06:13 hypotheses-laguna.txt
+-rw-r--r--  1 runner runner      50 Sep 17 06:13 hypotheses-ling3.txt
+-rw-r--r--  1 runner runner      52 Sep 17 06:13 hypotheses-longcat.txt
+-rw-r--r--  1 runner runner      54 Sep 17 06:13 hypotheses-nemotron3.txt
+-rw-r--r--  1 runner runner  330073 Sep 17 06:13 hypotheses.md
+-rw-r--r--  1 runner runner    7779 Sep 17 06:13 valid-bugs.md
+
+scripts:
+total 28
+drwxr-xr-x  2 runner runner  4096 Sep 17 06:13 .
+drwxr-xr-x 12 runner runner  4096 Sep 17 06:13 ..
+-rw-r--r--  1 runner runner 16987 Sep 17 06:13 sync-issues.py
+
+triage:
+total 516
+drwxr-xr-x  2 runner runner  4096 Sep 17 06:13 .
+drwxr-xr-x 12 runner runner  4096 Sep 17 06:13 ..
+-rw-r--r--  1 runner runner     0 Sep 17 06:13 .gitkeep
+-rw-r--r--  1 runner runner   228 Sep 17 06:13 run-2026-09-02-21-42.md
+-rw-r--r--  1 runner runner   150 Sep 17 06:13 run-2026-09-02-23-54.md
+-rw-r--r--  1 runner runner   754 Sep 17 06:13 run-2026-09-03-03-39.md
+-rw-r--r--  1 runner runner   315 Sep 17 06:13 run-2026-09-03-08-18.md
+-rw-r--r--  1 runner runner   143 Sep 17 06:13 run-2026-09-03-12-53.md
+-rw-r--r--  1 runner runner   229 Sep 17 06:13 run-2026-09-03-16-58.md
+-rw-r--r--  1 runner runner   163 Sep 17 06:13 run-2026-09-03-19-43.md
+-rw-r--r--  1 runner runner   269 Sep 17 06:13 run-2026-09-03-22-24.md
+-rw-r--r--  1 runner runner   214 Sep 17 06:13 run-2026-09-04-00-23.md
+-rw-r--r--  1 runner runner   186 Sep 17 06:13 run-2026-09-04-05-05.md
+-rw-r--r--  1 runner runner   226 Sep 17 06:13 run-2026-09-04-09-45.md
+-rw-r--r--  1 runner runner   174 Sep 17 06:13 run-2026-09-04-14-05.md
+-rw-r--r--  1 runner runner   144 Sep 17 06:13 run-2026-09-04-17-42.md
+-rw-r--r--  1 runner runner   190 Sep 17 06:13 run-2026-09-04-19-53.md
+-rw-r--r--  1 runner runner   189 Sep 17 06:13 run-2026-09-04-22-13.md
+-rw-r--r--  1 runner runner   163 Sep 17 06:13 run-2026-09-05-00-11.md
+-rw-r--r--  1 runner runner   229 Sep 17 06:13 run-2026-09-05-04-41.md
+-rw-r--r--  1 runner runner  3734 Sep 17 06:13 run-2026-09-05-08-38.md
+-rw-r--r--  1 runner runner   182 Sep 17 06:13 run-2026-09-05-12-04.md
+-rw-r--r--  1 runner runner   350 Sep 17 06:13 run-2026-09-05-15-21.md
+-rw-r--r--  1 runner runner   236 Sep 17 06:13 run-2026-09-05-17-37.md
+-rw-r--r--  1 runner runner   193 Sep 17 06:13 run-2026-09-05-19-30.md
+-rw-r--r--  1 runner runner   189 Sep 17 06:13 run-2026-09-05-21-41.md
+-rw-r--r--  1 runner runner   218 Sep 17 06:13 run-2026-09-05-23-38.md
+-rw-r--r--  1 runner runner   213 Sep 17 06:13 run-2026-09-06-01-20.md
+-rw-r--r--  1 runner runner 12840 Sep 17 06:13 run-2026-09-06-06-10.md
+-rw-r--r--  1 runner runner  1952 Sep 17 06:13 run-2026-09-06-11-08.md
+-rw-r--r--  1 runner runner   210 Sep 17 06:13 run-2026-09-06-14-14.md
+-rw-r--r--  1 runner runner   244 Sep 17 06:13 run-2026-09-06-17-08.md
+-rw-r--r--  1 runner runner   654 Sep 17 06:13 run-2026-09-06-19-17.md
+-rw-r--r--  1 runner runner 17188 Sep 17 06:13 run-2026-09-06-21-29.md
+-rw-r--r--  1 runner runner   283 Sep 17 06:13 run-2026-09-06-23-09.md
+-rw-r--r--  1 runner runner   146 Sep 17 06:13 run-2026-09-07-01-06.md
+-rw-r--r--  1 runner runner   152 Sep 17 06:13 run-2026-09-07-06-11.md
+-rw-r--r--  1 runner runner   234 Sep 17 06:13 run-2026-09-07-12-45.md
+-rw-r--r--  1 runner runner   161 Sep 17 06:13 run-2026-09-07-18-09.md
+-rw-r--r--  1 runner runner   211 Sep 17 06:13 run-2026-09-07-21-36.md
+-rw-r--r--  1 runner runner   204 Sep 17 06:13 run-2026-09-07-23-46.md
+-rw-r--r--  1 runner runner   264 Sep 17 06:13 run-2026-09-08-03-47.md
+-rw-r--r--  1 runner runner 16515 Sep 17 06:13 run-2026-09-08-08-45.md
+-rw-r--r--  1 runner runner   221 Sep 17 06:13 run-2026-09-08-13-25.md
+-rw-r--r--  1 runner runner   167 Sep 17 06:13 run-2026-09-08-17-29.md
+-rw-r--r--  1 runner runner  1066 Sep 17 06:13 run-2026-09-08-20-16.md
+-rw-r--r--  1 runner runner   984 Sep 17 06:13 run-2026-09-08-22-45.md
+-rw-r--r--  1 runner runner   185 Sep 17 06:13 run-2026-09-09-01-06.md
+-rw-r--r--  1 runner runner   151 Sep 17 06:13 run-2026-09-09-06-06.md
+-rw-r--r--  1 runner runner   187 Sep 17 06:13 run-2026-09-09-11-34.md
+-rw-r--r--  1 runner runner   166 Sep 17 06:13 run-2026-09-09-15-17.md
+-rw-r--r--  1 runner runner   198 Sep 17 06:13 run-2026-09-09-18-43.md
+-rw-r--r--  1 runner runner   213 Sep 17 06:13 run-2026-09-09-21-33.md
+-rw-r--r--  1 runner runner   191 Sep 17 06:13 run-2026-09-09-23-30.md
+-rw-r--r--  1 runner runner   188 Sep 17 06:13 run-2026-09-10-01-27.md
+-rw-r--r--  1 runner runner 10247 Sep 17 06:13 run-2026-09-10-06-41.md
+-rw-r--r--  1 runner runner 13285 Sep 17 06:13 run-2026-09-10-11-51.md
+-rw-r--r--  1 runner runner   177 Sep 17 06:13 run-2026-09-10-16-04.md
+-rw-r--r--  1 runner runner   216 Sep 17 06:13 run-2026-09-10-19-09.md
+-rw-r--r--  1 runner runner  1753 Sep 17 06:13 run-2026-09-10-21-42.md
+-rw-r--r--  1 runner runner   175 Sep 17 06:13 run-2026-09-10-23-50.md
+-rw-r--r--  1 runner runner   886 Sep 17 06:13 run-2026-09-11-03-46.md
+-rw-r--r--  1 runner runner   215 Sep 17 06:13 run-2026-09-11-08-45.md
+-rw-r--r--  1 runner runner   182 Sep 17 06:13 run-2026-09-11-13-23.md
+-rw-r--r--  1 runner runner   216 Sep 17 06:13 run-2026-09-11-17-13.md
+-rw-r--r--  1 runner runner   309 Sep 17 06:13 run-2026-09-11-19-49.md
+-rw-r--r--  1 runner runner   236 Sep 17 06:13 run-2026-09-11-22-21.md
+-rw-r--r--  1 runner runner  1502 Sep 17 06:13 run-2026-09-12-00-37.md
+-rw-r--r--  1 runner runner  7845 Sep 17 06:13 run-2026-09-12-05-09.md
+-rw-r--r--  1 runner runner   668 Sep 17 06:13 run-2026-09-12-09-26.md
+-rw-r--r--  1 runner runner   153 Sep 17 06:13 run-2026-09-12-13-08.md
+-rw-r--r--  1 runner runner   253 Sep 17 06:13 run-2026-09-12-16-22.md
+-rw-r--r--  1 runner runner   149 Sep 17 06:13 run-2026-09-12-18-45.md
+-rw-r--r--  1 runner runner   179 Sep 17 06:13 run-2026-09-12-21-18.md
+-rw-r--r--  1 runner runner  1391 Sep 17 06:13 run-2026-09-12-23-06.md
+-rw-r--r--  1 runner runner   157 Sep 17 06:13 run-2026-09-13-01-08.md
+-rw-r--r--  1 runner runner   191 Sep 17 06:13 run-2026-09-13-06-19.md
+-rw-r--r--  1 runner runner  1316 Sep 17 06:13 run-2026-09-13-12-07.md
+-rw-r--r--  1 runner runner   199 Sep 17 06:13 run-2026-09-13-16-27.md
+-rw-r--r--  1 runner runner   156 Sep 17 06:13 run-2026-09-13-18-56.md
+-rw-r--r--  1 runner runner  6272 Sep 17 06:13 run-2026-09-13-21-23.md
+-rw-r--r--  1 runner runner   213 Sep 17 06:13 run-2026-09-13-23-29.md
+-rw-r--r--  1 runner runner   156 Sep 17 06:13 run-2026-09-14-01-38.md
+-rw-r--r--  1 runner runner 22295 Sep 17 06:13 run-2026-09-14-07-11.md
+-rw-r--r--  1 runner runner   244 Sep 17 06:13 run-2026-09-14-14-14.md
+-rw-r--r--  1 runner runner   721 Sep 17 06:13 run-2026-09-14-19-28.md
+-rw-r--r--  1 runner runner   218 Sep 17 06:13 run-2026-09-14-22-44.md
+-rw-r--r--  1 runner runner   159 Sep 17 06:13 run-2026-09-15-01-16.md
+-rw-r--r--  1 runner runner   207 Sep 17 06:13 run-2026-09-15-06-13.md
+-rw-r--r--  1 runner runner 13608 Sep 17 06:13 run-2026-09-15-11-55.md
+-rw-r--r--  1 runner runner 11378 Sep 17 06:13 run-2026-09-15-16-36.md
+-rw-r--r--  1 runner runner   150 Sep 17 06:13 run-2026-09-15-19-49.md
+-rw-r--r--  1 runner runner   462 Sep 17 06:13 run-2026-09-15-22-47.md
+-rw-r--r--  1 runner runner   279 Sep 17 06:13 run-2026-09-16-01-10.md
+-rw-r--r--  1 runner runner    80 Sep 17 06:13 run-2026-09-16-06-24.md
+-rw-r--r--  1 runner runner 10862 Sep 17 06:13 run-2026-09-16-11-49.md
+-rw-r--r--  1 runner runner   239 Sep 17 06:13 run-2026-09-16-16-27.md
+-rw-r--r--  1 runner runner   262 Sep 17 06:13 run-2026-09-16-19-42.md
+-rw-r--r--  1 runner runner   118 Sep 17 06:13 run-2026-09-16-22-44.md
+-rw-r--r--  1 runner runner   182 Sep 17 06:13 run-2026-09-17-01-10.md
+[0m
+[0m→ [0mRead probe-results.md
+[0m→ [0mRead reports/hypotheses-bigpickle.txt
+[0m→ [0mRead triage/run-2026-09-17-01-10.md
+[0m→ [0mRead reports/valid-bugs.md
+[0m→ [0mRead state_bigpickle.json
+[0m→ [0mRead triage/run-2026-09-16-22-44.md
+[0m→ [0mRead triage/run-2026-09-16-19-42.md
+[0m
+[0m$ [0mcurl -s -o /tmp/opencode/help.js -w "HTTP %{http_code} | size %{size_download} | type %{content_type}\n" "https://www.applicationdesigner.de/help.js" --max-time 20
+HTTP 200 | size 3290201 | type application/javascript
+[0m
+[0m$ [0msha256sum /tmp/opencode/help.js; size_prev=$(grep -c '' /dev/null); echo "---credential occurrences---"; grep -o "LIVE_DEMO_CUSTOMER_TOKEN[^,;}]*" /tmp/opencode/help.js | sort | uniq -c | head; echo "---token value---"; grep -oE "3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3" /tmp/opencode/help.js | sort | uniq -c
+b56a5f1e61ee397168aedb6684512612ed34a9c1086ab324b64c59f41a049086  /tmp/opencode/help.js
+---credential occurrences---
+      1 LIVE_DEMO_CUSTOMER_TOKEN
+      1 LIVE_DEMO_CUSTOMER_TOKEN='3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3'
+---token value---
+      1 3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3
+[0m
+[0m$ [0mecho "---endpoints---"; grep -oE "(/extjs/[a-zA-Z0-9_/-]+\.php)" /tmp/opencode/help.js | sort -u; echo "---callbuilder/AIDesigner---"; grep -oE "(api/callbuilder[^\"'\` ]*|AIDesigner[^\"'\` ]*)" /tmp/opencode/help.js | sort -u | head -30
+---endpoints---
+/extjs/common/getCustomers.php
+/extjs/flexlist/addRow.php
+/extjs/flexlist/createList.php
+/extjs/flexlist/deleteRow.php
+/extjs/flexlist/getDetails.php
+/extjs/flexlist/getFields.php
+/extjs/flexlist/getList.php
+/extjs/flexlist/importcsv.php
+/extjs/flexlist/saveValue.php
+/extjs/flexlist/updateList.php
+/extjs/get_user_rights.php
+/extjs/livedebugger/auth.php
+/extjs/voicenotes/check.php
+/extjs/voicenotes/delete.php
+/extjs/voicenotes/details.php
+/extjs/voicenotes/download.php
+/extjs/voicenotes/get.php
+---callbuilder/AIDesigner---
+AIDesigner
+AIDesigner/backend/config.php
+AIDesigner/backend/config_coding.php
+AIDesigner/backend/public/coding.php
+AIDesigner/backend/public/index.php?route=
+AIDesigner:function(){this.aiCloseStream();if(this.aiRenderTimer){clearTimeout(this.aiRenderTimer);this.aiRenderTimer=null}this.aiMessages=null;this.aiStreamBubbleEl=null;this.aiReasoningEl=null},openAICostsDialog:function(a){var
+AIDesigner:function(b){var
+AIDesignerApiBase()+encodeURIComponent(
+AIDesignerApiBase()+encodeURIComponent(d);if(a&&a.context&&a.context.customerId){b+=
+AIDesignerApiBase();var
+AIDesignerApiBase:function(){return
+AIDesignerApiUrl:function(d,a,c){var
+AIDesignerConfigUrl()).then(function(a){return
+AIDesignerConfigUrl:function(){return
+AIDesignerHistory:function(b){var
+AIDesignerStreamUrl(c,a,function(d){b.aiConnectStream(a,d)})},aiConnectStream:function(b,d){var
+AIDesignerStreamUrl:function(c,a,d){var
+api/callbuilder/
+[0m
+[0m$ [0mgrep -oE ".{160}(flexlist/(addRow|createList|deleteRow|importcsv|saveValue|updateList)\.php).{260}" /tmp/opencode/help.js | head -20
+nction(e,a){if(a.field==='caption'&&!c){return}var b=a.grid;b.setLoading(!0);var d=Ext.util.Format.stripTags(a.value);Ext.Ajax.request({url:BACKEND_URL+'/extjs/flexlist/updateList.php'+BACKEND_TOKEN,method:'POST',params:{id:a.record.get('id'),field:a.field,value:d},success:function(f){b.setLoading(!1);var c=Ext.decode(f.responseText);if(c.success){a.record.set(a.field,d);a.record.commit()}else {a.record.reject();Ext.Msg.alert('Fehler',Ext.
+'));Ext.MessageBox.confirm('Bestätigung','Wollen Sie den Eintrag "'+c+'" wirklich löschen?',function(c){if(c==='yes'){Ext.Ajax.request({url:BACKEND_URL+'/extjs/flexlist/createList.php'+BACKEND_TOKEN,method:'DELETE',params:{id:a.get('id')},success:function(e){var a=Ext.decode(e.responseText);if(a.success){b.getStore().loadPage(1)}else {Ext.Msg.alert('Fehler',Ext.util.Format.htmlEncode(a.message)||'Fehler beim Löschen')}}})}})}}]}],loadMask:
+f(/<[^>]*>/.test(b)){Ext.Msg.alert('Fehler','HTML-Tags sind nicht erlaubt');return}var c=Ext.util.Format.stripTags(b);Ext.Ajax.request({url:BACKEND_URL+'/extjs/flexlist/createList.php'+BACKEND_TOKEN,method:'POST',jsonData:{caption:c},success:function(e){var c=Ext.decode(e.responseText);if(c.success){a.store.loadPage(1)}else {Ext.Msg.alert('Fehler',Ext.util.Format.htmlEncode(c.message)||'Fehler beim Anlegen')}}})}})}},{text:'Import CSV',dis
+0){var f=c.fileInputEl.dom.files[0];var d=new FormData();d.append('csvfile',f);a.setLoading('CSV wird importiert...');Ext.Ajax.request({url:BACKEND_URL+'/extjs/flexlist/importcsv.php'+BACKEND_TOKEN,method:'POST',rawData:d,headers:{'Content-Type':null},success:function(d){a.setLoading(!1);var c=Ext.decode(d.responseText);if(c.success){Ext.Msg.alert('Erfolg','CSV erfolgreich importiert!<br>Liste: '+Ext.util.Format.htmlEncode(c.caption)+'<br
+essageBox.confirm('Bestätigung','Wollen Sie diese Zeile wirklich löschen?',function(f){if(f==='yes'){b.setLoading(!0);Ext.Ajax.request({url:BACKEND_URL+'/extjs/flexlist/deleteRow.php'+BACKEND_TOKEN,method:'POST',params:{flexlist_id:a.flexlistId,row_id:d.get('row_id')},success:function(g){b.setLoading(!1);var d=Ext.decode(g.responseText);if(d.success){a.store.loadPage(1)}else {Ext.Msg.alert('Fehler',Ext.util.Format.htmlEncode(d.message)||'
+:function(d,c,e){var a=this;var b=Ext.util.Format.stripTags(e);return new Promise(function(g,f){a.grid.setLoading(!0);Ext.Ajax.request({url:BACKEND_URL+'/extjs/flexlist/saveValue.php'+BACKEND_TOKEN,method:'POST',params:{flexlist_id:a.flexlistId,row_id:d.get('row_id'),field_id:c,value:b},success:function(h){a.grid.setLoading(!1);var b=Ext.decode(h.responseText);if(b.success){g()}else {f(Ext.util.Format.htmlEncode(b.message)||'Fehler beim S
+.createNewRow()}},createNewRow:function(){var b=this;var a=0;b.store.each(function(b){a=Math.max(a,b.get('row_id'))});Ext.Ajax.request({url:BACKEND_URL+'/extjs/flexlist/addRow.php'+BACKEND_TOKEN,method:'POST',params:{flexlist_id:b.flexlistId,row_id:a+1},success:function(c){var a=Ext.decode(c.responseText);if(a.success){b.store.loadPage(1)}else {Ext.Msg.alert('Fehler',Ext.util.Format.htmlEncode(a.message)||'Fehler beim Erstellen der Zei
+[0m
+[0m$ [0mecho "---all .php refs (unique, compact)---"; grep -oE "[a-zA-Z0-9_/.-]+\.php" /tmp/opencode/help.js | sort -u; echo; echo "---hosts/URLs---"; grep -oE "(wss?|https?)://[a-zA-Z0-9._-]+" /tmp/opencode/help.js | sort -u | head -30
+---all .php refs (unique, compact)---
+/extjs/common/getCustomers.php
+/extjs/flexlist/addRow.php
+/extjs/flexlist/createList.php
+/extjs/flexlist/deleteRow.php
+/extjs/flexlist/getDetails.php
+/extjs/flexlist/getFields.php
+/extjs/flexlist/getList.php
+/extjs/flexlist/importcsv.php
+/extjs/flexlist/saveValue.php
+/extjs/flexlist/updateList.php
+/extjs/get_user_rights.php
+/extjs/livedebugger/auth.php
+/extjs/voicenotes/check.php
+/extjs/voicenotes/delete.php
+/extjs/voicenotes/details.php
+/extjs/voicenotes/download.php
+/extjs/voicenotes/get.php
+AIDesigner/backend/config.php
+AIDesigner/backend/config_coding.php
+AIDesigner/backend/public/coding.php
+AIDesigner/backend/public/index.php
+extjs/agent/get_agent_costs.php
+extjs/agent/get_agent_token.php
+extjs/chat/provider.php
+extjs/chatgpt/provider.php
+extjs/check_mailserver.php
+extjs/encrypt/index.php
+extjs/get_provider.php
+extjs/get_speaker.php
+extjs/get_speaker_languages.php
+extjs/playback.php
+help/content.php
+
+---hosts/URLs---
+http://swfobject.googlecode.com
+http://www.adobe.com
+http://www.example.com
+http://www.w3.org
+https://api.openai.com
+https://applicationdesigner.de
+https://cdn.jsdelivr.net
+https://dev.applicationdesigner.de
+https://www.applicationdesigner.de
+https://www.example.com
+wss://cbs-proxy.api.live-manager.de
+[0m
+[0m$ [0mecho "---voicenotes call sites---"; grep -oE ".{120}(voicenotes/(check|get|details|download|delete)\.php).{200}" /tmp/opencode/help.js | head -12; echo "---BACKEND_TOKEN def---"; grep -oE ".{80}BACKEND_TOKEN.{120}" /tmp/opencode/help.js | head -5
+---voicenotes call sites---
+reated','customer_id','service','subject','filename','filesize','caller_id'],proxy:{type:'ajax',url:BACKEND_URL+'/extjs/voicenotes/get.php'+BACKEND_TOKEN,reader:{type:'json',rootProperty:'data',totalProperty:'total'},extraParams:{customer_id:'',sub_accounts:'0',search:''},simpleSortMode:!0},pageSize:25,remoteSort:!0,remoteFilter:!0,sort
+ogDetailsForDialog(d,c)}}});c.show()};a.loadLogDetailsForDialog=function(c,b){Ext.Ajax.request({url:BACKEND_URL+'/extjs/voicenotes/details.php'+BACKEND_TOKEN,method:'GET',params:{log_id:c},success:function(j){var g=Ext.decode(j.responseText);if(g.success){var e=g.data;var d=e.content;var f=!1;if(d){var h=/<[a-z][\s\S]*>/i;f=h.test(d)}if(!f&
+player-'+g;var d=Ext.ComponentQuery.query('window[itemId='+e+']')[0];if(d){d.toFront();return}var c=BACKEND_URL+'/extjs/voicenotes/download.php?file='+encodeURIComponent(a);var b=Ext.create('Ext.window.Window',{title:'Audio-Player - '+a,itemId:e,width:500,height:200,layout:'fit',modal:!1,resizable:!0,constrainHeader:!0,bodyStyle:'padding: 20
+ilename');if(!b||b===''||b==='-'){Ext.Msg.alert('Fehler','Keine Audiodatei verfügbar');return}var c=BACKEND_URL+'/extjs/voicenotes/download.php?file='+encodeURIComponent(b);var a=document.createElement('iframe');a.style.display='none';a.src=c;document.body.appendChild(a);setTimeout(function(){if(a.parentNode){a.parentNode.removeChild(a)}},50
+unction(c,d){var b=a.down('grid');if(b){b.setLoading('Lösche Sprachnotiz...')}Ext.Ajax.request({url:BACKEND_URL+'/extjs/voicenotes/delete.php'+BACKEND_TOKEN,method:'POST',params:{voice_note_id:c,customer_id:d},success:function(f){if(b){b.setLoading(!1)}try{var e=Ext.decode(f.responseText);if(e.success){Ext.toast({html:'✓ Sprachnotiz erfolg
+="fa fa-spinner fa-spin"></i> Lade Details...</div>';a.dataset.loaded='false'}Ext.Ajax.request({url:BACKEND_URL+'/extjs/voicenotes/details.php'+BACKEND_TOKEN,method:'GET',params:{log_id:d},success:function(k){if(a){a.dataset.loading='false'}try{var h=Ext.decode(k.responseText);if(h.success){var e=h.data;var b=e.content;var g=!1;if(b){var j=
+tValue():'';var e=a.down('#searchField')?a.down('#searchField').getValue():'';Ext.Ajax.request({url:BACKEND_URL+'/extjs/voicenotes/check.php'+BACKEND_TOKEN,method:'GET',params:{customer_id:d,sub_accounts:c,search:e},success:function(i){if(a.isDestroyed){return}try{var f=Ext.decode(i.responseText);if(f.success){var e=f.total;var d=f.max_id
+---BACKEND_TOKEN def---
+typeof APPDESIGNER_API_PATH!=='undefined'?APPDESIGNER_API_PATH:'/';var j=typeof BACKEND_TOKEN!=='undefined'?BACKEND_TOKEN:'';var k=h+'extjs/encrypt/index.php'+j;var f=a&&a.designer&&a.designer.context?a.designer.c
+.serviceNumber;Ext.Ajax.request({url:BACKEND_URL+'/extjs/livedebugger/auth.php'+BACKEND_TOKEN,method:'GET',params:{customer_id:a,srn:b},success:function(e){var d=Ext.decode(e.responseText);if(d.success){var f=d.da
+se(function(d,c){Ext.Ajax.request({url:BACKEND_URL+'/extjs/get_user_rights.php'+BACKEND_TOKEN,method:'GET',cors:!0,useDefaultXhrHeader:!1,headers:{'Accept':'application/json'},params:{customer_id:a},success:functi
+e:'string'}],proxy:{type:'ajax',url:BACKEND_URL+'/extjs/flexlist/getFields.php'+BACKEND_TOKEN,extraParams:{flexlist_id:a.flexlistId},reader:{type:'json',rootProperty:'data'}},autoLoad:!0});a.items=[{xtype:'grid',s
+('Lösche...');Ext.Ajax.request({url:BACKEND_URL+'/extjs/flexlist/getFields.php'+BACKEND_TOKEN,method:'DELETE',params:{id:b.get('id')},success:function(g){c.setLoading(!1);var f=Ext.decode(g.responseText);if(f.succ
+[0m
+[0m$ [0mfor p in "chat/provider.php" "chatgpt/provider.php" "encrypt/index.php" "get_provider.php" "get_speaker.php" "get_speaker_languages.php"; do echo "===== $p ====="; grep -oE ".{150}${p}.{300}" /tmp/opencode/help.js | head -3; echo; done
+===== chat/provider.php =====
+split('|')[1]||''}},{name:'country',calculate:function(b){return (b.text||'').split('|')[2]||''}}],proxy:{type:'ajax',url:APPDESIGNER_API_PATH+'extjs/chat/provider.php'+BACKEND_TOKEN,reader:{type:'json',rootProperty:'data'},listeners:{exception:function(e,c,d){try{var b=c.responseJson;if(b&&b.success===!1&&b.message){AlertError(TR.chat.providerError+': '+b.message)}else {AlertError(TR.chat.providerError+': '+(c.statusText||'Unbekannter Fehler'))}}catch(ad){AlertE
+
+===== chatgpt/provider.php =====
+);var c=100;var i=Ext.create('Ext.data.Store',{fields:['value','text','use_custom_api','template'],proxy:{type:'ajax',url:APPDESIGNER_API_PATH+'extjs/chatgpt/provider.php'+BACKEND_TOKEN,reader:{type:'json',rootProperty:'data'},listeners:{exception:function(e,c,d){try{var b=c.responseJson;if(b&&b.success===!1&&b.message){AlertError(TR.chatgpt.provider_error+': '+b.message)}else {AlertError(TR.chatgpt.provider_error+': '+(c.statusText||'Unbekannter Fehler'))}}catch(I)
+
+===== encrypt/index.php =====
+,i){var h=typeof APPDESIGNER_API_PATH!=='undefined'?APPDESIGNER_API_PATH:'/';var j=typeof BACKEND_TOKEN!=='undefined'?BACKEND_TOKEN:'';var k=h+'extjs/encrypt/index.php'+j;var f=a&&a.designer&&a.designer.context?a.designer.context.customerId||0:0;var c={action:e,password:g,customerId:f};if(e==='encrypt'){c.content=d}else {c.envelope=d}Ext.Ajax.request({url:k,method:'POST',params:c,success:function(h){var f=h.responseText;try{var c=JSON.parse(f);if(c.success){b(c)}
+
+===== get_provider.php =====
+=Ext.create('Ext.data.Store',{fields:[{name:'value',mapping:'id'},{name:'text',mapping:'caption'}],proxy:{type:'ajax',url:APPDESIGNER_API_PATH+'extjs/get_provider.php'+BACKEND_TOKEN,reader:{type:'json',rootProperty:'data'}},autoLoad:!0,loadingInProgress:!1,listeners:{load:function(j,g,h,i){if(h&&g.length>0){var f=d.down('[itemId=provider]');if(f){if(!a.current_provider&&g.length>0){var c=g[0].get('value');a.selected_provider=c;f.setValue(c);a.handleProviderSelec
+
+===== get_speaker.php =====
+e',{fields:['value','text','iso','sub','sub1','sub2','provider','gender','country','multilingual'],proxy:{type:'ajax',url:APPDESIGNER_API_PATH+'extjs/get_speaker.php'+BACKEND_TOKEN,reader:{type:'json',rootProperty:'data'}},autoLoad:!0,loadingInProgress:!1,sorters:[{property:'text',direction:'ASC'}],listeners:{load:function(j,s,p,q){if(p){j.each(function(e){var t=e.get('provider')||'-';var A=e.get('iso')||'-';var w=e.get('country')||'-';var k=e.get('gender')||'-
+
+===== get_speaker_languages.php =====
+urrent_provider=c;a.selected_provider=c;var f=Ext.create('Ext.data.Store',{fields:['value','text'],proxy:{type:'ajax',url:APPDESIGNER_API_PATH+'extjs/get_speaker_languages.php'+BACKEND_TOKEN,reader:{type:'json',rootProperty:'data'}},autoLoad:!0,loadingInProgress:!1,listeners:{load:function(k,g,j,l){if(j){var h=b.down('[itemId=lang]');if(h){var f=e;if(e){var i=k.findRecord('value',e);if(!i){if(g.length>0){f=g[0].get('value');if(f===''&&g.length>1){f=g[1].get('value')}a.sp
+[0m
+[0m$ [0mecho "---BACKEND_URL def---"; grep -oE ".{100}BACKEND_URL.{150}" /tmp/opencode/help.js | grep -iE "(=|var|defined|:)" | head -5; echo; echo "---APPDESIGNER_API_PATH def---"; grep -oE ".{100}APPDESIGNER_API_PATH[=:].{150}" /tmp/opencode/help.js | head -5
+---BACKEND_URL def---
+bsocket(c){var a=dialog.context.customerId;var b=dialog.context.serviceNumber;Ext.Ajax.request({url:BACKEND_URL+'/extjs/livedebugger/auth.php'+BACKEND_TOKEN,method:'GET',params:{customer_id:a,srn:b},success:function(e){var d=Ext.decode(e.responseText);if(d.succ
+ons:function(a){var b=this;a=a===void 0?'':a;return new Promise(function(d,c){Ext.Ajax.request({url:BACKEND_URL+'/extjs/get_user_rights.php'+BACKEND_TOKEN,method:'GET',cors:!0,useDefaultXhrHeader:!1,headers:{'Accept':'application/json'},params:{customer_id:a},s
+ds:[{name:'id',type:'int',defaultValue:null},{name:'caption',type:'string'}],proxy:{type:'ajax',url:BACKEND_URL+'/extjs/flexlist/getFields.php'+BACKEND_TOKEN,extraParams:{flexlist_id:a.flexlistId},reader:{type:'json',rootProperty:'data'}},autoLoad:!0});a.items=
+'+d+'" wirklich löschen?',function(d){if(d==='yes'){c.setLoading('Lösche...');Ext.Ajax.request({url:BACKEND_URL+'/extjs/flexlist/getFields.php'+BACKEND_TOKEN,method:'DELETE',params:{id:b.get('id')},success:function(g){c.setLoading(!1);var f=Ext.decode(g.respons
+cludes('extModel')){b.id=a.get('id')}c.push(b)});b.setLoading('Speichere...');Ext.Ajax.request({url:BACKEND_URL+'/extjs/flexlist/getFields.php'+BACKEND_TOKEN,method:'POST',jsonData:{flexlist_id:a.flexlistId,fields:c},success:function(d){b.setLoading(!1);var c=E
+
+---APPDESIGNER_API_PATH def---
+l,initComponent:function(){var a=this;if(!a.apiUrl){var i=typeof APPDESIGNER_API_PATH!=='undefined'?APPDESIGNER_API_PATH:'/';a.apiUrl=i+'extjs/agent/get_agent_costs.php'}var b=new Date();var g=new Date(b.getFullYear(),b.getMonth(),1);var h=new Date(b.getFullYear(),b.getM
+)})}}).show()},callEncryptApi:function(a,e,d,g,b,i){var h=typeof APPDESIGNER_API_PATH!=='undefined'?APPDESIGNER_API_PATH:'/';var j=typeof BACKEND_TOKEN!=='undefined'?BACKEND_TOKEN:'';var k=h+'extjs/encrypt/index.php'+j;var f=a&&a.designer&&a.designer.context?a.designer.c
+rRights.loadPermissions(STARTUP_CUSTOMER_ID);console.log('Hilfe Version',BACKEND_VERSION);if(typeof APPDESIGNER_API_PATH==='undefined'){if(window.location.protocol=='file:'){APPDESIGNER_API_PATH='https://applicationdesigner.de/';APPDESIGNER_API_PATH_NOPROXY='https://appl
+designer.de/help/')==0||window.location.href.indexOf('https://www.applicationdesigner.de/docs')==0){APPDESIGNER_API_PATH='https://applicationdesigner.de/';APPDESIGNER_API_PATH_NOPROXY='https://applicationdesigner.de/'}else if(window.location.href.indexOf('https://dev.app
+designer.de/help/')==0||window.location.href.indexOf('https://dev.applicationdesigner.de/docs')==0){APPDESIGNER_API_PATH='https://dev.applicationdesigner.de/';APPDESIGNER_API_PATH_NOPROXY='https://dev.applicationdesigner.de/'}else {APPDESIGNER_API_PATH='/api/callbuilder/
+[0m
+Major delta found in help.js — new endpoint families gated behind `APPDESIGNER_API_PATH` (the `/api/callbuilder/` prefix). Investigating the call sites, especially the `encrypt/index.php` crypto oracle.
+[0m$ [0mecho "---BACKEND_URL assignment---"; grep -oE "(var )?BACKEND_URL[^;]{0,120}" /tmp/opencode/help.js | head -8; echo; echo "---encrypt call full---"; grep -oE ".{20}callEncryptApi:function\(a,e,d,g,b,i\).{900}" /tmp/opencode/help.js | head -1
+---BACKEND_URL assignment---
+BACKEND_URL+'/extjs/livedebugger/auth.php'+BACKEND_TOKEN,method:'GET',params:{customer_id:a,srn:b},success:function(e){var d=Ext.de
+BACKEND_URL+'/extjs/get_user_rights.php'+BACKEND_TOKEN,method:'GET',cors:!0,useDefaultXhrHeader:!1,headers:{'Accept':'application/j
+BACKEND_URL+'/extjs/flexlist/getFields.php'+BACKEND_TOKEN,extraParams:{flexlist_id:a.flexlistId},reader:{type:'json',rootProperty:'
+BACKEND_URL+'/extjs/flexlist/getFields.php'+BACKEND_TOKEN,method:'DELETE',params:{id:b.get('id')},success:function(g){c.setLoading(
+BACKEND_URL+'/extjs/flexlist/getFields.php'+BACKEND_TOKEN,method:'POST',jsonData:{flexlist_id:a.flexlistId,fields:c},success:functi
+BACKEND_URL+'/extjs/flexlist/getList.php'+BACKEND_TOKEN,reader:{type:'json',rootProperty:'data',totalProperty:'total'},extraParams:
+BACKEND_URL+'/extjs/flexlist/updateList.php'+BACKEND_TOKEN,method:'POST',params:{id:a.record.get('id'),field:a.field,value:d},succe
+BACKEND_URL+'/extjs/flexlist/createList.php'+BACKEND_TOKEN,method:'DELETE',params:{id:a.get('id')},success:function(e){var a=Ext.de
+
+---encrypt call full---
+ed(!1)})}}).show()},callEncryptApi:function(a,e,d,g,b,i){var h=typeof APPDESIGNER_API_PATH!=='undefined'?APPDESIGNER_API_PATH:'/';var j=typeof BACKEND_TOKEN!=='undefined'?BACKEND_TOKEN:'';var k=h+'extjs/encrypt/index.php'+j;var f=a&&a.designer&&a.designer.context?a.designer.context.customerId||0:0;var c={action:e,password:g,customerId:f};if(e==='encrypt'){c.content=d}else {c.envelope=d}Ext.Ajax.request({url:k,method:'POST',params:c,success:function(h){var f=h.responseText;try{var c=JSON.parse(f);if(c.success){b(c)}else {b({success:!1,message:c.message||'Unbekannter Fehler'})}}catch(l){b({success:!1,message:'Kein gültiges JSON: '+f.substring(0,200)})}},failure:function(c){var f='HTTP '+c.status+': '+(c.statusText||'Netzwerkfehler');if(c.responseText){f+='\n'+c.responseText.substring(0,200)}i({message:f})}})}},0,0,0,0,0,0,[CB.view.builder,'CodeEncryptor'],0);Ext.cmd.derive('CB.view.builder.CodingAgent',Ext.Base,{agentModelConfig:null,agentSelec
+[0m
+[0m$ [0mecho "---any BACKEND_URL assignment anywhere---"; grep -oE "BACKEND_URL\s*=\s*[^;]+" /tmp/opencode/help.js | head; echo "---STARTUP_CUSTOMER_ID / tokens in globals---"; grep -oE "(var|const|let)\s+(BACKEND_URL|BACKEND_TOKEN|BACKEND_VERSION|STARTUP_CUSTOMER_ID)\s*=\s*[^;]{0,80}" /tmp/opencode/help.js | head
+---any BACKEND_URL assignment anywhere---
+BACKEND_URL=window.location.protocol+'//'+window.location.hostname
+BACKEND_URL=='file://'){BACKEND_URL='https://dev.applicationdesigner.de'}else {}CB.util.UserRights.loadPermissions(STARTUP_CUSTOMER_ID)
+---STARTUP_CUSTOMER_ID / tokens in globals---
+[0m
+[0m$ [0mcurl -s -o /tmp/opencode/p1.json -w "get_provider(no_tok): HTTP %{http_code} | %{size_download}B | %{content_type}\n" "https://www.applicationdesigner.de/api/callbuilder/extjs/get_provider.php" --max-time 20; sleep 1; curl -s -o /tmp/opencode/p2.json -w "chat/provider(no_tok): HTTP %{http_code} | %{size_download}B | %{content_type}\n" "https://www.applicationdesigner.de/api/callbuilder/extjs/chat/provider.php" --max-time 20
+get_provider(no_tok): HTTP 404 | 16B | text/html; charset=UTF-8
+chat/provider(no_tok): HTTP 404 | 16B | text/html; charset=UTF-8
+[0m
+[0m$ [0mfor u in \
+  "https://www.applicationdesigner.de/extjs/get_provider.php" \
+  "https://www.applicationdesigner.de/extjs/chat/provider.php" \
+  "https://applicationdesigner.de/extjs/get_provider.php" ; do \
+  curl -s -o /tmp/opencode/r.json -w "$u => HTTP %{http_code} | %{size_download}B | %{content_type}\n" "$u" --max-time 20; sleep 1; done
+https://www.applicationdesigner.de/extjs/get_provider.php => HTTP 200 | 74B | application/json
+https://www.applicationdesigner.de/extjs/chat/provider.php => HTTP 200 | 74B | application/json
+https://applicationdesigner.de/extjs/get_provider.php => HTTP 200 | 74B | application/json
+[0m
+[0m$ [0mcurl -s "https://www.applicationdesigner.de/extjs/get_provider.php" --max-time 20; echo; sleep 1; curl -s "https://www.applicationdesigner.de/extjs/chat/provider.php" --max-time 20; echo; sleep 1; curl -s "https://www.applicationdesigner.de/extjs/chatgpt/provider.php" --max-time 20; echo
+{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}
+{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}
+{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}
+[0m
+[0m$ [0mT='3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3'; for u in \
+  "https://www.applicationdesigner.de/extjs/get_provider.php?token=$T" \
+  "https://www.applicationdesigner.de/extjs/get_speaker.php?token=$T" \
+  "https://www.applicationdesigner.de/extjs/get_speaker_languages.php?token=$T" \
+  "https://www.applicationdesigner.de/extjs/chat/provider.php?token=$T" \
+  "https://www.applicationdesigner.de/extjs/chatgpt/provider.php?token=$T" ; do \
+  echo "===== ${u%%\?*} ====="; curl -s -o /tmp/opencode/r.json -w "HTTP %{http_code} | %{size_download}B | %{content_type}\n" "$u" --max-time 25; head -c 600 /tmp/opencode/r.json; echo; echo; sleep 1.2; done
+===== https://www.applicationdesigner.de/extjs/get_provider.php =====
+HTTP 200 | 187B | application/json
+{"success":true,"data":[{"value":"azure","text":"Microsoft Azure"},{"value":"elevenlabs","text":"Elevenlabs"},{"value":"chatgpt","text":"ChatGPT"},{"value":"cartesia","text":"Cartesia"}]}
+
+===== https://www.applicationdesigner.de/extjs/get_speaker.php =====
+HTTP 200 | 560409B | application/json
+{"success":true,"data":[{"value":"CT_hi-HI-Aadhya-Soother","text":"Aadhya - Soother","iso":"hi","country":"hi \/ HI","provider":"cartesia","settings":"{\"id\":\"f91ab3e6-5071-4e15-b016-cde6f2bcd222\",\"model\":\"sonic-latest\"}","sub":"Slow female voice for casual conversation","gender":"female","multilingual":false},{"value":"AZURE_en-IN-AaravNeural","text":"Aarav","iso":"en-IN","country":"English \/ India","provider":"azure","settings":"{\"id\": \"en-IN-AaravNeural\"}","sub":"Dies ist ein m\u00e4nlicher Sprecher von Azure","gender":"male","multilingual":false},{"value":"AZURE_hi-IN-AaravNeur
+
+===== https://www.applicationdesigner.de/extjs/get_speaker_languages.php =====
+HTTP 200 | 10536B | application/json
+{"success":true,"data":[{"value":"","text":"Alle Sprachen"},{"value":"Multilingual","text":"Multilingual"},{"value":"af-ZA","text":"Afrikaans \/ South Africa (af-ZA)"},{"value":"sq-AL","text":"Albanian \/ Albania (sq-AL)"},{"value":"am-ET","text":"Amharic \/ Ethiopia (am-ET)"},{"value":"ar","text":"ar \/ SA (ar)"},{"value":"ar-DZ","text":"Arabic \/ Algeria (ar-DZ)"},{"value":"ar-BH","text":"Arabic \/ Bahrain (ar-BH)"},{"value":"ar-EG","text":"Arabic \/ Egypt (ar-EG)"},{"value":"ar-IQ","text":"Arabic \/ Iraq (ar-IQ)"},{"value":"ar-JO","text":"Arabic \/ Jordan (ar-JO)"},{"value":"ar-KW","text":"
+
+===== https://www.applicationdesigner.de/extjs/chat/provider.php =====
+HTTP 200 | 3521B | application/json
+{"success":true,"data":[{"value":"ChatGPT","text":"Eigene API Zugangsdaten","use_custom_api":1,"parameters":"{\n  \"temperature\": 0.2,\n  \"top_p\": 1.0,\n  \"presence_penalty\": 0,\n  \"frequency_penalty\": 0\n}","role":"system"},{"value":"ChatGPT_responses","text":"Eigene API Zugangsdaten - v1\/responses API","use_custom_api":1,"parameters":"{\n  \"temperature\": 0.2,\n  \"top_p\": 1.0,\n  \"presence_penalty\": 0,\n  \"frequency_penalty\": 0\n}","role":"system"},{"value":"AZURE_FranceCentral_4o-mini","text":"gpt-4o-mini - v1\/chat\/completions API|Microsoft Azure|France-Central","use_custom
+
+===== https://www.applicationdesigner.de/extjs/chatgpt/provider.php =====
+HTTP 200 | 1225B | application/json
+{"success":true,"data":[{"value":"AZURE","text":"Microsoft Azure - konfigurierbar","use_custom_api":1,"template":1},{"value":"AZURE_FranceCentral_4.1-mini","text":"Microsoft Azure France-Central, Model: gpt-4.1-mini","use_custom_api":0,"template":1},{"value":"AZURE_FranceCentral_4o-mini","text":"Microsoft Azure France-Central, Model: gpt-4o-mini","use_custom_api":0,"template":1},{"value":"AZURE_WestEU_4.1","text":"Microsoft Azure West-EU, Model: gpt-4.1","use_custom_api":0,"template":1},{"value":"AZURE_WestEU_4.1-mini","text":"Microsoft Azure West-EU, Model: gpt-4.1-mini","use_custom_api":0,"t
+[0m
+[0m$ [0mT='3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3'; curl -s "https://www.applicationdesigner.de/extjs/get_speaker.php?token=$T" -o /tmp/opencode/speakers.json --max-time 30; wc -c /tmp/opencode/speakers.json; echo "---secret-ish patterns---"; grep -oiE "(sk-[a-zA-Z0-9]{10,}|api[_-]?key|passw|secret|Bearer [a-zA-Z0-9]{6,}|key\s*[:=]\s*[\"'][a-zA-Z0-9]{16,}[\"'])" /tmp/opencode/speakers.json | sort | uniq -c | head -20; echo "---counts---"; grep -o '"provider":"[^"]*"' /tmp/opencode/speakers.json | sort | uniq -c
+560409 /tmp/opencode/speakers.json
+---secret-ish patterns---
+      2 SK-LukasNeural
+      2 SK-ViktoriaNeural
+---counts---
+      1 "provider":""
+    593 "provider":"azure"
+    761 "provider":"cartesia"
+    370 "provider":"elevenlabs"
+[0m
+Provider/speaker catalog endpoints are live with the public static credential (not VPN-gated). Re-confirming driver liveness and the voicenote index poll in parallel.
+[0m$ [0mcurl -s -o /tmp/opencode/cbs.txt -w "cbs-proxy non-upgrade: HTTP %{http_code} | %{size_download}B\n" "http://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=131727&service=100" --max-time 20; sleep 1.2; T='3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3'; curl -s -o /tmp/opencode/vn_demo.json -w "vn check demo: HTTP %{http_code} | %{size_download}B\n" "https://www.applicationdesigner.de/extjs/voicenotes/check.php?customer_id=131727&token=$T" --max-time 20; echo "body: $(cat /tmp/opencode/vn_demo.json)"; sleep 1.2; curl -s -o /tmp/opencode/vn_foreign.json -w "vn check foreign: HTTP %{http_code} | %{size_download}B\n" "https://www.applicationdesigner.de/extjs/voicenotes/check.php?customer_id=2&token=$T" --max-time 20; echo "body: $(cat /tmp/opencode/vn_foreign.json)"
+cbs-proxy non-upgrade: HTTP 301 | 169B
+vn check demo: HTTP 200 | 37B
+body: {"success":true,"total":0,"max_id":0}
+vn check foreign: HTTP 200 | 37B
+body: {"success":true,"total":0,"max_id":0}
+[0m
+[0m$ [0mcurl -s -I "http://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=131727&service=100" --max-time 20 | grep -iE "^(HTTP|location)"; sleep 1.2; curl -s -o /tmp/opencode/cbs2.txt -w "https non-upgrade: HTTP %{http_code} | %{size_download}B | %{content_type}\n" "https://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=131727&service=100" --max-time 20; head -c 300 /tmp/opencode/cbs2.txt; echo
+HTTP/1.1 301 Moved Permanently
+Location: https://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=131727&service=100
+https non-upgrade: HTTP 426 | 0B |
+[0m
+[0m$ [0mcurl -s -o /tmp/opencode/xss.txt -w "xss: HTTP %{http_code} | %{size_download}B | %{content_type}\n" "https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E" --max-time 20; cat /tmp/opencode/xss.txt; echo; echo "---no-payload baseline---"; sleep 1.2; curl -s -o /tmp/opencode/xss0.txt -w "page=index: HTTP %{http_code} | %{size_download}B\n" "https://www.applicationdesigner.de/help/content.php?page=index" --max-time 20; head -c 200 /tmp/opencode/xss0.txt; echo
+xss: HTTP 200 | 112B | text/html; charset=UTF-8
+<h1>Page not found</h1><p>The requested help page '<script>document.title='LM-XSS'</script>' does not exist.</p>
+---no-payload baseline---
+page=index: HTTP 200 | 1351B
+<div id="help_content_id" class="help_content"><h2>AppDesigner Dokumentation</h2><p>In dieser Dokumentation finden Sie eine Übersicht über die verfügbaren Module und deren Funktionen.</p><h2><a hre
+[0m
+STEP 1 — DELTA
+- NEW help.js route refresh (sha256 b56a5f1e61ee397168aedb6684512612ed34a9c1086ab324b64c59f41a049086) surfaces **8 unrecorded /extjs endpoints**: `get_provider.php`, `get_speaker.php` (560KB voice catalog), `get_speaker_languages.php`, `chat/provider.php`, `chatgpt/provider.php` (LLM/Azure templates), `encrypt/index.php` (POST code-encrypt/decrypt, `password`+`customerId`), and flexlist write family `addRow|createList|deleteRow|importcsv|saveValue|updateList` (+`getFields.php` reused for DELETE/POST writes).
+- NEW live probe: catalog family (`get_provider`→187B 4 providers, `get_speaker`→560KB 1724 voices, `get_speaker_languages`→10.5KB, `chat/provider`→3.5KB, `chatgpt/provider`→1.2KB) is **token-only-gated** — HTTP 200 `success:true` with public static credential, zero VPN gate; no `customer_id` param, zero API keys/sk-* observed; also reachable on apex `applicationdesigner.de`.
+- CHANGED cbs-proxy driver: http→https 301, https non-upgrade GET **426 0B** — live, 25th cycle.
+- CHANGED voicenotes/check.php: byte-identical 37B `{"success":true,"total":0,"max_id":0}` for cid=131727 vs cid=2 — **20th consecutive empty cycle** (no UUID oracle).
+- CHANGED XSS re-confirmed passive 2026-09-17: `page=<script>` reflected unescaped into 112B 200 text/html, no CSP/nosniff; `page=index` = real 1351B doc.
+
+STEP 2 — PRIORITIZE (p=0.25a+0.25b+0.15t+0.15g+0.10c+0.10f)
+- [PRIO] wss://cbs-proxy.api.live-manager.de, 7.75, a8/b10/t7/g10/f7 — driver, byte-frame binding
+- [PRIO] https://www.applicationdesigner.de/extjs/encrypt/index.php, 5.9, b7/t8(custom crypto)/g8/f10 — crypto service, POST-only, uncharacterized
+- [PRIO] www.applicationdesigner.de/extjs catalog family, 5.1, a6/b3/t4/g9/f9 — token-only config catalogs, LOW
+
+STEP 3 — HYPOTHESES
+[HYP] Cross-tenant CBS WS frame binding — token→cid ownership
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
+confidence: 95
+reasoning: 25th cycle — https non-upgrade GET 426 0B, upgrade 101 + byte-identical CONNECT/READY for demo 131727, foreign 2, synthetic 999999999 with zero token; proxy binds no identity at handshake; sole unproven hop is backend token→cid binding inside live_debug frames.
+evidence_needed: operator two-tenant frame test — token minted for own cid, frames sent vs own and foreign cid, byte-diff accepted state.
+verify_steps: AUTH_HELPED — one bound frame set per owned cid; compare accepted vs rejected.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH 8.6, CRITICAL 9.1 if binding unenforced.
+testability: AUTH_HELPED
+[HYP] Anonymous envelope crypto/decr-oracle at encrypt/index.php
+class: OTHER
+asset: https://www.applicationdesigner.de/extjs/encrypt/index.php (action=encrypt|decrypt&password=&customerId=&content|envelope=)
+confidence: 42
+reasoning: help.js callEncryptApi POSTs to `{APPDESIGNER_API_PATH}extjs/encrypt/index.php{BACKEND_TOKEN}` with attacker-controlled password, customerId (defaults 0), content/envelope; endpoint exists on www (direct /extjs path is routed); token-only gate pattern on all sibling endpoints; get_user_rights.php returns per-cid high-entropy base64 ciphertext (LOW-capped pending plaintext) — if same envelope crypto, this is an anonymous decryption oracle.
+evidence_needed: single operator POST with demo credential, self-chosen password+envelope → observe success:true vs error; then test whether get_user_rights envelope decrypts.
+verify_steps: AUTH_HELPED — POST (GET/HEAD cannot invoke); attacker-chosen inputs only, no live customer data; capture response JSON structure and any customerId-key-derivation signal.
+impact: if oracle → decrypt per-cid authz blobs (cross-tenant rights data); if only client-password envelope → LOW/no-op.
+testability: AUTH_HELPED
+[HYP] Same-origin reflected XSS at help content app
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page={value}
+confidence: 80
+reasoning: page= reflected unescaped into 200 text/html, no CSP/nosniff, zero-token; re-confirmed PASSIVE 2026-09-17; same-origin context reaches all /extjs endpoints incl. delete.php and credential-carrying legs.
+evidence_needed: benign document.title marker render by operator browser.
+verify_steps: HUMAN — open page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E; no active probes warranted.
+impact: same-origin arbitrary JS → full /extjs API incl. delete — MEDIUM standalone, HIGH chained.
+testability: HUMAN_ONLY
+
+STEP 4 — SELF-CRITIQUE
+- [PARKED] Voicenote raw-file download (48): check.php index empty 20 consecutive cycles yields zero UUID oracle; standing poll is burn-rate with no signal — hold, poll only if max_id>0 observed.
+- [PARKED] flexlist write family (addRow/createList/deleteRow/saveValue/updateList + getFields-as-writer): no customer_id param on any write call; sole scoping is flexlist_id/id in the 138–345 demo-owned space — same ownership gate proven on read control 2026-09-16; cross-tenant write not parameterizable anonymously → subsumed, no new surface.
+- [PARKED] Catalog family: confirmed LOW observation, not a vulnerability hypothesis (zero keys, global data) — moved to LEARN.
+- [FINAL] CBS WS frame binding (95, AUTH_HELPED); encrypt/index.php oracle (42, AUTH_HELPED); help/content.php XSS (80, HUMAN_ONLY).
+
+STEP 5 — NEXT ACTION
+- [NEXT] HUMAN: render the PASSIVE-proven XSS to execution — operator opens `https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E` in a scoped browser and confirms `document.title` becomes `LM-XSS`; this upgrades the confirmed reflection into the chained HIGH (same-origin JS → /extjs API inclusive of delete.php), the single largest pending upside, unblocked for 5 days.
+
+STEP 6 — LEARNING
+- [LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/get_provider.php|get_speaker.php|get_speaker_languages.php|chat/provider.php|chatgpt/provider.php: token-only gate (public static credential, sha256 8d2faac1…), HTTP 200 success:true on 2026-09-17; payloads are global voice/LLM provider catalogs — 1724 speakers with external voice IDs (azure/cartesia/elevenlabs), 4 TTS providers, OpenAI+Azure chat templates; **zero API keys/secrets**; no customer_id param → not a cross-tenant vector; LOW.
+- [LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/api/callbuilder/extjs/*: 404 16B nginx catch-all — APPDESIGNER_API_PATH proxy prefix does not route /extjs; live catalog/crypto surface is only the direct apex/www `applicationdesigner.de/extjs/` path family.
+- [LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: https non-upgrade GET 426 0B reconfirmed 2026-09-17 — driver live, 25th cycle, unchanged.
+- [LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: 20th consecutive byte-identical 37B empty index (demo 131727 vs foreign 2) — credential-only gate persistent, UUID-blocked.
+- [LEARN] ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: passive re-confirm 2026-09-17 (112B, unescaped page= reflection, no CSP/nosniff); execution still pending operator render.
+
+STEP 7 — RISK
+- [RISK] questnet-gmbh: 72 — CBS WS transport-complete BOLA remains dominant and live (25th cycle; 8.6–9.1 if frame binding unenforced); XSS chain upside (HIGH) still pending the operator render; voicenote leg capped at UUID-block; help.js refresh confirmed static-credential data-plane churn (catalogs token-only, crypto endpoint new) but nothing raises standalone severity; flexlist leg closed. Upside hinges on two-tenant frame test, XSS execution, or the encrypt oracle POST.

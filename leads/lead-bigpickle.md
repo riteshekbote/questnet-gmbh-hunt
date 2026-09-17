@@ -4718,3 +4718,31 @@ evidence_needed: benign document.title marker render by operator browser.
 verify_steps: HUMAN — open page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E; no further active probes warranted.
 impact: same-origin arbitrary JS → full /extjs API incl. delete — MEDIUM standalone, HIGH chained.
 testability: HUMAN_ONLY
+## 2026-09-17 06:21:13 UTC [target] (model bigpickle)
+[HYP] Cross-tenant CBS WS frame binding — token→cid ownership
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
+confidence: 95
+reasoning: 25th cycle — https non-upgrade GET 426 0B, upgrade 101 + byte-identical CONNECT/READY for demo 131727, foreign 2, synthetic 999999999 with zero token; proxy binds no identity at handshake; sole unproven hop is backend token→cid binding inside live_debug frames.
+evidence_needed: operator two-tenant frame test — token minted for own cid, frames sent vs own and foreign cid, byte-diff accepted state.
+verify_steps: AUTH_HELPED — one bound frame set per owned cid; compare accepted vs rejected.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH 8.6, CRITICAL 9.1 if binding unenforced.
+testability: AUTH_HELPED
+[HYP] Anonymous envelope crypto/decr-oracle at encrypt/index.php
+class: OTHER
+asset: https://www.applicationdesigner.de/extjs/encrypt/index.php (action=encrypt|decrypt&password=&customerId=&content|envelope=)
+confidence: 42
+reasoning: help.js callEncryptApi POSTs to `{APPDESIGNER_API_PATH}extjs/encrypt/index.php{BACKEND_TOKEN}` with attacker-controlled password, customerId (defaults 0), content/envelope; endpoint exists on www (direct /extjs path is routed); token-only gate pattern on all sibling endpoints; get_user_rights.php returns per-cid high-entropy base64 ciphertext (LOW-capped pending plaintext) — if same envelope crypto, this is an anonymous decryption oracle.
+evidence_needed: single operator POST with demo credential, self-chosen password+envelope → observe success:true vs error; then test whether get_user_rights envelope decrypts.
+verify_steps: AUTH_HELPED — POST (GET/HEAD cannot invoke); attacker-chosen inputs only, no live customer data; capture response JSON structure and any customerId-key-derivation signal.
+impact: if oracle → decrypt per-cid authz blobs (cross-tenant rights data); if only client-password envelope → LOW/no-op.
+testability: AUTH_HELPED
+[HYP] Same-origin reflected XSS at help content app
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page={value}
+confidence: 80
+reasoning: page= reflected unescaped into 200 text/html, no CSP/nosniff, zero-token; re-confirmed PASSIVE 2026-09-17; same-origin context reaches all /extjs endpoints incl. delete.php and credential-carrying legs.
+evidence_needed: benign document.title marker render by operator browser.
+verify_steps: HUMAN — open page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E; no active probes warranted.
+impact: same-origin arbitrary JS → full /extjs API incl. delete — MEDIUM standalone, HIGH chained.
+testability: HUMAN_ONLY

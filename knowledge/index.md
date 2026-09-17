@@ -414,3 +414,18 @@
 - 2026-09-16 REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page — closed
 - 2026-09-16 REJECTED MISCONFIG @ dev.applicationdesigner.de: hard IP gate 403 — closed
 - 2026-09-16 ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= reflected unescaped, no CSP/nosniff, zero-token — PASSIVE-proven; execution pending operator render
+- 2026-09-17 ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 23rd consecutive cycle anonymous WS 101 + byte-identical CONNECT/READY, 426 on non-upgrade — transport-complete driver, unchanged
+- 2026-09-17 ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: cross-tenant credential-only, NOT VPN-gated, 18+ cycles, index empty — unchanged
+- 2026-09-17 ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/download.php: with token-as-query-param reaches file-lookup (404); VPN gate bypassed; no customer_id scoping — unchanged
+- 2026-09-17 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php: public static credential accepted, token+row-ownership gate, global autoincrement id space 138–345 — cross-tenant read not observed
+- 2026-09-17 ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/flexlist/getList.php: directory token-scoped, all customer_id=131727; global autoincrement id space 138–345 — unchanged
+- 2026-09-17 ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/voicenotes/details.php: per-record hierarchy-checked — unchanged
+- 2026-09-17 ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config.php: zero-auth LLM-routing JSON; dispatch gated — unchanged
+- 2026-09-17 ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/index.php?route=: 403 Invalid token — unchanged
+- 2026-09-17 REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_costs.php: session-gated ("No VPN detected"), identical response for all cids — closed
+- 2026-09-17 REJECTED IDOR @ www.applicationdesigner.de/extjs/playback.php: session-gated ("unauthorized"), identical response for all cids — closed
+- 2026-09-17 REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_token.php: session-gated, byte-identical Zugriff verweigert — closed
+- 2026-09-17 REJECTED MISCONFIG @ www.applicationdesigner.de/api/callbuilder/: nginx 404 catch-all — closed
+- 2026-09-17 REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page — closed
+- 2026-09-17 REJECTED MISCONFIG @ dev.applicationdesigner.de: hard IP gate 403 — closed
+- 2026-09-17 ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= reflected unescaped, no CSP/nosniff, zero-token — PASSIVE-proven; execution pending operator render

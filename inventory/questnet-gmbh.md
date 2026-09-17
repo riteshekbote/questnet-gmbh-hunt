@@ -660,3 +660,10 @@ www.live-manager.de
 ## 2026-09-16 22:48:32 UTC
 
 ## 2026-09-17 01:14:59 UTC
+
+## 2026-09-17 06:21:24 UTC
+- NEW Flexlist per-id ownership gate PROVEN: getDetails with LIVE_DEMO_CUSTOMER_TOKEN resolves ONLY demo row id=345 (17173B, sha256 aba9094f0a615eab, byte-identical to 2026-09-09); ids 0/1/150/175/200/250/3
+- NEW Voicenotes/check.php: 18th consecutive cycle success:true,total:0,max_id:0 byte-identical (37B sha256 090b03ceb0dfc8b8) for demo cid=131727 and foreign cid=2 — index empty, no UUID path.
+- NEW cbs-proxy.api.live-manager.de: non-upgrade GET → HTTP 426 0B reconfirmed — driver live, 23rd cycle.
+- CHANGED XSS @ www.applicationdesigner.de/help/content.php: PASSIVE reflection confirmed — `<script>` payload reflected unescaped in 200 text/html, no CSP/nosniff, zero-token; execution pending operator render
+- CHANGED Surface frozen at 4 live in-scope hosts since 2026-09-04 — no new hosts/endpoints discovered.
