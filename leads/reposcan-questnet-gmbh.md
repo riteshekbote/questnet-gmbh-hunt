@@ -619,3 +619,5 @@ reasoning: Example config contains `"secret": "cymru"` for drachtio server and `
 impact: LOW — default credentials in example config
 verify_steps: 1) Check if drachtio (port 9022) is exposed on any in-scope host 2) Attempt connection with default "cymru" secret
 TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-17 14:46:23 UTC
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
