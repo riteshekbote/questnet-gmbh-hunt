@@ -5085,3 +5085,4 @@ testability: PASSIVE (gate proven, live data readable); HUMAN_ONLY (cross-tenant
 [RISK] questnet-gmbh: 87 — Driver finding (cbs-proxy BOLA transport-complete) remains VALID CRITICAL (CVSS 9.1) and VPN-independent. Voicenotes metadata IDOR re-confirmed NOT VPN-gated with valid token (HIGH, CVSS 7.5). Download.php raw audio gate proven (404 reachable) with token-as-query-param, VPN bypassed. Flexlist per-id endpoints NEW token-only gate with global ID space — cross-tenant read pending operator confirmation (MEDIUM-HIGH). AIDesigner config.php zero-auth LLM routing disclosure (MEDIUM). XSS at help/content.php PASSIVE-proven but execution requires operator render. Surface frozen at 4 hosts. PoC for bug gate: cbs-proxy WS 101 with arbitrary cid/service sufficient for CRITICAL severity report.
 ## 2026-09-16 20:02:57 UTC [target] (model nemotron3)
 ## 2026-09-16 22:48:24 UTC [target] (model nemotron3)
+## 2026-09-17 01:14:11 UTC [target] (model nemotron3)

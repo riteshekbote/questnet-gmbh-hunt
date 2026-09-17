@@ -4690,3 +4690,31 @@ impact: same-origin arbitrary JS → full /extjs API incl. delete — MEDIUM sta
 testability: HUMAN_ONLY
 [NEXT] PROBE: GET https://www.applicationdesigner.de/help.js — canonical endpoint-map refresh; diff against recorded route set (LiveDebugger/auth, voicenotes/check|get|details|download|delete, flexlist/getList|getFields|getDetails, callbuilder prefix, AIDesigner router) for newly deployed routes/params and re-confirm static credential (sha256 8d2faac1…). Freshness axis: check.php poll is 19 empty cycles and yields nothing new; help.js is the single automated source that can surface a novel endpoint and re-open the chain. PASSIVE, no token required.
 [RISK] questnet-gmbh: 72 — CBS WS transport-complete BOLA (CVSS 8.6–9.1 if frame binding unenforced) remains dominant driver, live 24th cycle; XSS execution pending human adds chained HIGH upside; voicenote metadata cross-tenant confirmed but 19 empty cycles cap that leg at UUID-blocked; flexlist leg fully closed (per-id ownership gate) removes prior partial upside; possible new surface hinges on help.js route refresh (STEP 5). Score capped pending two-tenant frame test, XSS POC, or fresh endpoint.
+## 2026-09-17 01:14:50 UTC [target] (model bigpickle)
+[HYP] Cross-tenant CBS WS frame binding — token→cid ownership
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
+confidence: 95
+reasoning: 24th cycle — non-upgrade GET 426 0B, upgrade 101 + byte-identical CONNECT/READY for demo 131727, foreign 2, synthetic 999999999 with zero token; proxy binds no identity at handshake; sole unproven hop is backend token→cid binding inside live_debug frames.
+evidence_needed: operator two-tenant frame test — token minted for own cid, frames sent against own vs foreign cid, byte-diff accepted state.
+verify_steps: AUTH_HELPED — one bound frame set per owned cid; compare accepted vs rejected.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH 8.6, CRITICAL 9.1 if binding unenforced.
+testability: AUTH_HELPED
+[HYP] Voicenote raw-file download cross-tenant — no customer_id scoping in download path
+class: IDOR
+asset: https://www.applicationdesigner.de/extjs/voicenotes/download.php?file={uuid}
+confidence: 48
+reasoning: download.php reaches file-lookup with token-as-query-param (404); VPN gate bypassed; no customer_id in URL (help.js: file=encodeURIComponent); sibling details.php is hierarchy-gated, narrowing surface to raw download; check.php index empty 19 consecutive cycles → zero UUID oracle.
+evidence_needed: a valid voicenote UUID (max_id>0 in check.php) resolving to file bytes anonymously.
+verify_steps: PASSIVE — standing poll check.php for max_id>0; if non-empty, HEAD download.php?file=<uuid>.
+impact: cross-tenant audio/PII file download — HIGH if UUID ever obtained.
+testability: PASSIVE
+[HYP] Same-origin reflected XSS at help content app
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page={value}
+confidence: 80
+reasoning: page= reflected unescaped into 200 text/html, no CSP/nosniff, zero-token, PASSIVE-proven 2026-09-12; same-origin context reaches all /extjs endpoints incl. credential-carrying legs.
+evidence_needed: benign document.title marker render by operator browser.
+verify_steps: HUMAN — open page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E; no further active probes warranted.
+impact: same-origin arbitrary JS → full /extjs API incl. delete — MEDIUM standalone, HIGH chained.
+testability: HUMAN_ONLY
