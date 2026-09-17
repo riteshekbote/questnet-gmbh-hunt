@@ -26679,3 +26679,1426 @@ testability: PASSIVE
 ## STEP 7 — RISK
 
 [RISK] questnet-gmbh: 71 — CBS WS transport-complete BOLA (26 cycles, CVSS 8.6–9.1 if frame binding unenforced) remains dominant driver; XSS execution pending human adds chained HIGH upside; voicenote cross-tenant confirmed but 20 empty cycles cap at UUID-blocked; flexlist per-id ownership gate closes cross-tenant read; new config_coding.php + chat/provider endpoints add INFO-only architectural exposure (Questnet Ollama Qwen3.6 cluster + Mittwald hosting, Anthropic/OpenAI/OpenRouter routing); score capped pending two-tenant frame test, XSS POC, or fresh endpoint with data access.
+===== ANALYST bigpickle 2026-09-17 16:41:21 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt
+total 468
+drwxr-xr-x 12 runner runner   4096 Sep 17 16:37 .
+drwxr-xr-x  3 runner runner   4096 Sep 17 16:37 ..
+drwxr-xr-x  7 runner runner   4096 Sep 17 16:37 .git
+drwxr-xr-x  3 runner runner   4096 Sep 17 16:37 .github
+-rw-r--r--  1 runner runner   1609 Sep 17 16:37 README.md
+-rw-r--r--  1 runner runner     32 Sep 17 16:37 analyst-out.txt
+-rw-r--r--  1 runner runner 192537 Sep 17 16:37 analyst-prompt.txt
+-rw-r--r--  1 runner runner 188817 Sep 17 16:37 ctx.txt
+drwxr-xr-x  2 runner runner   4096 Sep 17 16:37 inventory
+drwxr-xr-x  2 runner runner   4096 Sep 17 16:37 knowledge
+drwxr-xr-x  2 runner runner   4096 Sep 17 16:37 leads
+-rw-r--r--  1 runner runner   2842 Sep 17 16:37 probe-results.md
+drwxr-xr-x  2 runner runner   4096 Sep 17 16:37 recon-notes
+drwxr-xr-x  2 runner runner   4096 Sep 17 16:37 reports
+drwxr-xr-x  2 runner runner   4096 Sep 17 16:37 reposcan-raw
+-rw-r--r--  1 runner runner   3133 Sep 17 16:37 scope.yml
+drwxr-xr-x  2 runner runner   4096 Sep 17 16:37 scripts
+-rw-r--r--  1 runner runner     33 Sep 17 16:37 state_bigpickle.json
+-rw-r--r--  1 runner runner     33 Sep 17 16:37 state_laguna.json
+-rw-r--r--  1 runner runner     33 Sep 17 16:37 state_ling3.json
+-rw-r--r--  1 runner runner     33 Sep 17 16:37 state_longcat.json
+-rw-r--r--  1 runner runner     33 Sep 17 16:37 state_mimo.json
+-rw-r--r--  1 runner runner     33 Sep 17 16:37 state_nemotron3.json
+drwxr-xr-x  2 runner runner   4096 Sep 17 16:37 triage
+[0m
+[0m$ [0mls -la /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/art 2>/dev/null; ls -la /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/*.md 2>/dev/null
+-rw-r--r-- 1 runner runner 1609 Sep 17 16:37 /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/README.md
+-rw-r--r-- 1 runner runner 2842 Sep 17 16:37 /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/probe-results.md
+[0m
+[0m$ [0mls -la leads knowledge inventory reports triage scripts recon-notes 2>/dev/null
+inventory:
+total 96
+drwxr-xr-x  2 runner runner  4096 Sep 17 16:37 .
+drwxr-xr-x 12 runner runner  4096 Sep 17 16:37 ..
+-rw-r--r--  1 runner runner 88488 Sep 17 16:37 questnet-gmbh.md
+
+knowledge:
+total 92
+drwxr-xr-x  2 runner runner  4096 Sep 17 16:37 .
+drwxr-xr-x 12 runner runner  4096 Sep 17 16:37 ..
+-rw-r--r--  1 runner runner 86004 Sep 17 16:37 index.md
+
+leads:
+total 1640
+drwxr-xr-x  2 runner runner   4096 Sep 17 16:37 .
+drwxr-xr-x 12 runner runner   4096 Sep 17 16:37 ..
+-rw-r--r--  1 runner runner 698638 Sep 17 16:37 lead-bigpickle.md
+-rw-r--r--  1 runner runner   4743 Sep 17 16:37 lead-laguna.md
+-rw-r--r--  1 runner runner   4650 Sep 17 16:37 lead-ling3.md
+-rw-r--r--  1 runner runner   4836 Sep 17 16:37 lead-longcat.md
+-rw-r--r--  1 runner runner     18 Sep 17 16:37 lead-mimo.md
+-rw-r--r--  1 runner runner 882434 Sep 17 16:37 lead-nemotron3.md
+-rw-r--r--  1 runner runner  54145 Sep 17 16:37 reposcan-questnet-gmbh.md
+
+recon-notes:
+total 12
+drwxr-xr-x  2 runner runner 4096 Sep 17 16:37 .
+drwxr-xr-x 12 runner runner 4096 Sep 17 16:37 ..
+-rw-r--r--  1 runner runner  856 Sep 17 16:37 DEDICATED-DEEP.md
+
+reports:
+total 3836
+drwxr-xr-x  2 runner runner    4096 Sep 17 16:37 .
+drwxr-xr-x 12 runner runner    4096 Sep 17 16:37 ..
+-rw-r--r--  1 runner runner 1947650 Sep 17 16:37 analyst-bigpickle.log
+-rw-r--r--  1 runner runner   20181 Sep 17 16:37 analyst-laguna.log
+-rw-r--r--  1 runner runner   20088 Sep 17 16:37 analyst-ling3.log
+-rw-r--r--  1 runner runner   20274 Sep 17 16:37 analyst-longcat.log
+-rw-r--r--  1 runner runner 1518557 Sep 17 16:37 analyst-nemotron3.log
+-rw-r--r--  1 runner runner    9734 Sep 17 16:37 hypotheses-bigpickle.txt
+-rw-r--r--  1 runner runner      51 Sep 17 16:37 hypotheses-laguna.txt
+-rw-r--r--  1 runner runner      50 Sep 17 16:37 hypotheses-ling3.txt
+-rw-r--r--  1 runner runner      52 Sep 17 16:37 hypotheses-longcat.txt
+-rw-r--r--  1 runner runner   10042 Sep 17 16:37 hypotheses-nemotron3.txt
+-rw-r--r--  1 runner runner  338423 Sep 17 16:37 hypotheses.md
+-rw-r--r--  1 runner runner    9719 Sep 17 16:37 valid-bugs.md
+
+scripts:
+total 28
+drwxr-xr-x  2 runner runner  4096 Sep 17 16:37 .
+drwxr-xr-x 12 runner runner  4096 Sep 17 16:37 ..
+-rw-r--r--  1 runner runner 16987 Sep 17 16:37 sync-issues.py
+
+triage:
+total 536
+drwxr-xr-x  2 runner runner  4096 Sep 17 16:37 .
+drwxr-xr-x 12 runner runner  4096 Sep 17 16:37 ..
+-rw-r--r--  1 runner runner     0 Sep 17 16:37 .gitkeep
+-rw-r--r--  1 runner runner   228 Sep 17 16:37 run-2026-09-02-21-42.md
+-rw-r--r--  1 runner runner   150 Sep 17 16:37 run-2026-09-02-23-54.md
+-rw-r--r--  1 runner runner   754 Sep 17 16:37 run-2026-09-03-03-39.md
+-rw-r--r--  1 runner runner   315 Sep 17 16:37 run-2026-09-03-08-18.md
+-rw-r--r--  1 runner runner   143 Sep 17 16:37 run-2026-09-03-12-53.md
+-rw-r--r--  1 runner runner   229 Sep 17 16:37 run-2026-09-03-16-58.md
+-rw-r--r--  1 runner runner   163 Sep 17 16:37 run-2026-09-03-19-43.md
+-rw-r--r--  1 runner runner   269 Sep 17 16:37 run-2026-09-03-22-24.md
+-rw-r--r--  1 runner runner   214 Sep 17 16:37 run-2026-09-04-00-23.md
+-rw-r--r--  1 runner runner   186 Sep 17 16:37 run-2026-09-04-05-05.md
+-rw-r--r--  1 runner runner   226 Sep 17 16:37 run-2026-09-04-09-45.md
+-rw-r--r--  1 runner runner   174 Sep 17 16:37 run-2026-09-04-14-05.md
+-rw-r--r--  1 runner runner   144 Sep 17 16:37 run-2026-09-04-17-42.md
+-rw-r--r--  1 runner runner   190 Sep 17 16:37 run-2026-09-04-19-53.md
+-rw-r--r--  1 runner runner   189 Sep 17 16:37 run-2026-09-04-22-13.md
+-rw-r--r--  1 runner runner   163 Sep 17 16:37 run-2026-09-05-00-11.md
+-rw-r--r--  1 runner runner   229 Sep 17 16:37 run-2026-09-05-04-41.md
+-rw-r--r--  1 runner runner  3734 Sep 17 16:37 run-2026-09-05-08-38.md
+-rw-r--r--  1 runner runner   182 Sep 17 16:37 run-2026-09-05-12-04.md
+-rw-r--r--  1 runner runner   350 Sep 17 16:37 run-2026-09-05-15-21.md
+-rw-r--r--  1 runner runner   236 Sep 17 16:37 run-2026-09-05-17-37.md
+-rw-r--r--  1 runner runner   193 Sep 17 16:37 run-2026-09-05-19-30.md
+-rw-r--r--  1 runner runner   189 Sep 17 16:37 run-2026-09-05-21-41.md
+-rw-r--r--  1 runner runner   218 Sep 17 16:37 run-2026-09-05-23-38.md
+-rw-r--r--  1 runner runner   213 Sep 17 16:37 run-2026-09-06-01-20.md
+-rw-r--r--  1 runner runner 12840 Sep 17 16:37 run-2026-09-06-06-10.md
+-rw-r--r--  1 runner runner  1952 Sep 17 16:37 run-2026-09-06-11-08.md
+-rw-r--r--  1 runner runner   210 Sep 17 16:37 run-2026-09-06-14-14.md
+-rw-r--r--  1 runner runner   244 Sep 17 16:37 run-2026-09-06-17-08.md
+-rw-r--r--  1 runner runner   654 Sep 17 16:37 run-2026-09-06-19-17.md
+-rw-r--r--  1 runner runner 17188 Sep 17 16:37 run-2026-09-06-21-29.md
+-rw-r--r--  1 runner runner   283 Sep 17 16:37 run-2026-09-06-23-09.md
+-rw-r--r--  1 runner runner   146 Sep 17 16:37 run-2026-09-07-01-06.md
+-rw-r--r--  1 runner runner   152 Sep 17 16:37 run-2026-09-07-06-11.md
+-rw-r--r--  1 runner runner   234 Sep 17 16:37 run-2026-09-07-12-45.md
+-rw-r--r--  1 runner runner   161 Sep 17 16:37 run-2026-09-07-18-09.md
+-rw-r--r--  1 runner runner   211 Sep 17 16:37 run-2026-09-07-21-36.md
+-rw-r--r--  1 runner runner   204 Sep 17 16:37 run-2026-09-07-23-46.md
+-rw-r--r--  1 runner runner   264 Sep 17 16:37 run-2026-09-08-03-47.md
+-rw-r--r--  1 runner runner 16515 Sep 17 16:37 run-2026-09-08-08-45.md
+-rw-r--r--  1 runner runner   221 Sep 17 16:37 run-2026-09-08-13-25.md
+-rw-r--r--  1 runner runner   167 Sep 17 16:37 run-2026-09-08-17-29.md
+-rw-r--r--  1 runner runner  1066 Sep 17 16:37 run-2026-09-08-20-16.md
+-rw-r--r--  1 runner runner   984 Sep 17 16:37 run-2026-09-08-22-45.md
+-rw-r--r--  1 runner runner   185 Sep 17 16:37 run-2026-09-09-01-06.md
+-rw-r--r--  1 runner runner   151 Sep 17 16:37 run-2026-09-09-06-06.md
+-rw-r--r--  1 runner runner   187 Sep 17 16:37 run-2026-09-09-11-34.md
+-rw-r--r--  1 runner runner   166 Sep 17 16:37 run-2026-09-09-15-17.md
+-rw-r--r--  1 runner runner   198 Sep 17 16:37 run-2026-09-09-18-43.md
+-rw-r--r--  1 runner runner   213 Sep 17 16:37 run-2026-09-09-21-33.md
+-rw-r--r--  1 runner runner   191 Sep 17 16:37 run-2026-09-09-23-30.md
+-rw-r--r--  1 runner runner   188 Sep 17 16:37 run-2026-09-10-01-27.md
+-rw-r--r--  1 runner runner 10247 Sep 17 16:37 run-2026-09-10-06-41.md
+-rw-r--r--  1 runner runner 13285 Sep 17 16:37 run-2026-09-10-11-51.md
+-rw-r--r--  1 runner runner   177 Sep 17 16:37 run-2026-09-10-16-04.md
+-rw-r--r--  1 runner runner   216 Sep 17 16:37 run-2026-09-10-19-09.md
+-rw-r--r--  1 runner runner  1753 Sep 17 16:37 run-2026-09-10-21-42.md
+-rw-r--r--  1 runner runner   175 Sep 17 16:37 run-2026-09-10-23-50.md
+-rw-r--r--  1 runner runner   886 Sep 17 16:37 run-2026-09-11-03-46.md
+-rw-r--r--  1 runner runner   215 Sep 17 16:37 run-2026-09-11-08-45.md
+-rw-r--r--  1 runner runner   182 Sep 17 16:37 run-2026-09-11-13-23.md
+-rw-r--r--  1 runner runner   216 Sep 17 16:37 run-2026-09-11-17-13.md
+-rw-r--r--  1 runner runner   309 Sep 17 16:37 run-2026-09-11-19-49.md
+-rw-r--r--  1 runner runner   236 Sep 17 16:37 run-2026-09-11-22-21.md
+-rw-r--r--  1 runner runner  1502 Sep 17 16:37 run-2026-09-12-00-37.md
+-rw-r--r--  1 runner runner  7845 Sep 17 16:37 run-2026-09-12-05-09.md
+-rw-r--r--  1 runner runner   668 Sep 17 16:37 run-2026-09-12-09-26.md
+-rw-r--r--  1 runner runner   153 Sep 17 16:37 run-2026-09-12-13-08.md
+-rw-r--r--  1 runner runner   253 Sep 17 16:37 run-2026-09-12-16-22.md
+-rw-r--r--  1 runner runner   149 Sep 17 16:37 run-2026-09-12-18-45.md
+-rw-r--r--  1 runner runner   179 Sep 17 16:37 run-2026-09-12-21-18.md
+-rw-r--r--  1 runner runner  1391 Sep 17 16:37 run-2026-09-12-23-06.md
+-rw-r--r--  1 runner runner   157 Sep 17 16:37 run-2026-09-13-01-08.md
+-rw-r--r--  1 runner runner   191 Sep 17 16:37 run-2026-09-13-06-19.md
+-rw-r--r--  1 runner runner  1316 Sep 17 16:37 run-2026-09-13-12-07.md
+-rw-r--r--  1 runner runner   199 Sep 17 16:37 run-2026-09-13-16-27.md
+-rw-r--r--  1 runner runner   156 Sep 17 16:37 run-2026-09-13-18-56.md
+-rw-r--r--  1 runner runner  6272 Sep 17 16:37 run-2026-09-13-21-23.md
+-rw-r--r--  1 runner runner   213 Sep 17 16:37 run-2026-09-13-23-29.md
+-rw-r--r--  1 runner runner   156 Sep 17 16:37 run-2026-09-14-01-38.md
+-rw-r--r--  1 runner runner 22295 Sep 17 16:37 run-2026-09-14-07-11.md
+-rw-r--r--  1 runner runner   244 Sep 17 16:37 run-2026-09-14-14-14.md
+-rw-r--r--  1 runner runner   721 Sep 17 16:37 run-2026-09-14-19-28.md
+-rw-r--r--  1 runner runner   218 Sep 17 16:37 run-2026-09-14-22-44.md
+-rw-r--r--  1 runner runner   159 Sep 17 16:37 run-2026-09-15-01-16.md
+-rw-r--r--  1 runner runner   207 Sep 17 16:37 run-2026-09-15-06-13.md
+-rw-r--r--  1 runner runner 13608 Sep 17 16:37 run-2026-09-15-11-55.md
+-rw-r--r--  1 runner runner 11378 Sep 17 16:37 run-2026-09-15-16-36.md
+-rw-r--r--  1 runner runner   150 Sep 17 16:37 run-2026-09-15-19-49.md
+-rw-r--r--  1 runner runner   462 Sep 17 16:37 run-2026-09-15-22-47.md
+-rw-r--r--  1 runner runner   279 Sep 17 16:37 run-2026-09-16-01-10.md
+-rw-r--r--  1 runner runner    80 Sep 17 16:37 run-2026-09-16-06-24.md
+-rw-r--r--  1 runner runner 10862 Sep 17 16:37 run-2026-09-16-11-49.md
+-rw-r--r--  1 runner runner   239 Sep 17 16:37 run-2026-09-16-16-27.md
+-rw-r--r--  1 runner runner   262 Sep 17 16:37 run-2026-09-16-19-42.md
+-rw-r--r--  1 runner runner   118 Sep 17 16:37 run-2026-09-16-22-44.md
+-rw-r--r--  1 runner runner   182 Sep 17 16:37 run-2026-09-17-01-10.md
+-rw-r--r--  1 runner runner   161 Sep 17 16:37 run-2026-09-17-06-12.md
+-rw-r--r--  1 runner runner 11117 Sep 17 16:37 run-2026-09-17-11-54.md
+-rw-r--r--  1 runner runner  1106 Sep 17 16:37 run-2026-09-17-16-33.md
+[0m
+[0m→ [0mRead probe-results.md
+[0m→ [0mRead scope.yml
+[0m
+[0m$ [0mcat /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/triage/run-2026-09-17-16-33.md /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/triage/run-2026-09-17-11-54.md /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/triage/run-2026-09-17-06-12.md /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/triage/run-2026-09-17-01-10.md
+===== TRIAGE 2026-09-17 16:33:50 UTC =====
+[0m
+> build · mimo-v2.5-free
+[0m
+[0m✱ [0mGlob "**/scope*"[90m 1 match[0m
+[0m✱ [0mGlob "**/questnet*"[90m 1 match[0m
+[0m→ [0mRead scope.yml
+[0m→ [0mRead inventory/questnet-gmbh.md
+[0m✱ [0mGlob "**/valid-bugs*"[90m 1 match[0m
+[0m✱ [0mGlob "**/leads*"[90m 0 matches[0m
+[0m→ [0mRead reports/valid-bugs.md
+No leads provided. The `LEADS:` section in your message is empty.
+
+I have the scope and inventory loaded. The program covers `*.applicationdesigner.de`, `*.live-manager.de`, and `185.158.96.0/22` via bugs.olivermaicher.eu. Four live hosts are confirmed in-scope: `cbs-proxy.api.live-manager.de`, `www.live-manager.de`, `www.applicationdesigner.de`, `dev.applicationdesigner.de`.
+
+The existing `valid-bugs.md` already tracks prior validated findings (auth.php mint, voicenote PII, cbs-proxy WS BOLA, get_user_rights.php leak, help.js credential, with several HOLD items pending AUTH_HELPED frame-binding or cross-tenant confirmation).
+
+Please paste the leads you want triaged and I'll run each through the 7-Question Gate.
+
+===== TRIAGE 2026-09-17 11:54:15 UTC =====
+[0m
+> build · mimo-v2.5-free
+[0m
+I see the message ends with "LEADS:" but no actual leads were provided. Let me check if there are lead files in the workspace.
+[0m✱ [0mGlob "**/*probe*"[90m 2 matches[0m
+[0m✱ [0mGlob "**/*result*"[90m 2 matches[0m
+[0m✱ [0mGlob "**/*lead*"[90m 7 matches[0m
+[0m→ [0mRead probe-results.md
+[0m→ [0mRead new-leads.txt
+[0m→ [0mRead probe-results.txt
+[0m→ [0mRead leads/lead-longcat.md
+[0m→ [0mRead leads/lead-mimo.md
+[0m→ [0mRead leads/lead-ling3.md
+[0m→ [0mRead leads/lead-laguna.md
+[0m→ [0mRead leads/lead-bigpickle.md
+[0m→ [0mRead leads/lead-nemotron3.md
+The probe-results.md only has timestamps with no findings. Let me read the individual lead files.
+[0m✱ [0mGlob "**/*scope*"[90m 1 match[0m
+[0m✱ [0mGlob "**/*inventory*"[90m 0 matches[0m
+[0m✱ [0mGlob "**/*questnet*"[90m 2 matches[0m
+Let me check the scope definition to validate in-scope assets.
+[0m→ [0mRead scope.yml
+[0m→ [0mRead inventory/questnet-gmbh.md
+[0m✱ [0mGlob "**/*valid*bug*"[90m 1 match[0m
+[0m→ [0mRead leads/lead-bigpickle.md[90m [offset=355, limit=200][0m
+[0m→ [0mRead reports/valid-bugs.md
+[0m→ [0mRead leads/lead-bigpickle.md[90m [limit=300, offset=4400][0m
+[0m→ [0mRead leads/lead-nemotron3.md[90m [limit=300, offset=349][0m
+Now let me check the latest findings in the bigpickle and nemotron3 lead files (most recent entries).
+Now I have all the data needed. Here is the consolidated triage for the **6 distinct findings** across all lead files:
+
+---
+
+## FINDING 1: CBS Proxy WebSocket IDOR/BOLA
+
+**Asset:** `wss://cbs-proxy.api.live-manager.de` (in-scope `*.live-manager.de`, IP 185.158.98.53 in `/22`)
+
+| Gate | Answer | Reason |
+|------|--------|--------|
+| Q1 Scope? | **YES** | `*.live-manager.de` explicitly in scope.yml; IP in 185.158.96.0/22 |
+| Q2 Reachable? | **YES** | Anonymous WS upgrade returns HTTP/101 + CONNECT CBS100/CBS190/CBS200 + READY for any cid/service; 24+ consecutive cycles confirmed |
+| Q3 Real impact? | **YES** | Unauthenticated bidirectional pipe to internal CBS business systems addressable by any tenant id; cross-tenant live call/debug streams (voice/PII) if frame binding absent |
+| Q4 Provable? | **PARTIAL** | Anonymous handshake + 101/CONNECT/READY non-invasively proven; final frame-binding requires AUTH_HELPED (valid operator session) |
+| Q5 Novel? | **YES** | No prior report; transport-complete BOLA with zero-credential WS proxy is uncommon |
+| Q6 Not always-rejected? | **YES** | Transport-complete BOLA is not on always-rejected list |
+| Q7 Reasonable triager? | **YES** | Anonymous WS relay to backend CBS systems is a valid finding |
+
+**Verdict: HOLD** — Upgrade to VALID when AUTH_HELPED frame-binding test completes. Anonymous proof clears HIGH gate; only the backend binding check remains.
+
+- **CVSS 3.1:** 8.6 (High) — Network/Low/None/Changed/High/None
+- **Reporting channel:** bugs.olivermaicher.eu
+- **Proof steps:** WS upgrade GET with `Upgrade: websocket` headers; observe 101 + CONNECT/READY frame set for demo cid=131727 vs foreign cid=2; byte-identical frames confirm no proxy-level scoping.
+
+---
+
+## FINDING 2: auth.php Static Credential Token Mint (MITIGATED)
+
+**Asset:** `https://www.applicationdesigner.de/extjs/livedebugger/auth.php`
+
+| Gate | Answer | Reason |
+|------|--------|--------|
+| Q1 Scope? | **YES** | `*.applicationdesigner.de` in scope |
+| Q2 Reachable? | **PARTIAL** | Was anonymous; VPN gate deployed 2026-09-07 returns "No VPN detected" — now requires VPN |
+| Q3 Real impact? | **YES** | Public static credential (sha256 8d2faac1...) in help.js mints per-cid tokens for ANY customer_id; cross-tenant debug attach possible |
+| Q4 Provable? | **PARTIAL** | Auth.php mint was confirmed anonymous (cid=2 success:true) pre-mitigation; current state requires VPN |
+| Q5 Novel? | **YES** | Broken auth via public JS credential is novel |
+| Q6 Not always-rejected? | **YES** | Broken auth is not on always-rejected list |
+| Q7 Reasonable triager? | **YES** | Broken authentication allowing arbitrary tenant token minting is valid |
+
+**Verdict: VALID (mitigated)** — File report noting VPN gate deployment. The credential is still public in help.js; the gate is a network restriction, not an auth fix.
+
+- **CVSS 3.1:** 7.5 (High) pre-mitigation → 6.5 (Medium) post-VPN-gate
+- **Reporting channel:** bugs.olivermaicher.eu
+- **Proof steps:** GET `auth.php?token=LIVE_DEMO_CUSTOMER_TOKEN&customer_id=2&srn=100` returns `success:true` (pre-mitigation evidence); note current VPN gate in report.
+
+---
+
+## FINDING 3: Voicenote Metadata PII Disclosure
+
+**Asset:** `https://www.applicationdesigner.de/extjs/voicenotes/check.php`
+
+| Gate | Answer | Reason |
+|------|--------|--------|
+| Q1 Scope? | **YES** | `*.applicationdesigner.de` in scope |
+| Q2 Reachable? | **YES** | Public static credential accepted; returns success:true for arbitrary cid; NOT VPN-gated (re-confirmed 2026-09-16, 18+ cycles) |
+| Q3 Real impact? | **YES** | Anonymous access to real tenant's call/voicemail metadata (PII incl. phone numbers); customer_id parameter ignored |
+| Q4 Provable? | **YES** | Passively confirmed: check.php returns `{"success":true,"total":0,"max_id":0}` for demo cid=131727 AND foreign cid=2; byte-identical |
+| Q5 Novel? | **YES** | Cross-tenant PII via public JS credential is novel |
+| Q6 Not always-rejected? | **YES** | PII disclosure is not on always-rejected list |
+| Q7 Reasonable triager? | **YES** | Anonymous access to real customer's call metadata is clearly valid |
+
+**Verdict: VALID** — Cross-tenant credential-only PII metadata disclosure.
+
+- **CVSS 3.1:** 7.5 (High)
+- **Reporting channel:** bugs.olivermaicher.eu
+- **Proof steps:** GET `voicenotes/check.php?token=LIVE_DEMO_CUSTOMER_TOKEN&customer_id=2` returns `{"success":true,"total":0,"max_id":0}` identical to cid=131727; customer_id decoration ignored.
+
+---
+
+## FINDING 4: help.js Static Credential Exposure
+
+**Asset:** `https://www.applicationdesigner.de/help.js`
+
+| Gate | Answer | Reason |
+|------|--------|--------|
+| Q1 Scope? | **YES** | `*.applicationdesigner.de` in scope |
+| Q2 Reachable? | **YES** | Public JS bundle, no auth required |
+| Q3 Real impact? | **YES** | Enabler for Findings 2 and 3; hardcoded `LIVE_DEMO_CUSTOMER_TOKEN` (sha256 8d2faac1...) + full endpoint map |
+| Q4 Provable? | **YES** | Passively confirmed: GET help.js returns JS containing LIVE_DEMO_CUSTOMER_TOKEN |
+| Q5 Novel? | **YES** | Hardcoded credential in public JS is novel (not upstream FreeSWITCH example) |
+| Q6 Not always-rejected? | **YES** | Hardcoded credentials are not on always-rejected list |
+| Q7 Reasonable triager? | **YES** | Exposed credential enabling auth bypass is a valid finding |
+
+**Verdict: VALID** — Chain enabler. Report as supporting evidence for Findings 2/3, or standalone.
+
+- **CVSS 3.1:** 7.5 (High) standalone; supporting role
+- **Reporting channel:** bugs.olivermaicher.eu
+- **Proof steps:** GET `help.js` contains `LIVE_DEMO_CUSTOMER_TOKEN` value; sha256 8d2faac1...; no auth required.
+
+---
+
+## FINDING 5: get_user_rights.php Authorization Data Leak
+
+**Asset:** `https://www.applicationdesigner.de/extjs/get_user_rights.php`
+
+| Gate | Answer | Reason |
+|------|--------|--------|
+| Q1 Scope? | **YES** | `*.applicationdesigner.de` in scope |
+| Q2 Reachable? | **YES** | HTTP 200 with public static credential; anonymous, zero-token |
+| Q3 Real impact? | **YES** | Body sha256 differs per cid (empty/2/131727/999999), revealing per-tenant authorization data |
+| Q4 Provable? | **YES** | Passively confirmed: 200 response with credential; cid-dependent body hash |
+| Q5 Novel? | **YES** | Authz data leakage via broken auth is novel |
+| Q6 Not always-rejected? | **YES** | Authorization data leak is not on always-rejected list |
+| Q7 Reasonable triager? | **YES** | Authorization data leakage via broken auth is valid |
+
+**Verdict: VALID** — Standalone finding.
+
+- **CVSS 3.1:** 6.5 (Medium)
+- **Reporting channel:** bugs.olivermaicher.eu
+- **Proof steps:** GET `get_user_rights.php?token=LIVE_DEMO_CUSTOMER_TOKEN&customer_id=2` vs cid=131727; body sha256 differs; no auth required.
+
+---
+
+## FINDING 6: help/content.php Reflected XSS
+
+**Asset:** `https://www.applicationdesigner.de/help/content.php?page={value}`
+
+| Gate | Answer | Reason |
+|------|--------|--------|
+| Q1 Scope? | **YES** | `*.applicationdesigner.de` in scope |
+| Q2 Reachable? | **YES** | page= reflected unescaped into 200 text/html; no CSP/nosniff; zero-token |
+| Q3 Real impact? | **YES** | Same-origin arbitrary JS reaching every /extjs endpoint incl. token-only mints and delete.php |
+| Q4 Provable? | **PARTIAL** | Reflection confirmed passively (110B echo); execution requires HUMAN operator browser render |
+| Q5 Novel? | **YES** | Reflected XSS in same-origin context reaching delete endpoints is novel |
+| Q6 Not always-rejected? | **YES** | XSS with specific exploit context (not self-XSS) is not on always-rejected list |
+| Q7 Reasonable triager? | **YES** | Reflected XSS reaching privileged endpoints is valid |
+
+**Verdict: HOLD** — Upgrade to VALID when HUMAN_ONLY browser render confirms execution. Reflection proof is solid; only execution outstanding.
+
+- **CVSS 3.1:** 6.1 (Medium) standalone; 8.1 (High) chained with session victim
+- **Reporting channel:** bugs.olivermaicher.eu
+- **Proof steps:** Open `help/content.php?page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E`; confirm title marker; same-origin context reaches `/extjs/*`.
+
+---
+
+## FINDING 7: Post-login rs Return-URL Handling
+
+**Asset:** `https://www.live-manager.de/?rs={base64}`
+
+| Gate | Answer | Reason |
+|------|--------|--------|
+| Q1 Scope? | **YES** | `*.live-manager.de` in scope |
+| Q2 Reachable? | **NO** | Anonymous GET does NOT redirect; 302→/?rs= with no reflection; post-login behavior unverified |
+| Q3 Real impact? | **YES (potential)** | If decoded rs honored verbatim post-auth → open redirect → OAuth code theft → ATO |
+| Q4 Provable? | **NO** | Requires valid customer session; no passive proof |
+| Q5 Novel? | **YES** | Unvalidated post-login redirect is novel |
+| Q6 Not always-rejected? | **YES** | Open redirect with OAuth impact is not on always-rejected list |
+| Q7 Reasonable triager? | **NO** | Without passive proof, reasonable triager would not accept |
+
+**Verdict: INVALID** — Cannot be proven non-invasively. Park until AUTH_HELPED becomes possible.
+
+---
+
+**Summary:**
+
+| # | Finding | Verdict | CVSS | Action |
+|---|---------|---------|------|--------|
+| 1 | CBS Proxy WS BOLA | HOLD | 8.6 | Await AUTH_HELPED frame-binding test |
+| 2 | auth.php token mint | VALID (mitigated) | 7.5→6.5 | File report + note VPN gate |
+| 3 | Voicenote PII metadata | VALID | 7.5 | File report |
+| 4 | help.js credential | VALID | 7.5 | File report (chain enabler) |
+| 5 | get_user_rights.php leak | VALID | 6.5 | File report |
+| 6 | help/content.php XSS | HOLD | 6.1→8.1 | Await HUMAN render confirmation |
+| 7 | Post-login rs handling | INVALID | — | Park (cannot prove non-invasively) |
+
+===== TRIAGE 2026-09-17 06:12:09 UTC =====
+[0m
+> build · mimo-v2.5-free
+[0m
+No leads provided. Please paste the probe results after "LEADS:" for validation.
+
+===== TRIAGE 2026-09-17 01:10:59 UTC =====
+[0m
+> build · mimo-v2.5-free
+[0m
+No leads were provided. The `LEADS:` section is empty. Please paste the probe results for evaluation.
+[0m
+[0m$ [0mcat /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/state_bigpickle.json /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/analyst-out.txt; date -u
+{"phase": "POC", "target": "api"}[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt
+total 468
+drwxr-xr-x 12 runner runner   4096 Sep 17 16:37 .
+drwxr-xr-x  3 runner runner   4096 Sep 17 16:37 ..
+drwxr-xr-x  7 runner runner   4096 Sep 17 16:37 .git
+drwxr-xr-x  3 runner runner   4096 Sep 17 16:37 .github
+-rw-r--r--  1 runner runner   1609 Sep 17 16:37 README.md
+-rw-r--r--  1 runner runner     32 Sep 17 16:37 analyst-out.txt
+-rw-r--r--  1 runner runner 192537 Sep 17 16:37 analyst-prompt.txt
+-rw-r--r--  1 runner runner 188817 Sep 17 16:37 ctx.txt
+drwxr-xr-x  2 runner runner   4096 Sep 17 16:37 inventory
+drwxr-xr-x  2 runner runner   4096 Sep 17 16:37 knowledge
+drwxr-xr-x  2 runner runner   4096 Sep 17 16:37 leads
+-rw-r--r--  1 runner runner   2842 Sep 17 16:37 probe-results.md
+drwxr-xr-x  2 runner runner   4096 Sep 17 16:37 recon-notes
+drwxr-xr-x  2 runner runner   4096 Sep 17 16:37 reports
+drwxr-xr-x  2 runner runner   4096 Sep 17 16:37 reposcan-raw
+-rw-r--r--  1 runner runner   3133 Sep 17 16:37 scope.yml
+drwxr-xr-x  2 runner runner   4096 Sep 17 16:37 scripts
+-rw-r--r--  1 runner runner     33 Sep 17 16:37 state_bigpickle.json
+-rw-r--r--  1 runner runner     33 Sep 17 16:37 state_laguna.json
+-rw-r--r--  1 runner runner     33 Sep 17 16:37 state_ling3.json
+-rw-r--r--  1 runner runner     33 Sep 17 16:37 state_longcat.json
+-rw-r--r--  1 runner runner     33 Sep 17 16:37 state_mimo.json
+-rw-r--r--  1 runner runner     33 Sep 17 16:37 state_nemotron3.json
+drwxr-xr-x  2 runner runner   4096 Sep 17 16:37 triage
+[0m
+[0m$ [0mls -la /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/art 2>/dev/null; ls -la /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/*.md 2>/dev/null
+-rw-r--r-- 1 runner runner 1609 Sep 17 16:37 /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/README.md
+-rw-r--r-- 1 runner runner 2842 Sep 17 16:37 /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/probe-results.md
+[0m
+[0m$ [0mls -la leads knowledge inventory reports triage scripts recon-notes 2>/dev/null
+inventory:
+total 96
+drwxr-xr-x  2 runner runner  4096 Sep 17 16:37 .
+drwxr-xr-x 12 runner runner  4096 Sep 17 16:37 ..
+-rw-r--r--  1 runner runner 88488 Sep 17 16:37 questnet-gmbh.md
+
+knowledge:
+total 92
+drwxr-xr-x  2 runner runner  4096 Sep 17 16:37 .
+drwxr-xr-x 12 runner runner  4096 Sep 17 16:37 ..
+-rw-r--r--  1 runner runner 86004 Sep 17 16:37 index.md
+
+leads:
+total 1640
+drwxr-xr-x  2 runner runner   4096 Sep 17 16:37 .
+drwxr-xr-x 12 runner runner   4096 Sep 17 16:37 ..
+-rw-r--r--  1 runner runner 698638 Sep 17 16:37 lead-bigpickle.md
+-rw-r--r--  1 runner runner   4743 Sep 17 16:37 lead-laguna.md
+-rw-r--r--  1 runner runner   4650 Sep 17 16:37 lead-ling3.md
+-rw-r--r--  1 runner runner   4836 Sep 17 16:37 lead-longcat.md
+-rw-r--r--  1 runner runner     18 Sep 17 16:37 lead-mimo.md
+-rw-r--r--  1 runner runner 882434 Sep 17 16:37 lead-nemotron3.md
+-rw-r--r--  1 runner runner  54145 Sep 17 16:37 reposcan-questnet-gmbh.md
+
+recon-notes:
+total 12
+drwxr-xr-x  2 runner runner 4096 Sep 17 16:37 .
+drwxr-xr-x 12 runner runner 4096 Sep 17 16:37 ..
+-rw-r--r--  1 runner runner  856 Sep 17 16:37 DEDICATED-DEEP.md
+
+reports:
+total 3836
+drwxr-xr-x  2 runner runner    4096 Sep 17 16:37 .
+drwxr-xr-x 12 runner runner    4096 Sep 17 16:37 ..
+-rw-r--r--  1 runner runner 1947650 Sep 17 16:37 analyst-bigpickle.log
+-rw-r--r--  1 runner runner   20181 Sep 17 16:37 analyst-laguna.log
+-rw-r--r--  1 runner runner   20088 Sep 17 16:37 analyst-ling3.log
+-rw-r--r--  1 runner runner   20274 Sep 17 16:37 analyst-longcat.log
+-rw-r--r--  1 runner runner 1518557 Sep 17 16:37 analyst-nemotron3.log
+-rw-r--r--  1 runner runner    9734 Sep 17 16:37 hypotheses-bigpickle.txt
+-rw-r--r--  1 runner runner      51 Sep 17 16:37 hypotheses-laguna.txt
+-rw-r--r--  1 runner runner      50 Sep 17 16:37 hypotheses-ling3.txt
+-rw-r--r--  1 runner runner      52 Sep 17 16:37 hypotheses-longcat.txt
+-rw-r--r--  1 runner runner   10042 Sep 17 16:37 hypotheses-nemotron3.txt
+-rw-r--r--  1 runner runner  338423 Sep 17 16:37 hypotheses.md
+-rw-r--r--  1 runner runner    9719 Sep 17 16:37 valid-bugs.md
+
+scripts:
+total 28
+drwxr-xr-x  2 runner runner  4096 Sep 17 16:37 .
+drwxr-xr-x 12 runner runner  4096 Sep 17 16:37 ..
+-rw-r--r--  1 runner runner 16987 Sep 17 16:37 sync-issues.py
+
+triage:
+total 536
+drwxr-xr-x  2 runner runner  4096 Sep 17 16:37 .
+drwxr-xr-x 12 runner runner  4096 Sep 17 16:37 ..
+-rw-r--r--  1 runner runner     0 Sep 17 16:37 .gitkeep
+-rw-r--r--  1 runner runner   228 Sep 17 16:37 run-2026-09-02-21-42.md
+-rw-r--r--  1 runner runner   150 Sep 17 16:37 run-2026-09-02-23-54.md
+-rw-r--r--  1 runner runner   754 Sep 17 16:37 run-2026-09-03-03-39.md
+-rw-r--r--  1 runner runner   315 Sep 17 16:37 run-2026-09-03-08-18.md
+-rw-r--r--  1 runner runner   143 Sep 17 16:37 run-2026-09-03-12-53.md
+-rw-r--r--  1 runner runner   229 Sep 17 16:37 run-2026-09-03-16-58.md
+-rw-r--r--  1 runner runner   163 Sep 17 16:37 run-2026-09-03-19-43.md
+-rw-r--r--  1 runner runner   269 Sep 17 16:37 run-2026-09-03-22-24.md
+-rw-r--r--  1 runner runner   214 Sep 17 16:37 run-2026-09-04-00-23.md
+-rw-r--r--  1 runner runner   186 Sep 17 16:37 run-2026-09-04-05-05.md
+-rw-r--r--  1 runner runner   226 Sep 17 16:37 run-2026-09-04-09-45.md
+-rw-r--r--  1 runner runner   174 Sep 17 16:37 run-2026-09-04-14-05.md
+-rw-r--r--  1 runner runner   144 Sep 17 16:37 run-2026-09-04-17-42.md
+-rw-r--r--  1 runner runner   190 Sep 17 16:37 run-2026-09-04-19-53.md
+-rw-r--r--  1 runner runner   189 Sep 17 16:37 run-2026-09-04-22-13.md
+-rw-r--r--  1 runner runner   163 Sep 17 16:37 run-2026-09-05-00-11.md
+-rw-r--r--  1 runner runner   229 Sep 17 16:37 run-2026-09-05-04-41.md
+-rw-r--r--  1 runner runner  3734 Sep 17 16:37 run-2026-09-05-08-38.md
+-rw-r--r--  1 runner runner   182 Sep 17 16:37 run-2026-09-05-12-04.md
+-rw-r--r--  1 runner runner   350 Sep 17 16:37 run-2026-09-05-15-21.md
+-rw-r--r--  1 runner runner   236 Sep 17 16:37 run-2026-09-05-17-37.md
+-rw-r--r--  1 runner runner   193 Sep 17 16:37 run-2026-09-05-19-30.md
+-rw-r--r--  1 runner runner   189 Sep 17 16:37 run-2026-09-05-21-41.md
+-rw-r--r--  1 runner runner   218 Sep 17 16:37 run-2026-09-05-23-38.md
+-rw-r--r--  1 runner runner   213 Sep 17 16:37 run-2026-09-06-01-20.md
+-rw-r--r--  1 runner runner 12840 Sep 17 16:37 run-2026-09-06-06-10.md
+-rw-r--r--  1 runner runner  1952 Sep 17 16:37 run-2026-09-06-11-08.md
+-rw-r--r--  1 runner runner   210 Sep 17 16:37 run-2026-09-06-14-14.md
+-rw-r--r--  1 runner runner   244 Sep 17 16:37 run-2026-09-06-17-08.md
+-rw-r--r--  1 runner runner   654 Sep 17 16:37 run-2026-09-06-19-17.md
+-rw-r--r--  1 runner runner 17188 Sep 17 16:37 run-2026-09-06-21-29.md
+-rw-r--r--  1 runner runner   283 Sep 17 16:37 run-2026-09-06-23-09.md
+-rw-r--r--  1 runner runner   146 Sep 17 16:37 run-2026-09-07-01-06.md
+-rw-r--r--  1 runner runner   152 Sep 17 16:37 run-2026-09-07-06-11.md
+-rw-r--r--  1 runner runner   234 Sep 17 16:37 run-2026-09-07-12-45.md
+-rw-r--r--  1 runner runner   161 Sep 17 16:37 run-2026-09-07-18-09.md
+-rw-r--r--  1 runner runner   211 Sep 17 16:37 run-2026-09-07-21-36.md
+-rw-r--r--  1 runner runner   204 Sep 17 16:37 run-2026-09-07-23-46.md
+-rw-r--r--  1 runner runner   264 Sep 17 16:37 run-2026-09-08-03-47.md
+-rw-r--r--  1 runner runner 16515 Sep 17 16:37 run-2026-09-08-08-45.md
+-rw-r--r--  1 runner runner   221 Sep 17 16:37 run-2026-09-08-13-25.md
+-rw-r--r--  1 runner runner   167 Sep 17 16:37 run-2026-09-08-17-29.md
+-rw-r--r--  1 runner runner  1066 Sep 17 16:37 run-2026-09-08-20-16.md
+-rw-r--r--  1 runner runner   984 Sep 17 16:37 run-2026-09-08-22-45.md
+-rw-r--r--  1 runner runner   185 Sep 17 16:37 run-2026-09-09-01-06.md
+-rw-r--r--  1 runner runner   151 Sep 17 16:37 run-2026-09-09-06-06.md
+-rw-r--r--  1 runner runner   187 Sep 17 16:37 run-2026-09-09-11-34.md
+-rw-r--r--  1 runner runner   166 Sep 17 16:37 run-2026-09-09-15-17.md
+-rw-r--r--  1 runner runner   198 Sep 17 16:37 run-2026-09-09-18-43.md
+-rw-r--r--  1 runner runner   213 Sep 17 16:37 run-2026-09-09-21-33.md
+-rw-r--r--  1 runner runner   191 Sep 17 16:37 run-2026-09-09-23-30.md
+-rw-r--r--  1 runner runner   188 Sep 17 16:37 run-2026-09-10-01-27.md
+-rw-r--r--  1 runner runner 10247 Sep 17 16:37 run-2026-09-10-06-41.md
+-rw-r--r--  1 runner runner 13285 Sep 17 16:37 run-2026-09-10-11-51.md
+-rw-r--r--  1 runner runner   177 Sep 17 16:37 run-2026-09-10-16-04.md
+-rw-r--r--  1 runner runner   216 Sep 17 16:37 run-2026-09-10-19-09.md
+-rw-r--r--  1 runner runner  1753 Sep 17 16:37 run-2026-09-10-21-42.md
+-rw-r--r--  1 runner runner   175 Sep 17 16:37 run-2026-09-10-23-50.md
+-rw-r--r--  1 runner runner   886 Sep 17 16:37 run-2026-09-11-03-46.md
+-rw-r--r--  1 runner runner   215 Sep 17 16:37 run-2026-09-11-08-45.md
+-rw-r--r--  1 runner runner   182 Sep 17 16:37 run-2026-09-11-13-23.md
+-rw-r--r--  1 runner runner   216 Sep 17 16:37 run-2026-09-11-17-13.md
+-rw-r--r--  1 runner runner   309 Sep 17 16:37 run-2026-09-11-19-49.md
+-rw-r--r--  1 runner runner   236 Sep 17 16:37 run-2026-09-11-22-21.md
+-rw-r--r--  1 runner runner  1502 Sep 17 16:37 run-2026-09-12-00-37.md
+-rw-r--r--  1 runner runner  7845 Sep 17 16:37 run-2026-09-12-05-09.md
+-rw-r--r--  1 runner runner   668 Sep 17 16:37 run-2026-09-12-09-26.md
+-rw-r--r--  1 runner runner   153 Sep 17 16:37 run-2026-09-12-13-08.md
+-rw-r--r--  1 runner runner   253 Sep 17 16:37 run-2026-09-12-16-22.md
+-rw-r--r--  1 runner runner   149 Sep 17 16:37 run-2026-09-12-18-45.md
+-rw-r--r--  1 runner runner   179 Sep 17 16:37 run-2026-09-12-21-18.md
+-rw-r--r--  1 runner runner  1391 Sep 17 16:37 run-2026-09-12-23-06.md
+-rw-r--r--  1 runner runner   157 Sep 17 16:37 run-2026-09-13-01-08.md
+-rw-r--r--  1 runner runner   191 Sep 17 16:37 run-2026-09-13-06-19.md
+-rw-r--r--  1 runner runner  1316 Sep 17 16:37 run-2026-09-13-12-07.md
+-rw-r--r--  1 runner runner   199 Sep 17 16:37 run-2026-09-13-16-27.md
+-rw-r--r--  1 runner runner   156 Sep 17 16:37 run-2026-09-13-18-56.md
+-rw-r--r--  1 runner runner  6272 Sep 17 16:37 run-2026-09-13-21-23.md
+-rw-r--r--  1 runner runner   213 Sep 17 16:37 run-2026-09-13-23-29.md
+-rw-r--r--  1 runner runner   156 Sep 17 16:37 run-2026-09-14-01-38.md
+-rw-r--r--  1 runner runner 22295 Sep 17 16:37 run-2026-09-14-07-11.md
+-rw-r--r--  1 runner runner   244 Sep 17 16:37 run-2026-09-14-14-14.md
+-rw-r--r--  1 runner runner   721 Sep 17 16:37 run-2026-09-14-19-28.md
+-rw-r--r--  1 runner runner   218 Sep 17 16:37 run-2026-09-14-22-44.md
+-rw-r--r--  1 runner runner   159 Sep 17 16:37 run-2026-09-15-01-16.md
+-rw-r--r--  1 runner runner   207 Sep 17 16:37 run-2026-09-15-06-13.md
+-rw-r--r--  1 runner runner 13608 Sep 17 16:37 run-2026-09-15-11-55.md
+-rw-r--r--  1 runner runner 11378 Sep 17 16:37 run-2026-09-15-16-36.md
+-rw-r--r--  1 runner runner   150 Sep 17 16:37 run-2026-09-15-19-49.md
+-rw-r--r--  1 runner runner   462 Sep 17 16:37 run-2026-09-15-22-47.md
+-rw-r--r--  1 runner runner   279 Sep 17 16:37 run-2026-09-16-01-10.md
+-rw-r--r--  1 runner runner    80 Sep 17 16:37 run-2026-09-16-06-24.md
+-rw-r--r--  1 runner runner 10862 Sep 17 16:37 run-2026-09-16-11-49.md
+-rw-r--r--  1 runner runner   239 Sep 17 16:37 run-2026-09-16-16-27.md
+-rw-r--r--  1 runner runner   262 Sep 17 16:37 run-2026-09-16-19-42.md
+-rw-r--r--  1 runner runner   118 Sep 17 16:37 run-2026-09-16-22-44.md
+-rw-r--r--  1 runner runner   182 Sep 17 16:37 run-2026-09-17-01-10.md
+-rw-r--r--  1 runner runner   161 Sep 17 16:37 run-2026-09-17-06-12.md
+-rw-r--r--  1 runner runner 11117 Sep 17 16:37 run-2026-09-17-11-54.md
+-rw-r--r--  1 runner runner  1106 Sep 17 16:37 run-2026-09-17-16-33.md
+[0m
+[0m→ [0mRead probe-results.md
+[0m→ [0mRead scope.yml
+[0m
+[0m$ [0mcat /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/triage/run-2026-09-17-16-33.md /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/triage/run-2026-09-17-11-54.md /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/triage/run-2026-09-17-06-12.md /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/triage/run-2026-09-17-01-10.md
+===== TRIAGE 2026-09-17 16:33:50 UTC =====
+[0m
+> build · mimo-v2.5-free
+[0m
+[0m✱ [0mGlob "**/scope*"[90m 1 match[0m
+[0m✱ [0mGlob "**/questnet*"[90m 1 match[0m
+[0m→ [0mRead scope.yml
+[0m→ [0mRead inventory/questnet-gmbh.md
+[0m✱ [0mGlob "**/valid-bugs*"[90m 1 match[0m
+[0m✱ [0mGlob "**/leads*"[90m 0 matches[0m
+[0m→ [0mRead reports/valid-bugs.md
+No leads provided. The `LEADS:` section in your message is empty.
+
+I have the scope and inventory loaded. The program covers `*.applicationdesigner.de`, `*.live-manager.de`, and `185.158.96.0/22` via bugs.olivermaicher.eu. Four live hosts are confirmed in-scope: `cbs-proxy.api.live-manager.de`, `www.live-manager.de`, `www.applicationdesigner.de`, `dev.applicationdesigner.de`.
+
+The existing `valid-bugs.md` already tracks prior validated findings (auth.php mint, voicenote PII, cbs-proxy WS BOLA, get_user_rights.php leak, help.js credential, with several HOLD items pending AUTH_HELPED frame-binding or cross-tenant confirmation).
+
+Please paste the leads you want triaged and I'll run each through the 7-Question Gate.
+
+===== TRIAGE 2026-09-17 11:54:15 UTC =====
+[0m
+> build · mimo-v2.5-free
+[0m
+I see the message ends with "LEADS:" but no actual leads were provided. Let me check if there are lead files in the workspace.
+[0m✱ [0mGlob "**/*probe*"[90m 2 matches[0m
+[0m✱ [0mGlob "**/*result*"[90m 2 matches[0m
+[0m✱ [0mGlob "**/*lead*"[90m 7 matches[0m
+[0m→ [0mRead probe-results.md
+[0m→ [0mRead new-leads.txt
+[0m→ [0mRead probe-results.txt
+[0m→ [0mRead leads/lead-longcat.md
+[0m→ [0mRead leads/lead-mimo.md
+[0m→ [0mRead leads/lead-ling3.md
+[0m→ [0mRead leads/lead-laguna.md
+[0m→ [0mRead leads/lead-bigpickle.md
+[0m→ [0mRead leads/lead-nemotron3.md
+The probe-results.md only has timestamps with no findings. Let me read the individual lead files.
+[0m✱ [0mGlob "**/*scope*"[90m 1 match[0m
+[0m✱ [0mGlob "**/*inventory*"[90m 0 matches[0m
+[0m✱ [0mGlob "**/*questnet*"[90m 2 matches[0m
+Let me check the scope definition to validate in-scope assets.
+[0m→ [0mRead scope.yml
+[0m→ [0mRead inventory/questnet-gmbh.md
+[0m✱ [0mGlob "**/*valid*bug*"[90m 1 match[0m
+[0m→ [0mRead leads/lead-bigpickle.md[90m [offset=355, limit=200][0m
+[0m→ [0mRead reports/valid-bugs.md
+[0m→ [0mRead leads/lead-bigpickle.md[90m [limit=300, offset=4400][0m
+[0m→ [0mRead leads/lead-nemotron3.md[90m [limit=300, offset=349][0m
+Now let me check the latest findings in the bigpickle and nemotron3 lead files (most recent entries).
+Now I have all the data needed. Here is the consolidated triage for the **6 distinct findings** across all lead files:
+
+---
+
+## FINDING 1: CBS Proxy WebSocket IDOR/BOLA
+
+**Asset:** `wss://cbs-proxy.api.live-manager.de` (in-scope `*.live-manager.de`, IP 185.158.98.53 in `/22`)
+
+| Gate | Answer | Reason |
+|------|--------|--------|
+| Q1 Scope? | **YES** | `*.live-manager.de` explicitly in scope.yml; IP in 185.158.96.0/22 |
+| Q2 Reachable? | **YES** | Anonymous WS upgrade returns HTTP/101 + CONNECT CBS100/CBS190/CBS200 + READY for any cid/service; 24+ consecutive cycles confirmed |
+| Q3 Real impact? | **YES** | Unauthenticated bidirectional pipe to internal CBS business systems addressable by any tenant id; cross-tenant live call/debug streams (voice/PII) if frame binding absent |
+| Q4 Provable? | **PARTIAL** | Anonymous handshake + 101/CONNECT/READY non-invasively proven; final frame-binding requires AUTH_HELPED (valid operator session) |
+| Q5 Novel? | **YES** | No prior report; transport-complete BOLA with zero-credential WS proxy is uncommon |
+| Q6 Not always-rejected? | **YES** | Transport-complete BOLA is not on always-rejected list |
+| Q7 Reasonable triager? | **YES** | Anonymous WS relay to backend CBS systems is a valid finding |
+
+**Verdict: HOLD** — Upgrade to VALID when AUTH_HELPED frame-binding test completes. Anonymous proof clears HIGH gate; only the backend binding check remains.
+
+- **CVSS 3.1:** 8.6 (High) — Network/Low/None/Changed/High/None
+- **Reporting channel:** bugs.olivermaicher.eu
+- **Proof steps:** WS upgrade GET with `Upgrade: websocket` headers; observe 101 + CONNECT/READY frame set for demo cid=131727 vs foreign cid=2; byte-identical frames confirm no proxy-level scoping.
+
+---
+
+## FINDING 2: auth.php Static Credential Token Mint (MITIGATED)
+
+**Asset:** `https://www.applicationdesigner.de/extjs/livedebugger/auth.php`
+
+| Gate | Answer | Reason |
+|------|--------|--------|
+| Q1 Scope? | **YES** | `*.applicationdesigner.de` in scope |
+| Q2 Reachable? | **PARTIAL** | Was anonymous; VPN gate deployed 2026-09-07 returns "No VPN detected" — now requires VPN |
+| Q3 Real impact? | **YES** | Public static credential (sha256 8d2faac1...) in help.js mints per-cid tokens for ANY customer_id; cross-tenant debug attach possible |
+| Q4 Provable? | **PARTIAL** | Auth.php mint was confirmed anonymous (cid=2 success:true) pre-mitigation; current state requires VPN |
+| Q5 Novel? | **YES** | Broken auth via public JS credential is novel |
+| Q6 Not always-rejected? | **YES** | Broken auth is not on always-rejected list |
+| Q7 Reasonable triager? | **YES** | Broken authentication allowing arbitrary tenant token minting is valid |
+
+**Verdict: VALID (mitigated)** — File report noting VPN gate deployment. The credential is still public in help.js; the gate is a network restriction, not an auth fix.
+
+- **CVSS 3.1:** 7.5 (High) pre-mitigation → 6.5 (Medium) post-VPN-gate
+- **Reporting channel:** bugs.olivermaicher.eu
+- **Proof steps:** GET `auth.php?token=LIVE_DEMO_CUSTOMER_TOKEN&customer_id=2&srn=100` returns `success:true` (pre-mitigation evidence); note current VPN gate in report.
+
+---
+
+## FINDING 3: Voicenote Metadata PII Disclosure
+
+**Asset:** `https://www.applicationdesigner.de/extjs/voicenotes/check.php`
+
+| Gate | Answer | Reason |
+|------|--------|--------|
+| Q1 Scope? | **YES** | `*.applicationdesigner.de` in scope |
+| Q2 Reachable? | **YES** | Public static credential accepted; returns success:true for arbitrary cid; NOT VPN-gated (re-confirmed 2026-09-16, 18+ cycles) |
+| Q3 Real impact? | **YES** | Anonymous access to real tenant's call/voicemail metadata (PII incl. phone numbers); customer_id parameter ignored |
+| Q4 Provable? | **YES** | Passively confirmed: check.php returns `{"success":true,"total":0,"max_id":0}` for demo cid=131727 AND foreign cid=2; byte-identical |
+| Q5 Novel? | **YES** | Cross-tenant PII via public JS credential is novel |
+| Q6 Not always-rejected? | **YES** | PII disclosure is not on always-rejected list |
+| Q7 Reasonable triager? | **YES** | Anonymous access to real customer's call metadata is clearly valid |
+
+**Verdict: VALID** — Cross-tenant credential-only PII metadata disclosure.
+
+- **CVSS 3.1:** 7.5 (High)
+- **Reporting channel:** bugs.olivermaicher.eu
+- **Proof steps:** GET `voicenotes/check.php?token=LIVE_DEMO_CUSTOMER_TOKEN&customer_id=2` returns `{"success":true,"total":0,"max_id":0}` identical to cid=131727; customer_id decoration ignored.
+
+---
+
+## FINDING 4: help.js Static Credential Exposure
+
+**Asset:** `https://www.applicationdesigner.de/help.js`
+
+| Gate | Answer | Reason |
+|------|--------|--------|
+| Q1 Scope? | **YES** | `*.applicationdesigner.de` in scope |
+| Q2 Reachable? | **YES** | Public JS bundle, no auth required |
+| Q3 Real impact? | **YES** | Enabler for Findings 2 and 3; hardcoded `LIVE_DEMO_CUSTOMER_TOKEN` (sha256 8d2faac1...) + full endpoint map |
+| Q4 Provable? | **YES** | Passively confirmed: GET help.js returns JS containing LIVE_DEMO_CUSTOMER_TOKEN |
+| Q5 Novel? | **YES** | Hardcoded credential in public JS is novel (not upstream FreeSWITCH example) |
+| Q6 Not always-rejected? | **YES** | Hardcoded credentials are not on always-rejected list |
+| Q7 Reasonable triager? | **YES** | Exposed credential enabling auth bypass is a valid finding |
+
+**Verdict: VALID** — Chain enabler. Report as supporting evidence for Findings 2/3, or standalone.
+
+- **CVSS 3.1:** 7.5 (High) standalone; supporting role
+- **Reporting channel:** bugs.olivermaicher.eu
+- **Proof steps:** GET `help.js` contains `LIVE_DEMO_CUSTOMER_TOKEN` value; sha256 8d2faac1...; no auth required.
+
+---
+
+## FINDING 5: get_user_rights.php Authorization Data Leak
+
+**Asset:** `https://www.applicationdesigner.de/extjs/get_user_rights.php`
+
+| Gate | Answer | Reason |
+|------|--------|--------|
+| Q1 Scope? | **YES** | `*.applicationdesigner.de` in scope |
+| Q2 Reachable? | **YES** | HTTP 200 with public static credential; anonymous, zero-token |
+| Q3 Real impact? | **YES** | Body sha256 differs per cid (empty/2/131727/999999), revealing per-tenant authorization data |
+| Q4 Provable? | **YES** | Passively confirmed: 200 response with credential; cid-dependent body hash |
+| Q5 Novel? | **YES** | Authz data leakage via broken auth is novel |
+| Q6 Not always-rejected? | **YES** | Authorization data leak is not on always-rejected list |
+| Q7 Reasonable triager? | **YES** | Authorization data leakage via broken auth is valid |
+
+**Verdict: VALID** — Standalone finding.
+
+- **CVSS 3.1:** 6.5 (Medium)
+- **Reporting channel:** bugs.olivermaicher.eu
+- **Proof steps:** GET `get_user_rights.php?token=LIVE_DEMO_CUSTOMER_TOKEN&customer_id=2` vs cid=131727; body sha256 differs; no auth required.
+
+---
+
+## FINDING 6: help/content.php Reflected XSS
+
+**Asset:** `https://www.applicationdesigner.de/help/content.php?page={value}`
+
+| Gate | Answer | Reason |
+|------|--------|--------|
+| Q1 Scope? | **YES** | `*.applicationdesigner.de` in scope |
+| Q2 Reachable? | **YES** | page= reflected unescaped into 200 text/html; no CSP/nosniff; zero-token |
+| Q3 Real impact? | **YES** | Same-origin arbitrary JS reaching every /extjs endpoint incl. token-only mints and delete.php |
+| Q4 Provable? | **PARTIAL** | Reflection confirmed passively (110B echo); execution requires HUMAN operator browser render |
+| Q5 Novel? | **YES** | Reflected XSS in same-origin context reaching delete endpoints is novel |
+| Q6 Not always-rejected? | **YES** | XSS with specific exploit context (not self-XSS) is not on always-rejected list |
+| Q7 Reasonable triager? | **YES** | Reflected XSS reaching privileged endpoints is valid |
+
+**Verdict: HOLD** — Upgrade to VALID when HUMAN_ONLY browser render confirms execution. Reflection proof is solid; only execution outstanding.
+
+- **CVSS 3.1:** 6.1 (Medium) standalone; 8.1 (High) chained with session victim
+- **Reporting channel:** bugs.olivermaicher.eu
+- **Proof steps:** Open `help/content.php?page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E`; confirm title marker; same-origin context reaches `/extjs/*`.
+
+---
+
+## FINDING 7: Post-login rs Return-URL Handling
+
+**Asset:** `https://www.live-manager.de/?rs={base64}`
+
+| Gate | Answer | Reason |
+|------|--------|--------|
+| Q1 Scope? | **YES** | `*.live-manager.de` in scope |
+| Q2 Reachable? | **NO** | Anonymous GET does NOT redirect; 302→/?rs= with no reflection; post-login behavior unverified |
+| Q3 Real impact? | **YES (potential)** | If decoded rs honored verbatim post-auth → open redirect → OAuth code theft → ATO |
+| Q4 Provable? | **NO** | Requires valid customer session; no passive proof |
+| Q5 Novel? | **YES** | Unvalidated post-login redirect is novel |
+| Q6 Not always-rejected? | **YES** | Open redirect with OAuth impact is not on always-rejected list |
+| Q7 Reasonable triager? | **NO** | Without passive proof, reasonable triager would not accept |
+
+**Verdict: INVALID** — Cannot be proven non-invasively. Park until AUTH_HELPED becomes possible.
+
+---
+
+**Summary:**
+
+| # | Finding | Verdict | CVSS | Action |
+|---|---------|---------|------|--------|
+| 1 | CBS Proxy WS BOLA | HOLD | 8.6 | Await AUTH_HELPED frame-binding test |
+| 2 | auth.php token mint | VALID (mitigated) | 7.5→6.5 | File report + note VPN gate |
+| 3 | Voicenote PII metadata | VALID | 7.5 | File report |
+| 4 | help.js credential | VALID | 7.5 | File report (chain enabler) |
+| 5 | get_user_rights.php leak | VALID | 6.5 | File report |
+| 6 | help/content.php XSS | HOLD | 6.1→8.1 | Await HUMAN render confirmation |
+| 7 | Post-login rs handling | INVALID | — | Park (cannot prove non-invasively) |
+
+===== TRIAGE 2026-09-17 06:12:09 UTC =====
+[0m
+> build · mimo-v2.5-free
+[0m
+No leads provided. Please paste the probe results after "LEADS:" for validation.
+
+===== TRIAGE 2026-09-17 01:10:59 UTC =====
+[0m
+> build · mimo-v2.5-free
+[0m
+No leads were provided. The `LEADS:` section is empty. Please paste the probe results for evaluation.
+[0m
+Thu Sep 17 16:37:48 UTC 2026
+[0m
+[0m$ [0mrg -o "extjs/[a-zA-Z0-9_./-]+\.php" /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/leads/lead-bigpickle.md | sort -u | tail -80
+/bin/bash: line 1: rg: command not found
+[0m
+[0m$ [0mrg -n "13 new endpoints|new endpoint|coding.php|callEncryptApi|encrypt/index|chat/provider|chatgpt/provider|get_speaker" /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/leads/lead-bigpickle.md | tail -40
+/bin/bash: line 1: rg: command not found
+[0m
+[0m✱ [0mGrep "extjs/[a-zA-Z0-9_./-]+\.php"[90m in leads/lead-bigpickle.md · 100 matches[0m
+[0m
+[0m$ [0mgrep -n "callEncryptApi\|encrypt/index\|chat/provider\|chatgpt/provider\|get_speaker\|coding.php" /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/leads/lead-bigpickle.md | tail -30
+803:verify_steps: PASSIVE — GET siblings under AIDesigner/backend/ (config.php/config_coding.php confirmed 200; test index.php, *.json/*.md referenced by system-prompt files, config.example.php) for secrets, <=1 rps GET only. AUTH_HELPED — operator session: mint agent token for OWN cid, dispatch route with own-cid token vs a token minted for a foreign cid; record accept vs deny.
+811:[NEXT] PROBE: single 1-rps GET series under https://www.applicationdesigner.de/AIDesigner/backend/ (config.php, config_coding.php confirmed 200; probe index.php, config.json, *.md/*.json named in the system-prompt map, config.example.php, test.php) hunting for a secrets-bearing sibling; read-only, no route dispatch mutations.
+817:[CHANGED] www.applicationdesigner.de/AIDesigner/backend/: passive sibling probe executed 2026-09-06 — config.php/config_coding.php re-confirmed HTTP 200 zero-auth (public provider URLs, model→prompt map, zero keys); system-prompt-ask.md / system-prompt-apply.md / system-prompt.md / system-prompt-coding.md all HTTP 403; index.php / config.json / config.example.php / test.php / agents/agent.json / prompts/ all 404. No secret-bearing sibling exists anonymously.
+862:[CHANGED] www.applicationdesigner.de/AIDesigner/backend/: passive sibling probe executed 2026-09-06 — config.php/config_coding.php re-confirmed HTTP 200 zero-auth (public provider URLs, model→prompt map, zero keys); system-prompt-ask.md / system-prompt-apply.md / system-prompt.md / system-prompt-coding.md all HTTP 403; index.php / config.json / config.example.php / test.php / agents/agent.json / prompts/ all 404. No secret-bearing sibling exists anonymously.
+2418:[RISK] questnet-gmbh: 76 — driver cbs-proxy BOLA (95) unchanged and re-confirmed live; fresh sibling sweep added no new HIGH (catalogs LOW, agent-costs gated, coding.php gated); get_user_rights escalation rejected (rotation). Across models the ceiling stays AUTH_HELPED for capstone; no foreign-live data touched, no PII echoed, hash-only analysis.
+4731:[HYP] Anonymous envelope crypto/decr-oracle at encrypt/index.php
+4733:asset: https://www.applicationdesigner.de/extjs/encrypt/index.php (action=encrypt|decrypt&password=&customerId=&content|envelope=)
+4735:reasoning: help.js callEncryptApi POSTs to `{APPDESIGNER_API_PATH}extjs/encrypt/index.php{BACKEND_TOKEN}` with attacker-controlled password, customerId (defaults 0), content/envelope; endpoint exists on www (direct /extjs path is routed); token-only gate pattern on all sibling endpoints; get_user_rights.php returns per-cid high-entropy base64 ciphertext (LOW-capped pending plaintext) — if same envelope crypto, this is an anonymous decryption oracle.
+4750:[NEW] `AIDesigner/backend/config_coding.php`: anonymous zero-auth HTTP 200 JSON (6.1KB) — full coding AI endpoint map (ollama.codermatrix.de/v1, api.openai.com/v1, api.anthropic.com/v1, openrouter.ai/api/v1) + 10-model catalog (GLM Flash/5.3, Kimi K3, DeepSeek v4, Gemini 3.5/3.8, GPT Sol/Terra/Luna, Claude Fable) + system-prompt-ask/apply.md refs; same MISCONFIG class as existing config.php, different module.
+4751:[NEW] `extjs/chat/provider.php`: token-gated GET — reveals 14 chat provider configs including 2 Questnet-internal Ollama instances: `QN_Qwen3.6-35B-A3B-FP8|Questnet|Deutschland` and `MITTWALD_Qwen3.6-35B-A3B-FP8|Mittwald|Deutschland`; also Azure France-Central/West-EU and OpenAI (GPT-4.1/4o/5.4 series).
+4752:[NEW] `extjs/chatgpt/provider.php`: token-gated GET — 11 ChatGPT/Azure/Mistral model definitions with region routing (France-Central, West-EU, OpenAI USA).
+4754:[NEW] `extjs/get_speaker.php`: token-gated GET — 560KB, 1,724 TTS speaker records across Azure/Cartesia/ElevenLabs (Cartesia UUIDs, ElevenLabs voice IDs, Azure neural voice IDs).
+4755:[NEW] `extjs/get_speaker_languages.php`: token-gated GET — 10.5KB language catalog.
+4757:[NEW] `AIDesigner/backend/public/coding.php`: dispatch-gated (403), same pattern as public/index.php?route=.
+4759:[CHANGED] `extjs/encrypt/index.php`: POST+token gate confirmed in help.js callEncryptApi; accepts attacker-chosen password/customerId/content/envelope — now the only remaining unprobed decrypt-oracle candidate.
+4762:[PRIO] www.applicationdesigner.de/AIDesigner/backend/config_coding.php,4.2,tech_exposure — zero-auth coding AI endpoint map + model catalog; informational, LOW caps (no keys, dispatch gated).
+4763:[PRIO] www.applicationdesigner.de/extjs/encrypt/index.php,3.8,tech_exposure — POST decrypt-oracle candidate; requires operator to prove envelope= decrypts get_user_rights ciphertext.
+4764:[PRIO] www.applicationdesigner.de/extjs/chat/provider.php,3.2,tech_exposure — reveals Questnet-internal Qwen3.6 Ollama instances (QN_ and MITTWALD_); informational only, token-gated.
+4783:[HYP] Anonymous coding AI config leak (config_coding.php)
+4785:asset: https://www.applicationdesigner.de/AIDesigner/backend/config_coding.php
+4787:reasoning: NEW cycle 2026-09-17 — anonymous HTTP 200 zero-auth JSON (6.1KB) exposes full coding AI endpoint map (ollama.codermatrix.de/v1, api.openai.com/v1, api.anthropic.com/v1, openrouter.ai/api/v1) + 10-model catalog with system-prompt refs; same class as existing config.php MISCONFIG but for coding module; no keys observed; dispatch gated by session+VPN-minted token (coding.php returns 403).
+4789:verify_steps: PASSIVE — GET https://www.applicationdesigner.de/AIDesigner/backend/config_coding.php confirms anonymous 200 JSON.
+4792:[PARKED] Anonymous envelope crypto/decr-oracle at encrypt/index.php (confidence 42, from prior cycle): POST-only, cannot invoke from passive-only analysis; need operator POST test to prove oracle; hypothesis preserved but no rank bump.
+4797:[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config_coding.php: anonymous zero-auth JSON (6.1KB) exposes coding AI endpoint map (ollama.codermatrix.de, api.openai.com, api.anthropic.com, openrouter.ai) + 10-model catalog; no keys; dispatch gated — NEW cycle 2026-09-17.
+4798:[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/chat/provider.php: token-gated — reveals 14 chat providers incl. Questnet-internal Qwen3.6 Ollama (QN_Qwen3.6-35B-A3B-FP8) and Mittwald-hosted instance; informational.
+4799:[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/chatgpt/provider.php: token-gated — 11 model definitions with region routing; informational.
+4800:[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/get_speaker.php: token-gated — 560KB / 1,724 TTS speaker records (Azure/Cartesia/ElevenLabs IDs); large data surface gated by public static credential.
+4802:[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/get_speaker_languages.php: token-gated — 10.5KB language catalog; informational.
+4803:[LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/coding.php: HTTP 403, dispatch-gated like index.php?route= — coding AI not static-credential-satisfiable.
+4815:[RISK] questnet-gmbh: 71 — CBS WS transport-complete BOLA (26 cycles, CVSS 8.6–9.1 if frame binding unenforced) remains dominant driver; XSS execution pending human adds chained HIGH upside; voicenote cross-tenant confirmed but 20 empty cycles cap at UUID-blocked; flexlist per-id ownership gate closes cross-tenant read; new config_coding.php + chat/provider endpoints add INFO-only architectural exposure (Questnet Ollama Qwen3.6 cluster + Mittwald hosting, Anthropic/OpenAI/OpenRouter routing); score capped pending two-tenant frame test, XSS POC, or fresh endpoint with data access.
+[0m
+[0m$ [0mgrep -n "extjs/" /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/leads/lead-bigpickle.md | grep -o "extjs/[a-zA-Z0-9_/.-]*" | sort -u
+extjs/agent/get_agent_costs.php
+extjs/agent/get_agent_token.php
+extjs/chat/provider.php
+extjs/chatgpt/provider.php
+extjs/check_mailserver.php
+extjs/common/getCustomers.php
+extjs/encrypt/index.php
+extjs/flexlist/
+extjs/flexlist/addRow.php
+extjs/flexlist/getDetails.php
+extjs/flexlist/getFields.php
+extjs/flexlist/getList.php
+extjs/get_provider.php
+extjs/get_speaker.php
+extjs/get_speaker_languages.php
+extjs/get_user_rights.php
+extjs/livedebugger/
+extjs/livedebugger/auth.php
+extjs/playback.php
+extjs/voicenotes/
+extjs/voicenotes/check.php
+extjs/voicenotes/delete.php
+extjs/voicenotes/details.php
+extjs/voicenotes/download.php
+extjs/voicenotes/get.php
+[0m
+[0m$ [0msed -n '4720,4816p' /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/leads/lead-bigpickle.md
+testability: HUMAN_ONLY
+## 2026-09-17 06:21:13 UTC [target] (model bigpickle)
+[HYP] Cross-tenant CBS WS frame binding — token→cid ownership
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
+confidence: 95
+reasoning: 25th cycle — https non-upgrade GET 426 0B, upgrade 101 + byte-identical CONNECT/READY for demo 131727, foreign 2, synthetic 999999999 with zero token; proxy binds no identity at handshake; sole unproven hop is backend token→cid binding inside live_debug frames.
+evidence_needed: operator two-tenant frame test — token minted for own cid, frames sent vs own and foreign cid, byte-diff accepted state.
+verify_steps: AUTH_HELPED — one bound frame set per owned cid; compare accepted vs rejected.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH 8.6, CRITICAL 9.1 if binding unenforced.
+testability: AUTH_HELPED
+[HYP] Anonymous envelope crypto/decr-oracle at encrypt/index.php
+class: OTHER
+asset: https://www.applicationdesigner.de/extjs/encrypt/index.php (action=encrypt|decrypt&password=&customerId=&content|envelope=)
+confidence: 42
+reasoning: help.js callEncryptApi POSTs to `{APPDESIGNER_API_PATH}extjs/encrypt/index.php{BACKEND_TOKEN}` with attacker-controlled password, customerId (defaults 0), content/envelope; endpoint exists on www (direct /extjs path is routed); token-only gate pattern on all sibling endpoints; get_user_rights.php returns per-cid high-entropy base64 ciphertext (LOW-capped pending plaintext) — if same envelope crypto, this is an anonymous decryption oracle.
+evidence_needed: single operator POST with demo credential, self-chosen password+envelope → observe success:true vs error; then test whether get_user_rights envelope decrypts.
+verify_steps: AUTH_HELPED — POST (GET/HEAD cannot invoke); attacker-chosen inputs only, no live customer data; capture response JSON structure and any customerId-key-derivation signal.
+impact: if oracle → decrypt per-cid authz blobs (cross-tenant rights data); if only client-password envelope → LOW/no-op.
+testability: AUTH_HELPED
+[HYP] Same-origin reflected XSS at help content app
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page={value}
+confidence: 80
+reasoning: page= reflected unescaped into 200 text/html, no CSP/nosniff, zero-token; re-confirmed PASSIVE 2026-09-17; same-origin context reaches all /extjs endpoints incl. delete.php and credential-carrying legs.
+evidence_needed: benign document.title marker render by operator browser.
+verify_steps: HUMAN — open page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E; no active probes warranted.
+impact: same-origin arbitrary JS → full /extjs API incl. delete — MEDIUM standalone, HIGH chained.
+testability: HUMAN_ONLY
+## 2026-09-17 11:56:27 UTC [target] (model bigpickle)
+[NEW] `AIDesigner/backend/config_coding.php`: anonymous zero-auth HTTP 200 JSON (6.1KB) — full coding AI endpoint map (ollama.codermatrix.de/v1, api.openai.com/v1, api.anthropic.com/v1, openrouter.ai/api/v1) + 10-model catalog (GLM Flash/5.3, Kimi K3, DeepSeek v4, Gemini 3.5/3.8, GPT Sol/Terra/Luna, Claude Fable) + system-prompt-ask/apply.md refs; same MISCONFIG class as existing config.php, different module.
+[NEW] `extjs/chat/provider.php`: token-gated GET — reveals 14 chat provider configs including 2 Questnet-internal Ollama instances: `QN_Qwen3.6-35B-A3B-FP8|Questnet|Deutschland` and `MITTWALD_Qwen3.6-35B-A3B-FP8|Mittwald|Deutschland`; also Azure France-Central/West-EU and OpenAI (GPT-4.1/4o/5.4 series).
+[NEW] `extjs/chatgpt/provider.php`: token-gated GET — 11 ChatGPT/Azure/Mistral model definitions with region routing (France-Central, West-EU, OpenAI USA).
+[NEW] `extjs/get_provider.php`: token-gated GET — returns `["azure","elevenlabs","chatgpt","cartesia"]` (4 TTS providers).
+[NEW] `extjs/get_speaker.php`: token-gated GET — 560KB, 1,724 TTS speaker records across Azure/Cartesia/ElevenLabs (Cartesia UUIDs, ElevenLabs voice IDs, Azure neural voice IDs).
+[NEW] `extjs/get_speaker_languages.php`: token-gated GET — 10.5KB language catalog.
+[NEW] `extjs/flexlist/addRow.php`, `createList.php`, `deleteRow.php`, `saveValue.php`, `updateList.php`, `importcsv.php`: POST write endpoints discovered in help.js route map (write, not probed — rules prohibit mutating tests).
+[NEW] `AIDesigner/backend/public/coding.php`: dispatch-gated (403), same pattern as public/index.php?route=.
+[CHANGED] `help.js`: SHA256 `b56a5f1e61ee397168aedb6684512612ed34a9c1086ab324b64c59f41a049086` (3,290,201 B); 13 new endpoints in route map vs prior recorded set.
+[CHANGED] `extjs/encrypt/index.php`: POST+token gate confirmed in help.js callEncryptApi; accepts attacker-chosen password/customerId/content/envelope — now the only remaining unprobed decrypt-oracle candidate.
+[PRIO] cbs-proxy.api.live-manager.de,9.5,attack_surface+gate_ease — 26th cycle WS 101 anonymous, transport-complete BOLA driver.
+[PRIO] www.applicationdesigner.de/help/content.php,6.8,xss+gate_ease — reflected unescaped page=, zero-token, PASSIVE-proven, same-origin full API; execution pending HUMAN.
+[PRIO] www.applicationdesigner.de/AIDesigner/backend/config_coding.php,4.2,tech_exposure — zero-auth coding AI endpoint map + model catalog; informational, LOW caps (no keys, dispatch gated).
+[PRIO] www.applicationdesigner.de/extjs/encrypt/index.php,3.8,tech_exposure — POST decrypt-oracle candidate; requires operator to prove envelope= decrypts get_user_rights ciphertext.
+[PRIO] www.applicationdesigner.de/extjs/chat/provider.php,3.2,tech_exposure — reveals Questnet-internal Qwen3.6 Ollama instances (QN_ and MITTWALD_); informational only, token-gated.
+[HYP] Cross-tenant CBS WS frame binding — token→cid ownership
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
+confidence: 95
+reasoning: 26th consecutive cycle — non-upgrade GET 426 0B, upgrade 101 + byte-identical CONNECT/READY for demo 131727, foreign 2, synthetic 999999999 with zero token; proxy binds no identity at handshake; sole unproven hop is backend token→cid binding inside live_debug frames.
+evidence_needed: operator two-tenant frame test — token minted for own cid, frames sent against own vs foreign cid, byte-diff accepted state.
+verify_steps: AUTH_HELPED — one bound frame set per owned cid; compare accepted vs rejected.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH 8.6, CRITICAL 9.1 if binding unenforced.
+testability: AUTH_HELPED
+[HYP] Same-origin reflected XSS at help content app
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page={value}
+confidence: 80
+reasoning: page= reflected unescaped into 200 text/html, no CSP/nosniff, zero-token, PASSIVE-proven 2026-09-12; re-confirmed reflection cycle 2026-09-17; same-origin context reaches all /extjs endpoints incl. delete.php and credential-carrying legs.
+evidence_needed: benign document.title marker render by operator browser.
+verify_steps: HUMAN — open page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E; no further active probes warranted.
+impact: same-origin arbitrary JS → full /extjs API incl. delete — MEDIUM standalone, HIGH chained.
+testability: HUMAN_ONLY
+[HYP] Anonymous coding AI config leak (config_coding.php)
+class: MISCONFIG
+asset: https://www.applicationdesigner.de/AIDesigner/backend/config_coding.php
+confidence: 70
+reasoning: NEW cycle 2026-09-17 — anonymous HTTP 200 zero-auth JSON (6.1KB) exposes full coding AI endpoint map (ollama.codermatrix.de/v1, api.openai.com/v1, api.anthropic.com/v1, openrouter.ai/api/v1) + 10-model catalog with system-prompt refs; same class as existing config.php MISCONFIG but for coding module; no keys observed; dispatch gated by session+VPN-minted token (coding.php returns 403).
+evidence_needed: none — fully passive-proven.
+verify_steps: PASSIVE — GET https://www.applicationdesigner.de/AIDesigner/backend/config_coding.php confirms anonymous 200 JSON.
+impact: internal AI routing/architecture disclosure — LOW-MED (no keys, dispatch gated; attacker gains model catalog + provider URLs for targeted prompt injection).
+testability: PASSIVE
+[PARKED] Anonymous envelope crypto/decr-oracle at encrypt/index.php (confidence 42, from prior cycle): POST-only, cannot invoke from passive-only analysis; need operator POST test to prove oracle; hypothesis preserved but no rank bump.
+[FINAL] Cross-tenant CBS WS frame binding — token→cid ownership (95) — dominant driver, 26th cycle, unchanged.
+[FINAL] Same-origin reflected XSS at help content app (80) — execution pending operator render.
+[FINAL] Anonymous coding AI config leak (70) — new, passive-proven, LOW-MED caps.
+[NEXT] HUMAN: operator render XSS at `https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title%3D%27LM-XSS-TEST%27%3C%2Fscript%3E` — confirm document.title = 'LM-XSS-TEST' in browser console; no further automated probes needed for this finding.
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config_coding.php: anonymous zero-auth JSON (6.1KB) exposes coding AI endpoint map (ollama.codermatrix.de, api.openai.com, api.anthropic.com, openrouter.ai) + 10-model catalog; no keys; dispatch gated — NEW cycle 2026-09-17.
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/chat/provider.php: token-gated — reveals 14 chat providers incl. Questnet-internal Qwen3.6 Ollama (QN_Qwen3.6-35B-A3B-FP8) and Mittwald-hosted instance; informational.
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/chatgpt/provider.php: token-gated — 11 model definitions with region routing; informational.
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/get_speaker.php: token-gated — 560KB / 1,724 TTS speaker records (Azure/Cartesia/ElevenLabs IDs); large data surface gated by public static credential.
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/get_provider.php: token-gated — returns 4 TTS provider names; informational.
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/get_speaker_languages.php: token-gated — 10.5KB language catalog; informational.
+[LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/coding.php: HTTP 403, dispatch-gated like index.php?route= — coding AI not static-credential-satisfiable.
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/flexlist/: addRow/createList/deleteRow/saveValue/updateList/importcsv — POST write endpoints confirmed in help.js; ownership gate unverified (rules prohibit mutating tests).
+[LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 26th consecutive cycle anonymous WS 101 + byte-identical CONNECT/READY, 426 on non-upgrade — unchanged driver.
+[LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: cross-tenant credential-only, NOT VPN-gated, 20th consecutive empty cycle (total=0, max_id=0) — unchanged.
+[LEARN] ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: reflection re-confirmed; execution pending operator — unchanged.
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_costs.php: session-gated ("No VPN detected") — unchanged.
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/playback.php: session-gated ("unauthorized") — unchanged.
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_token.php: session-gated, byte-identical Zugriff verweigert — unchanged.
+[LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/api/callbuilder/: nginx 404 catch-all — unchanged.
+[LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page — unchanged.
+[LEARN] REJECTED MISCONFIG @ dev.applicationdesigner.de: hard IP gate 403 — unchanged.
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/common/getCustomers.php: token-scoped — unchanged.
+[RISK] questnet-gmbh: 71 — CBS WS transport-complete BOLA (26 cycles, CVSS 8.6–9.1 if frame binding unenforced) remains dominant driver; XSS execution pending human adds chained HIGH upside; voicenote cross-tenant confirmed but 20 empty cycles cap at UUID-blocked; flexlist per-id ownership gate closes cross-tenant read; new config_coding.php + chat/provider endpoints add INFO-only architectural exposure (Questnet Ollama Qwen3.6 cluster + Mittwald hosting, Anthropic/OpenAI/OpenRouter routing); score capped pending two-tenant frame test, XSS POC, or fresh endpoint with data access.
+[0m
+[0m$ [0mgrep -o "http[s]*://[a-zA-Z0-9._/-]*" /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/leads/lead-bigpickle.md | sort -u | head -60
+https://api.live-manager.de/
+https://api.live-manager.de/api/v1/debug
+https://api.live-manager.de/debug
+https://applicationdesigner.de/
+https://applicationdesigner.de/AIDesigner/backend/
+https://evil.com
+https://www.applicationdesigner.de/AIDesigner/backend/
+https://www.applicationdesigner.de/AIDesigner/backend/config.php
+https://www.applicationdesigner.de/AIDesigner/backend/config_coding.php
+https://www.applicationdesigner.de/api/callbuilder/
+https://www.applicationdesigner.de/api/callbuilder/AIDesigner/backend/public/index.php
+https://www.applicationdesigner.de/docs.php
+https://www.applicationdesigner.de/extjs/agent/get_agent_costs.php
+https://www.applicationdesigner.de/extjs/agent/get_agent_token.php
+https://www.applicationdesigner.de/extjs/check_mailserver.php
+https://www.applicationdesigner.de/extjs/encrypt/index.php
+https://www.applicationdesigner.de/extjs/flexlist/getDetails.php
+https://www.applicationdesigner.de/extjs/flexlist/getFields.php
+https://www.applicationdesigner.de/extjs/get_user_rights.php
+https://www.applicationdesigner.de/extjs/livedebugger/
+https://www.applicationdesigner.de/extjs/livedebugger/auth.php
+https://www.applicationdesigner.de/extjs/voicenotes/
+https://www.applicationdesigner.de/extjs/voicenotes/check.php
+https://www.applicationdesigner.de/extjs/voicenotes/details.php
+https://www.applicationdesigner.de/extjs/voicenotes/download.php
+https://www.applicationdesigner.de/extjs/voicenotes/get.php
+https://www.applicationdesigner.de/help.js
+https://www.applicationdesigner.de/help.json
+https://www.applicationdesigner.de/help/content.php
+https://www.live-manager.de
+https://www.live-manager.de/
+https://www.live-manager.de/Login.aspx
+https://www.live-manager.de/elmah.axd
+https://www.live-manager.de/trace.axd
+[0m
+[0m$ [0msed -n '4380,4420p' /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/leads/lead-bigpickle.md
+confidence: 80
+reasoning: page= reflected unescaped into 200 text/html (96B error echo; 1351B real doc for page=index), no CSP/nosniff, zero-token; LFI leg closed 2026-09-14 (key lookup, no include). Reflection proven; only browser-side execution outstanding.
+evidence_needed: benign document.title marker render by operator-owned browser.
+verify_steps: HUMAN — open `page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E`, confirm title marker; no further active probes warranted.
+impact: same-origin arbitrary JS reaching every /extjs endpoint incl. token-only mints and delete.php — MEDIUM standalone, chained HIGH on session-bearing victim.
+testability: HUMAN_ONLY
+[HYP] Post-login rs return-url handling — external/schema-less target honored verbatim
+class: AUTH
+asset: https://www.live-manager.de/?rs={base64}
+confidence: 40
+reasoning: elmah/trace sweep closed the last anonymous surface on this host; all unauthenticated paths 302 → /?rs=<base64-of-path> and GET / is the only 200. Anonymous open-redirect already REJECTED (value not reflected); the only unexamined behavior is whether the decoded rs target is validated after authentication.
+evidence_needed: complete a login flow with rs=<base64 of attacker URL> and observe final redirect Location / JS navigation.
+verify_steps: AUTH_HELPED — GET /?rs=aHR0cHM6Ly9ldmlsLmNvbQ== through login; inspect final redirect. Session required.
+impact: post-login open redirect → OAuth/credential theft → ATO if honored verbatim — HIGH chained.
+testability: AUTH_HELPED
+[PARKED] FreeSWITCH ESL 8021 ClueCon / SIP 1234 / Rayo 5222 on 185.158.96.0/22: reposcan-sourced, deployment unconfirmed, port surface never observed; requires operator TCP-connect scan (no live probe evidence feasible within GET/HEAD/OPTIONS rules) — parked pending operator.
+[PARKED] flexlist cross-tenant read via getFields.php|getDetails.php (global id space 138–345): token-only gate proven but no foreign flexlist_id known — requires operator second tenant; parked (unchanged).
+[PARKED] check_mailserver.php SSRF: POST-only, smtp_server param, cannot demonstrate passively — parked unless operator permits active proof.
+[FINAL] ranked: (1) cbs-proxy frame binding 95 — AUTH_HELPED driver; (2) help/content.php XSS 80 — HUMAN_ONLY, proof outstanding 4 cycles; (3) rs post-login 40 — AUTH_HELPED, retained only because ==40 and operator-testable; no survivor is anonymously probe-able this cycle.
+[NEXT] HUMAN: operator renders `https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E` in a scoped browser and confirms the title marker — the sole outstanding proof step on the passive-proven XSS. Fold in the standing operator pass: (b) own-cid minted-token live_debug frame for own vs foreign cid to settle cbs-proxy frame binding (driver, upgrades HOLD 8.6→VALID); (c) POST-auth on https://www.live-manager.de with rs=base64(external URL) to validate post-login redirect handling; (d) passive TCP-connect of in-scope 185.158.96.0/22 for FSW ESL 8021/SIP 5060|5061/Rayo 5222. Anonymous probe surface at 4 hosts is fully enumerated — no further anonymous probes warranted this cycle.
+[LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/docs.php: 48KB static ExtJS shell whose sole function is loading the already-accepted help.js/help.json (200, text/html); no independent anonymous surface, closes the last "named app entry" — subsumed by the accepted help.js MISCONFIG (2026-09-15).
+[LEARN] ACCEPTED CONTROL @ 185.158.96.51 + 185.158.98.53: only /22 IPs with observed services (IIS portal / Ratchet WS); the /22 non-HTTP space is un-scanned — HUMAN_ONLY upside, unchanged (2026-09-15).
+[LEARN] REJECTED IDOR @ cbs-proxy frame binding anonymous vari: unchanged — 22nd cycle byte-identical 101/CONNECT/READY, 426 on non-upgrade; nothing new observable anonymously (2026-09-15).
+[LEARN] ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: reflection re-confirmed passive; execution still pending operator render (2026-09-15).
+[RISK] questnet-gmbh: 80 — zero new surface for the 6th consecutive window; all anonymous breadth at 4 hosts exhausted and docs.php now formally closed, leaving only HUMAN_ONLY XSS render and AUTH_HELPED frame-binding as potential adds. Four triaged VALID findings remain file-ready (help.js credential 7.5, voicenote PII 7.5 VPN-independent, auth.php 7.5 mitigated, get_user_rights 6.5) plus the transport-complete cbs-proxy BOLA HOLD 8.6 whose anonymous PoC (101 + byte-identical frames) already clears the HIGH gate. Driver is filing latency on program-state confirmation — auth.php has been partially mitigated since 2026-09-07 and each cycle erodes residual value, so risk holds at 80 rather than decaying; an operator pass would be the only lever that moves the program upward or the reports out.
+## 2026-09-15 19:51:45 UTC [target] (model bigpickle)
+[HYP] Cross-tenant CBS WS frame binding — token→cid ownership
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
+confidence: 95
+reasoning: 23 cycles anonymous GET → 426 (this cycle), WS upgrade 101 + byte-identical CONNECT CBS100/190/200 + READY for demo 131727, foreign 2, synthetic 999999999; zero credential at proxy; sole unproven hop is backend token→cid binding inside live_debug frame.
+evidence_needed: operator two-tenant frame test — own-cid minted token bound to own vs foreign cid; byte-diff accepted frame sets.
+verify_steps: AUTH_HELPED, own tenants only; never third-party streams; one bound frame set per cid.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH 8.6, CRITICAL 9.1 if binding unenforced.
+testability: AUTH_HELPED
+[HYP] Same-origin reflected XSS at help content app — execution pending operator render
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page={value}
+confidence: 80
+reasoning: page= reflected unescaped into 200 text/html (96B error echo reconfirmed this cycle), no CSP/nosniff, zero-token; LFI leg closed 2026-09-14; only browser-side execution outstanding.
+evidence_needed: benign document.title marker render by operator-owned browser.
+[0m
+Now let me run the cycle's read-only probes (≤1 rps, GET only) to establish fresh delta.
+[0m$ [0mTOKEN="3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3"
+echo "== 1 cbs-proxy non-upgrade GET =="
+curl -sS -o /dev/null -w "HTTP %{http_code} | body=%{size_download}B | ctype=%{content_type}\n" --max-time 15 "https://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=131727&service=100"
+sleep 1.5
+echo "== 2 voicenotes/check.php cid=131727 (demo) =="
+curl -sS --max-time 15 "https://www.applicationdesigner.de/extjs/voicenotes/check.php?token=${TOKEN}&customer_id=131727" | tee /tmp/vn_demo.txt
+sleep 1.5
+echo "== 3 voicenotes/check.php cid=2 (foreign) =="
+curl -sS --max-time 15 "https://www.applicationdesigner.de/extjs/voicenotes/check.php?token=${TOKEN}&customer_id=2" | tee /tmp/vn_foreign.txt
+sleep 1.5
+echo "== 4 help/content.php reflection =="
+curl -sS --max-time 15 "https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title%3D%27LM-XSS%27%3C%2Fscript%3E" -w "\n[HTTP %{http_code} ctype=%{content_type}]\n"
+sleep 1.5
+echo "== 5 config_coding.php zero-auth =="
+curl -sS -o /tmp/cc.json -w "HTTP %{http_code} | body=%{size_download}B | ctype=%{content_type}\n" --max-time 15 "https://www.applicationdesigner.de/AIDesigner/backend/config_coding.php"
+sleep 1.5
+echo "== 6 chat/provider.php (token-gated, info) =="
+curl -sS -o /tmp/prov.json -w "HTTP %{http_code} | body=%{size_download}B | ctype=%{content_type}\n" --max-time 20 "https://www.applicationdesigner.de/extjs/chat/provider.php?token=${TOKEN}"
+== 1 cbs-proxy non-upgrade GET ==
+HTTP 426 | body=0B | ctype=
+== 2 voicenotes/check.php cid=131727 (demo) ==
+{"success":true,"total":0,"max_id":0}== 3 voicenotes/check.php cid=2 (foreign) ==
+{"success":true,"total":0,"max_id":0}== 4 help/content.php reflection ==
+<h1>Page not found</h1><p>The requested help page '<script>document.title='LM-XSS'</script>' does not exist.</p>
+[HTTP 200 ctype=text/html; charset=UTF-8]
+== 5 config_coding.php zero-auth ==
+HTTP 200 | body=6159B | ctype=application/json; charset=utf-8
+== 6 chat/provider.php (token-gated, info) ==
+HTTP 200 | body=3521B | ctype=application/json
+[0m
+[0m$ [0mecho "== provider.php (hostnames/URLs) =="; grep -o "[a-zA-Z0-9._:-]*\.de[a-zA-Z0-9._/-]*\|[a-zA-Z0-9._-]*\.internal[a-zA-Z0-9._/-]*\|http[s]*://[a-zA-Z0-9._/-]*" /tmp/prov.json | sort -u | head -30
+echo; echo "== config_coding.php (URLs) =="; grep -o "http[s]*://[a-zA-Z0-9._/-]*\|[a-zA-Z0-9._-]*\.[a-z]*\.[a-z]*" /tmp/cc.json | sort -u | head -20
+echo; echo "== cc.json head =="; head -c 600 /tmp/cc.json
+== provider.php (hostnames/URLs) ==
+
+== config_coding.php (URLs) ==
+api.anthropic.com
+api.openai.com
+ollama.codermatrix.de
+
+== cc.json head ==
+{
+    "api_endpoints": {
+        "ollama_local": {
+            "mode": "completions",
+            "url": "https:\/\/ollama.codermatrix.de\/v1"
+        },
+        "ollama": {
+            "mode": "completions",
+            "url": "https:\/\/ollama.com\/v1"
+        },
+        "chatgpt_completions": {
+            "mode": "completions",
+            "url": "https:\/\/api.openai.com\/v1"
+        },
+        "chatgpt_responses": {
+            "mode": "responses",
+            "url": "https:\/\/api.openai.com\/v1"
+        },
+        "anthropic": {
+            "mode": "anthropic",
+            "url": "http
+[0m
+[0m$ [0mecho "== full cc.json =="; python3 -m json.tool /tmp/cc.json 2>/dev/null | head -80
+== full cc.json ==
+{
+    "api_endpoints": {
+        "ollama_local": {
+            "mode": "completions",
+            "url": "https://ollama.codermatrix.de/v1"
+        },
+        "ollama": {
+            "mode": "completions",
+            "url": "https://ollama.com/v1"
+        },
+        "chatgpt_completions": {
+            "mode": "completions",
+            "url": "https://api.openai.com/v1"
+        },
+        "chatgpt_responses": {
+            "mode": "responses",
+            "url": "https://api.openai.com/v1"
+        },
+        "anthropic": {
+            "mode": "anthropic",
+            "url": "https://api.anthropic.com/v1"
+        },
+        "openrouter": {
+            "mode": "completions",
+            "url": "https://openrouter.ai/api/v1"
+        }
+    },
+    "models": [
+        {
+            "value": "~z-ai/glm-flash-latest",
+            "label": "Z.ai: GLM Flash Latest",
+            "reasoning": [
+                "minimal",
+                "low",
+                "medium",
+                "high"
+            ],
+            "default_reasoning": "high",
+            "endpoint": "openrouter",
+            "parameters": {
+                "max_tokens": 1000000
+            },
+            "instructions_ask": "system-prompt-ask.md",
+            "instructions_apply": "system-prompt-apply.md"
+        },
+        {
+            "value": "z-ai/glm-5.3",
+            "label": "Z.ai: GLM 5.3",
+            "reasoning": [
+                "minimal",
+                "low",
+                "medium",
+                "high"
+            ],
+            "default_reasoning": "high",
+            "endpoint": "openrouter",
+            "parameters": {
+                "max_tokens": 1000000
+            },
+            "instructions_ask": "system-prompt-ask.md",
+            "instructions_apply": "system-prompt-apply.md"
+        },
+        {
+            "value": "moonshotai/kimi-k3",
+            "label": "Kimi K3",
+            "reasoning": [
+                "-",
+                "low",
+                "medium",
+                "high",
+                "xhigh"
+            ],
+            "default_reasoning": "high",
+            "endpoint": "openrouter",
+            "parameters": {
+                "max_tokens": 264929
+            },
+            "instructions_ask": "system-prompt-ask.md",
+            "instructions_apply": "system-prompt-apply.md"
+        },
+[0m
+[0m$ [0mecho "== provider.json (pretty, Qwen lines) =="; python3 -m json.tool /tmp/prov.json 2>/dev/null | grep -i "qwen\|url\|host\|mittwald\|questnet" | head -20; echo; echo "== raw head =="; head -c 700 /tmp/prov.json
+== provider.json (pretty, Qwen lines) ==
+            "value": "MITTWALD_Qwen3.6-35B",
+            "text": "Qwen3.6-35B-A3B-FP8|Mittwald|Deutschland",
+            "value": "QN_Qwen3.6-35B",
+            "text": "Qwen3.6-35B-A3B-FP8|Questnet|Deutschland",
+
+== raw head ==
+{"success":true,"data":[{"value":"ChatGPT","text":"Eigene API Zugangsdaten","use_custom_api":1,"parameters":"{\n  \"temperature\": 0.2,\n  \"top_p\": 1.0,\n  \"presence_penalty\": 0,\n  \"frequency_penalty\": 0\n}","role":"system"},{"value":"ChatGPT_responses","text":"Eigene API Zugangsdaten - v1\/responses API","use_custom_api":1,"parameters":"{\n  \"temperature\": 0.2,\n  \"top_p\": 1.0,\n  \"presence_penalty\": 0,\n  \"frequency_penalty\": 0\n}","role":"system"},{"value":"AZURE_FranceCentral_4o-mini","text":"gpt-4o-mini - v1\/chat\/completions API|Microsoft Azure|France-Central","use_custom_api":0,"parameters":"{\n  \"temperature\": 0.2,\n  \"top_p\": 1.0,\n  \"presence_penalty\": 0,\n  \
+[0m
+[0m$ [0mfor h in ollama.codermatrix.de codermatrix.de www.codermatrix.de; do echo "== $h =="; getent hosts "$h" || echo "NXDOMAIN / no A record"; sleep 0.5; done
+== ollama.codermatrix.de ==
+2606:4700:3035::ac43:a39a ollama.codermatrix.de
+2606:4700:3035::6815:a94 ollama.codermatrix.de
+== codermatrix.de ==
+2606:4700:3035::ac43:a39a codermatrix.de
+2606:4700:3035::6815:a94 codermatrix.de
+== www.codermatrix.de ==
+2606:4700:3035::6815:a94 www.codermatrix.de
+2606:4700:3035::ac43:a39a www.codermatrix.de
+[0m
+[0m$ [0mgetent ahosts ollama.codermatrix.de 2>/dev/null; echo "---"; python3 -c "import ipaddress; [print(ip) for ip in ['172.67.163.154','104.21.10.148']]" 2>/dev/null; echo "--- decode ac43:a39a / 6815:a94"; python3 -c "
+a=0xac43a39a; print('.'.join(str((a>>(8*i))&0xff) for i in (3,2,1,0)))
+b=0x68150a94; print('.'.join(str((b>>(8*i))&0xff) for i in (3,2,1,0)))
+"
+172.67.163.154  STREAM ollama.codermatrix.de
+172.67.163.154  DGRAM  
+172.67.163.154  RAW    
+104.21.10.148   STREAM 
+104.21.10.148   DGRAM  
+104.21.10.148   RAW    
+2606:4700:3035::6815:a94 STREAM 
+2606:4700:3035::6815:a94 DGRAM  
+2606:4700:3035::6815:a94 RAW    
+2606:4700:3035::ac43:a39a STREAM 
+2606:4700:3035::ac43:a39a DGRAM  
+2606:4700:3035::ac43:a39a RAW    
+---
+172.67.163.154
+104.21.10.148
+--- decode ac43:a39a / 6815:a94
+172.67.163.154
+104.21.10.148
+[0m
+[0m$ [0mcurl -sS --max-time 120 -o /tmp/help.js "https://www.applicationdesigner.de/help.js" && wc -c /tmp/help.js && sha256sum /tmp/help.js
+3290201 /tmp/help.js
+b56a5f1e61ee397168aedb6684512612ed34a9c1086ab324b64c59f41a049086  /tmp/help.js
+[0m
+[0m$ [0mgrep -o "extjs/[a-zA-Z0-9_/.-]*\.php" /tmp/help.js | sort -u; echo "---aidesigner---"; grep -o "AIDesigner/[a-zA-Z0-9_/.-]*" /tmp/help.js | sort -u; echo "---api/ paths---"; grep -o "api/[a-zA-Z0-9_/.-]*" /tmp/help.js | sort -u | head
+extjs/agent/get_agent_costs.php
+extjs/agent/get_agent_token.php
+extjs/chat/provider.php
+extjs/chatgpt/provider.php
+extjs/check_mailserver.php
+extjs/common/getCustomers.php
+extjs/encrypt/index.php
+extjs/flexlist/addRow.php
+extjs/flexlist/createList.php
+extjs/flexlist/deleteRow.php
+extjs/flexlist/getDetails.php
+extjs/flexlist/getFields.php
+extjs/flexlist/getList.php
+extjs/flexlist/importcsv.php
+extjs/flexlist/saveValue.php
+extjs/flexlist/updateList.php
+extjs/get_provider.php
+extjs/get_speaker.php
+extjs/get_speaker_languages.php
+extjs/get_user_rights.php
+extjs/livedebugger/auth.php
+extjs/playback.php
+extjs/voicenotes/check.php
+extjs/voicenotes/delete.php
+extjs/voicenotes/details.php
+extjs/voicenotes/download.php
+extjs/voicenotes/get.php
+---aidesigner---
+AIDesigner/backend/config.php
+AIDesigner/backend/config_coding.php
+AIDesigner/backend/public/coding.php
+AIDesigner/backend/public/index.php
+---api/ paths---
+api/callbuilder/
+api/chat/message
+api/chat/stream/
+[0m
+[0m$ [0mgrep -n "api/chat\|chat/message\|chat/stream" /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/leads/lead-bigpickle.md | head; echo "=== context in help.js ==="; grep -o ".\{80\}api/chat.\{120\}" /tmp/help.js
+754:verify_steps: PASSIVE — GET sibling php/json under AIDesigner/backend/ (config.php, config_coding.php confirmed 200; test index.php, *.json, *.md referenced by system-prompt files). AUTH_HELPED — operator session: mint agent token for OWN cid, call public/index.php?route=/api/chat/message with OWN token vs a token minted for a foreign cid; record dispatch accept vs deny.
+=== context in help.js ===
+treamUrl:function(c,a,d){var b=this.getAIDesignerApiBase()+encodeURIComponent('/api/chat/stream/'+c);if(a&&a.context&&a.context.customerId){b+='&customerId='+encodeURIComponent(a.context.customerId)}this.fetc
+rId):'';var e=g?'&token='+encodeURIComponent(g):'';var h=f+encodeURIComponent('/api/chat/message')+d+e;fetch(h,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(c)}).then(function
+shWithError(b,'Keine Session-ID erhalten.');return}var h=f+encodeURIComponent('/api/chat/stream/'+c)+d+e;a.aiConnectStream(b,h)})['catch'](function(c){a.aiFinishWithError(b,'Verbindung zum Server fehlgeschlag
+[0m
+[0m$ [0mgrep -o ".\{40\}getAIDesignerApiBase.\{180\}" /tmp/help.js | head -5; echo ===; grep -o "APPDESIGNER_API_PATH[^,;]*" /tmp/help.js | head -3; echo ===; grep -o ".\{60\}route=.{80\}" /tmp/help.js | head -6
+:'gpt-5.3-codex'};b(a.aiModelConfig)})},getAIDesignerApiBase:function(){return APPDESIGNER_API_PATH_NOPROXY+'AIDesigner/backend/public/index.php?route='},fetchAuthToken:function(a,b){var c=a&&a.context&&a.context.customerId?a.context.custom
+signerApiUrl:function(d,a,c){var b=this.getAIDesignerApiBase()+encodeURIComponent(d);if(a&&a.context&&a.context.customerId){b+='&customerId='+encodeURIComponent(a.context.customerId)}this.fetchAuthToken(a,function(e){if(e){b+='&token='+enco
+nerStreamUrl:function(c,a,d){var b=this.getAIDesignerApiBase()+encodeURIComponent('/api/chat/stream/'+c);if(a&&a.context&&a.context.customerId){b+='&customerId='+encodeURIComponent(a.context.customerId)}this.fetchAuthToken(a,function(e){if(
+;a.fetchAuthToken(b,function(g){var f=a.getAIDesignerApiBase();var d=b&&b.context&&b.context.customerId?'&customerId='+encodeURIComponent(b.context.customerId):'';var e=g?'&token='+encodeURIComponent(g):'';var h=f+encodeURIComponent('/api/c
+===
+APPDESIGNER_API_PATH!=='undefined'?APPDESIGNER_API_PATH:'/'
+APPDESIGNER_API_PATH_NOPROXY+'AIDesigner/backend/config.php'}
+APPDESIGNER_API_PATH_NOPROXY+'AIDesigner/backend/public/index.php?route='}
+===
+[0m
+[0m$ [0msha256sum /tmp/vn_demo.txt /tmp/vn_foreign.txt; diff /tmp/vn_demo.txt /tmp/vn_foreign.txt && echo "BYTE-IDENTICAL"; wc -c /tmp/vn_demo.txt
+090b03ceb0dfc8b87d8211c19f47b2a73ebf06827173ccafee1e592b4f928bc4  /tmp/vn_demo.txt
+090b03ceb0dfc8b87d8211c19f47b2a73ebf06827173ccafee1e592b4f928bc4  /tmp/vn_foreign.txt
+BYTE-IDENTICAL
+37 /tmp/vn_demo.txt
+[0m
+All probes complete. Here is the cycle analysis.
+
+## STEP 1 — DELTA
+- [NEW] ollama.codermatrix.de (disclosed by config_coding.php as `ollama_local`) resolves publicly behind Cloudflare `104.21.10.148`/`172.67.163.154` — the `internal` Ollama endpoint is internet-reachable, not network-internal; target is OUT-of-scope for active probing, informational enrichment of the config_coding MISCONFIG.
+- [CHANGED] cbs-proxy.api.live-manager.de: non-upgrade GET → **HTTP 426, 0B** re-confirmed 2026-09-17 16:40 UTC — driver live, 27th consecutive cycle.
+- [CHANGED] voicenotes/check.php: `{"success":true,"total":0,"max_id":0}` 37B sha256 `090b03ceb0dfc8b8…` **byte-identical** for cid=131727 vs cid=2 — 21st consecutive empty cycle, credential-only cross-tenant gate persists.
+- [CHANGED] help/content.php: `page=<script>document.title='LM-XSS'</script>` reflected **unescaped** in 200 text/html no-nosniff — XSS reflection re-confirmed this cycle.
+- [CHANGED] help.js: SHA256 `b56a5f1e61ee397168aedb6684512612ed34a9c1086ab324b64c59f41a049086` (3,290,201 B) **unchanged** — no new endpoints; `api/chat/message` + `api/chat/stream/{id}` confirmed via `getAIDesignerApiBase()` to be `index.php?route=` route values, not standalone HTTP paths (dispatch-gated).
+- [CHANGED] config_coding.php: anonymous 200 JSON, 6,159 B — persistence re-verified.
+- NO_DELTA hosts: surface still frozen at 4 live in-scope hosts.
+
+## STEP 2 — PRIORITIZE
+- [PRIO] cbs-proxy.api.live-manager.de,9.0,attack_surface+gate_ease — 27th cycle WS 101/426 anonymous, transport-complete BOLA driver, sole proof gap = backend frame binding.
+- [PRIO] www.applicationdesigner.de/help/content.php,6.3,xss+gate_ease — zero-token unescaped reflection re-confirmed; same-origin reaches full /extjs API incl. delete.php; execution pending HUMAN.
+- [PRIO] www.applicationdesigner.de/AIDesigner/backend/config_coding.php,4.8,tech_exposure — zero-auth coding-AI map + NEW: disclosed ollama.codermatrix.de resolves publicly behind Cloudflare; still no keys, dispatch gated.
+- [PRIO] www.applicationdesigner.de/extjs/chat/provider.php,3.2,tech_exposure — QN/MITTWALD Qwen3.6 labels only, no URLs/secrets.
+
+## STEP 3 — HYPOTHESES
+[HYP] Cross-tenant CBS WS frame binding — token→cid ownership
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
+confidence: 95
+reasoning: 27th consecutive cycle — non-upgrade GET 426 0B (this cycle), upgrade 101 + byte-identical CONNECT/READY for demo 131727, foreign 2, synthetic 999999999 with zero token; proxy binds no identity at handshake; sole unproven hop is backend token→cid binding inside live_debug frames.
+evidence_needed: operator two-tenant frame test — token minted for own cid, frames sent against own vs foreign cid, byte-diff accepted state.
+verify_steps: AUTH_HELPED — one bound frame set per owned cid; compare accepted vs rejected.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH 8.6, CRITICAL 9.1 if binding unenforced.
+testability: AUTH_HELPED
+[HYP] Same-origin reflected XSS at help content app
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page={value}
+confidence: 80
+reasoning: page= reflected unescaped into 200 text/html `<h1>Page not found</h1><p>The requested help page '<script>document.title='LM-XSS'</script>' does not exist.</p>` re-observed verbatim this cycle; no CSP/nosniff, zero-token; same-origin context reaches all /extjs endpoints incl. delete.php.
+evidence_needed: benign document.title marker render by operator browser.
+verify_steps: HUMAN — open page=%3Cscript%3Edocument.title%3D'LM-XSS-TEST'%3C%2Fscript%3E; confirm title; no further active probes warranted.
+impact: same-origin arbitrary JS → full /extjs API incl. delete — MEDIUM standalone, HIGH chained.
+testability: HUMAN_ONLY
+[HYP] Public-facing "internal" Ollama endpoint disclosed by zero-auth config
+class: MISCONFIG
+asset: https://www.applicationdesigner.de/AIDesigner/backend/config_coding.php → ollama.codermatrix.de
+confidence: 75
+reasoning: NEW this cycle — anonymous 200 config_coding.php names `ollama_local` = https://ollama.codermatrix.de/v1; passive DNS shows it resolves to Cloudflare 104.21.10.148/172.67.163.154 (internet-reachable), contradicting the "local/internal" naming; still zero keys, coding.php dispatch 403-gated. Same class as accepted config.php MISCONFIG.
+evidence_needed: none further (out-of-scope target must NOT be actively probed).
+verify_steps: PASSIVE — GET config_coding.php (200, 6159B JSON); DNS resolution only; report informs provider to firewall the model endpoint.
+impact: attacker learns org's public LLM/prov-able endpoint for model abuse/cost; architecture disclosure — LOW-MED.
+testability: PASSIVE
+
+## STEP 4 — SELF-CRITIQUE
+- [PARKED] encrypt/index.php decrypt-oracle (42): POST-only + VPN/session gate pattern; cannot invoke within GET/HEAD/OPTIONS; unchanged.
+- [PARKED] post-login rs handling (40) @ www.live-manager.de: needs valid authenticated session; elmah/trace sweep closed last anonymous surface there.
+- [PARKED] flexlist cross-tenant read + flexlist write endpoints: mutating/no foreign id known; rules prohibit.
+- [FINAL] cbs-proxy frame binding (95) — driver, sole anonymous gap closed by operator test.
+- [FINAL] help/content.php XSS (80) — execution pending operator render, reflection re-proofed this cycle.
+- [FINAL] config_coding.php / public Ollama (75) — passive-proven, LOW-MED caps.
+
+## STEP 5 — NEXT ACTION
+[NEXT] HUMAN: operator two-tenant cbs-proxy frame-binding test — mint live-debug auth for OWN cid (auth.php?token=LIVE_DEMO_CUSTOMER_TOKEN&customer_id={own}&srn=100), then WS-upgrade GET `wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={own}&service=100&token={minted}` vs `&cid={foreign}`, compare accepted vs rejected frame sets (own tenants only, no third-party streams); this upgrades the HOLD 8.6 driver to VALID. Simultaneously render `https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title%3D%27LM-XSS-TEST%27%3C%2Fscript%3E` to close the XSS.
+
+## STEP 6 — LEARNING
+- [LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 27th cycle non-upgrade GET → HTTP 426 0B re-confirmed; driver unchanged.
+- [LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: 21st consecutive cycle `{"success":true,"total":0,"max_id":0}` 37B sha256 090b03ceb0dfc8b8 byte-identical demo vs foreign — credential-only gate, index empty.
+- [LEARN] ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: `<script>document.title='LM-XSS'</script>` reflected verbatim in 200 text/html this cycle — execution pending operator.
+- [LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config_coding.php: anonymous 200 (6,159 B) persists; NEW — disclosed ollama.codermatrix.de resolves publicly behind Cloudflare (104.21.10.148/172.67.163.154), internet-reachable despite "internal" naming.
+- [LEARN] ACCEPTED CONTROL @ help.js: SHA256 b56a5f1e94f2… unchanged; api/chat/message & api/chat/stream/{id} are AIDesigner `index.php?route=` params (403 dispatch-gated), not standalone paths — endpoint map frozen this cycle.
+- [LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/extjs/chat/provider.php: token-gated Qwen label catalog only, zero URLs/secrets — informational, unchanged.
+- [LEARN] REJECTED (unchanged) @ get_agent_costs/playback/get_agent_token session gates · /api/callbuilder/ nginx 404 · playground.php static · dev.applicationdesigner.de 403 · getCustomers token-scoped.
+
+## STEP 7 — RISK
+[RISK] questnet-gmbh: 72 — Driver cbs-proxy BOLA (95, 27 cycles, CVSS 8.6–9.1 if frame binding unenforced) re-confirmed live; XSS reflection re-proven but execution still human-pending (chained HIGH); voicenote cross-tenant persistent but UUID-blocked (21 empty cycles caps); new cycle adds only INFO-level enrichment — config_coding.php's `internal` Ollama actually public behind Cloudflare — no data-access ceiling moved; four findings remain file-ready (help.js credential 7.5, voicenote PII 7.5, auth.php 7.5 mitigated, get_user_rights 6.5) + transport-complete BOLA HOLD 8.6; risk held pending the operator two-tenant frame test / XSS render, which are the only levers left.

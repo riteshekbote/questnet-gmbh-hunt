@@ -2316,3 +2316,58 @@
 - LEARN: REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page — closed
 - LEARN: REJECTED MISCONFIG @ dev.applicationdesigner.de: hard IP gate 403 — closed
 - LEARN: ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= reflected unescaped, no CSP/nosniff, zero-token — PASSIVE-proven; execution pending operator r
+
+## RANKED HYPOTHESES 2026-09-17 16:41:21 UTC
+- [95] wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100: Cross-tenant CBS WebSocket frame binding via client-supplied cid/service (from art/lead_nemotron3.txt)
+- [95] wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100: Cross-tenant CBS WS frame binding — token→cid ownership (from art/lead_bigpickle.txt)
+- NEXT(hypotheses-bigpickle.txt): HUMAN: operator render XSS at `https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title%3D%27LM-XSS-TEST%27%3C%2Fscript%3E` — confirm
+- NEXT(hypotheses-nemotron3.txt): PROBE: POST https://www.applicationdesigner.de/extjs/encrypt/index.php with token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&password=test
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config_coding.php: anonymous zero-auth JSON (6.1KB) exposes coding AI endpoint map (ollama.co
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/chat/provider.php: token-gated — reveals 14 chat providers incl. Questnet-internal Qwen3.6 Ollama (QN_Qwen
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/chatgpt/provider.php: token-gated — 11 model definitions with region routing; informational.
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/get_speaker.php: token-gated — 560KB / 1,724 TTS speaker records (Azure/Cartesia/ElevenLabs IDs); large da
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/get_provider.php: token-gated — returns 4 TTS provider names; informational.
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/get_speaker_languages.php: token-gated — 10.5KB language catalog; informational.
+- LEARN: ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/coding.php: HTTP 403, dispatch-gated like index.php?route= — coding AI not static-creden
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/flexlist/: addRow/createList/deleteRow/saveValue/updateList/importcsv — POST write endpoints confirmed in 
+- LEARN: ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 26th consecutive cycle anonymous WS 101 + byte-identical CONNECT/READY, 426 on non-upgrade — unchanged driver.
+- LEARN: ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: cross-tenant credential-only, NOT VPN-gated, 20th consecutive empty cycle (total=0, max_i
+- LEARN: ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: reflection re-confirmed; execution pending operator — unchanged.
+- LEARN: REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_costs.php: session-gated ("No VPN detected") — unchanged.
+- LEARN: REJECTED IDOR @ www.applicationdesigner.de/extjs/playback.php: session-gated ("unauthorized") — unchanged.
+- LEARN: REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_token.php: session-gated, byte-identical Zugriff verweigert — unchanged.
+- LEARN: REJECTED MISCONFIG @ www.applicationdesigner.de/api/callbuilder/: nginx 404 catch-all — unchanged.
+- LEARN: REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page — unchanged.
+- LEARN: REJECTED MISCONFIG @ dev.applicationdesigner.de: hard IP gate 403 — unchanged.
+- LEARN: REJECTED IDOR @ www.applicationdesigner.de/extjs/common/getCustomers.php: token-scoped — unchanged.
+- LEARN: REJECTED MISCONFIG @ www.applicationdesigner.de/docs.php: 48KB static ExtJS shell whose sole function is loading the already-accepted help.js/help.json (200, te
+- LEARN: ACCEPTED CONTROL @ 185.158.96.51 + 185.158.98.53: only /22 IPs with observed services (IIS portal / Ratchet WS); the /22 non-HTTP space is un-scanned — HUMAN_ON
+- LEARN: REJECTED IDOR @ cbs-proxy frame binding anonymous vari: unchanged — 22nd cycle byte-identical 101/CONNECT/READY, 426 on non-upgrade; nothing new observable anon
+- LEARN: ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: reflection re-confirmed passive; execution still pending operator render (2026-09-15).
+- LEARN: ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 26th consecutive cycle anonymous WS 101 + byte-identical CONNECT/READY, 426 on non-upgrade — transport-complete d
+- LEARN: ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: cross-tenant credential-only, NOT VPN-gated, 20th consecutive empty cycle (total=0, max_i
+- LEARN: ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/download.php: with token-as-query-param reaches file-lookup (404); VPN gate bypassed; no customer_id
+- LEARN: ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/get.php: cross-tenant credential-only data endpoint; identical success:true for all cids — unchanged
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php: public static credential accepted, token+row-ownership gate, global
+- LEARN: ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/flexlist/getList.php: directory token-scoped, all customer_id=131727; global autoincrement id space 138–345 
+- LEARN: ACCEPTED CONTROL @ www.applicationdesigner.de/extjs/voicenotes/details.php: per-record hierarchy-checked — unchanged
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config.php: zero-auth LLM-routing JSON; dispatch gated — unchanged
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config_coding.php: anonymous zero-auth JSON exposes coding AI endpoint map + 10-model catalog
+- LEARN: ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/index.php?route=: 403 Invalid token — unchanged
+- LEARN: ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/coding.php: HTTP 403, dispatch-gated — unchanged
+- LEARN: REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_costs.php: session-gated ("No VPN detected"), identical response for all cids — closed
+- LEARN: REJECTED IDOR @ www.applicationdesigner.de/extjs/playback.php: session-gated ("unauthorized"), identical response for all cids — closed
+- LEARN: REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_token.php: session-gated, byte-identical Zugriff verweigert — closed
+- LEARN: REJECTED MISCONFIG @ www.applicationdesigner.de/api/callbuilder/: nginx 404 catch-all — closed
+- LEARN: REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page — closed
+- LEARN: REJECTED MISCONFIG @ dev.applicationdesigner.de: hard IP gate 403 — closed
+- LEARN: REJECTED IDOR @ www.applicationdesigner.de/extjs/common/getCustomers.php: token-scoped — unchanged
+- LEARN: ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= reflected unescaped, no CSP/nosniff, zero-token — PASSIVE-proven; execution pending operator r
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/chat/provider.php: token-gated — 14 providers incl. Questnet-internal Ollama — NEW 2026-09-17
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/chatgpt/provider.php: token-gated — 11 model definitions with region routing — NEW 2026-09-17
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/get_speaker.php: token-gated — 560KB/1,724 TTS speaker records — NEW 2026-09-17
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/get_provider.php: token-gated — 4 TTS providers — NEW 2026-09-17
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/get_speaker_languages.php: token-gated — 10.5KB language catalog — NEW 2026-09-17
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/flexlist/: addRow/createList/deleteRow/saveValue/updateList/importcsv — POST write endpoints in help.js — 
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: SHA256 changed, 13 new endpoints in route map — NEW 2026-09-17
+- LEARN: ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/encrypt/index.php: POST+token gate, attacker-chosen params — unprobed decrypt-oracle candidate — NEW 2026-

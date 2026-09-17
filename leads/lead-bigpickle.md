@@ -4813,3 +4813,167 @@ testability: PASSIVE
 [LEARN] REJECTED MISCONFIG @ dev.applicationdesigner.de: hard IP gate 403 — unchanged.
 [LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/common/getCustomers.php: token-scoped — unchanged.
 [RISK] questnet-gmbh: 71 — CBS WS transport-complete BOLA (26 cycles, CVSS 8.6–9.1 if frame binding unenforced) remains dominant driver; XSS execution pending human adds chained HIGH upside; voicenote cross-tenant confirmed but 20 empty cycles cap at UUID-blocked; flexlist per-id ownership gate closes cross-tenant read; new config_coding.php + chat/provider endpoints add INFO-only architectural exposure (Questnet Ollama Qwen3.6 cluster + Mittwald hosting, Anthropic/OpenAI/OpenRouter routing); score capped pending two-tenant frame test, XSS POC, or fresh endpoint with data access.
+## 2026-09-17 16:41:11 UTC [target] (model bigpickle)
+testability: HUMAN_ONLY
+[HYP] Cross-tenant CBS WS frame binding — token→cid ownership
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
+confidence: 95
+reasoning: 25th cycle — https non-upgrade GET 426 0B, upgrade 101 + byte-identical CONNECT/READY for demo 131727, foreign 2, synthetic 999999999 with zero token; proxy binds no identity at handshake; sole unproven hop is backend token→cid binding inside live_debug frames.
+evidence_needed: operator two-tenant frame test — token minted for own cid, frames sent vs own and foreign cid, byte-diff accepted state.
+verify_steps: AUTH_HELPED — one bound frame set per owned cid; compare accepted vs rejected.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH 8.6, CRITICAL 9.1 if binding unenforced.
+testability: AUTH_HELPED
+[HYP] Anonymous envelope crypto/decr-oracle at encrypt/index.php
+class: OTHER
+asset: https://www.applicationdesigner.de/extjs/encrypt/index.php (action=encrypt|decrypt&password=&customerId=&content|envelope=)
+confidence: 42
+reasoning: help.js callEncryptApi POSTs to `{APPDESIGNER_API_PATH}extjs/encrypt/index.php{BACKEND_TOKEN}` with attacker-controlled password, customerId (defaults 0), content/envelope; endpoint exists on www (direct /extjs path is routed); token-only gate pattern on all sibling endpoints; get_user_rights.php returns per-cid high-entropy base64 ciphertext (LOW-capped pending plaintext) — if same envelope crypto, this is an anonymous decryption oracle.
+evidence_needed: single operator POST with demo credential, self-chosen password+envelope → observe success:true vs error; then test whether get_user_rights envelope decrypts.
+verify_steps: AUTH_HELPED — POST (GET/HEAD cannot invoke); attacker-chosen inputs only, no live customer data; capture response JSON structure and any customerId-key-derivation signal.
+impact: if oracle → decrypt per-cid authz blobs (cross-tenant rights data); if only client-password envelope → LOW/no-op.
+testability: AUTH_HELPED
+[HYP] Same-origin reflected XSS at help content app
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page={value}
+confidence: 80
+reasoning: page= reflected unescaped into 200 text/html, no CSP/nosniff, zero-token; re-confirmed PASSIVE 2026-09-17; same-origin context reaches all /extjs endpoints incl. delete.php and credential-carrying legs.
+evidence_needed: benign document.title marker render by operator browser.
+verify_steps: HUMAN — open page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E; no active probes warranted.
+impact: same-origin arbitrary JS → full /extjs API incl. delete — MEDIUM standalone, HIGH chained.
+testability: HUMAN_ONLY
+[NEW] `AIDesigner/backend/config_coding.php`: anonymous zero-auth HTTP 200 JSON (6.1KB) — full coding AI endpoint map (ollama.codermatrix.de/v1, api.openai.com/v1, api.anthropic.com/v1, openrouter.ai/api/v1) + 10-model catalog (GLM Flash/5.3, Kimi K3, DeepSeek v4, Gemini 3.5/3.8, GPT Sol/Terra/Luna, Claude Fable) + system-prompt-ask/apply.md refs; same MISCONFIG class as existing config.php, different module.
+[NEW] `extjs/chat/provider.php`: token-gated GET — reveals 14 chat provider configs including 2 Questnet-internal Ollama instances: `QN_Qwen3.6-35B-A3B-FP8|Questnet|Deutschland` and `MITTWALD_Qwen3.6-35B-A3B-FP8|Mittwald|Deutschland`; also Azure France-Central/West-EU and OpenAI (GPT-4.1/4o/5.4 series).
+[NEW] `extjs/chatgpt/provider.php`: token-gated GET — 11 ChatGPT/Azure/Mistral model definitions with region routing (France-Central, West-EU, OpenAI USA).
+[NEW] `extjs/get_provider.php`: token-gated GET — returns `["azure","elevenlabs","chatgpt","cartesia"]` (4 TTS providers).
+[NEW] `extjs/get_speaker.php`: token-gated GET — 560KB, 1,724 TTS speaker records across Azure/Cartesia/ElevenLabs (Cartesia UUIDs, ElevenLabs voice IDs, Azure neural voice IDs).
+[NEW] `extjs/get_speaker_languages.php`: token-gated GET — 10.5KB language catalog.
+[NEW] `extjs/flexlist/addRow.php`, `createList.php`, `deleteRow.php`, `saveValue.php`, `updateList.php`, `importcsv.php`: POST write endpoints discovered in help.js route map (write, not probed — rules prohibit mutating tests).
+[NEW] `AIDesigner/backend/public/coding.php`: dispatch-gated (403), same pattern as public/index.php?route=.
+[CHANGED] `help.js`: SHA256 `b56a5f1e61ee397168aedb6684512612ed34a9c1086ab324b64c59f41a049086` (3,290,201 B); 13 new endpoints in route map vs prior recorded set.
+[CHANGED] `extjs/encrypt/index.php`: POST+token gate confirmed in help.js callEncryptApi; accepts attacker-chosen password/customerId/content/envelope — now the only remaining unprobed decrypt-oracle candidate.
+[PRIO] cbs-proxy.api.live-manager.de,9.5,attack_surface+gate_ease — 26th cycle WS 101 anonymous, transport-complete BOLA driver.
+[PRIO] www.applicationdesigner.de/help/content.php,6.8,xss+gate_ease — reflected unescaped page=, zero-token, PASSIVE-proven, same-origin full API; execution pending HUMAN.
+[PRIO] www.applicationdesigner.de/AIDesigner/backend/config_coding.php,4.2,tech_exposure — zero-auth coding AI endpoint map + model catalog; informational, LOW caps (no keys, dispatch gated).
+[PRIO] www.applicationdesigner.de/extjs/encrypt/index.php,3.8,tech_exposure — POST decrypt-oracle candidate; requires operator to prove envelope= decrypts get_user_rights ciphertext.
+[PRIO] www.applicationdesigner.de/extjs/chat/provider.php,3.2,tech_exposure — reveals Questnet-internal Qwen3.6 Ollama instances (QN_ and MITTWALD_); informational only, token-gated.
+[HYP] Cross-tenant CBS WS frame binding — token→cid ownership
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
+confidence: 95
+reasoning: 26th consecutive cycle — non-upgrade GET 426 0B, upgrade 101 + byte-identical CONNECT/READY for demo 131727, foreign 2, synthetic 999999999 with zero token; proxy binds no identity at handshake; sole unproven hop is backend token→cid binding inside live_debug frames.
+evidence_needed: operator two-tenant frame test — token minted for own cid, frames sent against own vs foreign cid, byte-diff accepted state.
+verify_steps: AUTH_HELPED — one bound frame set per owned cid; compare accepted vs rejected.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH 8.6, CRITICAL 9.1 if binding unenforced.
+testability: AUTH_HELPED
+[HYP] Same-origin reflected XSS at help content app
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page={value}
+confidence: 80
+reasoning: page= reflected unescaped into 200 text/html, no CSP/nosniff, zero-token, PASSIVE-proven 2026-09-12; re-confirmed reflection cycle 2026-09-17; same-origin context reaches all /extjs endpoints incl. delete.php and credential-carrying legs.
+evidence_needed: benign document.title marker render by operator browser.
+verify_steps: HUMAN — open page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E; no further active probes warranted.
+impact: same-origin arbitrary JS → full /extjs API incl. delete — MEDIUM standalone, HIGH chained.
+testability: HUMAN_ONLY
+[HYP] Anonymous coding AI config leak (config_coding.php)
+class: MISCONFIG
+asset: https://www.applicationdesigner.de/AIDesigner/backend/config_coding.php
+confidence: 70
+reasoning: NEW cycle 2026-09-17 — anonymous HTTP 200 zero-auth JSON (6.1KB) exposes full coding AI endpoint map (ollama.codermatrix.de/v1, api.openai.com/v1, api.anthropic.com/v1, openrouter.ai/api/v1) + 10-model catalog with system-prompt refs; same class as existing config.php MISCONFIG but for coding module; no keys observed; dispatch gated by session+VPN-minted token (coding.php returns 403).
+evidence_needed: none — fully passive-proven.
+verify_steps: PASSIVE — GET https://www.applicationdesigner.de/AIDesigner/backend/config_coding.php confirms anonymous 200 JSON.
+impact: internal AI routing/architecture disclosure — LOW-MED (no keys, dispatch gated; attacker gains model catalog + provider URLs for targeted prompt injection).
+testability: PASSIVE
+[PARKED] Anonymous envelope crypto/decr-oracle at encrypt/index.php (confidence 42, from prior cycle): POST-only, cannot invoke from passive-only analysis; need operator POST test to prove oracle; hypothesis preserved but no rank bump.
+[FINAL] Cross-tenant CBS WS frame binding — token→cid ownership (95) — dominant driver, 26th cycle, unchanged.
+[FINAL] Same-origin reflected XSS at help content app (80) — execution pending operator render.
+[FINAL] Anonymous coding AI config leak (70) — new, passive-proven, LOW-MED caps.
+[NEXT] HUMAN: operator render XSS at `https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title%3D%27LM-XSS-TEST%27%3C%2Fscript%3E` — confirm document.title = 'LM-XSS-TEST' in browser console; no further automated probes needed for this finding.
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config_coding.php: anonymous zero-auth JSON (6.1KB) exposes coding AI endpoint map (ollama.codermatrix.de, api.openai.com, api.anthropic.com, openrouter.ai) + 10-model catalog; no keys; dispatch gated — NEW cycle 2026-09-17.
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/chat/provider.php: token-gated — reveals 14 chat providers incl. Questnet-internal Qwen3.6 Ollama (QN_Qwen3.6-35B-A3B-FP8) and Mittwald-hosted instance; informational.
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/chatgpt/provider.php: token-gated — 11 model definitions with region routing; informational.
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/get_speaker.php: token-gated — 560KB / 1,724 TTS speaker records (Azure/Cartesia/ElevenLabs IDs); large data surface gated by public static credential.
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/get_provider.php: token-gated — returns 4 TTS provider names; informational.
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/get_speaker_languages.php: token-gated — 10.5KB language catalog; informational.
+[LEARN] ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/coding.php: HTTP 403, dispatch-gated like index.php?route= — coding AI not static-credential-satisfiable.
+[LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/flexlist/: addRow/createList/deleteRow/saveValue/updateList/importcsv — POST write endpoints confirmed in help.js; ownership gate unverified (rules prohibit mutating tests).
+[LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 26th consecutive cycle anonymous WS 101 + byte-identical CONNECT/READY, 426 on non-upgrade — unchanged driver.
+[LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: cross-tenant credential-only, NOT VPN-gated, 20th consecutive empty cycle (total=0, max_id=0) — unchanged.
+[LEARN] ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: reflection re-confirmed; execution pending operator — unchanged.
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_costs.php: session-gated ("No VPN detected") — unchanged.
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/playback.php: session-gated ("unauthorized") — unchanged.
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/agent/get_agent_token.php: session-gated, byte-identical Zugriff verweigert — unchanged.
+[LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/api/callbuilder/: nginx 404 catch-all — unchanged.
+[LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page — unchanged.
+[LEARN] REJECTED MISCONFIG @ dev.applicationdesigner.de: hard IP gate 403 — unchanged.
+[LEARN] REJECTED IDOR @ www.applicationdesigner.de/extjs/common/getCustomers.php: token-scoped — unchanged.
+[RISK] questnet-gmbh: 71 — CBS WS transport-complete BOLA (26 cycles, CVSS 8.6–9.1 if frame binding unenforced) remains dominant driver; XSS execution pending human adds chained HIGH upside; voicenote cross-tenant confirmed but 20 empty cycles cap at UUID-blocked; flexlist per-id ownership gate closes cross-tenant read; new config_coding.php + chat/provider endpoints add INFO-only architectural exposure (Questnet Ollama Qwen3.6 cluster + Mittwald hosting, Anthropic/OpenAI/OpenRouter routing); score capped pending two-tenant frame test, XSS POC, or fresh endpoint with data access.
+confidence: 80
+reasoning: page= reflected unescaped into 200 text/html (96B error echo; 1351B real doc for page=index), no CSP/nosniff, zero-token; LFI leg closed 2026-09-14 (key lookup, no include). Reflection proven; only browser-side execution outstanding.
+evidence_needed: benign document.title marker render by operator-owned browser.
+verify_steps: HUMAN — open `page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E`, confirm title marker; no further active probes warranted.
+impact: same-origin arbitrary JS reaching every /extjs endpoint incl. token-only mints and delete.php — MEDIUM standalone, chained HIGH on session-bearing victim.
+testability: HUMAN_ONLY
+[HYP] Post-login rs return-url handling — external/schema-less target honored verbatim
+class: AUTH
+asset: https://www.live-manager.de/?rs={base64}
+confidence: 40
+reasoning: elmah/trace sweep closed the last anonymous surface on this host; all unauthenticated paths 302 → /?rs=<base64-of-path> and GET / is the only 200. Anonymous open-redirect already REJECTED (value not reflected); the only unexamined behavior is whether the decoded rs target is validated after authentication.
+evidence_needed: complete a login flow with rs=<base64 of attacker URL> and observe final redirect Location / JS navigation.
+verify_steps: AUTH_HELPED — GET /?rs=aHR0cHM6Ly9ldmlsLmNvbQ== through login; inspect final redirect. Session required.
+impact: post-login open redirect → OAuth/credential theft → ATO if honored verbatim — HIGH chained.
+testability: AUTH_HELPED
+[PARKED] FreeSWITCH ESL 8021 ClueCon / SIP 1234 / Rayo 5222 on 185.158.96.0/22: reposcan-sourced, deployment unconfirmed, port surface never observed; requires operator TCP-connect scan (no live probe evidence feasible within GET/HEAD/OPTIONS rules) — parked pending operator.
+[PARKED] flexlist cross-tenant read via getFields.php|getDetails.php (global id space 138–345): token-only gate proven but no foreign flexlist_id known — requires operator second tenant; parked (unchanged).
+[PARKED] check_mailserver.php SSRF: POST-only, smtp_server param, cannot demonstrate passively — parked unless operator permits active proof.
+[FINAL] ranked: (1) cbs-proxy frame binding 95 — AUTH_HELPED driver; (2) help/content.php XSS 80 — HUMAN_ONLY, proof outstanding 4 cycles; (3) rs post-login 40 — AUTH_HELPED, retained only because ==40 and operator-testable; no survivor is anonymously probe-able this cycle.
+[NEXT] HUMAN: operator renders `https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title%3D'LM-XSS'%3C%2Fscript%3E` in a scoped browser and confirms the title marker — the sole outstanding proof step on the passive-proven XSS. Fold in the standing operator pass: (b) own-cid minted-token live_debug frame for own vs foreign cid to settle cbs-proxy frame binding (driver, upgrades HOLD 8.6→VALID); (c) POST-auth on https://www.live-manager.de with rs=base64(external URL) to validate post-login redirect handling; (d) passive TCP-connect of in-scope 185.158.96.0/22 for FSW ESL 8021/SIP 5060|5061/Rayo 5222. Anonymous probe surface at 4 hosts is fully enumerated — no further anonymous probes warranted this cycle.
+[LEARN] REJECTED MISCONFIG @ www.applicationdesigner.de/docs.php: 48KB static ExtJS shell whose sole function is loading the already-accepted help.js/help.json (200, text/html); no independent anonymous surface, closes the last "named app entry" — subsumed by the accepted help.js MISCONFIG (2026-09-15).
+[LEARN] ACCEPTED CONTROL @ 185.158.96.51 + 185.158.98.53: only /22 IPs with observed services (IIS portal / Ratchet WS); the /22 non-HTTP space is un-scanned — HUMAN_ONLY upside, unchanged (2026-09-15).
+[LEARN] REJECTED IDOR @ cbs-proxy frame binding anonymous vari: unchanged — 22nd cycle byte-identical 101/CONNECT/READY, 426 on non-upgrade; nothing new observable anonymously (2026-09-15).
+[LEARN] ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: reflection re-confirmed passive; execution still pending operator render (2026-09-15).
+[RISK] questnet-gmbh: 80 — zero new surface for the 6th consecutive window; all anonymous breadth at 4 hosts exhausted and docs.php now formally closed, leaving only HUMAN_ONLY XSS render and AUTH_HELPED frame-binding as potential adds. Four triaged VALID findings remain file-ready (help.js credential 7.5, voicenote PII 7.5 VPN-independent, auth.php 7.5 mitigated, get_user_rights 6.5) plus the transport-complete cbs-proxy BOLA HOLD 8.6 whose anonymous PoC (101 + byte-identical frames) already clears the HIGH gate. Driver is filing latency on program-state confirmation — auth.php has been partially mitigated since 2026-09-07 and each cycle erodes residual value, so risk holds at 80 rather than decaying; an operator pass would be the only lever that moves the program upward or the reports out.
+[HYP] Cross-tenant CBS WS frame binding — token→cid ownership
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
+confidence: 95
+reasoning: 23 cycles anonymous GET → 426 (this cycle), WS upgrade 101 + byte-identical CONNECT CBS100/190/200 + READY for demo 131727, foreign 2, synthetic 999999999; zero credential at proxy; sole unproven hop is backend token→cid binding inside live_debug frame.
+evidence_needed: operator two-tenant frame test — own-cid minted token bound to own vs foreign cid; byte-diff accepted frame sets.
+verify_steps: AUTH_HELPED, own tenants only; never third-party streams; one bound frame set per cid.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH 8.6, CRITICAL 9.1 if binding unenforced.
+testability: AUTH_HELPED
+[HYP] Same-origin reflected XSS at help content app — execution pending operator render
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page={value}
+confidence: 80
+reasoning: page= reflected unescaped into 200 text/html (96B error echo reconfirmed this cycle), no CSP/nosniff, zero-token; LFI leg closed 2026-09-14; only browser-side execution outstanding.
+evidence_needed: benign document.title marker render by operator-owned browser.
+[HYP] Cross-tenant CBS WS frame binding — token→cid ownership
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={cid}&service=100
+confidence: 95
+reasoning: 27th consecutive cycle — non-upgrade GET 426 0B (this cycle), upgrade 101 + byte-identical CONNECT/READY for demo 131727, foreign 2, synthetic 999999999 with zero token; proxy binds no identity at handshake; sole unproven hop is backend token→cid binding inside live_debug frames.
+evidence_needed: operator two-tenant frame test — token minted for own cid, frames sent against own vs foreign cid, byte-diff accepted state.
+verify_steps: AUTH_HELPED — one bound frame set per owned cid; compare accepted vs rejected.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH 8.6, CRITICAL 9.1 if binding unenforced.
+testability: AUTH_HELPED
+[HYP] Same-origin reflected XSS at help content app
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page={value}
+confidence: 80
+reasoning: page= reflected unescaped into 200 text/html `<h1>Page not found</h1><p>The requested help page '<script>document.title='LM-XSS'</script>' does not exist.</p>` re-observed verbatim this cycle; no CSP/nosniff, zero-token; same-origin context reaches all /extjs endpoints incl. delete.php.
+evidence_needed: benign document.title marker render by operator browser.
+verify_steps: HUMAN — open page=%3Cscript%3Edocument.title%3D'LM-XSS-TEST'%3C%2Fscript%3E; confirm title; no further active probes warranted.
+impact: same-origin arbitrary JS → full /extjs API incl. delete — MEDIUM standalone, HIGH chained.
+testability: HUMAN_ONLY
+[HYP] Public-facing "internal" Ollama endpoint disclosed by zero-auth config
+class: MISCONFIG
+asset: https://www.applicationdesigner.de/AIDesigner/backend/config_coding.php → ollama.codermatrix.de
+confidence: 75
+reasoning: NEW this cycle — anonymous 200 config_coding.php names `ollama_local` = https://ollama.codermatrix.de/v1; passive DNS shows it resolves to Cloudflare 104.21.10.148/172.67.163.154 (internet-reachable), contradicting the "local/internal" naming; still zero keys, coding.php dispatch 403-gated. Same class as accepted config.php MISCONFIG.
+evidence_needed: none further (out-of-scope target must NOT be actively probed).
+verify_steps: PASSIVE — GET config_coding.php (200, 6159B JSON); DNS resolution only; report informs provider to firewall the model endpoint.
+impact: attacker learns org's public LLM/prov-able endpoint for model abuse/cost; architecture disclosure — LOW-MED.
+testability: PASSIVE
+[NEXT] HUMAN: operator two-tenant cbs-proxy frame-binding test — mint live-debug auth for OWN cid (auth.php?token=LIVE_DEMO_CUSTOMER_TOKEN&customer_id={own}&srn=100), then WS-upgrade GET `wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={own}&service=100&token={minted}` vs `&cid={foreign}`, compare accepted vs rejected frame sets (own tenants only, no third-party streams); this upgrades the HOLD 8.6 driver to VALID. Simultaneously render `https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title%3D%27LM-XSS-TEST%27%3C%2Fscript%3E` to close the XSS.
+[RISK] questnet-gmbh: 72 — Driver cbs-proxy BOLA (95, 27 cycles, CVSS 8.6–9.1 if frame binding unenforced) re-confirmed live; XSS reflection re-proven but execution still human-pending (chained HIGH); voicenote cross-tenant persistent but UUID-blocked (21 empty cycles caps); new cycle adds only INFO-level enrichment — config_coding.php's `internal` Ollama actually public behind Cloudflare — no data-access ceiling moved; four findings remain file-ready (help.js credential 7.5, voicenote PII 7.5, auth.php 7.5 mitigated, get_user_rights 6.5) + transport-complete BOLA HOLD 8.6; risk held pending the operator two-tenant frame test / XSS render, which are the only levers left.

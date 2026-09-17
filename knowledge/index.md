@@ -447,3 +447,19 @@
 - 2026-09-17 REJECTED MISCONFIG @ www.applicationdesigner.de/playground.php: static marketing page — unchanged.
 - 2026-09-17 REJECTED MISCONFIG @ dev.applicationdesigner.de: hard IP gate 403 — unchanged.
 - 2026-09-17 REJECTED IDOR @ www.applicationdesigner.de/extjs/common/getCustomers.php: token-scoped — unchanged.
+- 2026-09-17 REJECTED MISCONFIG @ www.applicationdesigner.de/docs.php: 48KB static ExtJS shell whose sole function is loading the already-accepted help.js/help.json (200, text/html); no independent anonymous surface, closes the last "named app entry" — subsumed by the accepted help.js MISCONFIG (2026-09-15).
+- 2026-09-17 ACCEPTED CONTROL @ 185.158.96.51 + 185.158.98.53: only /22 IPs with observed services (IIS portal / Ratchet WS); the /22 non-HTTP space is un-scanned — HUMAN_ONLY upside, unchanged (2026-09-15).
+- 2026-09-17 REJECTED IDOR @ cbs-proxy frame binding anonymous vari: unchanged — 22nd cycle byte-identical 101/CONNECT/READY, 426 on non-upgrade; nothing new observable anonymously (2026-09-15).
+- 2026-09-17 ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: reflection re-confirmed passive; execution still pending operator render (2026-09-15).
+- 2026-09-17 ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 26th consecutive cycle anonymous WS 101 + byte-identical CONNECT/READY, 426 on non-upgrade — transport-complete driver, unchanged
+- 2026-09-17 ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/get.php: cross-tenant credential-only data endpoint; identical success:true for all cids — unchanged
+- 2026-09-17 ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config_coding.php: anonymous zero-auth JSON exposes coding AI endpoint map + 10-model catalog; no keys; dispatch gated — NEW 2026-09-17
+- 2026-09-17 ACCEPTED CONTROL @ www.applicationdesigner.de/AIDesigner/backend/public/coding.php: HTTP 403, dispatch-gated — unchanged
+- 2026-09-17 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/chat/provider.php: token-gated — 14 providers incl. Questnet-internal Ollama — NEW 2026-09-17
+- 2026-09-17 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/chatgpt/provider.php: token-gated — 11 model definitions with region routing — NEW 2026-09-17
+- 2026-09-17 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/get_speaker.php: token-gated — 560KB/1,724 TTS speaker records — NEW 2026-09-17
+- 2026-09-17 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/get_provider.php: token-gated — 4 TTS providers — NEW 2026-09-17
+- 2026-09-17 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/get_speaker_languages.php: token-gated — 10.5KB language catalog — NEW 2026-09-17
+- 2026-09-17 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/flexlist/: addRow/createList/deleteRow/saveValue/updateList/importcsv — POST write endpoints in help.js — NEW 2026-09-17
+- 2026-09-17 ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: SHA256 changed, 13 new endpoints in route map — NEW 2026-09-17
+- 2026-09-17 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/encrypt/index.php: POST+token gate, attacker-chosen params — unprobed decrypt-oracle candidate — NEW 2026-09-17
