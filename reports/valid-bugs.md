@@ -105,3 +105,23 @@
   - | Q7 Reasonable triager | **NO** — Untested and likely resource abuse not a valid finding |
   - | 2 | help.js static credential | **VALID** | LOW/MED | Supporting evidence for 3 |
   - | 3 | voicenote PII cross-tenant | **VALID** | **HIGH** | **File report** |
+
+- 18 lead(s) marked VALID at 2026-09-17 11:54:15 UTC
+  - | Q4 Provable? | **PARTIAL** | Anonymous handshake + 101/CONNECT/READY non-invasively proven; final frame-binding requires AUTH_HELPED (valid operator session) |
+  - | Q7 Reasonable triager? | **YES** | Anonymous WS relay to backend CBS systems is a valid finding |
+  - **Verdict: HOLD** — Upgrade to VALID when AUTH_HELPED frame-binding test completes. Anonymous proof clears HIGH gate; only the backend binding check remains.
+  - | Q7 Reasonable triager? | **YES** | Broken authentication allowing arbitrary tenant token minting is valid |
+  - **Verdict: VALID (mitigated)** — File report noting VPN gate deployment. The credential is still public in help.js; the gate is a network restriction, not an auth fix.
+  - | Q7 Reasonable triager? | **YES** | Anonymous access to real customer's call metadata is clearly valid |
+  - **Verdict: VALID** — Cross-tenant credential-only PII metadata disclosure.
+  - | Q7 Reasonable triager? | **YES** | Exposed credential enabling auth bypass is a valid finding |
+  - **Verdict: VALID** — Chain enabler. Report as supporting evidence for Findings 2/3, or standalone.
+  - | Q7 Reasonable triager? | **YES** | Authorization data leakage via broken auth is valid |
+  - **Verdict: VALID** — Standalone finding.
+  - | Q7 Reasonable triager? | **YES** | Reflected XSS reaching privileged endpoints is valid |
+  - **Verdict: HOLD** — Upgrade to VALID when HUMAN_ONLY browser render confirms execution. Reflection proof is solid; only execution outstanding.
+  - | Q4 Provable? | **NO** | Requires valid customer session; no passive proof |
+  - | 2 | auth.php token mint | VALID (mitigated) | 7.5→6.5 | File report + note VPN gate |
+  - | 3 | Voicenote PII metadata | VALID | 7.5 | File report |
+  - | 4 | help.js credential | VALID | 7.5 | File report (chain enabler) |
+  - | 5 | get_user_rights.php leak | VALID | 6.5 | File report |
