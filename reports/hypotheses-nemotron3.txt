@@ -1,31 +1,32 @@
-## 2026-09-17 19:53:48 UTC [target] (model nemotron3)
-[NEW] www.applicationdesigner.de/AIDesigner/backend/config_coding.php: anonymous zero-auth HTTP 200 JSON (6.1KB) — full coding AI endpoint map (ollama.codermatrix.de/v1, api.openai.com/v1, api.anthropic.com/v1, openrouter.ai/api/v1) + 10-model catalog; no keys; dispatch gated
-[NEW] www.applicationdesigner.de/extjs/chat/provider.php: token-gated GET — 14 chat providers incl. 2 Questnet-internal Ollama (QN_Qwen3.6-35B-A3B-FP8, MITTWALD_Qwen3.6-35B-A3B-FP8)
-[NEW] www.applicationdesigner.de/extjs/chatgpt/provider.php: token-gated GET — 11 model definitions with region routing (France-Central, West-EU, OpenAI USA)
-[NEW] www.applicationdesigner.de/extjs/get_speaker.php: token-gated GET — 560KB, 1,724 TTS speaker records (Azure/Cartesia/ElevenLabs IDs)
-[NEW] www.applicationdesigner.de/extjs/get_provider.php: token-gated GET — 4 TTS providers
-[NEW] www.applicationdesigner.de/extjs/get_speaker_languages.php: token-gated GET — 10.5KB language catalog
-[NEW] www.applicationdesigner.de/extjs/flexlist/addRow.php|createList.php|deleteRow.php|saveValue.php|updateList.php|importcsv.php: POST write endpoints in help.js route map (write — not probed per rules)
-[NEW] www.applicationdesigner.de/AIDesigner/backend/public/coding.php: dispatch-gated 403 (same pattern as public/index.php?route=)
-[NEW] www.applicationdesigner.de/help.js: SHA256 changed to b56a5f1e61ee397168aedb6684512612ed34a9c1086ab324b64c59f41a049086 (3.29MB); 13 new endpoints in route map vs prior set
-[NEW] www.applicationdesigner.de/extjs/encrypt/index.php: POST+token gate confirmed in help.js callEncryptApi; accepts attacker-chosen password/customerId/content/envelope — only remaining unprobed decrypt-oracle candidate
-[CHANGED] Flexlist per-id ownership gate PROVEN: getDetails with LIVE_DEMO_CUSTOMER_TOKEN resolves ONLY demo row id=345 (17173B, sha256 aba9094f0a615eab, byte-identical to 2026-09-09); ids 0/1/150/175/200/250/300 → identical empty/unauthorized responses — cross-tenant read not observed across global id space 0–345
-[CHANGED] www.applicationdesigner.de/extjs/voicenotes/check.php: 20th consecutive cycle success:true,total:0,max_id:0 byte-identical (37B sha256 090b03ceb0dfc8b8) for demo cid=131727 and foreign cid=2 — index empty, no UUID path
-[CHANGED] cbs-proxy.api.live-manager.de: non-upgrade GET → HTTP 426 0B reconfirmed — driver live, 26th consecutive cycle
+## 2026-09-17 22:47:21 UTC [target] (model nemotron3)
+[NEW] www.applicationdesigner.de/AIDesigner/backend/config_coding.php: anonymous zero-auth HTTP 200 JSON (6.1KB) exposes coding AI endpoint map (ollama.codermatrix.de/v1, api.openai.com/v1, api.anthropic.com/v1, openrouter.ai/api/v1) + 10-model catalog; no keys; dispatch gated (2026-09-17)
+[NEW] www.applicationdesigner.de/extjs/chat/provider.php: token-gated GET reveals 14 chat providers incl. 2 Questnet-internal Ollama instances (QN_Qwen3.6-35B-A3B-FP8|Questnet|Deutschland, MITTWALD_Qwen3.6-35B-A3B-FP8) (2026-09-17)
+[NEW] www.applicationdesigner.de/extjs/chatgpt/provider.php: token-gated GET returns 11 ChatGPT/Azure/Mistral model definitions with region routing (France-Central, West-EU, OpenAI USA) (2026-09-17)
+[NEW] www.applicationdesigner.de/extjs/get_speaker.php: token-gated GET returns 560KB/1,724 TTS speaker records across Azure/Cartesia/ElevenLabs (Cartesia UUIDs, ElevenLabs voice IDs, Azure neural voice IDs) (2026-09-17)
+[NEW] www.applicationdesigner.de/extjs/get_provider.php: token-gated GET returns 4 TTS providers ["azure","elevenlabs","chatgpt","cartesia"] (2026-09-17)
+[NEW] www.applicationdesigner.de/extjs/get_speaker_languages.php: token-gated GET returns 10.5KB language catalog (2026-09-17)
+[NEW] www.applicationdesigner.de/extjs/flexlist/addRow.php|createList.php|deleteRow.php|saveValue.php|updateList.php|importcsv.php: POST write endpoints discovered in help.js route map (write, not probed — rules prohibit mutating tests) (2026-09-17)
+[NEW] www.applicationdesigner.de/AIDesigner/backend/public/coding.php: dispatch-gated 403 (same pattern as public/index.php?route=) (2026-09-17)
+[NEW] www.applicationdesigner.de/help.js: SHA256 changed to b56a5f1e61ee397168aedb6684512612ed34a9c1086ab324b64c59f41a049086 (3.29MB); 13 new endpoints in route map vs prior set (2026-09-17)
+[NEW] www.applicationdesigner.de/extjs/encrypt/index.php: POST+token gate confirmed in help.js callEncryptApi; accepts attacker-chosen password/customerId/content/envelope — only remaining unprobed decrypt-oracle candidate (2026-09-17)
+[CHANGED] Flexlist per-id ownership gate PROVEN: getDetails with LIVE_DEMO_CUSTOMER_TOKEN resolves ONLY demo row id=345 (17173B, sha256 aba9094f0a615eab, byte-identical to 2026-09-09); ids 0/1/150/175/200/250/300 → identical 26B `{"success":true,"data":[]}` / 49B `{"success":false,"message":"Unauthorized access"}`; prior "token-only/no ownership check" MISCONFIG narrowed to token+row-ownership (2026-09-16/17)
+[CHANGED] cbs-proxy.api.live-manager.de: 28th consecutive cycle anonymous WS 101 + byte-identical CONNECT/READY frames for demo cid=131727 vs foreign cid=2; 426 on non-upgrade — transport-complete BOLA driver unchanged
+[CHANGED] www.applicationdesigner.de/extjs/voicenotes/check.php: 20+ consecutive cycles success:true,total:0,max_id:0 byte-identical (37B sha256 090b03ceb0dfc8b8) for demo/foreign cid — credential-only cross-tenant gate, index empty
 [CHANGED] XSS @ www.applicationdesigner.de/help/content.php: PASSIVE reflection confirmed — `<script>` payload reflected unescaped in 200 text/html, no CSP/nosniff, zero-token; execution pending operator render
 [CHANGED] Surface frozen at 4 live in-scope hosts since 2026-09-04 — no new hosts/endpoints discovered
-[PRIO] cbs-proxy.api.live-manager.de,9.65,attack_surface=10,business_value=10,tech_exposure=9,gate_ease=10,cloud_surface=8,freshness=10
-[PRIO] www.applicationdesigner.de/extjs/voicenotes/download.php,7.80,attack_surface=8,business_value=9,tech_exposure=7,gate_ease=8,cloud_surface=5,freshness=8
-[PRIO] www.applicationdesigner.de/extjs/encrypt/index.php,7.40,attack_surface=7,business_value=7,tech_exposure=8,gate_ease=8,cloud_surface=5,freshness=10
-[PRIO] www.applicationdesigner.de/AIDesigner/backend/config_coding.php,7.25,attack_surface=6,business_value=6,tech_exposure=7,gate_ease=10,cloud_surface=7,freshness=10
-[PRIO] www.applicationdesigner.de/help/content.php,6.50,attack_surface=7,business_value=5,tech_exposure=6,gate_ease=10,cloud_surface=3,freshness=8
-[PRIO] www.applicationdesigner.de/extjs/flexlist/getDetails.php,5.85,attack_surface=6,business_value=6,tech_exposure=6,gate_ease=8,cloud_surface=5,freshness=5
-[PRIO] www.applicationdesigner.de/extjs/voicenotes/delete.php,5.70,attack_surface=6,business_value=7,tech_exposure=5,gate_ease=8,cloud_surface=4,freshness=5
+[PRIO] cbs-proxy.api.live-manager.de,9.40,attack_surface=10,business_value=10,tech_exposure=10,gate_ease=10,cloud_surface=9,freshness=8
+[PRIO] www.applicationdesigner.de/extjs/voicenotes/download.php,8.15,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=9,cloud_surface=7,freshness=7
+[PRIO] www.applicationdesigner.de/extjs/encrypt/index.php,7.80,attack_surface=8,business_value=8,tech_exposure=9,gate_ease=8,cloud_surface=7,freshness=9
+[PRIO] www.applicationdesigner.de/AIDesigner/backend/config_coding.php,7.30,attack_surface=7,business_value=8,tech_exposure=8,gate_ease=10,cloud_surface=7,freshness=9
+[PRIO] www.applicationdesigner.de/extjs/flexlist/getFields.php|getDetails.php,7.15,attack_surface=8,business_value=7,tech_exposure=7,gate_ease=9,cloud_surface=6,freshness=7
+[PRIO] www.applicationdesigner.de/extjs/get_speaker.php,6.75,attack_surface=7,business_value=7,tech_exposure=7,gate_ease=9,cloud_surface=6,freshness=9
+[PRIO] www.applicationdesigner.de/help/content.php,5.95,attack_surface=6,business_value=5,tech_exposure=6,gate_ease=10,cloud_surface=5,freshness=7
+[PRIO] www.applicationdesigner.de/AIDesigner/backend/config.php,5.80,attack_surface=6,business_value=6,tech_exposure=7,gate_ease=10,cloud_surface=6,freshness=5
 [HYP] Cross-tenant CBS protocol bind via anonymous WebSocket upgrade
 class: IDOR
-asset: cbs-proxy.api.live-manager.de
+asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid={customer_id}&service={service_number}
 confidence: 95
-reasoning: 26 consecutive probe cycles confirm anonymous WS upgrade (HTTP 101) reaches backend CBS servers with client-supplied cid/service and no observed token; byte-identical CONNECT frames to CBS100/190/200 + READY for demo cid=131727 vs foreign cid=2; 426 Upgrade Required on non-upgrade requests proves endpoint live; zero credentials required at proxy layer
+reasoning: 28 consecutive probe cycles confirm anonymous WS upgrade (HTTP 101) reaches backend CBS servers with client-supplied cid/service and no observed token; byte-identical CONNECT frames to CBS100/190/200 + READY for demo cid=131727 vs foreign cid=2; 426 Upgrade Required on non-upgrade requests proves endpoint live; zero credentials required at proxy layer
 evidence_needed: Operator with second tenant to send/receive CBS frames and confirm cross-tenant frame delivery
 verify_steps: (PASSIVE) WS-upgrade GET wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=131727&service=100 → observe HTTP 101 + CONNECT CBS100/190/200 + READY; (PASSIVE) WS-upgrade GET wss://cbs-proxy.api.live-manager.de/?origin=LiveDemo&cid=2&service=100 → observe byte-identical frame sequence; (HUMAN) operator with second tenant confirms cross-tenant frame delivery
 impact: Cross-tenant BOLA at transport layer — attacker controls cid/service to bind to arbitrary tenant CBS backend; full CBS protocol access (call control, recording, agent state) — CRITICAL (CVSS 9.1)
@@ -45,7 +46,7 @@ asset: https://www.applicationdesigner.de/extjs/encrypt/index.php
 confidence: 55
 reasoning: help.js confirms callEncryptApi calls encrypt/index.php with POST + token, accepting attacker-chosen password, customerId, content, envelope parameters; no probe executed yet (only endpoint map); if encryption is deterministic or key-derived from password, chosen-plaintext attacks may reveal key material or allow ciphertext forgery; token is public static credential (sha256 8d2faac1b96e020c077fb81aa3452b590d015d59bb826be700899187a0095cbf)
 evidence_needed: Probe response structure, error messages, ciphertext determinism across repeated requests with same parameters
-verify_steps: (PASSIVE) POST https://www.applicationdesigner.de/extjs/encrypt/index.php with token=LIVE_DEMO_CUSTOMER_TOKEN&password=test&customerId=131727&content=test&envelope=test — observe response shape, status, error patterns; (PASSIVE) repeat with identical params → check ciphertext determinism; (PASSIVE) vary customerId → check if cid influences encryption
+verify_steps: (PASSIVE) POST https://www.applicationdesigner.de/extjs/encrypt/index.php with token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&password=test&customerId=131727&content=test&envelope=test — observe response shape, status, error patterns; (PASSIVE) repeat with identical params → check ciphertext determinism; (PASSIVE) vary customerId → check if cid influences encryption
 impact: If deterministic encryption with attacker-controlled params → potential ciphertext forgery, key recovery, or bypass of encryption-gated features — MEDIUM-HIGH (CVSS 6.5-7.5)
 testability: PASSIVE (read-only POST with public token, no data modification)
 [PARKED] Cross-tenant flexlist data read via global autoincrement ID space: confidence 55 but ownership gate PROVEN (only id=345 resolves for demo tenant); cross-tenant read requires operator with second tenant to create flexlist and confirm — HUMAN_ONLY, no passive verification possible
@@ -56,7 +57,7 @@ testability: PASSIVE (read-only POST with public token, no data modification)
 [PARKED] extjs/chat/provider.php, chatgpt/provider.php, get_speaker.php, get_provider.php, get_speaker_languages.php: token-gated informational endpoints — large data surfaces but gated by public static credential; no IDOR/BOLA without CID parameter
 [FINAL] Survivors ranked:
 [NEXT] PROBE: POST https://www.applicationdesigner.de/extjs/encrypt/index.php with token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&password=test&customerId=131727&content=test&envelope=test — observe response shape, status, error patterns, ciphertext determinism (PASSIVE, read-only, 1 rps)
-[LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 26th consecutive cycle anonymous WS 101 + byte-identical CONNECT/READY, 426 on non-upgrade — transport-complete driver, unchanged
+[LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 28th consecutive cycle anonymous WS 101 + byte-identical CONNECT/READY, 426 on non-upgrade — transport-complete driver, unchanged
 [LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: cross-tenant credential-only, NOT VPN-gated, 20th consecutive empty cycle (total=0, max_id=0) — unchanged
 [LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/download.php: with token-as-query-param reaches file-lookup (404); VPN gate bypassed; no customer_id scoping — unchanged
 [LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/get.php: cross-tenant credential-only data endpoint; identical success:true for all cids — unchanged
@@ -83,4 +84,5 @@ testability: PASSIVE (read-only POST with public token, no data modification)
 [LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/flexlist/: addRow/createList/deleteRow/saveValue/updateList/importcsv — POST write endpoints in help.js — NEW 2026-09-17
 [LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: SHA256 changed, 13 new endpoints in route map — NEW 2026-09-17
 [LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/encrypt/index.php: POST+token gate, attacker-chosen params — unprobed decrypt-oracle candidate — NEW 2026-09-17
+[LEARN] REJECTED MISCONFIG @ reposcan: 3rd consecutive non-contributing run (`TARGET_ORG not configured`) — reposcan channel is dead for this program, do not re-run
 [RISK] questnet-gmbh: 87 — Driver finding (cbs-proxy BOLA transport-complete) remains VALID CRITICAL (CVSS 9.1) and VPN-independent. Voicenotes metadata IDOR re-confirmed NOT VPN-gated with valid token (HIGH, CVSS 7.5). Download.php raw audio gate proven (404 reachable) with token-as-query-param, VPN bypassed. Flexlist per-id endpoints token+row-ownership gate with global ID space — cross-tenant read pending operator confirmation (MEDIUM-HIGH). AIDesigner config.php + config_coding.php zero-auth LLM routing disclosure (MEDIUM). XSS at help/content.php PASSIVE-proven but execution requires operator render. New decrypt-oracle candidate at encrypt/index.php (unprobed). Surface frozen at 4 hosts. PoC for bug gate: cbs-proxy WS 101 with arbitrary cid/service sufficient for CRITICAL severity report.

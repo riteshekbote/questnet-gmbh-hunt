@@ -728,3 +728,20 @@ www.live-manager.de
 - CHANGED cbs-proxy.api.live-manager.de: non-upgrade GET → HTTP 426 0B reconfirmed — driver live, 26th consecutive cycle
 - CHANGED XSS @ www.applicationdesigner.de/help/content.php: PASSIVE reflection confirmed — `<script>` payload reflected unescaped in 200 text/html, no CSP/nosniff, zero-token; execution pending operator render
 - CHANGED Surface frozen at 4 live in-scope hosts since 2026-09-04 — no new hosts/endpoints discovered
+
+## 2026-09-17 22:47:33 UTC
+- NEW www.applicationdesigner.de/AIDesigner/backend/config_coding.php: anonymous zero-auth HTTP 200 JSON (6.1KB) exposes coding AI endpoint map (ollama.codermatrix.de/v1, api.openai.com/v1, api.anthropic.co
+- NEW www.applicationdesigner.de/extjs/chat/provider.php: token-gated GET reveals 14 chat providers incl. 2 Questnet-internal Ollama instances (QN_Qwen3.6-35B-A3B-FP8|Questnet|Deutschland, MITTWALD_Qwen3.6-
+- NEW www.applicationdesigner.de/extjs/chatgpt/provider.php: token-gated GET returns 11 ChatGPT/Azure/Mistral model definitions with region routing (France-Central, West-EU, OpenAI USA) (2026-09-17)
+- NEW www.applicationdesigner.de/extjs/get_speaker.php: token-gated GET returns 560KB/1,724 TTS speaker records across Azure/Cartesia/ElevenLabs (Cartesia UUIDs, ElevenLabs voice IDs, Azure neural voice IDs
+- NEW www.applicationdesigner.de/extjs/get_provider.php: token-gated GET returns 4 TTS providers ["azure","elevenlabs","chatgpt","cartesia"] (2026-09-17)
+- NEW www.applicationdesigner.de/extjs/get_speaker_languages.php: token-gated GET returns 10.5KB language catalog (2026-09-17)
+- NEW www.applicationdesigner.de/extjs/flexlist/addRow.php|createList.php|deleteRow.php|saveValue.php|updateList.php|importcsv.php: POST write endpoints discovered in help.js route map (write, not probed — 
+- NEW www.applicationdesigner.de/AIDesigner/backend/public/coding.php: dispatch-gated 403 (same pattern as public/index.php?route=) (2026-09-17)
+- NEW www.applicationdesigner.de/help.js: SHA256 changed to b56a5f1e61ee397168aedb6684512612ed34a9c1086ab324b64c59f41a049086 (3.29MB); 13 new endpoints in route map vs prior set (2026-09-17)
+- NEW www.applicationdesigner.de/extjs/encrypt/index.php: POST+token gate confirmed in help.js callEncryptApi; accepts attacker-chosen password/customerId/content/envelope — only remaining unprobed decrypt-
+- CHANGED Flexlist per-id ownership gate PROVEN: getDetails with LIVE_DEMO_CUSTOMER_TOKEN resolves ONLY demo row id=345 (17173B, sha256 aba9094f0a615eab, byte-identical to 2026-09-09); ids 0/1/150/175/200/250/3
+- CHANGED cbs-proxy.api.live-manager.de: 28th consecutive cycle anonymous WS 101 + byte-identical CONNECT/READY frames for demo cid=131727 vs foreign cid=2; 426 on non-upgrade — transport-complete BOLA driver u
+- CHANGED www.applicationdesigner.de/extjs/voicenotes/check.php: 20+ consecutive cycles success:true,total:0,max_id:0 byte-identical (37B sha256 090b03ceb0dfc8b8) for demo/foreign cid — credential-only cross-te
+- CHANGED XSS @ www.applicationdesigner.de/help/content.php: PASSIVE reflection confirmed — `<script>` payload reflected unescaped in 200 text/html, no CSP/nosniff, zero-token; execution pending operator render
+- CHANGED Surface frozen at 4 live in-scope hosts since 2026-09-04 — no new hosts/endpoints discovered
