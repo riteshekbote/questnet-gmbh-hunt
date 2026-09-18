@@ -1,16 +1,16 @@
-## 2026-09-18 15:16:05 UTC [target] (model nemotron3)
-[NEW] help.js relocated from `/extjs/help.js` → `/help.js` (SHA256 `55f7d9e99b8e2d4e0e193b2f0275501e6d9c1ebd29cadbea6a0da48a8587e3e0`), static credential `LIVE_DEMO_CUSTOMER_TOKEN` unrotated
+## 2026-09-18 18:39:18 UTC [target] (model nemotron3)
 [NEW] www.applicationdesigner.de/extjs/livedebugger/auth.php: VPN gate REMOVED — anonymous per-cid token mint now WORKS for foreign cid=2 (was blocked since 2026-09-07) — REGRESSION
+[NEW] help.js relocated from `/extjs/help.js` → `/help.js` (SHA256 `55f7d9e99b8e2d4e0e193b2f0275501e6d9c1ebd29cadbea6a0da48a8587e3e0`), static credential `LIVE_DEMO_CUSTOMER_TOKEN` unrotated
 [NEW] www.applicationdesigner.de/extjs/encrypt/index.php: NOW VPN-gated — POST with public token returns `{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}` — decrypt-oracle candidate CLOSED
 [CHANGED] cbs-proxy.api.live-manager.de: 29th consecutive cycle anonymous WS 101 + byte-identical CONNECT/READY, 426 on non-upgrade — transport-complete BOLA driver unchanged
 [CHANGED] www.applicationdesigner.de/extjs/voicenotes/check.php: 21+ consecutive cycles cross-tenant credential-only, index empty (total=0, max_id=0) — unchanged
 [CHANGED] www.applicationdesigner.de/help/content.php: XSS `page=` reflection re-confirmed passive (200 text/html, no CSP/nosniff) — execution pending operator render
-[PRIO] cbs-proxy.api.live-manager.de,9.8,attack_surface=10,business_value=10,tech_exposure=9,gate_ease=10,cloud_surface=8,freshness=10
-[PRIO] www.applicationdesigner.de/extjs/livedebugger/auth.php,9.2,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=10,cloud_surface=7,freshness=10
-[PRIO] www.applicationdesigner.de/extjs/voicenotes/download.php,8.5,attack_surface=8,business_value=9,tech_exposure=7,gate_ease=9,cloud_surface=6,freshness=9
-[PRIO] www.applicationdesigner.de/help/content.php,8.0,attack_surface=7,business_value=8,tech_exposure=8,gate_ease=10,cloud_surface=5,freshness=9
-[PRIO] www.applicationdesigner.de/AIDesigner/backend/config.php,7.2,attack_surface=6,business_value=7,tech_exposure=7,gate_ease=10,cloud_surface=8,freshness=6
-[PRIO] www.applicationdesigner.de/extjs/flexlist/getDetails.php,6.8,attack_surface=7,business_value=6,tech_exposure=6,gate_ease=8,cloud_surface=5,freshness=7
+[PRIO] cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid=2&service=100&token=<minted>, 9.8, attack_surface=10 business_value=10 tech_exposure=9 gate_ease=10 cloud_surface=8 freshness=10
+[PRIO] www.applicationdesigner.de/extjs/livedebugger/auth.php, 9.2, attack_surface=9 business_value=9 tech_exposure=8 gate_ease=10 cloud_surface=7 freshness=10
+[PRIO] www.applicationdesigner.de/extjs/voicenotes/download.php, 8.5, attack_surface=8 business_value=9 tech_exposure=7 gate_ease=9 cloud_surface=6 freshness=9
+[PRIO] www.applicationdesigner.de/help/content.php, 8.0, attack_surface=7 business_value=8 tech_exposure=8 gate_ease=10 cloud_surface=5 freshness=9
+[PRIO] www.applicationdesigner.de/AIDesigner/backend/config.php, 7.2, attack_surface=6 business_value=7 tech_exposure=7 gate_ease=10 cloud_surface=8 freshness=6
+[PRIO] www.applicationdesigner.de/extjs/flexlist/getDetails.php, 6.8, attack_surface=7 business_value=6 tech_exposure=6 gate_ease=8 cloud_surface=5 freshness=7
 [HYP] Cross-tenant CBS backend access via chained auth.php mint + WS BOLA
 class: IDOR
 asset: wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid=2&service=100&token=<minted_from_auth.php_cid2>
@@ -24,7 +24,7 @@ testability: PASSIVE
 class: IDOR
 asset: https://www.applicationdesigner.de/extjs/voicenotes/download.php
 confidence: 85
-reasoning: help.js confirms download URL constructed as BACKEND_URL+'/extjs/voicenotes/download.php?file='+encodeURIComponent(a) with NO token appended; probe with token-as-query-param reaches file-lookup ("Datei nicht gefunden") for both demo cid=131727 and foreign cid=2; VPN gate bypassed; no customer_id scoping in request; gate is token-only (credential from help.js sha256 55f7d9e9...)
+reasoning: help.js confirms download URL constructed as BACKEND_URL+'/extjs/voicenotes/download.php?file='+encodeURIComponent(a) with NO token appended; probe with token-as-query-param reaches file-lookup ("Datei nicht gefunden") for both demo cid=131727 and foreign cid=2; VPN gate bypassed; no customer_id scoping in request; gate is token-only (credential from help.js sha256 55f7d9e99b8e2d4e0e193b2f0275501e6d9c1ebd29cadbea6a0da48a8587e3e0)
 evidence_needed: Valid foreign voicenote UUID from HUMAN operator with second tenant to prove cross-tenant raw audio download
 verify_steps: (PASSIVE) GET https://www.applicationdesigner.de/extjs/voicenotes/download.php?file=<valid-uuid>&token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3 — observe file-lookup (404 or binary audio); (HUMAN) operator with second tenant creates voicenote, notes UUID, confirms anonymous download with public token
 impact: Cross-tenant PII audio exfiltration via public credential — HIGH (CVSS 7.5); chainable with check.php/get.php metadata index
@@ -42,6 +42,7 @@ testability: PASSIVE (reflection proven); HUMAN_ONLY (execution requires operato
 [PARKED] Cross-tenant voicenote deletion via delete.php token-only gate: confidence 70 but requires valid foreign voice_note_id from HUMAN operator; deletion is mutating — program rules prohibit writes on live customer data; only error pattern observable passively
 [PARKED] get_user_rights.php ciphertext stability/key recovery: body sha256 differs per cid and rotates per request; high-entropy base64 (~3230B) suggests encrypted/serialized payload; severity capped LOW-MED until ciphertext stability or key demonstrated
 [PARKED] AIDesigner config_coding.php / config.php zero-auth LLM routing: already ACCEPTED MISCONFIG (MEDIUM); no further chainable exploit without dispatch gate bypass (public/index.php?route= and public/coding.php both 403 Invalid token with/without static credential)
+[PARKED] encrypt/index.php decrypt oracle: NOW VPN-gated — POST returns "No VPN detected" with public token; attack surface closed unless VPN gate bypass found
 [FINAL] Survivors ranked:
 [NEXT] PROBE: WS upgrade wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid=2&service=100&token=<minted_from_auth.php_cid2> — observe CONNECT/READY frames vs demo cid=131727 control (PASSIVE, read-only, 1 rps)
 [LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 28+ cycles anonymous WS 101 + byte-identical CONNECT/READY, 426 on non-upgrade — transport-complete driver, unchanged

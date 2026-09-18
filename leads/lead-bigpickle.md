@@ -5349,3 +5349,33 @@ evidence_needed: benign document.title marker render by operator-owned browser.
 verify_steps: HUMAN — open `page=%3Cscript%3Edocument.title%3D'LM-XSS-TEST'%3C%2Fscript%3E`; confirm title.
 impact: same-origin arbitrary JS → full /extjs API incl. cross-tenant delete — MEDIUM standalone, HIGH chained.
 testability: HUMAN_ONLY
+## 2026-09-18 18:40:23 UTC [target] (model bigpickle)
+[HYP] CBS WS frame binding — token→cid ownership unenforced at connection layer
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin={LiveDemo|LiveDebugger}&cid={cid}&service=100[&token={minted}]
+confidence: 97
+reasoning: fresh 18:37–18:39 UTC — non-upgrade GET 426/0B; auth.php mints distinct tokens per cid; three WS upgrades (minted-token cid=2, zero-token cid=2, zero-token cid=999999999) each HTTP 101 with byte-identical 4-frame text stream (396B, sha d5d3e6b5…) — proxy accepts any cid with/without token and emits identical CONNECT/READY; no differential push observed in extended listen.
+evidence_needed: operator two-tenant pairwise test (deny vs accept when a live_debug packet for a foreign cid carries a token minted for an owned cid).
+verify_steps: AUTH_HELPED — mint OWN-cid token via `GET /extjs/livedebugger/auth.php?token=3498fkgkds…&customer_id={own}&srn=100`, then WS-upgrade `?origin=LiveDebugger&cid={own}&service=100&token={minted}` vs `&cid={foreign}`; hold ~15s; diff accepted frame byte-streams. Do NOT send live_debug payloads.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH 8.6, CRITICAL 9.1 if backend binding unenforced.
+testability: AUTH_HELPED
+[HYP] live-debugger per-cid token mint — VPN-gate regression unmitigated (day 3)
+class: IDOR
+asset: https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token={public}&customer_id={any}&srn=100
+confidence: 96
+reasoning: 4th consecutive cycle success:true (126B) for foreign cid=2 (auth e990b272…) AND demo 131727 (auth 296c5833…), distinct mints; no-token control → Not logged in; credential stable in /help.js (b56a5f1e…, unrotated).
+evidence_needed: none further — byte-proven across cycles; ticket as un-mitigated regression (was VALID 8.1→7.5 mitigated by VPN gate 09-07→09-18).
+verify_steps: PASSIVE — repeat mint cid=2 + no-token control (done this cycle).
+impact: anonymous per-tenant live-debug token mint for ANY customer, re-arms cbs-proxy misbind chain — HIGH 7.5 REGRESSED.
+testability: PASSIVE
+[HYP] Same-origin reflected XSS at help content app
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page={value}
+confidence: 80
+reasoning: `page=<script>x</script>` echoed verbatim in 200 `text/html; charset=UTF-8` (90B, sha dafda395…, `<h1>Page not found</h1><p>The requested help page '<script>x</script>' does not exist.</p>`); no CSP/nosniff; zero-token; same-origin context reaches all /extjs incl. POST delete.php.
+evidence_needed: benign document.title render by operator-owned browser.
+verify_steps: HUMAN — open `page=%3Cscript%3Edocument.title%3D'LM-XSS-TEST'%3C%2Fscript%3E`; confirm title.
+impact: same-origin arbitrary JS in tenant session → cross-tenant API incl. destructive ops — MEDIUM standalone, HIGH chained with driver.
+testability: HUMAN_ONLY
+[NEXT] HUMAN: operator two-tenant WS pairwise test — `GET https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&customer_id={own}&srn=100` mint own-cid token, then WS-upgrade `wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={own}&service=100&token={minted}` vs `&cid={foreign}` and diff accepted frame byte-streams (hold 15s; NO live_debug payloads). Anonymous variant exhausted: three-context byte-identity (d5d3e6b5…) + silent after READY. Fold in standing items: render help/content.php XSS; POST-auth www.live-manager.de `rs=base64(external URL)`; passive TCP-connect 185.158.96.0/22 (ESL 8021/SIP 5060|5061/Rayo 5222).
+[RISK] questnet-gmbh: 82 — auth.php mint regression un-mitigated on day 3 fully re-arms the chain (anonymous per-cid live-debug token → cbs-proxy misbind); fresh three-context byte-identical WS stream including nonexistent cid 999999999 proves connection-layer cid/token agnosticism and sustains driver 8.6 (9.1 gated only by operator two-tenant backend-binding test). Report set: auth.php mint 7.5 REGRESSED un-mitigated, help.js credential 7.5, voicenote PII 7.5 (UUID-blocked), get_user_rights 6.5 ciphertext, driver BOLA HOLD 8.6, XSS HUMAN_ONLY MED/HIGH chained. No new anonymous lever opened this cycle — everything else byte-stable or denial-gated; risk flat-to-slightly-up from 80.

