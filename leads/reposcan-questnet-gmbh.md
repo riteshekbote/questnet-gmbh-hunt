@@ -640,3 +640,19 @@ TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
 TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
 ## REPOSCAN 2026-09-18 13:40:01 UTC
 TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-18 17:16:47 UTC
+[HYP] Hardcoded plaintext credential in hunt inventory (LIVE_DEMO_CUSTOMER_TOKEN)
+class: SECRET
+asset: inventory/questnet-gmbh.md:221, knowledge/index.md:100,111,120,139,176
+confidence: 95
+reasoning: >
+impact: HIGH — credential in public repo; enables cross-tenant token mint + data access chain
+verify_steps: >
+[HYP] hunt.yml commit-step secret redaction regex may miss non-prefixed secrets
+class: MISCONFIG
+asset: .github/workflows/hunt.yml:241
+confidence: 40
+reasoning: >
+impact: LOW — no current leak from this regex gap; future risk if non-prefixed secrets surface
+verify_steps: >
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
