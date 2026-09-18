@@ -757,3 +757,22 @@ www.live-manager.de
 - CHANGED cbs-proxy.api.live-manager.de: non-upgrade GET → HTTP 426 0B reconfirmed — driver live, 28th consecutive cycle
 - CHANGED XSS @ www.applicationdesigner.de/help/content.php: PASSIVE reflection confirmed — `<script>` payload reflected unescaped in 200 text/html, no CSP/nosniff, zero-token; execution pending operator render
 - CHANGED Surface frozen at 4 live in-scope hosts since 2026-09-04 — no new hosts/endpoints discovered
+
+## 2026-09-18 06:08:34 UTC
+- CHANGED www.applicationdesigner.de/help.js: SHA256 `b56a5f1e61ee397168aedb6684512612ed34a9c1086ab324b64c59f41a049086` byte-identical to 2026-09-17 (3,290,201 B) — no route-map churn this cycle; `LIVE_DEMO_CUS
+- CHANGED www.applicationdesigner.de/help/content.php: page= `<script>x</script>` echoed verbatim in 200 text/html `<p>The requested help page '…' does not exist.</p>` (90B) — reflection reconfirmed.
+- CHANGED cbs-proxy.api.live-manager.de: non-upgrade GET → HTTP 426/0B reconfirmed — driver live (29th cycle).
+- CHANGED www.applicationdesigner.de/AIDesigner/backend/config.php (5189B, sha256 a1aac41f…) + config_coding.php (6159B, sha256 7b6c1e72…) both still anonymous HTTP 200 zero-auth, bodies stable-sized.
+- CHANGED www.live-manager.de: GET / → 200/20,547B (portal up; elmah/trace/rs surface previously closed) — no change.
+- NEW help.js relocated from `/extjs/help.js` → `/help.js` (SHA256 changed to `55f7d9e99b8e2d4e0e193b2f0275501e6d9c1ebd29cadbea6a0da48a8587e3e0`), static credential `LIVE_DEMO_CUSTOMER_TOKEN=3498fkgkds458g3
+- NEW auth.php VPN gate REMOVED — anonymous per-cid token mint now WORKS for foreign cid=2 (was blocked since 2026-09-07 with "No VPN detected")
+- NEW encrypt/index.php NOW VPN-gated — POST with public token returns `{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}` (was unprobed decrypt-oracle candidate)
+- CHANGED voicenotes/check.php: 21+ consecutive cycles cross-tenant credential-only, index empty (total=0, max_id=0) — unchanged
+- CHANGED voicenotes/download.php: token-as-query-param reaches file-lookup ("Datei nicht gefunden"), VPN gate bypassed, no customer_id scoping — unchanged
+- CHANGED voicenotes/get.php: cross-tenant credential-only, identical `{"success":true,"data":[],"total":0}` for all cids — unchanged
+- CHANGED voicenotes/delete.php: token-gated (not VPN-gated), error "Ungültige oder fehlende voice_note_id" — unchanged
+- CHANGED flexlist/getDetails.php: ownership gate PROVEN — only flexlist_id=345 resolves for demo tenant; ids 200/150/175/250/300 → `{"success":false,"message":"Unauthorized access"}`
+- CHANGED XSS at help/content.php: `page=` param reflected unescaped into 200 text/html, no CSP/nosniff, zero-token — PASSIVE-proven
+- CHANGED AIDesigner/config.php + config_coding.php: anonymous zero-auth JSON exposes LLM routing (6 providers, 10 models) — unchanged
+- CHANGED cbs-proxy.api.live-manager.de: 28+ cycles anonymous WS 101 + byte-identical CONNECT/READY for demo cid=131727 vs foreign cid=2; 426 on non-upgrade — transport-complete BOLA driver unchanged
+- CHANGED Surface frozen at 4 live in-scope hosts since 2026-09-04 — no new hosts/endpoints discovered

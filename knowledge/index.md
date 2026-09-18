@@ -538,3 +538,13 @@
 - 2026-09-18 ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: SHA256 changed, 13 new endpoints in route map — NEW 2026-09-17
 - 2026-09-18 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/encrypt/index.php: POST+token gate, attacker-chosen params — unprobed decrypt-oracle candidate — NEW 2026-09-17
 - 2026-09-18 REJECTED MISCONFIG @ reposcan: 3rd consecutive non-contributing run (`TARGET_ORG not configured`) — reposcan channel is dead for this program, do not re-run
+- 2026-09-18 ACCEPTED CONTROL @ www.applicationdesigner.de/help.js: SHA256 b56a5f1e61ee397168aedb6684512612ed34a9c1086ab324b64c59f41a049086 unchanged since 09-17; LIVE_DEMO_CUSTOMER_TOKEN UNROTATED — all public-credential-gated findings remain live (29th cycle).
+- 2026-09-18 ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 29th cycle — 426/0B on non-upgrade + byte-identical 101 CONNECT/READY frame set; transport-complete, unchanged.
+- 2026-09-18 ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: page= reflection re-echoed verbatim this cycle (200 text/html, 90B, no CSP/nosniff) — execution still operator-pending, unchanged.
+- 2026-09-18 ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config.php|config_coding.php: zero-auth HTTP 200 reconfirmed (a1aac41f…/7b6c1e72…), bodies stable; dispatch gated — unchanged.
+- 2026-09-18 REJECTED MISCONFIG @ reposcan: 4th consecutive non-contributing run (`TARGET_ORG not configured`) — reposcan channel dead for this program, do not re-run.
+- 2026-09-18 ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 28+ cycles anonymous WS 101 + byte-identical CONNECT/READY, 426 on non-upgrade — transport-complete driver, unchanged
+- 2026-09-18 ACCEPTED IDOR @ www.applicationdesigner.de/extjs/livedebugger/auth.php: VPN gate REMOVED — anonymous per-cid mint via public static credential now WORKS for foreign cid=2 (was blocked since 2026-09-07) — REGRESSION
+- 2026-09-18 ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: cross-tenant credential-only, NOT VPN-gated, 21+ consecutive empty cycles (total=0, max_id=0) — unchanged
+- 2026-09-18 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/flexlist/getDetails.php: public static credential accepted, token+row-ownership gate, global autoincrement id space 138–345 — cross-tenant read not observed
+- 2026-09-18 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/encrypt/index.php: POST+token gate, attacker-chosen params — NOW VPN-GATED ("No VPN detected") — CLOSED
