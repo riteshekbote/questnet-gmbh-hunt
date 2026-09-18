@@ -806,3 +806,12 @@ www.live-manager.de
 - CHANGED cbs-proxy.api.live-manager.de: 29th consecutive cycle anonymous WS 101 + byte-identical CONNECT/READY, 426 on non-upgrade — transport-complete BOLA driver unchanged
 - CHANGED www.applicationdesigner.de/extjs/voicenotes/check.php: 21+ consecutive cycles cross-tenant credential-only, index empty (total=0, max_id=0) — unchanged
 - CHANGED www.applicationdesigner.de/help/content.php: XSS `page=` reflection re-confirmed passive (200 text/html, no CSP/nosniff) — execution pending operator render
+
+## 2026-09-18 21:18:03 UTC
+- NEW www.applicationdesigner.de/extjs/livedebugger/auth.php: VPN gate REMOVED — anonymous per-cid token mint now WORKS for foreign cid=2 (was blocked since 2026-09-07 with "No VPN detected") — REGRESSION
+- NEW help.js relocated from `/extjs/help.js` → `/help.js` (SHA256 `55f7d9e99b8e2d4e0e193b2f0275501e6d9c1ebd29cadbea6a0da48a8587e3e0`), static credential `LIVE_DEMO_CUSTOMER_TOKEN` unrotated
+- NEW www.applicationdesigner.de/extjs/encrypt/index.php: NOW VPN-gated — POST with public token returns `{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}` — decrypt-oracle candida
+- CHANGED cbs-proxy.api.live-manager.de: 29th consecutive cycle anonymous WS 101 + byte-identical CONNECT/READY, 426 on non-upgrade — transport-complete BOLA driver unchanged
+- CHANGED www.applicationdesigner.de/extjs/voicenotes/check.php: 21+ consecutive cycles cross-tenant credential-only, index empty (total=0, max_id=0) — unchanged
+- CHANGED www.applicationdesigner.de/help/content.php: XSS `page=` reflection re-confirmed passive (200 text/html, no CSP/nosniff) — execution pending operator render
+- CHANGED Surface frozen at 4 live in-scope hosts since 2026-09-04 — no new hosts/endpoints discovered
