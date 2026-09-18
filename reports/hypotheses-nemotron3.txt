@@ -1,6 +1,6 @@
-## 2026-09-18 06:08:23 UTC [target] (model nemotron3)
+## 2026-09-18 11:38:28 UTC [target] (model nemotron3)
 [NEW] help.js relocated from `/extjs/help.js` → `/help.js` (SHA256 changed to `55f7d9e99b8e2d4e0e193b2f0275501e6d9c1ebd29cadbea6a0da48a8587e3e0`), static credential `LIVE_DEMO_CUSTOMER_TOKEN=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3` unchanged
-[NEW] auth.php VPN gate REMOVED — anonymous per-cid token mint now WORKS for foreign cid=2 (was blocked since 2026-09-07 with "No VPN detected")
+[NEW] auth.php VPN gate REMOVED — anonymous per-cid token mint now WORKS for foreign cid=2 (was blocked since 2026-09-07 with "No VPN detected") — REGRESSION
 [NEW] encrypt/index.php NOW VPN-gated — POST with public token returns `{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}` (was unprobed decrypt-oracle candidate)
 [CHANGED] voicenotes/check.php: 21+ consecutive cycles cross-tenant credential-only, index empty (total=0, max_id=0) — unchanged
 [CHANGED] voicenotes/download.php: token-as-query-param reaches file-lookup ("Datei nicht gefunden"), VPN gate bypassed, no customer_id scoping — unchanged
@@ -35,6 +35,7 @@ reasoning: help.js confirms download URL constructed as BACKEND_URL+'/extjs/voic
 evidence_needed: Valid foreign voicenote UUID from HUMAN operator with second tenant to prove cross-tenant raw audio download
 verify_steps: (PASSIVE) GET https://www.applicationdesigner.de/extjs/voicenotes/download.php?file=<valid-uuid>&token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3 — observe file-lookup (404 or binary audio); (HUMAN) operator with second tenant creates voicenote, notes UUID, confirms anonymous download with public token
 impact: Cross-tenant PII audio exfiltration via public credential — HIGH (CVSS 7.5); chainable with check.php/get.php metadata index
+testability: PASSIVE (gate proven, 404 reachable); HUMAN_ONLY (cross-tenant data read
 testability: PASSIVE (gate proven, 404 reachable); HUMAN_ONLY (cross-tenant data read requires operator with second tenant)
 [HYP] Reflected XSS via help/content.php page= parameter
 class: XSS
@@ -52,7 +53,7 @@ testability: PASSIVE (reflection proven); HUMAN_ONLY (execution requires operato
 [PARKED] encrypt/index.php decrypt oracle: NOW VPN-gated — POST returns "No VPN detected" with public token; attack surface closed unless VPN gate bypass found
 [PARKED] extjs/chat/provider.php, chatgpt/provider.php, get_speaker.php, get_provider.php, get_speaker_languages.php: token-gated informational endpoints — large data surfaces but gated by public static credential; no IDOR/BOLA without CID parameter
 [FINAL] Survivors ranked:
-[NEXT] PROBE: WS upgrade wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid=2&service=100&token=4de7d3f2e38aa5cf5ab1d284ad90c97be1ffda0e4450095c66637821504c5e42 (using auth.php-minted token for foreign cid=2) — observe CONNECT/READY frames vs demo cid=131727 control (PASSIVE, read-only, 1 rps)
+[NEXT] PROBE: WS upgrade wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid=2&service=100&token=<minted_from_auth.php_cid2> — observe CONNECT/READY frames vs demo cid=131727 control (PASSIVE, read-only, 1 rps)
 [LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 28+ cycles anonymous WS 101 + byte-identical CONNECT/READY, 426 on non-upgrade — transport-complete driver, unchanged
 [LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/livedebugger/auth.php: VPN gate REMOVED — anonymous per-cid mint via public static credential now WORKS for foreign cid=2 (was blocked since 2026-09-07) — REGRESSION
 [LEARN] ACCEPTED IDOR @ www.applicationdesigner.de/extjs/voicenotes/check.php: cross-tenant credential-only, NOT VPN-gated, 21+ consecutive empty cycles (total=0, max_id=0) — unchanged

