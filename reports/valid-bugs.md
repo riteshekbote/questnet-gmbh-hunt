@@ -125,3 +125,13 @@
   - | 3 | Voicenote PII metadata | VALID | 7.5 | File report |
   - | 4 | help.js credential | VALID | 7.5 | File report (chain enabler) |
   - | 5 | get_user_rights.php leak | VALID | 6.5 | File report |
+
+- 8 lead(s) marked VALID at 2026-09-18 21:15:33 UTC
+  - **Verdict: VALID**
+  - **Verdict: VALID**
+  - **Verdict: VALID**
+  - **Verdict: VALID**
+  - | 1 | FreeSWITCH ESL default password + no ACL | **VALID** | 8.1 | Config confirmed in active profile, port 8021 on in-scope range |
+  - | 8 | cbs-proxy WebSocket BOLA | **VALID** | 7.5 | Anonymous WS 101 for any cid, transport-complete |
+  - | 10 | voicenotes cross-tenant PII | **VALID** | 6.5 | success:true for demo + foreign cid, no tenant validation |
+  - | 11 | get_user_rights.php cross-tenant | **VALID** | 6.5 | Different authz payload per cid, anonymous |
