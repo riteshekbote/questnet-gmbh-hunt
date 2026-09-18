@@ -5321,3 +5321,31 @@ impact: same-origin arbitrary JS → full /extjs API incl. cross-tenant delete �
 testability: HUMAN_ONLY
 [NEXT] HUMAN: operator two-tenant frame test (sole unproven hop) — mint OWN-cid token via `GET https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token=3498fkgkds458g35h9g835npz98qq4839kajlfhg38963a98z35h898E3DFG38d3&customer_id={own}&srn=100`, then WS-upgrade `wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={own}&service=100&token={minted}` vs `&cid={foreign}` and diff accepted frame byte-streams; secondary anonymous variant now open per regression: extended read-only listen (~15s) after misbind upgrade to observe post-READY differential push. Fold in standing items: render help/content.php XSS; POST-auth on www.live-manager.de with `rs=base64(external URL)`; passive TCP-connect 185.158.96.0/22 (ESL 8021/SIP 5060|5061/Rayo 5222).
 [RISK] questnet-gmbh: 80 — auth.php VPN-gate regression re-opens the previously-mitigated HIGH 7.5 (anonymous per-cid mint, fresh 126B success:true for cid=2) and re-arms the full cbs-proxy chain; driver cbs-proxy BOLA (conf 97, 30 cycles, CVSS 8.6, 9.1 if backend binding unenforced) now has anonymous misbind evidence — demo-tenant token + foreign cid yields byte-identical 404B frames to zero-token baseline (sha256 f3891a7e…), removing the operator requirement for the misbind demonstration (operator test still gates VALID). Report set: help.js credential 7.5, voicenote PII 7.5, auth.php mint 7.5 REGRESSED, get_user_rights 6.5 file-ready VALID + BOLA HOLD 8.6 + config_coding LOW + XSS HUMAN_ONLY. Risk UP from 72 — the regression is the only material change beyond the now-anonymous misbind proof.
+## 2026-09-18 15:13:05 UTC [target] (model bigpickle)
+[HYP] CBS WS frame binding — token→cid ownership unenforced at connection layer
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin={LiveDemo|LiveDebugger}&cid={cid}&service=100[&token={minted}]
+confidence: 97
+reasoning: 2026-09-18 15:11 fresh: non-upgrade GET 426/0B; auth.php mints distinct 64-hex token for foreign cid=2 via public credential; prior cycle proved byte-identical 404B frame sets (sha256 f3891a7e…) for demo-token+foreign-cid misbind vs zero-token — proxy accepts any cid with any/no token and emits identical CONNECT/READY.
+evidence_needed: differential backend frames post-READY per cid (anonymous extended listen) or operator two-tenant pairwise test.
+verify_steps: AUTH_HELPED — WS-upgrade `wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid=2&service=100&token=<minted_0570ada2…>` vs zero-token `?origin=LiveDemo&cid=2&service=100`, hold ~15s, record all post-READY frames, diff byte-streams.
+impact: cross-tenant live-debug/call-stream attach (voice/PII) — HIGH 8.6, CRITICAL 9.1 if backend binding unenforced.
+testability: AUTH_HELPED
+[HYP] live-debugger per-cid token mint — VPN-gate regression unresolved (day 2)
+class: IDOR
+asset: https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token={public}&customer_id={any}&srn=100
+confidence: 95
+reasoning: fresh 2026-09-18 15:11 — success:true + distinct 64-hex auth for foreign cid=2; no-token → Not logged in; help.js unrotated (b56a5f1e…) since 09-17 → public credential stable; blocked state 2026-09-07→09-18 06:00 not restored.
+evidence_needed: none further — byte-proven 2 consecutive days; file as un-mitigated.
+verify_steps: PASSIVE — repeat mint cid=2 (observed success:true 126B) + no-token control.
+impact: anonymous per-tenant live-debug token mint for ANY customer, feeds cbs-proxy misbind chain — HIGH 7.5, REGRESSED.
+testability: PASSIVE
+[HYP] Same-origin reflected XSS at help content app
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page={value}
+confidence: 80
+reasoning: 2026-09-18 15:11 fresh — `page=<script>x</script>` echoed verbatim in 200 `text/html; charset=UTF-8`, `<h1>Page not found</h1><p>The requested help page '<script>x</script>' does not exist.</p>`; no CSP/nosniff; zero-token; same-origin reaches all /extjs incl. POST delete.php.
+evidence_needed: benign document.title marker render by operator-owned browser.
+verify_steps: HUMAN — open `page=%3Cscript%3Edocument.title%3D'LM-XSS-TEST'%3C%2Fscript%3E`; confirm title.
+impact: same-origin arbitrary JS → full /extjs API incl. cross-tenant delete — MEDIUM standalone, HIGH chained.
+testability: HUMAN_ONLY
