@@ -625,3 +625,12 @@ TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
 TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
 ## REPOSCAN 2026-09-17 21:56:42 UTC
 TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
+## REPOSCAN 2026-09-18 00:00:01 UTC
+[HYP] (none - no candidates)
+class: N/A
+asset: N/A
+confidence: N/A
+reasoning: cands.txt contains "no org candidates"; scope.yml lists
+impact: N/A
+verify_steps: N/A
+TARGET_ORG not configured for questnet-gmbh; skipping public-org deep scan.
