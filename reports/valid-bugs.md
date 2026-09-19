@@ -135,3 +135,18 @@
   - | 8 | cbs-proxy WebSocket BOLA | **VALID** | 7.5 | Anonymous WS 101 for any cid, transport-complete |
   - | 10 | voicenotes cross-tenant PII | **VALID** | 6.5 | success:true for demo + foreign cid, no tenant validation |
   - | 11 | get_user_rights.php cross-tenant | **VALID** | 6.5 | Different authz payload per cid, anonymous |
+
+- 13 lead(s) marked VALID at 2026-09-19 06:39:38 UTC
+  - **Verdict: HOLD** — Upgrade to VALID when AUTH_HELPED frame-binding test confirms or denies backend-side cid validation. Anonymous proof clears HIGH gate but the final hop is unproven.
+  - | Q7 | Reasonable triager? | **YES** — broken authentication via exposed credential is a clear valid bug |
+  - **Verdict: VALID (mitigated)** — VPN gate deployed as of 2026-09-07; the credential remains public in help.js. File report noting mitigation.
+  - | Q7 | Reasonable triager? | **YES** — anonymous access to real customer's voicemail metadata via public credential is clearly valid |
+  - **Verdict: VALID**
+  - | Q7 | Reasonable triager? | **YES** — exposed credential enabling auth bypass is a valid finding |
+  - **Verdict: VALID** — Report as chain enabler for leads 2+3, or standalone.
+  - | Q7 | Reasonable triager? | **YES** — authorization data leakage via broken auth is valid |
+  - **Verdict: VALID**
+  - | 2 | auth.php cross-tenant token mint | **VALID (mitigated)** | 7.5 |
+  - | 3 | Voicenote PII metadata cross-tenant | **VALID** | 7.5 |
+  - | 4 | help.js static credential | **VALID** | 7.5 |
+  - | 5 | get_user_rights.php authz leak | **VALID** | 6.5 |
