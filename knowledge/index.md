@@ -581,3 +581,7 @@
 - 2026-09-19 ACCEPTED MISCONFIG @ www.applicationdesigner.de/help.js: SHA256 changed, 13 new endpoints in route map — NEW 2026-09-17
 - 2026-09-19 ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/encrypt/index.php: POST+token gate, attacker-chosen params — NOW VPN-GATED ("No VPN detected") — CLOSED
 - 2026-09-19 REJECTED MISCONFIG @ reposcan: 3rd consecutive non-contributing run (`TARGET_ORG not configured`) — reposcan channel is dead for this program, do not re-run
+- 2026-09-19 ACCEPTED OTHER @ cbs-proxy.api.live-manager.de: `Host: evil.test` → 301 `https://evil.test/` — Host-derived Location on new port-80 TLS wrapper; HTTPS vhost keys on Host (426/101 correct, 404 evil) — LOW open redirect, passive-proven 2026-09-19.
+- 2026-09-19 ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 30th cycle Upgrade-GET → 101 + Sec-WebSocket-Accept with arbitrary cid, no token; non-upgrade 426/0B; nginx/1.30.0 + 301 wrapper = re-proxy churn, transport unchanged.
+- 2026-09-19 ACCEPTED AUTH @ www.applicationdesigner.de/extjs/livedebugger/auth.php: regression open — success:true for foreign cid=2; help.js credential unrotated (live hash b56a5f1e…; 09-18-recorded 55f7d9e9 transient).
+- 2026-09-19 ACCEPTED CONTROL @ voicenotes/check.php (090b03ce… both cids) + help/content.php XSS (200/90B text/html) — unchanged.

@@ -5575,3 +5575,37 @@ testability: HUMAN_ONLY
 [LEARN] ACCEPTED MISCONFIG @ www.applicationdesigner.de/extjs/encrypt/index.php: POST+token gate, attacker-chosen params — NOW VPN-GATED ("No VPN detected") — CLOSED  
 [LEARN] REJECTED MISCONFIG @ reposcan: 3rd consecutive non-contributing run (`TARGET_ORG not configured`) — reposcan channel is dead for this program, do not re-run
 [RISK] questnet-gmbh: 87 — Driver finding (cbs-proxy BOLA transport-complete) remains VALID CRITICAL (CVSS 9.1) and VPN-independent. auth.php VPN gate REGRESSION (now open) re-enables full chain: public static credential → per-cid token mint for ANY tenant → anonymous WS 101 to cbs-proxy with client-supplied cid/service. Voicenotes metadata IDOR re-confirmed NOT VPN-gated with valid token (HIGH, CVSS 7.5). Download.php raw audio gate proven (404 reachable) with token-as-query-param, VPN bypassed. Flexlist per-id endpoints token+row-ownership gate with global ID space — cross-tenant read pending operator confirmation (MEDIUM-HIGH). AIDesigner config.php + config_coding.php zero-auth LLM routing disclosure (MEDIUM). XSS at help/content.php PASSIVE-proven but execution requires operator render. Surface frozen at 4 hosts. PoC for bug gate: cbs-proxy WS 101 with arbitrary cid/service sufficient for CRITICAL severity report.
+## 2026-09-19 11:34:39 UTC [target] (model bigpickle)
+[HYP] cbs-proxy port-80 301 Host-header open redirect
+class: OTHER
+asset: http://cbs-proxy.api.live-manager.de/
+confidence: 85
+reasoning: This cycle passive: GET / with `Host: cbs-proxy.api.live-manager.de` → 301 `https://cbs-proxy.api.live-manager.de/`; with `Host: evil.test` → 301 `https://evil.test/` — Location built from unvalidated Host, scheme forced to https. TLS side keys vhost on Host (426/101 vs 404), no HTTPS amplification.
+evidence_needed: control with second-stage attacker Host; confirm no path-char injection into Location.
+verify_steps: PASSIVE — `curl -si http://cbs-proxy.api.live-manager.de/ -H "Host: <attacker>"` at ≤1rps, compare redirect_url vs control.
+impact: open redirect from in-scope host → phishing / WS-client misrouting to attacker TLS endpoint in auto-following Ratchet consumers — LOW standalone, chainable.
+testability: PASSIVE
+[HYP] cbs-proxy WS plane binds arbitrary cid/service (driver, open chain)
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=&cid=&service=&token=
+confidence: 90
+reasoning: 30th cycle: Upgrade-GET (cid=2, zero token) → HTTP 101 + valid Sec-WebSocket-Accept, Ratchet/0.4.4; prior 28+ cycles byte-identical CONNECT/READY for demo/foreign/nonexistent cid. Proxy config churn (301 wrapper) revalidated — still open.
+evidence_needed: operator two-tenant stream diff (own vs foreign cid frame binding).
+verify_steps: AUTH_HELPED mint own-cid token, WS-upgrade both cids, diff frames 15s, NO live_debug payloads — HUMAN.
+impact: cross-tenant live-telephony plane misbind — CVSS 9.1 if binding confirmed.
+testability: HUMAN_ONLY
+[HYP] auth.php mint regression is ownership-unbound per-cid token mint
+class: AUTH
+asset: https://www.applicationdesigner.de/extjs/livedebugger/auth.php
+confidence: 95
+reasoning: This cycle: public LIVE_DEMO_CUSTOMER_TOKEN + customer_id=2 + srn=100 → `success:true` 64-hex auth/ttl; VPN gate absent since 09-18; credential unrotated in `/help.js` (b56a5f1e…). Chain: credential → per-cid token → WS BOLA.
+evidence_needed: two-tenant token-vs-cid binding test (shared with driver).
+verify_steps: PASSIVE mint for demo cid only; foreign-cid mint already accepted.
+impact: arbitrary-tenant live-debug token, re-arms full driver chain — HIGH.
+testability: PASSIVE (mint) / HUMAN_ONLY (impact)
+[NEXT] HUMAN: operator two-tenant WS binding test — mint own-cid token (`auth.php?token=<LIVE_DEMO_CUSTOMER_TOKEN>&customer_id={own}&srn=100`), then WS-upgrade `wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={own}&service=100&token={minted}` vs `&cid={foreign}`, diff accepted frame byte-streams (15s, NO live_debug payloads); also render `help/content.php?page=%3Cscript%3Edocument.title%3D'LM-XSS-TEST'%3C%2Fscript%3E`.
+[LEARN] ACCEPTED OTHER @ cbs-proxy.api.live-manager.de: `Host: evil.test` → 301 `https://evil.test/` — Host-derived Location on new port-80 TLS wrapper; HTTPS vhost keys on Host (426/101 correct, 404 evil) — LOW open redirect, passive-proven 2026-09-19.
+[LEARN] ACCEPTED IDOR @ cbs-proxy.api.live-manager.de: 30th cycle Upgrade-GET → 101 + Sec-WebSocket-Accept with arbitrary cid, no token; non-upgrade 426/0B; nginx/1.30.0 + 301 wrapper = re-proxy churn, transport unchanged.
+[LEARN] ACCEPTED AUTH @ www.applicationdesigner.de/extjs/livedebugger/auth.php: regression open — success:true for foreign cid=2; help.js credential unrotated (live hash b56a5f1e…; 09-18-recorded 55f7d9e9 transient).
+[LEARN] ACCEPTED CONTROL @ voicenotes/check.php (090b03ce… both cids) + help/content.php XSS (200/90B text/html) — unchanged.
+[RISK] questnet-gmbh: 87 — Driver BOLA VALID CRITICAL (WS 101 re-confirmed 30th cycle, VPN-independent; CVSS 9.1 gated only by operator two-tenant binding). auth.php regression re-arms full anonymous chain (public credential → per-cid mint → WS). NEW LOW host-header 301 open-redirect on cbs-proxy port-80 wrapper. Voicenotes PII HIGH (UUID-blocked), XSS render-pending, AIDesigner config disclosure MED. 4-host surface frozen; all public-credential gates still live (credential unrotated). Risk flat at 87.
