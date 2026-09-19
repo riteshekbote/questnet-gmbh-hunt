@@ -839,3 +839,9 @@ www.live-manager.de
 - CHANGED www.applicationdesigner.de/extjs/voicenotes/check.php: 21+ consecutive cycles cross-tenant credential-only, index empty (total=0, max_id=0) — unchanged
 - CHANGED www.applicationdesigner.de/help/content.php: XSS `page=` reflection re-confirmed passive (200 text/html, no CSP/nosniff) — execution pending operator render
 - CHANGED Surface frozen at 4 live in-scope hosts since 2026-09-04 — no new hosts/endpoints discovered
+
+## 2026-09-19 14:54:17 UTC
+- NEW cbs-proxy.api.live-manager.de:80 Host-header open redirect — `Host: evil.test` → `301 https://evil.test/` on new port-80 TLS wrapper (passive 2026-09-19)
+- CHANGED www.applicationdesigner.de/extjs/livedebugger/auth.php: VPN gate REMOVED — anonymous per-cid mint via public static credential now WORKS for foreign cid=2 (was blocked since 2026-09-07) — REGRESSION
+- CHANGED www.applicationdesigner.de/help.js: relocated from `/extjs/help.js` → `/help.js` (SHA256 `55f7d9e99b8e2d4e0e193b2f0275501e6d9c1ebd29cadbea6a0da48a8587e3e0`), static credential `LIVE_DEMO_CUSTOMER_TOKE
+- CHANGED www.applicationdesigner.de/extjs/encrypt/index.php: NOW VPN-gated — POST with public token returns `{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}` — decrypt-oracle candida
