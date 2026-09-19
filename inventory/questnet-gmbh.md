@@ -828,3 +828,5 @@ www.live-manager.de
 - CHANGED www.applicationdesigner.de/extjs/livedebugger/auth.php: VPN gate REMOVED — anonymous per-cid token mint now WORKS for foreign cid=2 with `srn` param (was blocked since 2026-09-07 with "No VPN detected
 - CHANGED www.applicationdesigner.de/help.js: relocated from `/extjs/help.js` → `/help.js` (SHA256 `55f7d9e99b8e2d4e0e193b2f0275501e6d9c1ebd29cadbea6a0da48a8587e3e0`), static credential `LIVE_DEMO_CUSTOMER_TOKE
 - CHANGED www.applicationdesigner.de/extjs/encrypt/index.php: NOW VPN-gated — POST with public token returns `{"success":false,"message":"Not logged in","tech-info":"No VPN detected."}` — decrypt-oracle candida
+
+## 2026-09-19 06:41:28 UTC
